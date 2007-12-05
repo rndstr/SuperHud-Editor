@@ -63,7 +63,11 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
       );
 
 
+  // default transparency hints throw assertions all over the place
+  // on linux
+#ifndef WIN32
   set_floating_hint( wxAUI_MGR_RECTANGLE_HINT );
+#endif
   m_mgr.Update();
 }
 
