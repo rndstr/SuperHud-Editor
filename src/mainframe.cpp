@@ -1,8 +1,10 @@
 
 #include "mainframe.h"
 
+#include <wx/artprov.h>
 #include <wx/menu.h>
 
+#include "common.h"
 #include "cpma/elementsctrl.h"
 #include "cpma/displayctrl.h"
 #include "cpma/hudfile.h"
@@ -28,13 +30,12 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   wxMenuBar *menu_bar = new wxMenuBar;
 
   wxMenu *file_menu = new wxMenu;
-  file_menu->Append( wxID_NEW, _("&New\tctrl+n") );
-  file_menu->Append( wxID_OPEN, _("&Open\tctrl+o") );
+  file_menu->Append( wxID_NEW, _("&New\tCtrl+N") );
+  file_menu->Append( wxID_OPEN, _("&Open\tCtrl+O") );
   file_menu->AppendSeparator();
-  file_menu->Append( wxID_EXIT, _("E&xit") );
+  file_menu->Append( wxID_EXIT, _("E&xit\tCtrl+Q") );
 
   wxMenu *elements_menu = new wxMenu;
-//  file_menu->Append( wxID_EXIT, _("") );
 
   wxMenu *help_menu = new wxMenu;
   help_menu->Append( wxID_ABOUT, _("About") );
@@ -45,15 +46,27 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
 
   SetMenuBar( menu_bar );
 
-  wxLogDebug(wxT("MF::MF"));
+  // statusbar plz
+  CreateStatusBar();
+  GetStatusBar()->SetStatusText(_("Ready"));
+
+  // create toolbar
+  wxToolBar *tool_bar_file = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
+  tool_bar_file->SetToolBitmapSize(wxSize(16,16));
+  tool_bar_file->AddTool( wxID_NEW, _("New"), wxArtProvider::GetBitmap(wxART_NEW_DIR, wxART_OTHER, wxSize(16,16)) );
+  tool_bar_file->AddTool( wxID_OPEN, _("Open"), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_OTHER, wxSize(16,16)) );
+  tool_bar_file->Realize();
+  
+
+  wxToolBar *tool_bar_game = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER | wxTB_HORZ_TEXT);
+  tool_bar_file->SetToolBitmapSize(wxSize(16,16));
+  tool_bar_game->AddTool( IDM_GAME_CPMA, wxT("CPMA"), wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE, wxART_OTHER, wxSize(16,16)) );
+  tool_bar_game->AddTool( IDM_GAME_Q4MAX, wxT("Q4MAX"), wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE, wxART_OTHER, wxSize(16,16)) );
+  tool_bar_game->Realize();
+ 
+
 
   // create panes
-//  wxFrame *f = new CPMAElementsCtrl(this);
-  //ElementsCtrlBase *f = new ElementsCtrlBase(this, wxID_ANY, wxT(""));
-//  wxWindow *f = new wxTextCtrl(this, wxID_ANY);
-//  wxFrame *f = new wxFrame(this, wxID_ANY, wxT(""));
-//  wxWindow *f = new wxTreeCtrl(this, wxID_ANY);
-//  f->AppendText(wxT("FU"));
   m_mgr.AddPane( new ElementsCtrlBase(this, wxID_ANY),
       wxAuiPaneInfo().Name(wxT("elements")).Caption(_("Elements")).CloseButton(true).MaximizeButton(true)
       );
@@ -61,7 +74,12 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
       wxAuiPaneInfo().Name(wxT("display")).Caption(_("Display")).MaximizeButton(true).
       CenterPane()
       );
-
+  m_mgr.AddPane(tool_bar_file, wxAuiPaneInfo().Name(wxT("tb-file")).Caption(_("File")).
+	  ToolbarPane().Top().Row(1).Position(1).LeftDockable(false).RightDockable(false)
+	  );
+  m_mgr.AddPane(tool_bar_game, wxAuiPaneInfo().Name(wxT("tb-game")).Caption(_("Game selection")).
+	  ToolbarPane().Top().Row(1).Position(2).LeftDockable(false).RightDockable(false)
+	  );
 
   // default transparency hints throw assertions all over the place
   // on linux

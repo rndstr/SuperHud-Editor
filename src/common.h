@@ -3,6 +3,7 @@
 #define __COMMON_H__
 
 
+#include "superhudeditor.h"
 #include "exceptions.h"
 #include <wx/string.h>
 #include <wx/log.h>

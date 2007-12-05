@@ -6,6 +6,12 @@
 const wxString APP_NAME = wxT("superhudeditor");
 const wxString APP_CAPTION = APP_NAME;
 
+enum
+{
+	IDM_GAME_CPMA = wxID_HIGHEST+1,
+	IDM_GAME_Q4MAX
+};
+
 class SHEApp : public wxApp
 {
 
