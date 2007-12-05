@@ -1,0 +1,19 @@
+bin_PROGRAMS = superhudeditor
+
+superhudeditor_SOURCES = \
+                         ElementsCtrlBase.cpp ElementsCtrlBase.h \
+                         cpma/hudfile.cpp cpma/hudfile.h \
+                         cpma/elementsctrl.cpp cpma/elementsctrl.h \
+                         mainframe.cpp mainframe.h \
+                         superhudeditor.cpp superhudeditor.h
+
+if ENABLE_DEBUG
+DEB = -O0 -g
+else
+DEB = -DNDEBUG
+endif
+
+# FIXME this should go into configure.ac:AM_PATH_WXCONFIG
+# but somehow it doesn't include aui?
+superhudeditor_LDFLAGS = `wx-config --libs`
+AM_CXXFLAGS = -DPACKAGE_PREFIX="\"$(prefix)\"" $(DEB)
