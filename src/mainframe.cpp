@@ -132,9 +132,7 @@ void MainFrame::OnMenuExit( wxCommandEvent& )
 
 void MainFrame::OnMenuNew( wxCommandEvent& )
 {
-  if( m_hudfile )
-    wxDELETE(m_hudfile);
-  m_hudfile = new CPMAHudFile;
+  wxGetApp().hudfile()->on_new();
 }
 
 void MainFrame::OnMenuOpen( wxCommandEvent& )
@@ -176,6 +174,8 @@ void MainFrame::DoUpdate()
 
 void MainFrame::OnClose( wxCloseEvent& ev )
 {
+  wxDELETE(m_hudfile);
+
   wxLogDebug(wxT("CLOSE"));
   Prefs::get().perspective = m_mgr.SavePerspective();
 

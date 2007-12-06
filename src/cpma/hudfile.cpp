@@ -11,12 +11,11 @@
 CPMAHudFile::CPMAHudFile() : 
   HudFileBase()
 {
-  reset();
 }
 
-void CPMAHudFile::reset()
+void CPMAHudFile::on_new()
 {
-  remove_all();
+  clear();
   ElementBase *el = 0;
   const CPMAHudSpecs::hsitems_type& items = CPMAHudSpecs::get().items();
   for( CPMAHudSpecs::cit_hsitems cit = items.begin(); cit != items.end(); ++cit )

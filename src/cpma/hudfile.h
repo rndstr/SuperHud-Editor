@@ -8,10 +8,12 @@ class CPMAHudFile : public HudFileBase
   public:
     CPMAHudFile();
 
+
+    void on_new();
     bool load( const wxString& filename );
 
   private:
-    void reset(); ///< loads default items
+    
 
 
 };

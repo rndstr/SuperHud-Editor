@@ -9,6 +9,7 @@ class CPMAFactory : public FactoryBase
     bool              init();
     ElementsCtrlBase* create_elementsctrl( wxWindow *parent );
     DisplayCtrlBase*  create_displayctrl( wxWindow *parent );
+    HudFileBase*      create_hudfile();
 
 };
 

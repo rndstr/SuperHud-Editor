@@ -14,10 +14,18 @@ class HudFileBase
     typedef elements_type::const_iterator       cit_elements;
   public:
     HudFileBase();
+    virtual ~HudFileBase() { clear(); }
 
     void set_modified( bool modified = true ) { m_modified = modified; }
-    void remove_all();
-    void add( ElementBase *el );
+   
+
+
+    /// sets up the document after user clicked File->New
+    virtual void on_new() { clear(); }
+
+    virtual void clear(); 
+    /// adds an element
+    virtual void add( ElementBase *el );
 
     /// Loads a hudfile
     /// 

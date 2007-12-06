@@ -17,6 +17,7 @@ enum
 };
 
 class FactoryBase;
+class HudFileBase;
 
 class SHEApp : public wxApp
 {
@@ -31,13 +32,17 @@ class SHEApp : public wxApp
     void store_config();
     bool is_cpma() const;
     bool is_q4max() const;
+
+
     FactoryBase *factory() { return m_factory; }
+    HudFileBase *hudfile() { return m_hudfile; }
 
   protected:
     void load_config();
 
     bool m_firststart;
     FactoryBase *m_factory;
+    HudFileBase *m_hudfile;
 };
 
 DECLARE_APP(SHEApp)

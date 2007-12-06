@@ -5,7 +5,7 @@ HudFileBase::HudFileBase() :
 {
 }
 
-void HudFileBase::remove_all()
+void HudFileBase::clear()
 {
   for( cit_elements cit = m_els.begin(); cit != m_els.end(); ++cit )
     delete (*cit);

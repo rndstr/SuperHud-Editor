@@ -3,6 +3,7 @@
 #include "hudspecs.h"
 #include "elementsctrl.h"
 #include "displayctrl.h"
+#include "hudfile.h"
 
 
 bool CPMAFactory::init()
@@ -19,4 +20,9 @@ ElementsCtrlBase* CPMAFactory::create_elementsctrl(wxWindow *parent)
 DisplayCtrlBase* CPMAFactory::create_displayctrl(wxWindow *parent)
 {
   return new CPMADisplayCtrl(parent);
+}
+
+HudFileBase* CPMAFactory::create_hudfile()
+{
+  return new CPMAHudFile;
 }

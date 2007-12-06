@@ -3,6 +3,7 @@
 
 class ElementsCtrlBase;
 class DisplayCtrlBase;
+class HudFileBase;
 class wxWindow;
 
 class FactoryBase
@@ -15,6 +16,7 @@ class FactoryBase
     virtual void shutdown() {  }
     virtual ElementsCtrlBase* create_elementsctrl( wxWindow *parent ) = 0;
     virtual DisplayCtrlBase*  create_displayctrl( wxWindow *parent ) = 0;
+    virtual HudFileBase*      create_hudfile() = 0;
 };
 
 #endif // __FACTORYBASE_H__

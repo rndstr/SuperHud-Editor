@@ -14,10 +14,12 @@
 
 #include <wx/stdpaths.h>
 #include "factorybase.h"
+#include "hudfilebase.h"
 
 #ifndef DISABLE_CPMA
-  #include "cpma/hudspecs.h"
   #include "cpma/factory.h"
+  #include "cpma/hudspecs.h"
+  #include "cpma/hudfile.h"
 #endif
 
 
@@ -58,13 +60,14 @@ bool SHEApp::OnInit()
   if( is_cpma() )
   {
     m_factory = new CPMAFactory;
-    
   }
   else if( is_q4max() )
   {
 
   }
   m_factory->init();
+
+  m_hudfile = m_factory->create_hudfile();
 
   wxFrame *frame = new MainFrame(0, wxID_ANY, APP_NAME, wxDefaultPosition, wxSize(800,600));
   SetTopWindow(frame);
@@ -98,6 +101,7 @@ int SHEApp::OnExit()
 
   m_factory->shutdown();
   wxDELETE(m_factory);
+  wxDELETE(m_hudfile);
 
   return 0;
 }
