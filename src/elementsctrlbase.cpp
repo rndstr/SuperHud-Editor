@@ -21,7 +21,7 @@ ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos,
 
 void ElementsCtrlBase::append( ElementBase *el )
 {
-  long idx = m_listctrl->InsertItem(m_listctrl->GetItemCount()-1, wxT(""));//m_listctrl->GetItemCount()-1, el->name());
+  long idx = m_listctrl->InsertItem(m_listctrl->GetItemCount(), wxT(""));//m_listctrl->GetItemCount()-1, el->name());
   m_listctrl->SetItem( idx, 0, wxEmptyString, 1 );
   m_listctrl->SetItem( idx, 1, el->name(), -1 );
 }
