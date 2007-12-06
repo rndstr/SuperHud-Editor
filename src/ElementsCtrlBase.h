@@ -7,7 +7,7 @@
 #define ELEMENTSCTRLBASE_H
 
 // begin wxGlade: ::dependencies
-#include <wx/treectrl.h>
+#include <wx/listctrl.h>
 // end wxGlade
 
 // begin wxGlade: ::extracode
@@ -30,9 +30,7 @@ private:
 
 protected:
     // begin wxGlade: ElementsCtrlBase::attributes
-    wxButton* button_4;
-    wxButton* button_5;
-    wxTreeCtrl* tree_ctrl_2;
+    wxListCtrl* m_listctrl;
     // end wxGlade
 }; // wxGlade: end class
 

@@ -11,9 +11,7 @@ ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos,
     wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL)
 {
     // begin wxGlade: ElementsCtrlBase::ElementsCtrlBase
-    button_4 = new wxButton(this, wxID_ANY, wxT("button_4"));
-    button_5 = new wxButton(this, wxID_ANY, wxT("button_5"));
-    tree_ctrl_2 = new wxTreeCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS|wxTR_LINES_AT_ROOT|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
+    m_listctrl = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxSUNKEN_BORDER);
 
     set_properties();
     do_layout();
@@ -32,11 +30,7 @@ void ElementsCtrlBase::do_layout()
 {
     // begin wxGlade: ElementsCtrlBase::do_layout
     wxBoxSizer* sizer_3 = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer* sizer_5 = new wxBoxSizer(wxHORIZONTAL);
-    sizer_5->Add(button_4, 0, 0, 0);
-    sizer_5->Add(button_5, 0, 0, 0);
-    sizer_3->Add(sizer_5, 0, wxEXPAND, 0);
-    sizer_3->Add(tree_ctrl_2, 1, wxEXPAND, 0);
+    sizer_3->Add(m_listctrl, 1, wxEXPAND, 0);
     SetSizer(sizer_3);
     sizer_3->Fit(this);
     // end wxGlade
