@@ -21,12 +21,23 @@ ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos,
 
 void ElementsCtrlBase::append( ElementBase *el )
 {
-  m_listctrl->InsertItem(0, el->name());//m_listctrl->GetItemCount()-1, el->name());
+  long idx = m_listctrl->InsertItem(m_listctrl->GetItemCount()-1, wxT(""));//m_listctrl->GetItemCount()-1, el->name());
+  m_listctrl->SetItem( idx, 0, wxEmptyString, 1 );
+  m_listctrl->SetItem( idx, 1, el->name(), -1 );
 }
 
 void ElementsCtrlBase::clear()
 {
-  m_listctrl->ClearAll();
+  m_listctrl->DeleteAllItems();
+}
+
+void ElementsCtrlBase::list_refresh( const HudFileBase::elements_type& elements )
+{
+  clear();
+  for( HudFileBase::cit_elements cit = elements.begin(); cit != elements.end(); ++cit )
+  {
+    append(*cit);
+  }
 }
 
 
@@ -34,8 +45,6 @@ void ElementsCtrlBase::set_properties()
 {
     // begin wxGlade: ElementsCtrlBase::set_properties
     // end wxGlade
-  m_listctrl->InsertColumn(0, _("On?"), wxLIST_FORMAT_LEFT, 20);
-  m_listctrl->InsertColumn(1, _("Name"), wxLIST_FORMAT_LEFT, 200);
 }
 
 

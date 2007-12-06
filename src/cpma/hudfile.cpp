@@ -4,6 +4,7 @@
 
 #include "hudspecs.h"
 #include "element.h"
+#include "../elementsctrlbase.h"
 
 #include <wx/wfstream.h>
 
@@ -29,6 +30,7 @@ void CPMAHudFile::on_new()
     //if( force_disable ) 
       //hi->set_enable( false );
   }
+  wxGetApp().elementsctrl()->list_refresh(m_els);
 }
 
 bool CPMAHudFile::load( const wxString& filename )

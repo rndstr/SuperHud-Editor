@@ -18,6 +18,7 @@ enum
 
 class FactoryBase;
 class HudFileBase;
+class ElementsCtrlBase;
 class MainFrame;
 
 class SHEApp : public wxApp
@@ -38,6 +39,7 @@ class SHEApp : public wxApp
     MainFrame*    mainframe() { return m_mainframe; }
     FactoryBase* factory() { return m_factory; }
     HudFileBase* hudfile() { return m_hudfile; }
+    ElementsCtrlBase* elementsctrl();
 
   protected:
     void load_config();

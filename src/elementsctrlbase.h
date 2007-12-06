@@ -16,6 +16,7 @@
 
 #include "elementslistctrl.h"
 #include "elementbase.h"
+#include "hudfilebase.h"
 
 class ElementsCtrlBase: public wxPanel {
 public:
@@ -27,6 +28,7 @@ public:
 
     virtual void clear();
     virtual void append( ElementBase *el );
+    virtual void list_refresh( const HudFileBase::elements_type& elements );
 
 
 private:

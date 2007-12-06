@@ -177,14 +177,6 @@
 			Name="wx"
 			>
 			<File
-				RelativePath=".\src\ElementsCtrlBase.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\ElementsCtrlBase.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\GameSelectionDialog.cpp"
 				>
 			</File>
@@ -222,6 +214,22 @@
 			</File>
 			<File
 				RelativePath=".\src\elementbase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\elementsctrlbase.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\elementsctrlbase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\elementslistctrl.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\elementslistctrl.h"
 				>
 			</File>
 			<File
