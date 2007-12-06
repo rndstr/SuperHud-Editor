@@ -28,3 +28,4 @@ class ArtProvider : public wxArtProvider
 };
 
 #endif // __ARTPROVIDER_H__
+

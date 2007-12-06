@@ -30,8 +30,7 @@ END_EVENT_TABLE()
 MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title, 
         const wxPoint& pos /*= wxDefaultPosition*/, const wxSize& size /*= wxDefaultSize*/,
         long style /*= wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER*/) :
-  wxFrame(parent, id, title, pos, size, style),
-    m_hudfile(0)
+  wxFrame(parent, id, title, pos, size, style)
 {
 
   m_mgr.SetManagedWindow(this);
@@ -75,7 +74,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
 
 
   // create panes
-  m_mgr.AddPane( wxGetApp().factory()->create_elementsctrl(this),
+  m_elementsctrl = wxGetApp().factory()->create_elementsctrl(this);
+  m_mgr.AddPane( m_elementsctrl,
       wxAuiPaneInfo().Name(wxT("elements")).Caption(_("Elements")).CloseButton(true).MaximizeButton(true).CloseButton(false)
       );
   m_mgr.AddPane( wxGetApp().factory()->create_displayctrl(this), 
@@ -174,10 +174,10 @@ void MainFrame::DoUpdate()
 
 void MainFrame::OnClose( wxCloseEvent& ev )
 {
-  wxDELETE(m_hudfile);
 
   wxLogDebug(wxT("CLOSE"));
   Prefs::get().perspective = m_mgr.SavePerspective();
 
   ev.Skip();
 }
+

@@ -18,6 +18,7 @@ enum
 
 class FactoryBase;
 class HudFileBase;
+class MainFrame;
 
 class SHEApp : public wxApp
 {
@@ -34,13 +35,16 @@ class SHEApp : public wxApp
     bool is_q4max() const;
 
 
-    FactoryBase *factory() { return m_factory; }
-    HudFileBase *hudfile() { return m_hudfile; }
+    MainFrame*    mainframe() { return m_mainframe; }
+    FactoryBase* factory() { return m_factory; }
+    HudFileBase* hudfile() { return m_hudfile; }
 
   protected:
     void load_config();
 
     bool m_firststart;
+
+    MainFrame   *m_mainframe;
     FactoryBase *m_factory;
     HudFileBase *m_hudfile;
 };

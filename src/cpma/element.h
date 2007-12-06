@@ -96,12 +96,11 @@ class CPMAElement : public ElementBase
   public:
     //CPMAElement();
     CPMAElement( const hsitem_s& def );
-    CPMAElement::CPMAElement( const wxString& name, const wxString& desc =wxT(""), int type =E_T_UNKNOWN, 
+    CPMAElement( const wxString& name, const wxString& desc =wxT(""), int type =E_T_UNKNOWN, 
       bool enable =false, int flags =E_NONE, int has =E_HAS_NONE, const wxString& text =wxT(""), 
       const wxString& icon =wxT(""), const wxRect& rect = E_RECT_DEFAULT);
 
   protected:
-    wxString      m_name;
     wxString      m_desc;
     int           m_type ; ///< eElementType
     bool          m_enabled;

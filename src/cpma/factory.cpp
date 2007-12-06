@@ -8,8 +8,7 @@
 
 bool CPMAFactory::init()
 {
-  CPMAHudSpecs::get().load();
-  return true;
+  return CPMAHudSpecs::get().load();
 }
 
 ElementsCtrlBase* CPMAFactory::create_elementsctrl(wxWindow *parent)

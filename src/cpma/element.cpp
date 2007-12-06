@@ -7,8 +7,7 @@ CPMAElement::CPMAElement( const wxString& name, const wxString& desc /*=""*/, in
   const wxString& text /*=""*/, 
   const wxString& icon /*=""*/, 
   const wxRect& rect /*= E_RECT_DEFAULT*/) :
-ElementBase(),
-    m_name(name),
+ElementBase(name),
     m_desc(desc),
     m_type(type),
     m_enabled(enable),
@@ -42,8 +41,7 @@ ElementBase(),
 }
 
 CPMAElement::CPMAElement( const hsitem_s& def ) :
-    ElementBase(),
-    m_name(def.name),
+    ElementBase(def.name),
     m_desc(def.desc),
     m_type(def.type),
     m_enabled(def.enable),

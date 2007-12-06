@@ -24,7 +24,7 @@ void CPMAHudFile::on_new()
       continue;
     el = new CPMAElement(*cit);// cit->name, cit->desc, cit->enable, cit->text, cit->icon, 0, E_RECT_DEFAULT, cit->type, cit->flags, cit->has );
     //hi = Hud::create_item( *cit );
-    add( el );
+    append( el );
 
     //if( force_disable ) 
       //hi->set_enable( false );

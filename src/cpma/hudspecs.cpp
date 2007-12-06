@@ -58,7 +58,7 @@ bool CPMAHudSpecs::load()
       fpath = wxStandardPaths::Get().GetUserDataDir() + wxT("/data/cpma/hudspecs/") + hudspecs;
       if( !wxFile::Exists( fpath.c_str() ) )
       {
-        wxLogError( _("Cannot find `%s' which you probably set manually in your configfile (hudspecs). Make sure it only contains the filename (e.g. '143.dat')."), fpath );
+        wxLogError( _("Cannot find `%s' which you probably set manually in your configfile (hudspecs). Make sure it only contains the filename (e.g. '143.dat')."), fpath.c_str() );
         return false;
       }
     }
@@ -101,7 +101,7 @@ bool CPMAHudSpecs::load()
       }
       else
       {
-        wxLogWarning(_T("Found invalid element in hudspecs file (`%s'): no previous item found that specifies the options for `%s', ignoring."), fpath, line);
+        wxLogWarning( _("Found invalid element in hudspecs file (`%s'): no previous item found that specifies the options for `%s', ignoring."), fpath.c_str(), line.c_str());
       }
       continue;
     }

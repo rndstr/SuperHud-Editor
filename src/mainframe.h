@@ -6,6 +6,8 @@
 #include <wx/frame.h>
 #include <wx/aui/aui.h>
 
+class ElementsCtrlBase;
+
 class MainFrame : public wxFrame
 {
   public:
@@ -19,10 +21,13 @@ class MainFrame : public wxFrame
 
     void OnMenuGameSelection( wxCommandEvent& );
 
+
+    ElementsCtrlBase* elementsctrl() { return m_elementsctrl; }
+
   protected:
     void set_floating_hint( wxAuiManagerOption hint );
 
-    HudFileBase *m_hudfile;
+    ElementsCtrlBase *m_elementsctrl;
 
   private:
 

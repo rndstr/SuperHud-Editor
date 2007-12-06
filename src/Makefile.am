@@ -1,9 +1,25 @@
 bin_PROGRAMS = superhudeditor
 
 superhudeditor_SOURCES = \
-                         ElementsCtrlBase.cpp ElementsCtrlBase.h \
-                         cpma/hudfile.cpp cpma/hudfile.h \
+                         color4.cpp colo4.h \
+                         artprovider.h \
+                         common.h \
+                         exceptions.h \
+                         factorybase.h \
+                         displayctrlbase.h \
+                         misc.cpp misc.h \
+                         prefs.cpp prefs.h \
+                         elementslistctrl.h \
+                         elementsctrlbase.cpp elementsctrlbase.h \
+                         hudfilebase.cpp hudfilebase.h \
+                         elementbase.cpp elementbase.h \
+                         cpma/factory.cpp cpma/factory.h \
+                         cpma/displayctrl.cpp cpma/displayctrl.h \
                          cpma/elementsctrl.cpp cpma/elementsctrl.h \
+                         cpma/hudfile.cpp cpma/hudfile.h \
+                         cpma/element.cpp cpma/element.h \
+                         cpma/hudspecs.cpp cpma/hudspecs.h \
+                         GameSelectionDialog.cpp GameSelectionDialog.h \
                          mainframe.cpp mainframe.h \
                          superhudeditor.cpp superhudeditor.h
 

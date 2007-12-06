@@ -25,7 +25,7 @@ class HudFileBase
 
     virtual void clear(); 
     /// adds an element
-    virtual void add( ElementBase *el );
+    virtual void append( ElementBase *el );
 
     /// Loads a hudfile
     /// 

@@ -1,7 +1,7 @@
 #ifndef __CPMAELEMENTSCTRL_H__
 #define __CPMAELEMENTSCTRL_H__
 
-#include "../ElementsCtrlBase.h"
+#include "../elementsctrlbase.h"
 
 
 class CPMAElementsCtrl : public ElementsCtrlBase

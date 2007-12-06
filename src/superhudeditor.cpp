@@ -52,8 +52,8 @@ bool SHEApp::OnInit()
     static_cast<MainFrame*>(GetTopWindow())->OnMenuGameSelection(ev);
     if( !is_cpma() && !is_q4max() )
     {
-      wxLogError(_("Invalid game in settings"));
-      // FIXME bail out!
+      wxLogFatalError(_("Invalid game in settings, loaded CPMA"));
+      Prefs::get().game = wxT("cpma");
     }
   }
 
@@ -65,13 +65,19 @@ bool SHEApp::OnInit()
   {
 
   }
-  m_factory->init();
+
+  if( !m_factory->init() )
+  {
+    m_factory->shutdown();
+    wxDELETE(m_factory);
+    return false;
+  }
 
   m_hudfile = m_factory->create_hudfile();
 
-  wxFrame *frame = new MainFrame(0, wxID_ANY, APP_NAME, wxDefaultPosition, wxSize(800,600));
-  SetTopWindow(frame);
-  frame->Show();
+  m_mainframe = new MainFrame(0, wxID_ANY, APP_NAME, wxDefaultPosition, wxSize(800,600));
+  SetTopWindow(m_mainframe);
+  m_mainframe->Show();
 
   return true;
 }
