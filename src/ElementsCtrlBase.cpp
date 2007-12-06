@@ -13,7 +13,7 @@ ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos,
     // begin wxGlade: ElementsCtrlBase::ElementsCtrlBase
     button_4 = new wxButton(this, wxID_ANY, wxT("button_4"));
     button_5 = new wxButton(this, wxID_ANY, wxT("button_5"));
-    tree_ctrl_2 = new wxTreeCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
+    tree_ctrl_2 = new wxTreeCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTR_HAS_BUTTONS|wxTR_LINES_AT_ROOT|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER);
 
     set_properties();
     do_layout();

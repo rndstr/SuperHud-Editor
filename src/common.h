@@ -2,9 +2,12 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-
 #include "superhudeditor.h"
+#include "artprovider.h"
 #include "exceptions.h"
+#include "prefs.h"
+#include "misc.h"
+
 #include <wx/string.h>
 #include <wx/log.h>
 

@@ -3,16 +3,25 @@
 
 #include <wx/artprov.h>
 #include <wx/menu.h>
+#include <wx/stdpaths.h>
 
 #include "common.h"
+#include "GameSelectionDialog.h"
+#include "factorybase.h"
+
 #include "cpma/elementsctrl.h"
 #include "cpma/displayctrl.h"
 #include "cpma/hudfile.h"
+
+DECLARE_APP(SHEApp);
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_MENU(wxID_EXIT, MainFrame::OnMenuExit)
   EVT_MENU(wxID_OPEN, MainFrame::OnMenuOpen)
   EVT_MENU(wxID_NEW, MainFrame::OnMenuNew)
+  EVT_MENU(IDM_GAMESELECTION, MainFrame::OnMenuGameSelection)
+  EVT_MENU(IDM_PREFERENCES, MainFrame::OnMenuPreferences)
+  EVT_CLOSE(MainFrame::OnClose)
 END_EVENT_TABLE()
 
 
@@ -21,7 +30,8 @@ END_EVENT_TABLE()
 MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title, 
         const wxPoint& pos /*= wxDefaultPosition*/, const wxSize& size /*= wxDefaultSize*/,
         long style /*= wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER*/) :
-  wxFrame(parent, id, title, pos, size, style)
+  wxFrame(parent, id, title, pos, size, style),
+    m_hudfile(0)
 {
 
   m_mgr.SetManagedWindow(this);
@@ -34,14 +44,19 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   file_menu->Append( wxID_OPEN, _("&Open\tCtrl+O") );
   file_menu->AppendSeparator();
   file_menu->Append( wxID_EXIT, _("E&xit\tCtrl+Q") );
+  menu_bar->Append( file_menu, _("&File") );
+
+  wxMenu *tools_menu = new wxMenu;
+  //tools_menu->Append( IDM_GAMESELECTION, _("&Switch game...") );
+  //tools_menu->AppendSeparator();
+  tools_menu->Append( IDM_PREFERENCES, _("&Preferences\tAlt+P") );
+  menu_bar->Append( tools_menu, _("&Tools") );
 
   wxMenu *elements_menu = new wxMenu;
+  menu_bar->Append( elements_menu, _("&Elements") );
 
   wxMenu *help_menu = new wxMenu;
-  help_menu->Append( wxID_ABOUT, _("About") );
-
-  menu_bar->Append( file_menu, _("File") );
-  menu_bar->Append( elements_menu, _("Elements") );
+  help_menu->Append( wxID_ABOUT, _("&About") );
   menu_bar->Append( help_menu, _("Help") );
 
   SetMenuBar( menu_bar );
@@ -53,33 +68,25 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   // create toolbar
   wxToolBar *tool_bar_file = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
   tool_bar_file->SetToolBitmapSize(wxSize(16,16));
-  tool_bar_file->AddTool( wxID_NEW, _("New"), wxArtProvider::GetBitmap(wxART_NEW_DIR, wxART_OTHER, wxSize(16,16)) );
-  tool_bar_file->AddTool( wxID_OPEN, _("Open"), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_OTHER, wxSize(16,16)) );
+  tool_bar_file->AddTool( wxID_NEW, _("New"), wxArtProvider::GetBitmap(wxART_NEW_DIR, wxART_TOOLBAR, wxSize(16,16)) );
+  tool_bar_file->AddTool( wxID_OPEN, _("Open"), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, wxSize(16,16)) );
   tool_bar_file->Realize();
-  
-
-  wxToolBar *tool_bar_game = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER | wxTB_HORZ_TEXT);
-  tool_bar_file->SetToolBitmapSize(wxSize(16,16));
-  tool_bar_game->AddTool( IDM_GAME_CPMA, wxT("CPMA"), wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE, wxART_OTHER, wxSize(16,16)) );
-  tool_bar_game->AddTool( IDM_GAME_Q4MAX, wxT("Q4MAX"), wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE, wxART_OTHER, wxSize(16,16)) );
-  tool_bar_game->Realize();
  
 
 
   // create panes
-  m_mgr.AddPane( new ElementsCtrlBase(this, wxID_ANY),
-      wxAuiPaneInfo().Name(wxT("elements")).Caption(_("Elements")).CloseButton(true).MaximizeButton(true)
+  m_mgr.AddPane( wxGetApp().factory()->create_elementsctrl(this),
+      wxAuiPaneInfo().Name(wxT("elements")).Caption(_("Elements")).CloseButton(true).MaximizeButton(true).CloseButton(false)
       );
-  m_mgr.AddPane( create_cpma_displayctrl(), 
+  m_mgr.AddPane( wxGetApp().factory()->create_displayctrl(this), 
       wxAuiPaneInfo().Name(wxT("display")).Caption(_("Display")).MaximizeButton(true).
       CenterPane()
       );
   m_mgr.AddPane(tool_bar_file, wxAuiPaneInfo().Name(wxT("tb-file")).Caption(_("File")).
 	  ToolbarPane().Top().Row(1).Position(1).LeftDockable(false).RightDockable(false)
 	  );
-  m_mgr.AddPane(tool_bar_game, wxAuiPaneInfo().Name(wxT("tb-game")).Caption(_("Game selection")).
-	  ToolbarPane().Top().Row(1).Position(2).LeftDockable(false).RightDockable(false)
-	  );
+
+  m_mgr.LoadPerspective( Prefs::get().perspective );
 
   // default transparency hints throw assertions all over the place
   // on linux
@@ -89,19 +96,6 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_mgr.Update();
 }
 
-wxWindow* MainFrame::create_cpma_elementsctrl()
-{
-  CPMAElementsCtrl *ctrl = new CPMAElementsCtrl(this);
-
-  return ctrl;
-}
-
-wxWindow* MainFrame::create_cpma_displayctrl()
-{
-  CPMADisplayCtrl *ctrl = new CPMADisplayCtrl(this);
-
-  return ctrl;
-}
 
 void MainFrame::set_floating_hint( wxAuiManagerOption hint )
 {
@@ -115,6 +109,22 @@ void MainFrame::set_floating_hint( wxAuiManagerOption hint )
   m_mgr.SetFlags(f);
 }
 
+void MainFrame::OnMenuPreferences( wxCommandEvent& )
+{
+  wxMessageBox(wxT("Not yet available, edit config file directly:\n") + wxStandardPaths::Get().GetUserDataDir() + wxT("/") + APP_CONFIG );
+}
+
+void MainFrame::OnMenuGameSelection( wxCommandEvent& )
+{
+  GameSelectionDialog dlg(this, wxID_ANY, _T("Select your game"));
+  int ret = dlg.ShowModal();
+  if( ret == ID_BTN_CPMA )
+    Prefs::get().game = wxT("cpma");
+  else if( ret == ID_BTN_Q4MAX )
+    Prefs::get().game = wxT("q4max");
+  Prefs::get().startup_gameselection = dlg.startup_gameselection();
+}
+
 void MainFrame::OnMenuExit( wxCommandEvent& )
 {
   Close(true);
@@ -122,7 +132,9 @@ void MainFrame::OnMenuExit( wxCommandEvent& )
 
 void MainFrame::OnMenuNew( wxCommandEvent& )
 {
-
+  if( m_hudfile )
+    wxDELETE(m_hudfile);
+  m_hudfile = new CPMAHudFile;
 }
 
 void MainFrame::OnMenuOpen( wxCommandEvent& )
@@ -162,3 +174,10 @@ void MainFrame::DoUpdate()
   m_mgr.Update();
 }
 
+void MainFrame::OnClose( wxCloseEvent& ev )
+{
+  wxLogDebug(wxT("CLOSE"));
+  Prefs::get().perspective = m_mgr.SavePerspective();
+
+  ev.Skip();
+}

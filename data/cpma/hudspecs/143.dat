@@ -1,0 +1,172 @@
+# this is a file that specifies what elements are available.
+# if it's out of date (i.e. superHUD gets updated by CPMA) you 
+# can check the webpage (see README or Help->About for url)
+# for an updated version or update it yourself and then send it to me
+# :)
+#
+# see README.hudspecs if you plan to modify it.
+# --------------------------------------------------------------------
+
+___date=ongoing
+___name=CPMA 1.43
+___author=veal
+
+# can have several and add one as it's good to have a starting default.
+# and don't draw it but enable it for storing in hudconfig.
+_desc=The first element in the hudfile MUST be "!DEFAULT", and every other element inherits from that default; this gives you an easy way to change fonts/colors/etc for a whole bunch of elements at once. !DEFAULT can be reused later in the document affecting every following element but it will not overwrite the paramaters set by previous !DEFAULT(s).
+!DEFAULT=notuniq:drawnever:parent:enable:enablealways
+
+_desc=Empty elements that can be used to draw separator bars etc. Will be drawn BEFORE other elements.
+PreDecorate=notuniq:nodefault:enable:enablealways:type=usericon
+_desc=Empty elements that can be used to draw separator bars etc. Will be drawn AFTER other elements.
+PostDecorate=notuniq:nodefault:enable:enablealways:type=usericon
+
+_desc=Lagometer
+NetGraph=
+_desc=Ping
+NetGraphPing=type=text:text=12ms
+# supply number of weapons for multwidth and multheight
+_desc=Use FILL to show ammo for weapons you dont have, useful for tdm. Weaponlist wraps at the bottom of the screen so you can sneak a multi-column one in.
+WeaponList=multheight=9:multwidth=9:multdependalign:type=weaponlist
+
+_desc=Defaults to mynx icon but can be any model, image or shader found in pk3s (provided that the pk3 is on the pure server you join)
+# FIXME add mynx icon path
+StatusBar_HealthIcon=type=usericon:icon=...
+_desc=Numeric health level
+StatusBar_HealthCount=text=200:type=text
+_desc=Bar health level
+StatusBar_HealthBar=type=bar
+
+_desc=Type of armor - essential in cpm but irrelevant in vq3
+StatusBar_ArmorIcon=type=icon:icon=icons/iconr_red.tga
+_desc=Numeric armor level.
+StatusBar_ArmorCount=text=200:type=text
+_desc=Bar armor level.
+StatusBar_ArmorBar=type=bar
+
+_desc=Current weapon ammo icon
+StatusBar_AmmoIcon=type=icon:icon=icons/iconw_railgun.tga
+_desc=Numeric ammo level
+StatusBar_AmmoCount=text=15:type=text
+_desc=Bar ammo level
+StatusBar_AmmoBar=type=bar
+
+AttackerIcon=type=icon:icon=models/players/tankjr/icon_pm.tga
+AttackerName=text=UnnamedPlayer:type=text
+
+_desc=Replacement for id's console. Use with con_notifyTime -1. Doesn't affect the console *buffer* but just the text in the top left.
+Console=text=UnnamedPlayer ate UnnamedPlayer's rocket:type=text
+_desc=Frames Per Second
+FPS=text=125fps:type=text
+_desc=Game Clock
+GameTime=text=15;00:type=text
+_desc=Game Type - warmup only. Cannot be omitted. To remove place at off-screen x,y coordinates or set opaque to 0.
+GameType=enablealways:text=Tournament:type=text
+_desc=10sec countdown, Waiting for players, etc. Cannot be omitted. To remove place at off-screen x,y coordinates or set opaque 0.
+WarmupInfo=enablealways:text=Waiting for players:type=text
+_desc=Following <Player>
+FollowMessage=text=Following UnnamedPlayer:type=text
+_desc=SPECTATOR, FRAGGED (in CA/CTFS/FT)
+SpecMessage=type=text:text=Waiting to play
+FragMessage=text=You fragged UnnamedPlayer:type=text
+_desc=Placed 1st with 30 frags.
+RankMessage=text=Placed 1st with 30 frags:type=text
+_desc=Units Per Second
+PlayerSpeed=text=623ups:type=text
+_desc=Text string of whatever item you pick up.
+ItemPickup=text=Rockets:type=text
+_desc=Icon of whatever item you pick up.
+ItemPickupIcon=type=icon:icon=icons/icona_rocket.tga
+_desc=Current target's playername - requires cg_drawCrosshairNames 1
+TargetName=text=UnnamedPlayer:type=text
+_desc=Current friendly target's health/armor level - requires cg_drawCrosshairNames 1 and ch_crosshairTeamInfo 1
+TargetStatus=text=[125/100]:type=text
+
+_desc=Voting in multiarena maps.
+VoteMessageArena=type=text
+_desc=Normal votes.
+VoteMessageWorld=text=vote(3); map cpm22:type=text
+
+_desc=Frag/Cap limit (if set)
+Score_Limit=short:text=30:type=text
+_desc=Your score. Cannot be omitted. To remove place at off-screen x,y coordinates or set opaque 0. To get old RED/BLUE use color T and color E, plus bgcolor.
+Score_OWN=short:enablealways:text=112:type=text
+_desc=Enemy score. Cannot be omitted. To remove place at off-screen x,y coordinates or set opaque 0. To get old RED/BLUE use color T and color E, plus bgcolor.
+Score_NME=short:enablealways:text=109:type=text
+
+_desc=Status of your flag. To get old RED/BLUE use color T and color E, plus bgcolor.
+FlagStatus_OWN=short:type=icon:icon=icons/flag_pm0.tga
+_desc=Status of enemy flag. To get old RED/BLUE use color T and color E, plus bgcolor.
+FlagStatus_NME=short:type=icon:icon=icons/flag_pm0.tga
+
+_desc=Players alive on your team (CA/CTFS/FT)
+TeamCount_OWN=short:text=4:type=text
+_desc=Defaults to mynx icon but can be any model, image or shader found in pk3s (provided that the pk3 is on the pure server you join)
+TeamIcon_OWN=short:type=usericon
+_desc=Players alive on enemy team (CA/CTFS/FT)
+TeamCount_NME=short:text=2:type=text
+_desc=Defaults to sarge icon but can be any model, image or shader found in pk3s (provided that the pk3 is on the pure server you join)
+TeamIcon_NME=short:type=usericon
+
+#_desc=Empty elements that can be used to draw separator bars etc. Will be drawn before/behind other elements.
+#!PreDecorate1=type=usericon
+#!PreDecorate2=type=usericon
+#!PreDecorate3=type=usericon
+#!PreDecorate4=type=usericon
+#!PreDecorate5=type=usericon
+#!PreDecorate6=type=usericon
+#!PreDecorate7=type=usericon
+#!PreDecorate8=type=usericon
+#_desc=Empty elements that can be used to draw separator bars etc. Will be drawn after/on top of other elements.
+#_PostDecorate1=type=usericon
+#_PostDecorate2=type=usericon
+#_PostDecorate3=type=usericon
+#_PostDecorate4=type=usericon
+#_PostDecorate5=type=usericon
+#_PostDecorate6=type=usericon
+#_PostDecorate7=type=usericon
+#_PostDecorate8=type=usericon
+
+# low ammo warning
+_desc=Low ammo/Out of ammo. The audio feedback "click" can be toggled using cg_ammoWarning.
+AmmoMessage=text=LOW AMMO WARNING:type=text
+
+!DEFAULT
+_desc=Powerup Icons. PowerUp1_Icon is also used for the O/D indicator in CTFS - and also for FLAG
+PowerUp1_Icon=short:type=icon:icon=icons/quad.tga
+_desc=Powerup Time left
+PowerUp1_Time=short:text=15:type=text
+_desc=Powerup Icons. PowerUp1_Icon is also used for the O/D indicator in CTFS - and also for FLAG
+PowerUp2_Icon=short:type=icon:icon=icons/regen.tga
+_desc=Powerup Time left
+PowerUp2_Time=short:text=14:type=text
+_desc=Powerup Icons. PowerUp1_Icon is also used for the O/D indicator in CTFS - and also for FLAG
+PowerUp3_Icon=short:type=icon:icon=icons/haste.tga
+_desc=Powerup Time left
+PowerUp3_Time=short:text=13:type=text
+_desc=Powerup Icons. PowerUp1_Icon is also used for the O/D indicator in CTFS - and also for FLAG
+PowerUp4_Icon=short:type=icon:icon=icons/envirosuit.tga
+_desc=Powerup Time left
+PowerUp4_Time=short:text=12:type=text
+
+!DEFAULT
+_desc=Chat area
+Chat1=short:type=text
+Chat2=short:type=text
+Chat3=short:type=text
+Chat4=short:type=text
+Chat5=short:type=text
+Chat6=short:type=text
+Chat7=short:type=text
+Chat8=short:type=text
+
+!DEFAULT
+_desc=Teamoverlay
+Team1=short:type=text
+Team2=short:type=text
+Team3=short:type=text
+Team4=short:type=text
+Team5=short:type=text
+Team6=short:type=text
+Team7=short:type=text
+Team8=short:type=text

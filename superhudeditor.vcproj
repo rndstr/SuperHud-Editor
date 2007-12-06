@@ -184,10 +184,30 @@
 				RelativePath=".\src\ElementsCtrlBase.h"
 				>
 			</File>
+			<File
+				RelativePath=".\src\GameSelectionDialog.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\GameSelectionDialog.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="src"
 			>
+			<File
+				RelativePath=".\src\artprovider.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\color4.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\color4.h"
+				>
+			</File>
 			<File
 				RelativePath=".\src\common.h"
 				>
@@ -197,7 +217,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\elementbase.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\elementbase.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\exceptions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\factorybase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\hudfilebase.cpp"
 				>
 			</File>
 			<File
@@ -210,6 +246,22 @@
 			</File>
 			<File
 				RelativePath=".\src\mainframe.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\misc.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\misc.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\prefs.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\prefs.h"
 				>
 			</File>
 			<File
@@ -232,6 +284,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\cpma\element.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\cpma\element.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\cpma\elementsctrl.cpp"
 					>
 				</File>
@@ -240,11 +300,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\cpma\factory.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\cpma\factory.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\cpma\hudfile.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\src\cpma\hudfile.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\cpma\hudspecs.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\cpma\hudspecs.h"
 					>
 				</File>
 			</Filter>

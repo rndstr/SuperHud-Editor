@@ -1,0 +1,64 @@
+after some investigating when is what rendered how:
+
+- default $bgcolor = 1 1 1 0 (=not drawn!)
+- default $color   = 1 1 1 1
+- $image is stretched to rect
+- $image is colorized with $color
+- StatusBar_ArmorIcon: which armor we are carrying
+- WeaponList: has space of 4pixels between each weaponitem.
+- for old red/blue coloring ($color == T or E) we need a $bgcolor (which isn't used tho):
+			 Score_OWN/NME, FlagStatus_OWN/NME, etc.
+- for colorTE and FILL there is a border (which texture?) drawn.
+- last (optional) value for $angles means: >0 pan degrees left/right, <0 constant rotation, speed
+- if $image is not found, .tga is appended automatically (but not for .skin or .md3)
+  
+		several different classes: TEXT, USERICON, ICON, BAR
+		
+		BAR: not used = $model($angle $offset) $image $bgcolor $fill (whole font)
+		 +rect: filled rectangle drawn in $color (default 1 1 1 1);
+		 -doublebar: if fully stacked (200h,200a) full width is drawn, otherwise
+				 percentual
+		 +doublebar: two bars with space between, top is 0-100, bottom 101-200
+		 
+		TEXT: not used = $image (unless $model is specified)
+		 +bgcolor +rect -fill: rectangle filled with $bgcolor but width is $text.w (and not $rect.w)
+		 +bgcolor +rect +fill: $rect filled with $bgcolor
+     StatusBar_HealthCount has always its own color, $color does not change textcolor
+      (>100 = white, otherwise gold and red if <~30)
+     +colorTE: draw background with special color3 and $bgcolor.alpha
+     +model: $image = skin, $angle, $offset ($bgcolor ignored! $color used on some places... e.g. sunglasses of mynx)
+		 
+		USERICON not used = (whole font)
+		 +bgcolor +rect -fill: nothing. (only because bgcolor is default alpha0)
+		 +bgcolor +rect +fill: $rect drawn with $bgcolor
+		 +image: draws image
+     +colorTE: draw with special color3 and $bgcolor.alpha (if none set, it's default bgcolor which has alpha 0)
+     +model: $image = skin, $angle, $offset ($bgcolor ignored! $color used on some places... e.g. sunglasses of mynx)
+
+    ICON not used = (whole font) $image
+     same as USERICON but the game itself supplies us with a icon, overriding $image.
+     $color.alpha fixed to 1
+     complete $color fixed to (1,1,1,1) for some elements... like StatusBar_ArmorIcon :/
+      (NB color fixation not implemented...)
+     +draw3d: says we would prefer a 3d image (example: StatusBar_AmmoIcon $draw3d = model, otherwise simpleitem image)
+     +model: same as $draw3d
+
+
+elements belonging to which classes (quite obvious and only those listed
+that i actually verified):
+  
+BAR
+  StatusBar_HealthBar
+
+TEXT
+  FPS
+	StatusBar_HealthCount
+
+
+USERICON
+	StatusBar_HealthIcon
+
+ICON
+	StatusBar_ArmorIcon
+
+

@@ -1,6 +1,8 @@
 #ifndef __MAINFRAME_H__
 #define __MAINFRAME_H__
 
+#include "hudfilebase.h"
+
 #include <wx/frame.h>
 #include <wx/aui/aui.h>
 
@@ -15,17 +17,21 @@ class MainFrame : public wxFrame
     wxAuiDockArt* GetDockArt();
     void DoUpdate();
 
-  protected:
-    wxWindow* create_cpma_elementsctrl();
-    wxWindow* create_cpma_displayctrl();
+    void OnMenuGameSelection( wxCommandEvent& );
 
+  protected:
     void set_floating_hint( wxAuiManagerOption hint );
 
+    HudFileBase *m_hudfile;
+
   private:
+
+    void OnClose( wxCloseEvent& ev );
 
     void OnMenuExit( wxCommandEvent& );
     void OnMenuNew( wxCommandEvent& );
     void OnMenuOpen( wxCommandEvent& );
+    void OnMenuPreferences( wxCommandEvent& );
 
   private:
     wxAuiManager m_mgr;
