@@ -2,10 +2,12 @@
 
 #include "elementsctrlbase.h"
 #include "elementbase.h"
+#include "misc.h"
 
 // begin wxGlade: ::extracode
 
 // end wxGlade
+
 
 
 ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long style):
@@ -21,9 +23,9 @@ ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos,
 
 void ElementsCtrlBase::append( ElementBase *el )
 {
-  long idx = m_listctrl->InsertItem(m_listctrl->GetItemCount(), wxT(""));//m_listctrl->GetItemCount()-1, el->name());
-  m_listctrl->SetItem( idx, 0, wxEmptyString, 1 );
-  m_listctrl->SetItem( idx, 1, el->name(), -1 );
+  long idx = m_listctrl->InsertItem(m_listctrl->GetItemCount(), wxEmptyString, -1);
+  m_listctrl->SetItem( idx, 1, el->name(), 1 );
+  m_listctrl->SetItemData( idx, (int)(el) );
 }
 
 void ElementsCtrlBase::clear()
@@ -38,8 +40,53 @@ void ElementsCtrlBase::list_refresh( const HudFileBase::elements_type& elements 
   {
     append(*cit);
   }
-}
+  // now insert collection items
+  
+  wxString collname;
+  int collcount = 0;
+  for( size_t i=1; i < elements.size(); ++i )
+  {
+    if( elements[i]->name().Left(3) == elements[i-1]->name().Left(3) && elements[i]->name().Left(3) != collname)
+    { // we found at least two items, that's enough
+      collname = elements[i]->name().Left(3);
 
+      // how many items belong to this collection?
+      size_t g;
+      for( g=i-1; g < elements.size(); ++g )
+      {
+        if( elements[g]->name().Left(3) != collname )
+          break;
+      }
+      // items [i-1,g-1] have same 3 starting characters
+      // maybe they share even more? figeur out
+      int minshare = 666;
+      m_listctrl->SetItem(i-1+collcount, 0, wxEmptyString, 3);
+      for( size_t h=i; h <= g-1; ++h )
+      {
+        m_listctrl->SetItem(h+collcount, 0, wxEmptyString, 3);
+        minshare = wxMin(common_start(elements[h]->name(), elements[h-1]->name()), minshare);
+      }
+
+      // insert collection title
+      wxListItem li;
+      li.SetMask(wxLIST_MASK_TEXT);
+      li.SetId(i-1+collcount);
+      li.SetFont(*wxITALIC_FONT);
+      li.SetTextColour(wxColour(*wxWHITE));
+      li.SetBackgroundColour(wxColour(*wxBLACK));
+      
+      long idx = m_listctrl->InsertItem(li);
+      m_listctrl->SetItem(idx, 0, wxEmptyString, 3);
+      collname = elements[i]->name().Left(minshare);
+      wxTrim(collname, wxT("_"));
+      m_listctrl->SetItem(idx, 1, collname, -1);
+      
+      ++collcount;
+      i = g-1; // skip over values we just put in a collection
+    }
+  }
+     
+}
 
 void ElementsCtrlBase::set_properties()
 {

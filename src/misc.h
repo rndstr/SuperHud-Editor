@@ -54,6 +54,8 @@ bool load_from_zip( char **buf, const wxString& filepath, const wxString& entryp
 
 wxString file_ext( const wxString& str );
 
+int common_start( const wxString& lhs, const wxString& rhs );
+
 /// Checks if the latest version is newer than our.
 /// @return <0 if our<latest, =0 if our=latest, >0 if our>latest.
 //int versioncheck( int major, int minor, int release, const wxString& type );

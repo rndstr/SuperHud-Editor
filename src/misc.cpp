@@ -126,6 +126,13 @@ wxString file_ext( const wxString& fp )
       fp.substr( pos+1, fp.length()-pos-1 ));
 }
 
+int common_start( const wxString& lhs, const wxString& rhs )
+{
+  size_t i=0;
+  while( lhs[i] == rhs[i] && i < lhs.size() && i < rhs.size() ) 
+    ++i;
+  return i;
+}
 
 /*
 /// Checks if the latest version is newer than our.

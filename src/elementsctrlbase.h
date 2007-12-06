@@ -19,6 +19,7 @@
 #include "hudfilebase.h"
 
 class ElementsCtrlBase: public wxPanel {
+  
 public:
     // begin wxGlade: ElementsCtrlBase::ids
     // end wxGlade

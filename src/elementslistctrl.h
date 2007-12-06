@@ -14,8 +14,10 @@ class ElementsListCtrl : public wxListCtrl
     virtual ~ElementsListCtrl() {}
 
   private:
+    void          OnItemSelected( wxListEvent& ev );
     wxImageList   m_imglist;
 
+  DECLARE_EVENT_TABLE()
 };
 
 
