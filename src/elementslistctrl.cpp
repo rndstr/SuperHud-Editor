@@ -51,10 +51,12 @@ void ElementsListCtrl::OnItemSelected( wxListEvent& ev )
             wxLogDebug(wxT(" NOPE"));
             break;
           }
+          SetItemState( id, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+          /*
           info.m_mask = wxLIST_MASK_STATE;
           info.m_state = wxLIST_STATE_SELECTED;
-          info.m_stateMask = wxLIST_STATE_SELECTED;
-          SetItem(info);
+          info.m_stateMask = wxLIST_STATE_DONTCARE|wxLIST_STATE_SELECTED;
+          SetItem(info);*/
           ++id;
         }
 
