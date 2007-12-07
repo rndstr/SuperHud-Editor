@@ -232,3 +232,4 @@ bool HudFileReader::read_properties( IHudItem *hi, const wxString& props )
   return true;
 }
 */
+
