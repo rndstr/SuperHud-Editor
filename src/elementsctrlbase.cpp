@@ -4,22 +4,81 @@
 #include "elementbase.h"
 #include "misc.h"
 
+#include "xpm/icons/predecorate_insert.xpm"
+#include "xpm/icons/postdecorate_insert.xpm"
+#include "xpm/icons/element_copy.xpm"
+#include "xpm/icons/element_paste.xpm"
+
+BEGIN_EVENT_TABLE(ElementsCtrlBase, wxPanel)
+  EVT_BUTTON(ID_BTN_COPY, ElementsCtrlBase::OnBtnCopy)
+  EVT_BUTTON(ID_BTN_PASTE, ElementsCtrlBase::OnBtnPaste)
+
+END_EVENT_TABLE()
+
 // begin wxGlade: ::extracode
 
 // end wxGlade
 
 
 
+
+
 ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long style):
     wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL)
 {
+  /* FIXMEHERE
+  m_listctrl = new ElementsListCtrl(this);
+  m_btn_copy = new wxBitmapButton(this, ID_BTN_COPY, wxBitmap(element_copy_xpm));
+  m_btn_paste = new wxBitmapButton(this, ID_BTN_PASTE, wxBitmap(element_paste_xpm));
+  */
     // begin wxGlade: ElementsCtrlBase::ElementsCtrlBase
+    m_btn_insertdefault = new wxButton(this, ID_BTN_INSERTDEFAULT, wxT("+ !DEFAULT"));
+    m_btn_insertpredecorate = new wxButton(this, ID_BTN_INSERTPREDECORATE, wxT("+ PreDecorate"));
+    m_btn_insertpostdecorate = new wxButton(this, ID_BTN_INSERTPOSTDECORATE, wxT("+ PostDecorate"));
     m_listctrl = new ElementsListCtrl(this);
+    m_btn_copy = new wxBitmapButton(this, ID_BTN_COPY, wxBitmap(element_copy_xpm));
+    m_btn_paste = new wxBitmapButton(this, ID_BTN_PASTE, wxBitmap(element_paste_xpm));
 
     set_properties();
     do_layout();
     // end wxGlade
 }
+
+    void ElementsCtrlBase::set_properties()
+{
+    // begin wxGlade: ElementsCtrlBase::set_properties
+    m_btn_insertdefault->SetToolTip(wxT("Insert a !DEFAULT element"));
+    m_btn_insertpredecorate->SetToolTip(wxT("Insert a PreDecorate element"));
+    m_btn_insertpostdecorate->SetToolTip(wxT("Insert a PostDecorate element"));
+    m_btn_copy->SetToolTip(wxT("Copy element properties"));
+    m_btn_copy->SetSize(m_btn_copy->GetBestSize());
+    m_btn_paste->SetToolTip(wxT("Paste element properties"));
+    m_btn_paste->SetSize(m_btn_paste->GetBestSize());
+    // end wxGlade
+    m_btn_paste->Disable();
+}
+
+
+void ElementsCtrlBase::do_layout()
+{
+    // begin wxGlade: ElementsCtrlBase::do_layout
+    wxBoxSizer* sizer_3 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* sizer_4 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* sizer_1 = new wxBoxSizer(wxHORIZONTAL);
+    sizer_1->Add(m_btn_insertdefault, 0, 0, 0);
+    sizer_1->Add(m_btn_insertpredecorate, 0, 0, 0);
+    sizer_1->Add(m_btn_insertpostdecorate, 0, 0, 0);
+    sizer_3->Add(sizer_1, 0, wxEXPAND, 0);
+    sizer_3->Add(m_listctrl, 1, wxEXPAND, 0);
+    sizer_4->Add(m_btn_copy, 0, 0, 0);
+    sizer_4->Add(m_btn_paste, 0, 0, 0);
+    sizer_3->Add(sizer_4, 0, wxEXPAND, 0);
+    SetSizer(sizer_3);
+    sizer_3->Fit(this);
+    // end wxGlade
+}
+
+
 
 void ElementsCtrlBase::append( ElementBase *el )
 {
@@ -88,20 +147,27 @@ void ElementsCtrlBase::list_refresh( const HudFileBase::elements_type& elements 
      
 }
 
-void ElementsCtrlBase::set_properties()
+
+void ElementsCtrlBase::OnBtnCopy( wxCommandEvent& )
 {
-    // begin wxGlade: ElementsCtrlBase::set_properties
-    // end wxGlade
+  wxLogDebug(wxT("copy"));
 }
 
-
-void ElementsCtrlBase::do_layout()
+void ElementsCtrlBase::OnBtnPaste( wxCommandEvent& )
 {
-    // begin wxGlade: ElementsCtrlBase::do_layout
-    wxBoxSizer* sizer_3 = new wxBoxSizer(wxVERTICAL);
-    sizer_3->Add(m_listctrl, 1, wxEXPAND, 0);
-    SetSizer(sizer_3);
-    sizer_3->Fit(this);
-    // end wxGlade
+  wxLogDebug(wxT("paste"));
 }
 
+void ElementsCtrlBase::OnSelectionChanged()
+{
+  if( -1 == m_listctrl->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED) )
+  { // none selected
+    m_btn_copy->Disable();
+    m_btn_paste->Disable();
+  }
+  else
+  { // there is a selection
+    m_btn_copy->Enable();
+    m_btn_paste->Disable();
+  }
+}

@@ -31,6 +31,13 @@ public:
     virtual void append( ElementBase *el );
     virtual void list_refresh( const HudFileBase::elements_type& elements );
 
+    virtual void OnSelectionChanged();
+
+    ElementsListCtrl* elementslistctrl() { return m_listctrl; }
+
+  private:
+    void OnBtnCopy( wxCommandEvent& );
+    void OnBtnPaste( wxCommandEvent& );
 
 private:
     // begin wxGlade: ElementsCtrlBase::methods
@@ -40,8 +47,18 @@ private:
 
 protected:
     // begin wxGlade: ElementsCtrlBase::attributes
+    wxButton* m_btn_insertdefault;
+    wxButton* m_btn_insertpredecorate;
+    wxButton* m_btn_insertpostdecorate;
     ElementsListCtrl* m_listctrl;
+    wxBitmapButton* m_btn_copy;
+    wxBitmapButton* m_btn_paste;
     // end wxGlade
+    /* FIXMEHERE
+    ElementsListCtrl* m_listctrl;
+    */
+
+    DECLARE_EVENT_TABLE()
 }; // wxGlade: end class
 
 

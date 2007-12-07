@@ -1,6 +1,7 @@
 #include "elementslistctrl.h"
 #include "common.h"
 #include "mainframe.h"
+#include "elementsctrlbase.h"
 
 #include <wx/sstream.h>
 #include <wx/txtstrm.h>
@@ -31,11 +32,27 @@ ElementsListCtrl::ElementsListCtrl( wxWindow *parent ) :
   InsertColumn(0, wxEmptyString, wxLIST_FORMAT_LEFT, 20);
   InsertColumn(1, _("Name"), wxLIST_FORMAT_LEFT, 200);
 }
+void ElementsListCtrl::DeselectAll()
+{
+  /*
+  long idx = -1;
+  for ( ;; )
+  {
+    idx = GetNextItem(idx, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+    if ( idx == -1 )
+        break;
+    SetItemState( id, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+    */
+}
+
+
 void ElementsListCtrl::OnSelectionChanged()
 {
+  // disable/enable copy/paste buttons
+  ((ElementsCtrlBase*)GetParent())->OnSelectionChanged();
+
   // update textcontrol
   wxTextCtrl *txt = wxGetApp().mainframe()->textpreview();
-
   wxString out;
   wxStringOutputStream sos(&out);
   wxTextOutputStream tos(sos);

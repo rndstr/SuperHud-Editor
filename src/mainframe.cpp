@@ -146,6 +146,8 @@ void MainFrame::OnMenuExit( wxCommandEvent& )
 void MainFrame::OnMenuNew( wxCommandEvent& )
 {
   wxGetApp().hudfile()->on_new();
+ // wxListEvent ev(EVT_LIST_ITEM_DESELECTED, ID_LISTCTRL_ELEMENTS);
+  //m_elementsctrl->elementslistctrl()->ProcessEvent(ev);
 }
 
 void MainFrame::OnMenuOpen( wxCommandEvent& )
