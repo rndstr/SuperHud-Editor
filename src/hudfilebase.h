@@ -17,11 +17,9 @@ class HudFileBase
     virtual ~HudFileBase() { clear(); }
 
     void set_modified( bool modified = true ) { m_modified = modified; }
-   
-
 
     /// sets up the document after user clicked File->New
-    virtual void on_new() { clear(); }
+    virtual void on_new();
 
     virtual void clear(); 
     /// adds an element
@@ -31,6 +29,18 @@ class HudFileBase
     /// 
     /// @arg wxString filename The full filename
     virtual bool load( const wxString& filename ) = 0;
+    virtual void load_default_elements() = 0;
+
+    static void write_element( wxTextOutputStream& stream, const ElementBase& el );
+
+  protected:
+    ElementBase*        find_element( const wxString& name );
+
+    /// moves an element in the list after a given other element
+    /// @arg item The item to move
+    /// @arg after Item will be removed and inserted after this (if it's 0 we insert at beginning)
+    /// @return True if successfully moved otherwise false;
+    bool                move_element_after( ElementBase *item, ElementBase *after );
 
   protected:
     elements_type       m_els;

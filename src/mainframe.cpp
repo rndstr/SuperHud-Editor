@@ -19,8 +19,9 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_MENU(wxID_EXIT, MainFrame::OnMenuExit)
   EVT_MENU(wxID_OPEN, MainFrame::OnMenuOpen)
   EVT_MENU(wxID_NEW, MainFrame::OnMenuNew)
-  EVT_MENU(IDM_GAMESELECTION, MainFrame::OnMenuGameSelection)
-  EVT_MENU(IDM_PREFERENCES, MainFrame::OnMenuPreferences)
+  EVT_MENU(ID_MENU_TOOLS_GAMESELECTION, MainFrame::OnMenuGameSelection)
+  EVT_MENU(ID_MENU_TOOLS_PREFERENCES, MainFrame::OnMenuPreferences)
+  EVT_MENU(ID_MENU_VIEW_DEFAULTPERSPECTIVE, MainFrame::OnMenuDefaultPerspective)
   EVT_CLOSE(MainFrame::OnClose)
 END_EVENT_TABLE()
 
@@ -46,13 +47,19 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   menu_bar->Append( file_menu, _("&File") );
 
   wxMenu *tools_menu = new wxMenu;
-  //tools_menu->Append( IDM_GAMESELECTION, _("&Switch game...") );
+  //tools_menu->Append( ID_MENU_TOOLS_GAMESELECTION, _("&Switch game...") );
   //tools_menu->AppendSeparator();
-  tools_menu->Append( IDM_PREFERENCES, _("&Preferences\tAlt+P") );
+  tools_menu->Append( ID_MENU_TOOLS_PREFERENCES, _("&Preferences\tAlt+P") );
   menu_bar->Append( tools_menu, _("&Tools") );
 
   wxMenu *elements_menu = new wxMenu;
   menu_bar->Append( elements_menu, _("&Elements") );
+
+  wxMenu *view_menu= new wxMenu;
+  view_menu->Append( ID_MENU_VIEW_DEFAULTPERSPECTIVE, _("Default Perspective") );
+  //view_menu->AppendSeparator();
+  //view_menu->Append( ID_MENU_VIEW_TEXTOUTPUT, _("Text output") ); // FIXME make this checkboxable
+  menu_bar->Append( view_menu, _("&View") );
 
   wxMenu *help_menu = new wxMenu;
   help_menu->Append( wxID_ABOUT, _("&About") );
@@ -76,7 +83,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   // create panes
   m_elementsctrl = wxGetApp().factory()->create_elementsctrl(this);
   m_mgr.AddPane( m_elementsctrl,
-      wxAuiPaneInfo().Name(wxT("elements")).Caption(_("Elements")).CloseButton(true).MaximizeButton(true).CloseButton(false)
+      wxAuiPaneInfo().Name(wxT("elements")).Caption(_("Elements")).MaximizeButton(true).CloseButton(false)
       );
   m_mgr.AddPane( wxGetApp().factory()->create_displayctrl(this), 
       wxAuiPaneInfo().Name(wxT("display")).Caption(_("Display")).MaximizeButton(true).
@@ -85,7 +92,13 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_mgr.AddPane(tool_bar_file, wxAuiPaneInfo().Name(wxT("tb-file")).Caption(_("File")).
 	  ToolbarPane().Top().Row(1).Position(1).LeftDockable(false).RightDockable(false)
 	  );
+  m_textpreview = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
+  m_textpreview->SetFont(wxFont(8, wxMODERN, wxNORMAL, wxNORMAL, 0, wxT("")));
+  m_mgr.AddPane( m_textpreview, wxAuiPaneInfo().Name(wxT("textoutput")).Caption(_("Text output")).
+    CloseButton(true).MaximizeButton(true)
+    );
 
+  m_defaultperspective = m_mgr.SavePerspective();
   m_mgr.LoadPerspective( Prefs::get().perspective );
 
   // default transparency hints throw assertions all over the place
@@ -153,8 +166,14 @@ void MainFrame::OnMenuOpen( wxCommandEvent& )
       );
   if( wxID_OK == (ret = dlg.ShowModal()) )
   {
+    if( wxGetApp().hudfile()->load( dlg.GetPath() ) )
+    {
+    }
+    else
+    {
+      wxLogError( _("Failed reading Hud from file `%s'"), dlg.GetPath().c_str() );
+    }
   }
-
 }
 
 MainFrame::~MainFrame()
@@ -181,3 +200,7 @@ void MainFrame::OnClose( wxCloseEvent& ev )
   ev.Skip();
 }
 
+void MainFrame::OnMenuDefaultPerspective( wxCommandEvent& )
+{
+  m_mgr.LoadPerspective( m_defaultperspective );
+}

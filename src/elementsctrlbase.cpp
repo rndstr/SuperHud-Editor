@@ -24,7 +24,7 @@ ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos,
 void ElementsCtrlBase::append( ElementBase *el )
 {
   long idx = m_listctrl->InsertItem(m_listctrl->GetItemCount(), wxEmptyString, -1);
-  m_listctrl->SetItem( idx, 1, el->name(), 1 );
+  m_listctrl->SetItem( idx, 1, el->name(), (el->is_enabled() ? E_LIST_IMG_ENABLED : E_LIST_IMG_DISABLED));
   m_listctrl->SetItemData( idx, (int)(el) );
 }
 
@@ -60,10 +60,10 @@ void ElementsCtrlBase::list_refresh( const HudFileBase::elements_type& elements 
       // items [i-1,g-1] have same 3 starting characters
       // maybe they share even more? figeur out
       int minshare = 666;
-      m_listctrl->SetItem(i-1+collcount, 0, wxEmptyString, 3);
+      m_listctrl->SetItem(i-1+collcount, 0, wxEmptyString, E_LIST_IMG_COLLITEM);
       for( size_t h=i; h <= g-1; ++h )
       {
-        m_listctrl->SetItem(h+collcount, 0, wxEmptyString, 3);
+        m_listctrl->SetItem(h+collcount, 0, wxEmptyString, E_LIST_IMG_COLLITEM);
         minshare = wxMin(common_start(elements[h]->name(), elements[h-1]->name()), minshare);
       }
 
@@ -76,7 +76,7 @@ void ElementsCtrlBase::list_refresh( const HudFileBase::elements_type& elements 
       li.SetBackgroundColour(wxColour(*wxBLACK));
       
       long idx = m_listctrl->InsertItem(li);
-      m_listctrl->SetItem(idx, 0, wxEmptyString, 3);
+      m_listctrl->SetItem(idx, 0, wxEmptyString, E_LIST_IMG_COLLTITLE);
       collname = elements[i]->name().Left(minshare);
       wxTrim(collname, wxT("_"));
       m_listctrl->SetItem(idx, 1, collname, -1);

@@ -5,6 +5,14 @@
 #include <wx/listctrl.h>
 #include <wx/imaglist.h>
 
+enum
+{
+  E_LIST_IMG_DISABLED = 0,
+  E_LIST_IMG_ENABLED = 1,
+  E_LIST_IMG_COLLTITLE = 2,
+  E_LIST_IMG_COLLITEM = 3
+};
+
 /// adapted wxListCtrl that adds behaviour 
 /// for use on hud elements list
 class ElementsListCtrl : public wxListCtrl
@@ -15,6 +23,8 @@ class ElementsListCtrl : public wxListCtrl
 
   private:
     void          OnItemSelected( wxListEvent& ev );
+    void          OnItemDeselected( wxListEvent& ev );
+    void          OnSelectionChanged();
     wxImageList   m_imglist;
 
   DECLARE_EVENT_TABLE()

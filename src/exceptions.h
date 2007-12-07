@@ -11,11 +11,18 @@ class she_exception : public std::runtime_error
     she_exception( const wxString& what ) : std::runtime_error( std::string(what.mb_str()) ) {}
 };
 
-class file_not_found : public she_exception
+class file_not_found_error : public she_exception
 {
   public:
-    file_not_found( const wxString& what ) : she_exception(what) {}
+    file_not_found_error( const wxString& what ) : she_exception(what) {}
 };
+
+class hudfile_parse_error : public she_exception
+{
+  public:
+    hudfile_parse_error( const wxString& what ) : she_exception(what) {}
+};
+
 
 #endif // __EXCEPTIONS_H__
 

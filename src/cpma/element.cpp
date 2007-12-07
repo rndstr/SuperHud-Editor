@@ -1,5 +1,7 @@
 
 #include "element.h"
+#include <list>
+using namespace std;
 
 CPMAElement::CPMAElement( const wxString& name, const wxString& desc /*=""*/, int type /*=E_T_UNKNOWN*/, 
   bool enable /*=false*/, int flags /*= E_NONE*/,
@@ -7,14 +9,9 @@ CPMAElement::CPMAElement( const wxString& name, const wxString& desc /*=""*/, in
   const wxString& text /*=""*/, 
   const wxString& icon /*=""*/, 
   const wxRect& rect /*= E_RECT_DEFAULT*/) :
-ElementBase(name),
-    m_desc(desc),
+ElementBase(name, desc, flags, has, enable),
     m_type(type),
-    m_enabled(enable),
-    m_flags(flags),
-    m_has(has),
 
-    m_rect(E_RECT_DEFAULT),
     m_font(E_FONT_DEFAULT),
     m_fontsize_type(E_FST_POINT),
     m_fontsize_pt(E_FONTSIZE_DEFAULT_POINT), m_fontsize_x(E_FONTSIZE_DEFAULT_COORDX), m_fontsize_y(E_FONTSIZE_DEFAULT_COORDY),
@@ -41,14 +38,9 @@ ElementBase(name),
 }
 
 CPMAElement::CPMAElement( const hsitem_s& def ) :
-    ElementBase(def.name),
-    m_desc(def.desc),
+    ElementBase(def.name, def.desc, def.flags, def.has, def.enable),
     m_type(def.type),
-    m_enabled(def.enable),
-    m_flags(def.flags),
-    m_has(def.has),
 
-    m_rect(E_RECT_DEFAULT),
     m_font(E_FONT_DEFAULT),
     m_fontsize_type(E_FST_POINT),
     m_fontsize_pt(E_FONTSIZE_DEFAULT_POINT), m_fontsize_x(E_FONTSIZE_DEFAULT_COORDX), m_fontsize_y(E_FONTSIZE_DEFAULT_COORDY),
@@ -72,5 +64,81 @@ CPMAElement::CPMAElement( const hsitem_s& def ) :
     m_modelfound(false),
     m_skinfound(false)
 {
+}
+
+void CPMAElement::write_properties( wxTextOutputStream& stream ) const
+{
+  ElementBase::write_properties(stream);
+
+  list<wxString> lines;
+  if( (m_has & E_HAS_FONT)  && !m_font.empty() )
+    lines.push_back( wxT("font ") + m_font );
+  if( (m_has & E_HAS_TIME) && m_time >= 0 )
+    lines.push_back(wxString::Format( wxT("time %i"), m_time ));
+  if( (m_has & E_HAS_FONTSIZE) && m_fontsize_type == E_FST_POINT )
+    lines.push_back(wxString::Format( wxT("fontsize %i"),  m_fontsize_pt));
+  if( (m_has & E_HAS_FONTSIZE) && m_fontsize_type == E_FST_COORD )
+    lines.push_back(wxString::Format( wxT("fontsize %i %i"),  m_fontsize_x, m_fontsize_y ));
+  if( m_monospace )
+    lines.push_back(wxT("monospace"));
+  if( (m_has & E_HAS_TEXTSTYLE) && m_textstyle >= 0 )
+    lines.push_back(wxString::Format( wxT("textstyle %i"), m_textstyle ));
+  if( (m_has & E_HAS_TEXTALIGN) && m_textalign != ' ' )
+    lines.push_back(wxString::Format( wxT("textalign %c"),  m_textalign));
+  if( m_has & E_HAS_COLOR )
+    //stream << wxString::Format( "\n  color %i %i %i %i", m_color.r_norm(), m_color.g_norm(), m_color.b_norm(), m_color.a_norm() );
+    lines.push_back(wxT("color ") + m_color.to_string());
+  if( m_has & E_HAS_BGCOLOR )
+    lines.push_back(wxT("bgcolor ") + m_bgcolor.to_string());
+  if( m_fill )
+    lines.push_back(wxT("fill"));
+  if( m_doublebar )
+    lines.push_back(wxT("doublebar"));
+  if( m_draw3d )
+    lines.push_back(wxT("draw3d"));
+  if( m_has & E_HAS_FADE )
+    lines.push_back(wxT("fade ") + m_fadecolor.to_string());
+  /*
+  if( m_ismodel )
+  {
+    if( m_has & E_HAS_MODEL )
+      lines.push_back(wxT("model \"") + m_model + wxT("\""));
+    if( m_has & E_HAS_SKIN )
+      lines.push_back(wxT("image \"") + m_skin + wxT("\""));
+    if( m_has & E_HAS_OFFSET )
+    {
+      wxString offset = wxT("offset ") + pretty_print_float(m_offset_x) + wxT(" ") + 
+        pretty_print_float(m_offset_y) + wxT(" ") +
+        pretty_print_float(m_offset_z);
+      lines.push_back( offset );
+    }
+    if( m_has & E_HAS_ANGLES )
+    {
+      wxString angles = wxT("angles ") + pretty_print_float(m_angles_pitch) + wxT(" ") + 
+        pretty_print_float(m_angles_yaw) + wxT(" ") +
+        pretty_print_float(m_angles_roll);
+      if( m_angles_panrot != 0.f )
+        angles += wxT(" ") + pretty_print_float(m_angles_panrot);
+      lines.push_back( angles );
+    }
+    
+  }
+  else
+  {
+    if( m_has & E_HAS_IMAGE )
+      lines.push_back(wxT("image \"") + m_image + wxT("\""));
+  }
+  */
+
+  if( m_flags & E_SHORT )
+  {
+    for( list<wxString>::const_iterator cit = lines.begin(); cit != lines.end(); ++cit )
+      stream << *cit << wxT("; ");
+  }
+  else
+  {
+    for( list<wxString>::const_iterator cit = lines.begin(); cit != lines.end(); ++cit )
+      stream << wxT("\n  ") << *cit;
+  }   
 }
 

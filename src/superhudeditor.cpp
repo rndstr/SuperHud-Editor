@@ -85,6 +85,7 @@ bool SHEApp::OnInit()
 
 int SHEApp::OnRun()
 {
+  m_hudfile->on_new();
   /*
   if( m_firststart )
   {

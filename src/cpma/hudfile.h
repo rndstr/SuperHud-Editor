@@ -3,19 +3,33 @@
 
 #include  "../hudfilebase.h"
 
+#define BACKWARD_COMPATIBILITY_142
+
+/// Used for algos trying to iterate through all PostDecorate elements.
+const wxString HF_POSTDECORATE_PREFIX = wxT("PostDecorate");
+/// Used for algos trying to iterate through all PreDecorate elements.
+const wxString HF_PREDECORATE_PREFIX = wxT("PreDecorate");
+/// maximuum number of pre and postdecorates
+const int HF_MAX_PREPOSTDECORATE = 64;
+
+#ifdef BACKWARD_COMPATIBILITY_142
+  const wxString HF_POSTDECORATE_PREFIX_142 = wxT("_PostDecorate");
+  const wxString HF_PREDECORATE_PREFIX_142 = wxT("!PreDecorate");
+#endif
+
 class CPMAHudFile : public HudFileBase
 {
   public:
     CPMAHudFile();
 
 
-    void on_new();
+    void load_default_elements();
     bool load( const wxString& filename );
 
   private:
-    
+    bool parse_item( wxString s );
 
-
+    ElementBase *m_load_prevel;
 };
 
 

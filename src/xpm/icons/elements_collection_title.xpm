@@ -1,5 +1,5 @@
 /* XPM */
-static char * elements_collection_marker_xpm[] = {
+static char * elements_collection_title_xpm[] = {
 "16 16 2 1",
 " 	c None",
 ".	c #000000",

@@ -7,13 +7,19 @@ const wxString APP_NAME = wxT("superhudeditor");
 const wxString APP_VENDOR = wxEmptyString;
 const wxString APP_CAPTION = APP_NAME;
 const wxString APP_CONFIG = wxT("superhudeditor.conf");
+const wxString BUG_MSG = wxT("Bug detected, please contact the author");
 
 enum
 {
 	ID_BTN_Q4MAX = wxID_HIGHEST+1,
 	ID_BTN_CPMA,
-  IDM_GAMESELECTION,
-  IDM_PREFERENCES,
+
+  ID_MENU_TOOLS_GAMESELECTION,
+  ID_MENU_TOOLS_PREFERENCES,
+
+  ID_MENU_VIEW_DEFAULTPERSPECTIVE,
+  ID_MENU_VIEW_TEXTOUTPUT,
+
   ID_LISTCTRL_ELEMENTS
 };
 

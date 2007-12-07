@@ -22,12 +22,14 @@ class MainFrame : public wxFrame
     void OnMenuGameSelection( wxCommandEvent& );
 
 
-    ElementsCtrlBase* elementsctrl() { return m_elementsctrl; }
+    ElementsCtrlBase*   elementsctrl() { return m_elementsctrl; }
+    wxTextCtrl*         textpreview() { return m_textpreview; }
 
   protected:
     void set_floating_hint( wxAuiManagerOption hint );
 
-    ElementsCtrlBase *m_elementsctrl;
+    ElementsCtrlBase  *m_elementsctrl;
+    wxTextCtrl        *m_textpreview;
 
   private:
 
@@ -37,9 +39,11 @@ class MainFrame : public wxFrame
     void OnMenuNew( wxCommandEvent& );
     void OnMenuOpen( wxCommandEvent& );
     void OnMenuPreferences( wxCommandEvent& );
+    void OnMenuDefaultPerspective( wxCommandEvent& );
 
   private:
     wxAuiManager m_mgr;
+    wxString     m_defaultperspective;
 
 
    DECLARE_EVENT_TABLE()

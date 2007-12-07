@@ -46,11 +46,13 @@ class CPMAHudSpecs
     typedef hsitems_type::const_iterator cit_hsitems;
     bool load();
 
-    const hsitems_type&  items() const { return m_default_items; }
-    hsitems_type&        items() { return m_default_items; }
+    const hsitems_type&   items() const { return m_items; }
+    hsitems_type&         items() { return m_items; }
+
+    const hsitem_s*       find_item( const wxString& name );
 
   protected:
-    hsitems_type  m_default_items;
+    hsitems_type          m_items;
 
   // singleton
   public:

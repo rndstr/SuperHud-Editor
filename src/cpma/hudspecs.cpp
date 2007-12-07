@@ -16,7 +16,7 @@ bool CPMAHudSpecs::load()
 {
   wxString hudspecs = Prefs::get().hudspecs;
   wxString fpath; // full hudspecs filepath
-  m_default_items.clear();
+  m_items.clear();
 
   if( hudspecs.empty() )
   { // enumerate one
@@ -88,14 +88,14 @@ bool CPMAHudSpecs::load()
     if( (pos = line.find( wxT("=") )) == wxString::npos )
     { // chcek if already one is in there with same name (and has HIF_NOTUNIQ), if so copy flags (of nearest previous one).
       wxTrim(line);
-      cit_hsitems from = m_default_items.end();
-      for( cit_hsitems cit = m_default_items.begin(); cit != m_default_items.end(); ++cit )
+      cit_hsitems from = m_items.end();
+      for( cit_hsitems cit = m_items.begin(); cit != m_items.end(); ++cit )
         if( cit->name.CmpNoCase( line ) == 0 && (cit->flags & E_NOTUNIQ) )
           from = cit;
     
-      if( from != m_default_items.end() )
+      if( from != m_items.end() )
       {
-        m_default_items.push_back( hsitem_s( *from ) );
+        m_items.push_back( hsitem_s( *from ) );
         //if( (flags & HIF_MULTDEPENDALIGN) || (flags & HIF_MULTWIDTH) || (flags & HIF_MULTHEIGHT) )   
         // ...
       }
@@ -179,7 +179,7 @@ bool CPMAHudSpecs::load()
     wxLogDebug( wxT("adding: ") + name );
     if( (flags & E_MULTDEPENDALIGN) || (flags & E_MULTWIDTH) || (flags & E_MULTHEIGHT) )
     {
-      m_default_items.push_back( hsitem_s(name, desc, flags, overwrites, enable, type, text, icon, multwidth, multheight) );
+      m_items.push_back( hsitem_s(name, desc, flags, overwrites, enable, type, text, icon, multwidth, multheight) );
     }
     else
     {
@@ -188,11 +188,21 @@ bool CPMAHudSpecs::load()
         wxLogDebug( wxT("WARNING: missing `icon' in hudspecs file: ") + name  );
       if( type == E_T_TEXT && text.empty() )
         wxLogDebug( wxT("WARNING: missing `text' in hudspecs file: ") + name  );
-      m_default_items.push_back( hsitem_s(name, desc, flags, overwrites, enable, type, text, icon) );
+      m_items.push_back( hsitem_s(name, desc, flags, overwrites, enable, type, text, icon) );
     }
   }
 
   return true;
+}
+
+const hsitem_s* CPMAHudSpecs::find_item( const wxString& name )
+{
+  for( cit_hsitems cit = m_items.begin(); cit != m_items.end(); ++cit )
+  {
+    if( cit->name.CmpNoCase(name) == 0 )
+      return &(*cit);
+  }
+  return 0;
 }
 
 CPMAHudSpecs& CPMAHudSpecs::get() 
