@@ -91,7 +91,8 @@ void ElementsCtrlBase::append( ElementBase *el )
 {
   long idx = m_listctrl->InsertItem(m_listctrl->GetItemCount(), wxEmptyString, -1);
   m_listctrl->SetItem( idx, 1, el->name(), (el->is_enabled() ? E_LIST_IMG_ENABLED : E_LIST_IMG_DISABLED));
-  m_listctrl->SetItemData( idx, (int)(el) );
+  m_listctrl->SetItemData( idx, (long)(el) );
+  wxLogDebug(wxT("%s before = %d after = %d"), el->name().c_str(), (long)el, m_listctrl->GetItemData(idx));
 }
 
 void ElementsCtrlBase::clear()
