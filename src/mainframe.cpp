@@ -94,7 +94,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
 	  );
   m_textpreview = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
   m_textpreview->SetFont(wxFont(8, wxMODERN, wxNORMAL, wxNORMAL, 0, wxT("")));
-  m_mgr.AddPane( m_textpreview, wxAuiPaneInfo().Name(wxT("textoutput")).Caption(_("Text output")).
+  m_mgr.AddPane( m_textpreview, wxAuiPaneInfo().Name(wxT("configpreview")).Caption(_("Config preview")).
     CloseButton(true).MaximizeButton(true)
     );
 
@@ -146,8 +146,7 @@ void MainFrame::OnMenuExit( wxCommandEvent& )
 void MainFrame::OnMenuNew( wxCommandEvent& )
 {
   wxGetApp().hudfile()->on_new();
- // wxListEvent ev(EVT_LIST_ITEM_DESELECTED, ID_LISTCTRL_ELEMENTS);
-  //m_elementsctrl->elementslistctrl()->ProcessEvent(ev);
+  m_elementsctrl->OnSelectionChanged();
 }
 
 void MainFrame::OnMenuOpen( wxCommandEvent& )

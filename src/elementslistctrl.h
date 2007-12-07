@@ -26,7 +26,7 @@ class ElementsListCtrl : public wxListCtrl
   private:
     void          OnItemSelected( wxListEvent& ev );
     void          OnItemDeselected( wxListEvent& ev );
-    void          OnSelectionChanged();
+    
     wxImageList   m_imglist;
 
   DECLARE_EVENT_TABLE()

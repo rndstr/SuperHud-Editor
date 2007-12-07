@@ -3,16 +3,10 @@
 #include "mainframe.h"
 #include "elementsctrlbase.h"
 
-#include <wx/sstream.h>
-#include <wx/txtstrm.h>
-
 #include "xpm/icons/element_disabled.xpm"
 #include "xpm/icons/element_enabled.xpm"
 #include "xpm/icons/elements_collection_title.xpm"
 #include "xpm/icons/elements_collection_item.xpm"
-
-#include <list>
-using namespace std;
 
 BEGIN_EVENT_TABLE(ElementsListCtrl, wxListCtrl)
   EVT_LIST_ITEM_SELECTED(ID_LISTCTRL_ELEMENTS, ElementsListCtrl::OnItemSelected)
@@ -45,7 +39,7 @@ void ElementsListCtrl::DeselectAll()
     */
 }
 
-
+/*
 void ElementsListCtrl::OnSelectionChanged()
 {
   // disable/enable copy/paste buttons
@@ -115,14 +109,16 @@ void ElementsListCtrl::OnSelectionChanged()
   
   txt->SetValue(out);
 }
+*/
+
 void ElementsListCtrl::OnItemDeselected( wxListEvent& ev )
 {
-  OnSelectionChanged();
+  ((ElementsCtrlBase*)GetParent())->OnSelectionChanged();
 }
 
 void ElementsListCtrl::OnItemSelected( wxListEvent& ev )
 {
-  OnSelectionChanged();
+  ((ElementsCtrlBase*)GetParent())->OnSelectionChanged();
   
   /*
   wxLogDebug(wxT("SEL"));

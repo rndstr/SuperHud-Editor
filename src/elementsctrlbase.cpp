@@ -3,6 +3,13 @@
 #include "elementsctrlbase.h"
 #include "elementbase.h"
 #include "misc.h"
+#include "mainframe.h"
+
+#include <wx/sstream.h>
+#include <wx/txtstrm.h>
+
+#include <list>
+using namespace std;
 
 #include "xpm/icons/predecorate_insert.xpm"
 #include "xpm/icons/postdecorate_insert.xpm"
@@ -160,6 +167,7 @@ void ElementsCtrlBase::OnBtnPaste( wxCommandEvent& )
 
 void ElementsCtrlBase::OnSelectionChanged()
 {
+  // disable/enable copy/paste buttons
   if( -1 == m_listctrl->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED) )
   { // none selected
     m_btn_copy->Disable();
@@ -170,4 +178,70 @@ void ElementsCtrlBase::OnSelectionChanged()
     m_btn_copy->Enable();
     m_btn_paste->Disable();
   }
+  
+
+  // update textcontrol
+  //wxTextCtrl *txt = wxGetApp().mainframe()->textpreview();
+  wxTextCtrl *txt = ((MainFrame*)GetParent())->textpreview();
+  wxString out;
+  wxStringOutputStream sos(&out);
+  wxTextOutputStream tos(sos);
+  // get all selected
+  long idx = -1;
+  list<int> print; // stores all indecies that should be printed
+  wxListItem info;
+  for ( ;; )
+  {
+    idx = m_listctrl->GetNextItem(idx, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+    if ( idx == -1 )
+        break;
+    // this item is selected
+    info.m_mask = wxLIST_MASK_DATA|wxLIST_MASK_TEXT;
+    info.m_col = 1;
+    info.m_itemId = idx;
+    if( m_listctrl->GetItem(info) )
+    {
+      if( info.GetData() )
+      { // a real element
+        print.push_back(idx);
+        
+        
+      }
+      else
+      { // collection item, get all following items with same text
+        wxString collname = info.GetText();
+        int i = idx+1;
+        while( i < m_listctrl->GetItemCount() )
+        {
+          info.m_mask = wxLIST_MASK_TEXT|wxLIST_MASK_DATA;
+          info.m_col = 1;
+          info.m_itemId = i;
+          if( !m_listctrl->GetItem(info) )
+            break;
+          if( info.GetText().StartsWith(collname) )
+            print.push_back(i);
+          else
+            break;
+          ++i;
+        }
+      }
+    }
+  }
+  print.sort();
+  print.unique();
+  for( list<int>::iterator it = print.begin(); it != print.end(); ++it )
+  {
+    info.m_mask = wxLIST_MASK_TEXT|wxLIST_MASK_DATA;
+    info.m_col = 1;
+    info.m_itemId = *it;
+    if( m_listctrl->GetItem(info) )
+    {
+      ElementBase *el = (ElementBase*)info.GetData();
+      HudFileBase::write_element(tos, *el);
+    }
+    else
+      tos << wxT("\n# ERROR: failed retrieving iteminfo `") << info.GetText() << wxT("'\n");
+  }
+  
+  txt->SetValue(out);
 }
