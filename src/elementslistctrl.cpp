@@ -45,7 +45,7 @@ void ElementsListCtrl::OnItemSelected( wxListEvent& ev )
           info.m_col = 1;
           info.m_itemId = id;
           GetItem(info);
-          wxLogDebug(wxT("checking %s (%s)"), info.GetText(), collname);
+          wxLogDebug(wxT("checking %s (%s)"), info.GetText().c_str(), collname.c_str());
           if( !info.GetText().StartsWith(collname) )
           {
             wxLogDebug(wxT(" NOPE"));

@@ -152,3 +152,4 @@ int versioncheck( int major, int minor, int release, const wxString& type )
   return APP_RELEASE_TYPE.CmpNoCase(type);
 }
 */
+

@@ -9,7 +9,7 @@ superhudeditor_SOURCES = \
                          displayctrlbase.h \
                          misc.cpp misc.h \
                          prefs.cpp prefs.h \
-                         elementslistctrl.h \
+                         elementslistctrl.cpp elementslistctrl.h \
                          elementsctrlbase.cpp elementsctrlbase.h \
                          hudfilebase.cpp hudfilebase.h \
                          elementbase.cpp elementbase.h \
