@@ -29,11 +29,13 @@ ElementsListCtrl::ElementsListCtrl( wxWindow *parent ) :
 
 void ElementsListCtrl::OnItemDeselected( wxListEvent& ev )
 {
+  wxLogDebug(wxT("EVT_LIST_ITEM_DESELECTED"));
   ((ElementsCtrlBase*)GetParent())->OnSelectionChanged();
 }
 
 void ElementsListCtrl::OnItemSelected( wxListEvent& ev )
 {
+  wxLogDebug(wxT("EVT_LIST_ITEM_SELECTED"));
   ((ElementsCtrlBase*)GetParent())->OnSelectionChanged();
 }
 
