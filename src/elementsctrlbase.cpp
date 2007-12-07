@@ -235,15 +235,9 @@ void ElementsCtrlBase::OnSelectionChanged()
     info.m_itemId = *it;
     if( m_listctrl->GetItem(info) )
     {
-<<<<<<< .mine
-      wxLogDebug(wxT("%s = %d"), info.GetText().c_str(), info.GetData());
-//      ElementBase *el = reinterpret_cast<ElementBase*>(info.GetData());
-//      HudFileBase::write_element(tos, *el);
-=======
-      wxLogDebug(wxT("listelement data `%s' = %d"), info.GetText(), info.GetData());
+      wxLogDebug(wxT("listelement data `%s' = %d"), info.GetText().c_str(), info.GetData());
       //ElementBase *el = reinterpret_cast<ElementBase*>(info.GetData());
       //HudFileBase::write_element(tos, *el);
->>>>>>> .r391
     }
     else
       tos << wxT("\n# ERROR: failed retrieving iteminfo `") << info.GetText() << wxT("'\n");
