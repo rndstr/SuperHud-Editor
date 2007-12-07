@@ -235,7 +235,7 @@ void ElementsCtrlBase::OnSelectionChanged()
     info.m_itemId = *it;
     if( m_listctrl->GetItem(info) )
     {
-      wxLogDebug(wxT("%s = %l"), info.GetText(), info.GetData());
+      wxLogDebug(wxT("%s = %d"), info.GetText(), info.GetData());
       ElementBase *el = (ElementBase*)info.GetData();
       HudFileBase::write_element(tos, *el);
     }
