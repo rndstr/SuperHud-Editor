@@ -21,8 +21,6 @@ class ElementsListCtrl : public wxListCtrl
     ElementsListCtrl( wxWindow *parent );
     virtual ~ElementsListCtrl() {}
 
-    void          DeselectAll();
-
   private:
     void          OnItemSelected( wxListEvent& ev );
     void          OnItemDeselected( wxListEvent& ev );

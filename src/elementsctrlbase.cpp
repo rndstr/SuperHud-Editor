@@ -146,6 +146,7 @@ void ElementsCtrlBase::list_refresh( const HudFileBase::elements_type& elements 
       collname = elements[i]->name().Left(minshare);
       wxTrim(collname, wxT("_"));
       m_listctrl->SetItem(idx, 1, collname, -1);
+      m_listctrl->SetItemData(idx, 0);
       
       ++collcount;
       i = g-1; // skip over values we just put in a collection
@@ -204,8 +205,6 @@ void ElementsCtrlBase::OnSelectionChanged()
       if( info.GetData() )
       { // a real element
         print.push_back(idx);
-        
-        
       }
       else
       { // collection item, get all following items with same text
@@ -236,6 +235,7 @@ void ElementsCtrlBase::OnSelectionChanged()
     info.m_itemId = *it;
     if( m_listctrl->GetItem(info) )
     {
+      wxLogDebug(wxT("%s = %l"), info.GetText(), info.GetData());
       ElementBase *el = (ElementBase*)info.GetData();
       HudFileBase::write_element(tos, *el);
     }
