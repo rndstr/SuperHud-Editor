@@ -198,7 +198,9 @@ void ElementsCtrlBase::OnSelectionChanged()
     if ( idx == -1 )
         break;
     // this item is selected
-    info.m_mask = wxLIST_MASK_DATA|wxLIST_MASK_TEXT;
+    // NOTE that wxLIST_MASK_DATA| retrieval does not work on wxGTK!
+    // use GetItemData(idx)
+    info.m_mask = wxLIST_MASK_TEXT;
     info.m_col = 1;
     info.m_itemId = idx;
     if( m_listctrl->GetItem(info) )
@@ -232,15 +234,15 @@ void ElementsCtrlBase::OnSelectionChanged()
   print.unique();
   for( list<int>::iterator it = print.begin(); it != print.end(); ++it )
   {
-    info.m_mask = wxLIST_MASK_TEXT|wxLIST_MASK_DATA;
+    info.m_mask = wxLIST_MASK_TEXT;
     info.m_col = 1;
     info.m_itemId = *it;
-    if( m_listctrl->GetItem(info) )
+    if( m_listctrl->GetItem(info) && m_listctrl->GetItemData(*it) )
     {
-      wxLogDebug(wxT("listelement data `%s' = %d"), info.GetText().c_str(), info.GetData());
-      wxLogDebug(wxT("1listelement data `%s' = %d"), info.GetText().c_str(), m_listctrl->GetItemData(*it));
-      //ElementBase *el = reinterpret_cast<ElementBase*>(info.GetData());
-      //HudFileBase::write_element(tos, *el);
+      //wxLogDebug(wxT("listelement data `%s' = %d"), info.GetText().c_str(), info.GetData());
+      //wxLogDebug(wxT("1listelement data `%s' = %d"), info.GetText().c_str(), m_listctrl->GetItemData(*it));
+      ElementBase *el = reinterpret_cast<ElementBase*>(m_listctrl->GetItemData(*it));
+      HudFileBase::write_element(tos, *el);
     }
     else
       tos << wxT("\n# ERROR: failed retrieving iteminfo `") << info.GetText() << wxT("'\n");
