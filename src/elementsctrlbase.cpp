@@ -203,7 +203,8 @@ void ElementsCtrlBase::OnSelectionChanged()
     info.m_itemId = idx;
     if( m_listctrl->GetItem(info) )
     {
-      if( info.GetData() )
+      //if( info.GetData() )
+      if( m_listctrl->GetItemData(idx) )
       { // a real element
         print.push_back(idx);
       }
@@ -213,7 +214,7 @@ void ElementsCtrlBase::OnSelectionChanged()
         int i = idx+1;
         while( i < m_listctrl->GetItemCount() )
         {
-          info.m_mask = wxLIST_MASK_TEXT|wxLIST_MASK_DATA;
+          info.m_mask = wxLIST_MASK_TEXT;
           info.m_col = 1;
           info.m_itemId = i;
           if( !m_listctrl->GetItem(info) )
@@ -237,6 +238,7 @@ void ElementsCtrlBase::OnSelectionChanged()
     if( m_listctrl->GetItem(info) )
     {
       wxLogDebug(wxT("listelement data `%s' = %d"), info.GetText().c_str(), info.GetData());
+      wxLogDebug(wxT("1listelement data `%s' = %d"), info.GetText().c_str(), m_listctrl->GetItemData(*it));
       //ElementBase *el = reinterpret_cast<ElementBase*>(info.GetData());
       //HudFileBase::write_element(tos, *el);
     }
