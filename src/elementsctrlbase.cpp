@@ -43,8 +43,8 @@ ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos,
     m_btn_insertpredecorate = new wxButton(this, ID_BTN_INSERTPREDECORATE, wxT("+ PreDecorate"));
     m_btn_insertpostdecorate = new wxButton(this, ID_BTN_INSERTPOSTDECORATE, wxT("+ PostDecorate"));
     m_listctrl = new ElementsListCtrl(this);
-    m_btn_copy = new wxBitmapButton(this, ID_BTN_COPY, wxBitmap(element_copy_xpm));
-    m_btn_paste = new wxBitmapButton(this, ID_BTN_PASTE, wxBitmap(element_paste_xpm));
+  m_btn_copy = new wxBitmapButton(this, ID_BTN_COPY, wxBitmap(element_copy_xpm));
+  m_btn_paste = new wxBitmapButton(this, ID_BTN_PASTE, wxBitmap(element_paste_xpm));
 
     set_properties();
     do_layout();
@@ -92,7 +92,6 @@ void ElementsCtrlBase::append( ElementBase *el )
   long idx = m_listctrl->InsertItem(m_listctrl->GetItemCount(), wxEmptyString, -1);
   m_listctrl->SetItem( idx, 1, el->name(), (el->is_enabled() ? E_LIST_IMG_ENABLED : E_LIST_IMG_DISABLED));
   m_listctrl->SetItemData( idx, (long)(el) );
-  wxLogDebug(wxT("%s before = %d after = %d"), el->name().c_str(), (long)el, m_listctrl->GetItemData(idx));
 }
 
 void ElementsCtrlBase::clear()
@@ -167,30 +166,10 @@ void ElementsCtrlBase::OnBtnPaste( wxCommandEvent& )
   wxLogDebug(wxT("paste"));
 }
 
-void ElementsCtrlBase::OnSelectionChanged()
+ElementsCtrlBase::indecies_type ElementsCtrlBase::get_selection() const
 {
-  // disable/enable copy/paste buttons
-  if( -1 == m_listctrl->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED) )
-  { // none selected
-    m_btn_copy->Disable();
-    m_btn_paste->Disable();
-  }
-  else
-  { // there is a selection
-    m_btn_copy->Enable();
-    m_btn_paste->Disable();
-  }
-  
-
-  // update textcontrol
-  //wxTextCtrl *txt = wxGetApp().mainframe()->textpreview();
-  wxTextCtrl *txt = ((MainFrame*)GetParent())->textpreview();
-  wxString out;
-  wxStringOutputStream sos(&out);
-  wxTextOutputStream tos(sos);
-  // get all selected
+  indecies_type sels;
   long idx = -1;
-  list<int> print; // stores all indecies that should be printed
   wxListItem info;
   for ( ;; )
   {
@@ -208,7 +187,7 @@ void ElementsCtrlBase::OnSelectionChanged()
       //if( info.GetData() )
       if( m_listctrl->GetItemData(idx) )
       { // a real element
-        print.push_back(idx);
+        sels.push_back(idx);
       }
       else
       { // collection item, get all following items with same text
@@ -222,7 +201,7 @@ void ElementsCtrlBase::OnSelectionChanged()
           if( !m_listctrl->GetItem(info) )
             break;
           if( info.GetText().StartsWith(collname) )
-            print.push_back(i);
+            sels.push_back(i);
           else
             break;
           ++i;
@@ -230,8 +209,36 @@ void ElementsCtrlBase::OnSelectionChanged()
       }
     }
   }
-  print.sort();
-  print.unique();
+  sels.sort();
+  sels.unique();
+  return sels;
+}
+
+void ElementsCtrlBase::OnSelectionChanged()
+{
+  // disable/enable copy/paste buttons
+  if( -1 == m_listctrl->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED) )
+  { // none selected
+    m_btn_copy->Disable();
+    m_btn_paste->Disable();
+  }
+  else
+  { // there is a selection
+    m_btn_copy->Enable();
+    m_btn_paste->Disable();
+  }
+  
+
+  // update textcontrol
+  //wxTextCtrl *txt = wxGetApp().mainframe()->textpreview();
+  wxTextCtrl *txt = ((MainFrame*)GetParent())->configpreview();
+  wxString out;
+  wxStringOutputStream sos(&out);
+  wxTextOutputStream tos(sos);
+  // get all selected
+  wxListItem info;
+  indecies_type print = get_selection();
+  HudFileBase *hf = wxGetApp().hudfile();
   for( list<int>::iterator it = print.begin(); it != print.end(); ++it )
   {
     info.m_mask = wxLIST_MASK_TEXT;
@@ -242,7 +249,7 @@ void ElementsCtrlBase::OnSelectionChanged()
       //wxLogDebug(wxT("listelement data `%s' = %d"), info.GetText().c_str(), info.GetData());
       //wxLogDebug(wxT("1listelement data `%s' = %d"), info.GetText().c_str(), m_listctrl->GetItemData(*it));
       ElementBase *el = reinterpret_cast<ElementBase*>(m_listctrl->GetItemData(*it));
-      HudFileBase::write_element(tos, *el);
+      hf->write_element(tos, *el);
     }
     else
       tos << wxT("\n# ERROR: failed retrieving iteminfo `") << info.GetText() << wxT("'\n");

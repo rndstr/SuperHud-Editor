@@ -1,5 +1,8 @@
 
 #include "element.h"
+
+#include <wx/tokenzr.h>
+
 #include <list>
 using namespace std;
 
@@ -65,6 +68,186 @@ CPMAElement::CPMAElement( const hsitem_s& def ) :
     m_skinfound(false)
 {
 }
+
+
+
+bool CPMAElement::parse_property( const wxString& cmd, wxString args )
+{ 
+  // let parent check on the property
+  if (ElementBase::parse_property( cmd, args ))
+    return true;
+
+  //m_has = E_PROPERTIES_DEFAULT;
+
+  if( cmd.CmpNoCase(wxT("doublebar")) == 0 )
+  {
+    if( m_type != E_T_BAR )
+      wxLogWarning( _T("Found command `doublebar' which the element `%s' does not support."), m_name.c_str() );
+    else
+    {
+      m_doublebar = true;
+      m_has |= E_HAS_DOUBLEBAR;
+    }
+  }
+  else if( cmd.CmpNoCase(wxT("font")) == 0 )
+  {
+    m_font = args;
+    m_has |= E_HAS_FONT;
+  }
+  else if( cmd.CmpNoCase(wxT("fontsize")) == 0 )
+  {
+    wxStringTokenizer targ( args, HF_PROPERTY_ARG_DELIM );
+    switch( targ.CountTokens() )
+    {
+    case 1:
+      if( 1 != sscanf( targ.GetNextToken().mb_str(), "%i", &m_fontsize_pt ) )
+      {
+        wxLogWarning( _("Unknown `fontsize' argument in element `%s', should be one (pointsize) or two (xy-size) numbers. (defaultvalues set)"), m_name.c_str() );
+        m_fontsize_pt = E_FONTSIZE_DEFAULT_POINT;
+      }
+      m_fontsize_x = E_FONTSIZE_NONE;
+      m_fontsize_y = E_FONTSIZE_NONE;
+      m_fontsize_type = E_FST_POINT;
+      m_has |= E_HAS_FONTSIZE;
+      break;
+
+    case 2:
+      if( 1 != sscanf( targ.GetNextToken().mb_str(), "%i", &m_fontsize_x ) ||
+        1 !=sscanf( targ.GetNextToken().mb_str(), "%i", &m_fontsize_y ) )
+      {
+        wxLogWarning( _("Unknown `fontsize' argument in element `%s', should be one (pointsize) or two (xy-size) numbers. (defaultvalues set)"), m_name.c_str() );
+        m_fontsize_x = E_FONTSIZE_DEFAULT_COORDX;
+        m_fontsize_y = E_FONTSIZE_DEFAULT_COORDY;
+      }
+      m_fontsize_pt = E_FONTSIZE_NONE;
+      m_fontsize_type = E_FST_COORD;
+      m_has |= E_HAS_FONTSIZE;
+      break;
+
+    default:
+      wxLogWarning( _("Unknown `fontsize' argument in element `%s', should be one (pointsize) or two (xy-size) numbers. (ignored)"), m_name.c_str() );
+      break;
+    }  
+  }
+  else if( cmd.CmpNoCase(wxT("color"))==0 )
+  {
+    if( !m_color.from_string( args ) )
+      wxLogWarning( _("Unknown `%s' argument: %s"), "color", args.c_str() );
+    m_has |= E_HAS_COLOR;
+  }
+  else if( cmd.CmpNoCase(wxT("bgcolor"))==0 )
+  {
+    if( !m_bgcolor.from_string( args ) )
+      wxLogWarning( _("Unknown `%s' argument: %s"), "bgcolor", args.c_str() );
+    m_has |= E_HAS_BGCOLOR;
+  }
+  else if( cmd.CmpNoCase(wxT("fade"))==0 )
+  {
+    if( !m_fadecolor.from_string( args ) )
+      wxLogWarning( _("Unknown `%s' argument: %s"), "fade", args.c_str() );
+    m_has |= E_HAS_FADE;
+  }
+  else if( cmd.CmpNoCase(wxT("time"))==0 )
+  {
+    sscanf( args.mb_str(), "%i", &m_time );
+    m_has |= E_HAS_TIME;
+  }
+  else if( cmd.CmpNoCase(wxT("textalign"))==0 )
+  {
+    sscanf( args.mb_str(), "%c", &m_textalign );
+    m_textalign = toupper( m_textalign );
+    if( m_textalign != 'C' && m_textalign != 'L' && m_textalign != 'R')
+    {
+      wxLogWarning( _("Unknown `%c' argument: %s"), "textalign", m_textalign );
+      m_textalign = 'L';
+    }
+    m_has |= E_HAS_TEXTALIGN;
+  }
+  else if( cmd.CmpNoCase(wxT("textstyle"))==0 )
+  {
+    m_has |= E_HAS_TEXTSTYLE;
+  }
+  else if( cmd.CmpNoCase(wxT("monospace"))==0 )
+  {
+    m_monospace = true;
+    m_has |= E_HAS_MONOSPACE;
+  }
+  else if( cmd.CmpNoCase(wxT("fill"))==0 )
+  {
+    m_fill = true;
+    m_has |= E_HAS_FILL;
+  }
+  else if( cmd.CmpNoCase(wxT("draw3d"))==0 )
+  {
+    m_draw3d = true;
+    m_has |= E_HAS_DRAW3D;
+  }
+  else if( cmd.CmpNoCase(wxT("image"))==0 )
+  {
+    m_image = args;
+    wxTrim(m_image, wxT("\"'"));
+    m_has |= E_HAS_IMAGE;
+  }
+  else if( cmd.CmpNoCase(wxT("model"))==0 )
+  {
+    m_model = args;
+    if( m_type == E_T_ICON )
+    { // model implies draw3d (and there is no model drawn, see hudspecs/README.superhud)
+      m_draw3d = true;
+      m_has |= E_HAS_DRAW3D;
+      m_model = wxT("");
+    }
+    else
+    {
+      wxTrim(m_model, wxT("\"'"));
+      m_has |= E_HAS_MODEL;
+    }
+  }
+  else if( cmd.CmpNoCase(wxT("offset"))==0 )
+  {
+    wxStringTokenizer targ( args, HF_PROPERTY_ARG_DELIM );
+    if( targ.CountTokens() != 3 ||
+        1 != sscanf(targ.GetNextToken().mb_str(), "%f", &m_offset_x) ||
+        1 != sscanf(targ.GetNextToken().mb_str(), "%f", &m_offset_y) ||
+        1 != sscanf(targ.GetNextToken().mb_str(), "%f", &m_offset_z)
+        )
+      wxLogWarning( _("Unknown `offset' argument in element `%s', should be three numbers (z x y). (ignored)"), m_name.c_str() );
+    m_has |= E_HAS_OFFSET;
+  }
+  else if( cmd.CmpNoCase(wxT("angles"))==0 )
+  {
+    wxStringTokenizer targ( args, HF_PROPERTY_ARG_DELIM );
+    float pitch = 0.f, yaw = 0.f, roll = 0.f, panrot = 0.f;
+    if( targ.CountTokens() != 3 && targ.CountTokens() != 4 )
+    {
+      wxLogWarning( _("Unknown `angles' argument in element `%s', should be three numbers (z x y). (ignored)"), m_name.c_str() );
+    }
+    else if (
+        1 != sscanf(targ.GetNextToken().mb_str(), "%f", &pitch) ||
+        1 != sscanf(targ.GetNextToken().mb_str(), "%f", &yaw) ||
+        1 != sscanf(targ.GetNextToken().mb_str(), "%f", &roll)
+        )
+    {
+      wxLogWarning( _("Unknown `angles' argument in element `%s', should be three numbers (z x y). (ignored)"), m_name.c_str() );
+    }
+    else if( targ.CountTokens() == 1 )
+      sscanf(targ.GetNextToken().mb_str(), "%f", &panrot); // optional
+    m_angles_pitch = static_cast<int>(pitch);
+    m_angles_yaw = static_cast<int>(yaw);
+    m_angles_roll = static_cast<int>(roll);
+    m_angles_panrot = static_cast<int>(panrot);
+
+      
+    m_has |= E_HAS_ANGLES;
+  }
+  else
+  {
+    return false; // not found
+  }
+
+  return true;
+}
+
 
 void CPMAElement::write_properties( wxTextOutputStream& stream ) const
 {

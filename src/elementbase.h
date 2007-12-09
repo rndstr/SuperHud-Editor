@@ -61,6 +61,12 @@ typedef enum {
 const wxRect E_RECT_DEFAULT = wxRect( 0, 0, 64, 32 ); // (0,0) verified 1.35
 /// @}
 
+/// posible argument delimiters found in the hudfile.
+/// NOTE: this meaning here changed... we 'fix' the delimiters 
+/// (which can be ' ' or ',' previously) so while parsing we only
+/// have single-space as delimiter.
+const wxString HF_PROPERTY_ARG_DELIM = wxT(" ");
+
 class ElementBase
 {
   public:
@@ -70,7 +76,12 @@ class ElementBase
     {}
     virtual ~ElementBase() {}
 
-    virtual void write_properties( wxTextOutputStream& stream ) const;
+    /// while reading the hudfile we pass single properties here.
+    /// @arg cmd The name of the property.
+    /// @arg args The rest of the propertyline, the arguments.
+    /// @return True if the property was parsed otherwise false.
+    virtual bool    parse_property( const wxString& cmd, wxString args );
+    virtual void    write_properties( wxTextOutputStream& stream ) const;
 
     // get&set
     const wxString& name() const { return m_name; }

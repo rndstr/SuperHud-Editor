@@ -24,7 +24,8 @@ struct hsitem_s
     icon(i),
     multwidth(mw),
     multheight(mh)
-    {}
+    {
+    }
 
   wxString name;
   wxString desc;

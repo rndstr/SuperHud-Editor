@@ -17,10 +17,16 @@
 #include "elementslistctrl.h"
 #include "elementbase.h"
 #include "hudfilebase.h"
+#include <list>
 
-class ElementsCtrlBase: public wxPanel {
-  
-public:
+class ElementsCtrlBase: public wxPanel
+{
+  public:
+    typedef std::list<int>  indecies_type;
+    typedef indecies_type::iterator it_indecies;
+    typedef indecies_type::const_iterator cit_indecies;
+
+  public:
     // begin wxGlade: ElementsCtrlBase::ids
     // end wxGlade
 
@@ -32,8 +38,11 @@ public:
     virtual void list_refresh( const HudFileBase::elements_type& elements );
 
     virtual void OnSelectionChanged();
+    //virtual void OnMouseDClick( wxMouseEvent& ev );
 
     ElementsListCtrl* elementslistctrl() { return m_listctrl; }
+
+    indecies_type get_selection() const;
 
   private:
     void OnBtnCopy( wxCommandEvent& );

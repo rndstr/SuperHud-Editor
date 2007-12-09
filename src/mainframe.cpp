@@ -4,6 +4,7 @@
 #include <wx/artprov.h>
 #include <wx/menu.h>
 #include <wx/stdpaths.h>
+#include <wx/file.h>
 
 #include "common.h"
 #include "GameSelectionDialog.h"
@@ -17,12 +18,15 @@ DECLARE_APP(SHEApp);
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_MENU(wxID_EXIT, MainFrame::OnMenuExit)
+  EVT_MENU(wxID_SAVE, MainFrame::OnMenuSave)
+  EVT_MENU(wxID_SAVEAS, MainFrame::OnMenuSaveAs)
   EVT_MENU(wxID_OPEN, MainFrame::OnMenuOpen)
   EVT_MENU(wxID_NEW, MainFrame::OnMenuNew)
   EVT_MENU(ID_MENU_TOOLS_GAMESELECTION, MainFrame::OnMenuGameSelection)
   EVT_MENU(ID_MENU_TOOLS_PREFERENCES, MainFrame::OnMenuPreferences)
   EVT_MENU(ID_MENU_VIEW_DEFAULTPERSPECTIVE, MainFrame::OnMenuDefaultPerspective)
   EVT_CLOSE(MainFrame::OnClose)
+  EVT_MENU(ID_MENU_VIEW_CONFIGPREVIEW, MainFrame::OnMenuConfigPreview)
 END_EVENT_TABLE()
 
 
@@ -41,7 +45,10 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
 
   wxMenu *file_menu = new wxMenu;
   file_menu->Append( wxID_NEW, _("&New\tCtrl+N") );
-  file_menu->Append( wxID_OPEN, _("&Open\tCtrl+O") );
+  file_menu->Append( wxID_OPEN, _("&Open...\tCtrl+O") );
+  file_menu->AppendSeparator();
+  file_menu->Append( wxID_SAVE, _("&Save\tCtrl+S") );
+  file_menu->Append( wxID_SAVEAS, _("Save &As...\tCtrl+Shift+S") );
   file_menu->AppendSeparator();
   file_menu->Append( wxID_EXIT, _("E&xit\tCtrl+Q") );
   menu_bar->Append( file_menu, _("&File") );
@@ -55,11 +62,11 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   wxMenu *elements_menu = new wxMenu;
   menu_bar->Append( elements_menu, _("&Elements") );
 
-  wxMenu *view_menu= new wxMenu;
-  view_menu->Append( ID_MENU_VIEW_DEFAULTPERSPECTIVE, _("Default Perspective") );
-  //view_menu->AppendSeparator();
-  //view_menu->Append( ID_MENU_VIEW_TEXTOUTPUT, _("Text output") ); // FIXME make this checkboxable
-  menu_bar->Append( view_menu, _("&View") );
+  m_view_menu= new wxMenu;
+  m_view_menu->Append( ID_MENU_VIEW_DEFAULTPERSPECTIVE, _("&Reset View") );
+  m_view_menu->AppendSeparator();
+  m_view_menu->AppendCheckItem( ID_MENU_VIEW_CONFIGPREVIEW, _("[FIXME}Config Preview"), _("Display the Config Preview panel") );
+  menu_bar->Append( m_view_menu, _("&View") );
 
   wxMenu *help_menu = new wxMenu;
   help_menu->Append( wxID_ABOUT, _("&About") );
@@ -75,7 +82,9 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   wxToolBar *tool_bar_file = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
   tool_bar_file->SetToolBitmapSize(wxSize(16,16));
   tool_bar_file->AddTool( wxID_NEW, _("New"), wxArtProvider::GetBitmap(wxART_NEW_DIR, wxART_TOOLBAR, wxSize(16,16)) );
-  tool_bar_file->AddTool( wxID_OPEN, _("Open"), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, wxSize(16,16)) );
+  tool_bar_file->AddTool( wxID_OPEN, _("Open..."), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, wxSize(16,16)) );
+  tool_bar_file->AddTool( wxID_SAVE, _("Save"), wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR, wxSize(16,16)) );
+  tool_bar_file->AddTool( wxID_SAVEAS, _("Save As..."), wxArtProvider::GetBitmap(wxART_FILE_SAVE_AS, wxART_TOOLBAR, wxSize(16,16)) );
   tool_bar_file->Realize();
  
 
@@ -92,14 +101,15 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_mgr.AddPane(tool_bar_file, wxAuiPaneInfo().Name(wxT("tb-file")).Caption(_("File")).
 	  ToolbarPane().Top().Row(1).Position(1).LeftDockable(false).RightDockable(false)
 	  );
-  m_textpreview = new wxTextCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
-  m_textpreview->SetFont(wxFont(8, wxMODERN, wxNORMAL, wxNORMAL, 0, wxT("")));
-  m_mgr.AddPane( m_textpreview, wxAuiPaneInfo().Name(wxT("configpreview")).Caption(_("Config preview")).
+  m_configpreview = new wxTextCtrl(this, ID_TEXTCTRL_CONFIGPREVIEW, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
+  m_configpreview->SetFont(wxFont(8, wxMODERN, wxNORMAL, wxNORMAL, 0, wxT("")));
+  m_mgr.AddPane( m_configpreview, wxAuiPaneInfo().Name(wxT("configpreview")).Caption(_("Config preview")).
     CloseButton(true).MaximizeButton(true)
     );
 
   m_defaultperspective = m_mgr.SavePerspective();
   m_mgr.LoadPerspective( Prefs::get().perspective );
+  m_view_menu->Check( ID_MENU_VIEW_CONFIGPREVIEW, m_configpreview->IsShown() );
 
   // default transparency hints throw assertions all over the place
   // on linux
@@ -146,6 +156,7 @@ void MainFrame::OnMenuExit( wxCommandEvent& )
 void MainFrame::OnMenuNew( wxCommandEvent& )
 {
   wxGetApp().hudfile()->on_new();
+  update_title();
   m_elementsctrl->OnSelectionChanged();
 }
 
@@ -167,15 +178,82 @@ void MainFrame::OnMenuOpen( wxCommandEvent& )
       );
   if( wxID_OK == (ret = dlg.ShowModal()) )
   {
+    wxBeginBusyCursor();
     if( wxGetApp().hudfile()->load( dlg.GetPath() ) )
     {
     }
     else
-    {
       wxLogError( _("Failed reading Hud from file `%s'"), dlg.GetPath().c_str() );
-    }
+    update_title();
+    wxEndBusyCursor();
+    m_elementsctrl->OnSelectionChanged();
   }
 }
+
+void MainFrame::OnMenuSave( wxCommandEvent& )
+{
+  wxString filename = wxGetApp().hudfile()->filename();
+  if( filename.empty() )
+  {
+    int ret = wxID_OK;
+    wxFileDialog dlg(
+        this,
+        _("Save..."),
+        wxT(""),
+        wxT(""),
+        wxT("Hud Files (*.cfg)|*.cfg|All Files (*.*)|*.*"),
+  #if wxCHECK_VERSION(2,7,0)
+        wxFD_SAVE | wxFD_OVERWRITE_PROMPT
+  #else // 2.6
+        wxSAVE|wxOVERWRITE_PROMPT
+  #endif
+        );
+    if( wxID_OK == (ret = dlg.ShowModal()) )
+      filename = dlg.GetPath();
+  }
+  if( filename.empty() )
+    return; // user clicked cancel
+
+  if( Prefs::get().save_backup && wxFile::Exists(filename)  )
+  {
+    wxString target = filename + wxT(".bak");
+    if( !wxCopyFile( filename, target, true ) )
+      wxLogError( _("Failed creating backup file: %s"), target.c_str() );
+  }
+  wxBeginBusyCursor();
+  if( !wxGetApp().hudfile()->save( filename ) )
+    wxLogError( _("Failed writing Hud to `%s'"), filename.c_str() );
+  update_title();
+  wxEndBusyCursor();
+}
+
+void MainFrame::OnMenuSaveAs( wxCommandEvent& )
+{
+  int ret = wxID_OK;
+  wxFileDialog dlg(
+      this,
+      _("Save As..."),
+      wxT(""),
+      wxT(""),
+      wxT("Hud Files (*.cfg)|*.cfg|All Files (*.*)|*.*"),
+#if wxCHECK_VERSION(2,7,0)
+      wxFD_SAVE | wxFD_OVERWRITE_PROMPT
+#else // 2.6
+      wxSAVE|wxOVERWRITE_PROMPT
+#endif
+      );
+  if( wxID_OK != (ret = dlg.ShowModal()) )
+    return; // user clicked cancel
+
+  wxString filename = dlg.GetPath();
+  
+  wxBeginBusyCursor();
+  if( !wxGetApp().hudfile()->save( filename ) )
+    wxLogError( _("Failed writing Hud to `%s'"), filename.c_str() );
+  update_title();
+  wxEndBusyCursor();
+}
+
 
 MainFrame::~MainFrame()
 {
@@ -192,6 +270,19 @@ void MainFrame::DoUpdate()
   m_mgr.Update();
 }
 
+void MainFrame::update_title()
+{
+  wxString fn = wxGetApp().hudfile()->filename();
+  wxString mod = (wxGetApp().hudfile()->is_modified() ? wxT("*") : wxEmptyString);
+
+  if( !fn.empty() )
+    SetTitle( mod + fn + wxT(" - ") + APP_CAPTION );
+  else
+    SetTitle( mod + wxT("[no file] - ") + APP_CAPTION );
+
+
+}
+
 void MainFrame::OnClose( wxCloseEvent& ev )
 {
 
@@ -204,4 +295,10 @@ void MainFrame::OnClose( wxCloseEvent& ev )
 void MainFrame::OnMenuDefaultPerspective( wxCommandEvent& )
 {
   m_mgr.LoadPerspective( m_defaultperspective );
+}
+
+void MainFrame::OnMenuConfigPreview( wxCommandEvent& )
+{
+  m_configpreview->Show( m_view_menu->IsChecked(ID_MENU_VIEW_CONFIGPREVIEW) );
+  DoUpdate();
 }

@@ -7,7 +7,8 @@
 #include "hudspecs.h"
 #include "element.h"
 
-
+#include <wx/txtstrm.h>
+#include <wx/datetime.h>
 #include <wx/wfstream.h>
 #include <wx/file.h>
 #include <wx/tokenzr.h>
@@ -38,6 +39,7 @@ void CPMAHudFile::load_default_elements()
     //if( force_disable ) 
       //hi->set_enable( false );
   }
+  m_modified = false;
 }
 
 bool CPMAHudFile::load( const wxString& filename )
@@ -83,19 +85,32 @@ bool CPMAHudFile::load( const wxString& filename )
     load_default_elements();
     return false;
   }
-  // now remove every item with HIF_NOTUNIQ that is not enabled.
-  /*
-  const Hud::huditems_type items = m_hud->get_items();
-  for( Hud::huditems_cit it = items.begin(); it != items.end(); ++it )
+  // removeo all non-unique elements that aren't enabled
+  for( cit_elements it = m_els.begin(); it != m_els.end(); ++it )
   {
-    if( ((*it)->get_flags() & HIF_NOTUNIQ) && !(*it)->m_enable )
-      m_hud->remove_item( *it );
+    if( ((*it)->flags() & E_NOTUNIQ) && !(*it)->is_enabled() )
+      m_els.erase( it );
   }
 
-  if( m_had_unknown_items )
-    wxLogWarning( wxT("You had unknown elements in your hudfile. This could be due to\nmisspellings or an outdated hudspecs file. \nTry updating your hudspecs file by visiting the website: 'Help->Visit website'") );
-    */
-wxGetApp().elementsctrl()->list_refresh(m_els);
+  // remove E_DRAWNEVER and E_PARENT from end
+  ElementBase *el;
+  for( int i = m_els.size()-1; i >= 0; --i )
+  {
+    el = m_els[i];
+    if( el->flags() & E_DRAWNEVER && el->flags() & E_PARENT )
+    {
+      m_els.erase(m_els.begin() + i);
+      delete el;
+    }
+    else
+      break;
+  }
+  
+  //if( m_had_unknown_items )
+//    wxLogWarning( wxT("You had unknown elements in your hudfile. This could be due to\nmisspellings or an outdated hudspecs file. \nTry updating your hudspecs file by visiting the website: 'Help->Visit website'") );
+  m_filename = filename;
+  wxGetApp().elementsctrl()->list_refresh(m_els);
+  m_modified = false;
   return true;
 }
 
@@ -177,16 +192,15 @@ bool CPMAHudFile::parse_item( wxString s )
   m_load_prevel = el;
   
   // read properties
-  return true;
-  //return read_properties( el, props );
+  return read_properties( el, props );
 }
 
-/*
-bool HudFileReader::read_properties( IHudItem *hi, const wxString& props )
+
+bool CPMAHudFile::read_properties( ElementBase *hi, const wxString& props )
 {
   size_t pos;
   wxString prop, cmd, args;
-  wxStringTokenizer linetok( props, HFR_PROPERTY_DELIM );
+  wxStringTokenizer linetok( props, HF_PROPERTY_DELIM );
 //  wxLogMessage( wxT("[%d] '%s'"), linetok.CountTokens(), props );
   while( linetok.HasMoreTokens() )
   {
@@ -196,14 +210,14 @@ bool HudFileReader::read_properties( IHudItem *hi, const wxString& props )
       continue;
 
     // extract property name
-    pos = prop.find_first_of( HFR_TRIM );
+    pos = prop.find_first_of( HF_PROPERTY_TRIM );
     if( pos != wxString::npos )
       cmd = prop.substr( 0, pos );
     else
       cmd = prop;
     
     if (cmd.empty())
-    {
+    { // FIXME who cares?
       wxLogWarning( wxT("Found empty element command.") );
       continue;
     }
@@ -221,15 +235,42 @@ bool HudFileReader::read_properties( IHudItem *hi, const wxString& props )
 
     if( !hi->parse_property( cmd, args ) )
     {
-      wxLogWarning( wxT("Invalid command `") + cmd + wxT("' found in element `") + hi->get_name() + wxT("'.") );
+      wxLogWarning( _("Invalid command `%s' found in element `%s'."), cmd.c_str(), hi->name().c_str() );
       //wxString e = wxString::Format( wxT("Invalid element command `%s' found in element `%s'."), cmd,  hi->get_name() );
       //throw hudfilereader_parse_error( e.c_str() );
     }
   }
   // postprocessing! maybe this is missing somewhere else? where do we parse items else? presets? bah
-  hi->after_parse();
+  //hi->after_parse();
 
   return true;
 }
-*/
 
+
+bool CPMAHudFile::save( const wxString& filename )
+{
+  int decoratecount = 0;
+  wxFFileOutputStream file( filename.c_str() );
+  if( !file.Ok() )
+    return false;
+  wxTextOutputStream stream( file );
+  wxDateTime dt(wxDateTime::Now());
+  
+  stream << wxT("# written by ") << APP_NAME << wxT(" v") << APP_VERSION << wxT(" on ") << dt.FormatISODate() << wxT(" ") << dt.FormatISOTime() << wxT("\n");
+  stream << wxT("# ") << APP_URL << wxT("\n");
+
+  for( cit_elements it = m_els.begin(); it != m_els.end(); ++it )
+  {
+    if( (*it)->name() == HF_POSTDECORATE_PREFIX || (*it)->name() == HF_PREDECORATE_PREFIX )
+      ++decoratecount;
+    write_element( stream, *(*it) );
+  }
+
+  if( decoratecount > HF_MAX_PREPOSTDECORATE )
+    wxLogWarning( _T("You have more than %d combined PreDecorat/PostDecorate elements which CPMA does not support"), HF_MAX_PREPOSTDECORATE );
+
+  m_filename = filename;
+  m_modified = false;
+
+  return true;
+}

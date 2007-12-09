@@ -1,6 +1,11 @@
 #include "hudfilebase.h"
 #include "mainframe.h"
 #include "elementsctrlbase.h"
+
+#include <wx/txtstrm.h>
+#include <wx/wfstream.h>
+#include <wx/datetime.h>
+
 #include <algorithm>
 using namespace std;
 
@@ -12,6 +17,14 @@ HudFileBase::HudFileBase() :
 }
 
 
+void HudFileBase::set_modified( bool modified /*= true*/ )
+{ 
+  if( m_modified != modified )
+  {
+    m_modified = modified;
+    wxGetApp().mainframe()->update_title();
+  }
+}
 
 void HudFileBase::clear()
 {
@@ -64,21 +77,44 @@ bool HudFileBase::move_element_after( ElementBase *el, ElementBase *after )
   return true;
 }
 
+bool HudFileBase::save( const wxString& filename )
+{
+  wxFFileOutputStream file( filename.c_str() );
+  if( !file.Ok() )
+    return false;
+  wxTextOutputStream stream( file );
+  wxDateTime dt(wxDateTime::Now());
+  
+  stream << wxT("# written by ") << APP_NAME << wxT(" v") << APP_VERSION << wxT(" on ") << dt.FormatISODate() << wxT(" ") << dt.FormatISOTime() << wxT("\n");
+  stream << wxT("# ") << APP_URL << wxT("\n");
+
+  for( cit_elements it = m_els.begin(); it != m_els.end(); ++it )
+    write_element( stream, *(*it) );
+
+  m_filename = filename;
+  m_modified = false;
+
+  return true;
+}
+
 void HudFileBase::write_element( wxTextOutputStream& stream, const ElementBase& el )
 {
   if( !el.is_enabled() )
   {
-    stream << wxT("# ") << el.name() << wxT(" { }\n");
+    if( Prefs::get().save_writedisabled )
+      stream << wxT("# ") << el.name() << wxT(" { }\n");
     return;
   }
-  stream << el.name();
   if( el.flags() & E_SHORT )
-    stream << wxT(" { ");
-  else
-    stream << wxT("\n{");
-  el.write_properties(stream);
-  if( el.flags() & E_SHORT )
+  {
+    stream << el.name() << wxT(" { ");
+    el.write_properties(stream);
     stream << wxT("}\n");
+  }
   else
+  {
+    stream << wxT("\n") << el.name() << wxT("\n{");
+    el.write_properties(stream);
     stream << wxT("\n}\n\n");
+  }
 }

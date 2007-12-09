@@ -28,8 +28,12 @@ class Prefs
 
     // -- sepcific games
 
-    // -- startup/saving
+    // -- startup
     bool startup_gameselection; // show game selection on startup always (even if there is already a `game' set
+
+    // -- saving
+    bool save_writedisabled; ///< whether we write the disabled elements (commented out ofc)
+    bool save_backup; ///< whether to create backup files upon saving
 
   // singleton
   public:

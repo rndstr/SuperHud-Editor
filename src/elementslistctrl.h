@@ -1,6 +1,7 @@
 #ifndef __ELEMENTSLISTCTRL_H__
 #define __ELEMENTSLISTCTRL_H__
 
+#include "elementbase.h"
 
 #include <wx/listctrl.h>
 #include <wx/imaglist.h>
@@ -24,6 +25,9 @@ class ElementsListCtrl : public wxListCtrl
   private:
     void          OnItemSelected( wxListEvent& ev );
     void          OnItemDeselected( wxListEvent& ev );
+    void          OnItemActivated( wxListEvent& ev );
+    bool          update_item( long idx, ElementBase *pel =0 );
+      
     
     wxImageList   m_imglist;
 

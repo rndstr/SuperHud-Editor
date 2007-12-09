@@ -30,6 +30,7 @@ const int E_PROPERTIES_DEFAULT = E_HAS_NONE;
 /// Defaults
 /// @{
 
+const int E_FONTSIZE_NONE = -1;
 /// default fontsize for type E_FST_POINT
 const int E_FONTSIZE_DEFAULT_POINT = 12; // verified 1.35
 /// default fontsize for type E_FST_COORD
@@ -56,12 +57,12 @@ class CPMAElement : public ElementBase
       bool enable =false, int flags =E_NONE, int has =E_HAS_NONE, const wxString& text =wxT(""), 
       const wxString& icon =wxT(""), const wxRect& rect = E_RECT_DEFAULT);
 
-    virtual void write_properties( wxTextOutputStream& stream ) const;
+    virtual void  write_properties( wxTextOutputStream& stream ) const;
+    virtual bool  parse_property( const wxString& cmd, wxString args );
 
   protected:
     wxString      m_desc;
     int           m_type ; ///< eElementType    
-    int           m_has; ///< which eElementProperties it overwrites
     
 
     /// properties

@@ -28,10 +28,15 @@ void Prefs::load()
   c->Read(wxT("perspective"), &perspective, wxT(""));
 
   // -- misc
-  c->Read(wxT("hudspecs"), &hudspecs, wxT(""));
+  c->Read(wxT("hudspecs"), &hudspecs, wxT("")); // this is only read
 
-  // -- startup/saving
+  // -- startup
   c->Read(wxT("startup_gameselection"), &startup_gameselection, true);
+
+  // -- saving
+  c->Read(wxT("save_writedisabled"), &save_writedisabled, true);
+  c->Read(wxT("save_backup"), &save_backup, true);
+
 }
 
 void Prefs::save( bool from_prefs_dialog /*= false*/ )
@@ -41,8 +46,13 @@ void Prefs::save( bool from_prefs_dialog /*= false*/ )
   c->Write(wxT("game"), game);
   c->Write(wxT("perspective"), perspective);
 
-  // -- startup/saving
+  // -- startup
   c->Write(wxT("startup_gameselection"), startup_gameselection);
+
+  // -- saving
+  c->Write(wxT("save_writedisabled"), save_writedisabled);
+  c->Write(wxT("save_backup"), save_backup);
+
   c->Flush();
 }
 

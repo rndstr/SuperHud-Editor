@@ -16,22 +16,27 @@ class HudFileBase
     HudFileBase();
     virtual ~HudFileBase() { clear(); }
 
-    void set_modified( bool modified = true ) { m_modified = modified; }
+    void set_modified( bool modified = true );
+    bool is_modified() const { return m_modified; }
+    const wxString& filename() const { return m_filename; }
 
     /// sets up the document after user clicked File->New
     virtual void on_new();
 
+    /// clears all items
     virtual void clear(); 
     /// adds an element
     virtual void append( ElementBase *el );
 
     /// Loads a hudfile
-    /// 
     /// @arg wxString filename The full filename
     virtual bool load( const wxString& filename ) = 0;
+    // clears all items and then loads default items
     virtual void load_default_elements() = 0;
 
-    static void write_element( wxTextOutputStream& stream, const ElementBase& el );
+    virtual bool save( const wxString& filename );
+
+    virtual void write_element( wxTextOutputStream& stream, const ElementBase& el );
 
   protected:
     ElementBase*        find_element( const wxString& name );
@@ -45,6 +50,7 @@ class HudFileBase
   protected:
     elements_type       m_els;
     bool                m_modified;
+    wxString            m_filename;
 };
 
 

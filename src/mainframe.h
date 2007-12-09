@@ -19,17 +19,21 @@ class MainFrame : public wxFrame
     wxAuiDockArt* GetDockArt();
     void DoUpdate();
 
+    void update_title();
+
     void OnMenuGameSelection( wxCommandEvent& );
 
 
     ElementsCtrlBase*   elementsctrl() { return m_elementsctrl; }
-    wxTextCtrl*         textpreview() { return m_textpreview; }
+    wxTextCtrl*         configpreview() { return m_configpreview; }
 
   protected:
     void set_floating_hint( wxAuiManagerOption hint );
 
+    wxMenu            *m_view_menu;
+
     ElementsCtrlBase  *m_elementsctrl;
-    wxTextCtrl        *m_textpreview;
+    wxTextCtrl        *m_configpreview;
 
   private:
 
@@ -38,8 +42,11 @@ class MainFrame : public wxFrame
     void OnMenuExit( wxCommandEvent& );
     void OnMenuNew( wxCommandEvent& );
     void OnMenuOpen( wxCommandEvent& );
+    void OnMenuSave( wxCommandEvent& );
+    void OnMenuSaveAs( wxCommandEvent& );
     void OnMenuPreferences( wxCommandEvent& );
     void OnMenuDefaultPerspective( wxCommandEvent& );
+    void OnMenuConfigPreview( wxCommandEvent& );
 
   private:
     wxAuiManager m_mgr;
