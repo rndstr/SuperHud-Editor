@@ -1,6 +1,7 @@
 #include "propertiesctrl.h"
 
-#include "../PositionPropertiesCtrl.h"
+#include "../positionpropertiesctrl.h"
+#include "../fontpropertiesctrl.h"
 
 #include "element.h"
 #include <wx/propgrid/propgrid.h>
@@ -11,7 +12,9 @@ CPMAPropertiesCtrl::CPMAPropertiesCtrl( wxWindow *parent ) :
   PropertiesCtrlBase(parent)
 {
   m_pos = new PositionPropertiesCtrl(this);
+  m_font = new FontPropertiesCtrl(this);
   AddPage( m_pos, _("Position/Size") );
+  AddPage( m_font, _("Font") );
 }
 
 void CPMAPropertiesCtrl::update_from_element( const elements_type& els )
@@ -20,6 +23,7 @@ void CPMAPropertiesCtrl::update_from_element( const elements_type& els )
   {
     m_curel = 0;
     m_pos->CollapseAll();
+    m_font->CollapseAll();
     Disable();
   }
   else
@@ -28,19 +32,7 @@ void CPMAPropertiesCtrl::update_from_element( const elements_type& els )
     Enable();
     m_pos->ExpandAll();
     m_pos->from_element(m_curel);
-    // FIXME change wxAuiNotebook window title
-    // this should happen the following way:
-    // - OnSelectionChanged should be propagated to MainFrame
-    // - m_mgr.GetPane(), then change wxAuiPaneInfo
-    // - call MainFrame::DoUpdate
-    /*
-    bool ov = m_curel->m_has & E_HAS_RECT;
-    m_pos->SetPropertyValue( wxT("overwrite-rect"), ov );
-    m_pos->SetPropertyValue( wxT("X"), m_curel->m_rect.GetX() );
-    m_pos->SetPropertyValue( wxT("Y"), m_curel->m_rect.GetY() );
-    m_pos->SetPropertyValue( wxT("Width"), m_curel->m_rect.GetWidth() );
-    m_pos->SetPropertyValue( wxT("Height"), m_curel->m_rect.GetHeight() );
-    */
+    m_font->ExpandAll();
   }
 }
 

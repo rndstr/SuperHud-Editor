@@ -3,7 +3,9 @@
 
 #include "../propertiesctrlbase.h"
 
+
 class PositionPropertiesCtrl;
+class FontPropertiesCtrl;
 
 class CPMAPropertiesCtrl : public PropertiesCtrlBase
 {
@@ -14,6 +16,7 @@ class CPMAPropertiesCtrl : public PropertiesCtrlBase
 
   private:
     PositionPropertiesCtrl  *m_pos;
+    FontPropertiesCtrl      *m_font;
 
 };
 

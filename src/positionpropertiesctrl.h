@@ -1,5 +1,6 @@
-#ifndef __FONTPROPERTIESCTRL_H__
-#define __FONTPROPERTIESCTRL_H__
+#ifndef __POSITIONPROPERTIESCTRL_H__
+#define __POSITIONPROPERTIESCTRL_H__
+
 
 #include <wx/wx.h>
 #include <wx/propgrid/propgrid.h>
@@ -8,19 +9,22 @@
 
 class ElementBase;
 
-class FontPropertiesCtrl : public wxPropertyGridManager
+class PositionPropertiesCtrl : public wxPropertyGridManager
 {
   public:
-    FontPropertiesCtrl( wxWindow *parent );
+    PositionPropertiesCtrl( wxWindow *parent );
 
     void from_element( ElementBase *el );
     void update_layout();
 
   private:
+    void OnRightClick( wxPropertyGridEvent& ev );
     void OnItemChanged( wxPropertyGridEvent& ev );
 
 
     DECLARE_EVENT_TABLE()
+
 };
 
-#endif // __FONTPROPERTIESCTRL_H__
+
+#endif // __POSITIONPROPERTIESCTRL_H__

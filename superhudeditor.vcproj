@@ -184,6 +184,14 @@
 				RelativePath=".\src\GameSelectionDialog.h"
 				>
 			</File>
+			<File
+				RelativePath=".\src\pgfontsizeproperty.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\pgfontsizeproperty.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="src"
@@ -242,6 +250,14 @@
 			</File>
 			<File
 				RelativePath=".\src\factorybase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\fontpropertiesctrl.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\fontpropertiesctrl.h"
 				>
 			</File>
 			<File
