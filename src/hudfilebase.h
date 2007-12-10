@@ -5,13 +5,15 @@
 #include "elementbase.h"
 #include <vector>
 
+typedef std::vector<ElementBase*>           elements_type;
+typedef elements_type::iterator             it_elements;
+typedef elements_type::const_iterator       cit_elements;
+
 /// represents a hudfile (document)
 class HudFileBase
 {
   public:
-    typedef std::vector<ElementBase*>           elements_type;
-    typedef elements_type::iterator             it_elements;
-    typedef elements_type::const_iterator       cit_elements;
+    
   public:
     HudFileBase();
     virtual ~HudFileBase() { clear(); }
@@ -21,12 +23,15 @@ class HudFileBase
     const wxString& filename() const { return m_filename; }
 
     /// sets up the document after user clicked File->New
-    virtual void on_new();
-
+    void on_new();
     /// clears all items
-    virtual void clear(); 
+    void clear(); 
     /// adds an element
-    virtual void append( ElementBase *el );
+    void append( ElementBase *el );
+    /// returns the parent element that overwrites $specifies.
+    /// parent element has flag E_PARENT
+    /// @returns The parent or 0 if there is none (aka element uses default value)
+    const ElementBase* get_parent( const ElementBase * const from, int specifies = E_HAS_NONE ) const;
 
     /// Loads a hudfile
     /// @arg wxString filename The full filename
@@ -36,7 +41,7 @@ class HudFileBase
 
     virtual bool save( const wxString& filename );
 
-    virtual void write_element( wxTextOutputStream& stream, const ElementBase& el );
+    void write_element( wxTextOutputStream& stream, const ElementBase& el );
 
   protected:
     ElementBase*        find_element( const wxString& name );

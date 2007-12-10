@@ -3,6 +3,7 @@
 #define __COMMON_H__
 
 #include "superhudeditor.h"
+#include "eventids.h"
 #include "artprovider.h"
 #include "exceptions.h"
 #include "prefs.h"

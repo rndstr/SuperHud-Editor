@@ -6,32 +6,10 @@
 const wxString APP_NAME = wxT("superhudeditor");
 const wxString APP_VERSION = wxT("0.3.0");
 const wxString APP_VENDOR = wxEmptyString;
-const wxString APP_CAPTION = APP_NAME + wxT(" v") + APP_VERSION;
+const wxString APP_CAPTION = wxT("SuperHud Editor v") + APP_VERSION;
 const wxString APP_CONFIG = wxT("superhudeditor.conf");
 const wxString APP_URL = wxT("http://plrf.org/superhudeditor");
 const wxString BUG_MSG = wxT("Bug detected, please contact the author");
-
-enum
-{
-	ID_BTN_Q4MAX = wxID_HIGHEST+1,
-	ID_BTN_CPMA,
-
-  ID_BTN_INSERTDEFAULT,
-  ID_BTN_INSERTPREDECORATE,
-  ID_BTN_INSERTPOSTDECORATE,
-  ID_BTN_COPY,
-  ID_BTN_PASTE,
-
-  ID_MENU_TOOLS_GAMESELECTION,
-  ID_MENU_TOOLS_PREFERENCES,
-
-  ID_MENU_VIEW_DEFAULTPERSPECTIVE,
-  ID_MENU_VIEW_CONFIGPREVIEW,
-
-
-  ID_LISTCTRL_ELEMENTS,
-  ID_TEXTCTRL_CONFIGPREVIEW
-};
 
 class FactoryBase;
 class HudFileBase;

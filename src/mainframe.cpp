@@ -11,10 +11,11 @@
 #include "factorybase.h"
 
 #include "cpma/elementsctrl.h"
+#include "cpma/propertiesctrl.h"
 #include "cpma/displayctrl.h"
 #include "cpma/hudfile.h"
 
-DECLARE_APP(SHEApp);
+//DECLARE_APP(SHEApp);
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_MENU(wxID_EXIT, MainFrame::OnMenuExit)
@@ -65,7 +66,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_view_menu= new wxMenu;
   m_view_menu->Append( ID_MENU_VIEW_DEFAULTPERSPECTIVE, _("&Reset View") );
   m_view_menu->AppendSeparator();
-  m_view_menu->AppendCheckItem( ID_MENU_VIEW_CONFIGPREVIEW, _("[FIXME}Config Preview"), _("Display the Config Preview panel") );
+  m_view_menu->AppendCheckItem( ID_MENU_VIEW_CONFIGPREVIEW, _("[FIXME]Config Preview"), _("Display the Config Preview panel") );
+  m_view_menu->AppendCheckItem( ID_MENU_VIEW_TOOLBAR_FILE, _("[FIXME]Toolbar File"), _("Display the File toolbar") );
   menu_bar->Append( m_view_menu, _("&View") );
 
   wxMenu *help_menu = new wxMenu;
@@ -81,10 +83,10 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   // create toolbar
   wxToolBar *tool_bar_file = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
   tool_bar_file->SetToolBitmapSize(wxSize(16,16));
-  tool_bar_file->AddTool( wxID_NEW, _("New"), wxArtProvider::GetBitmap(wxART_NEW_DIR, wxART_TOOLBAR, wxSize(16,16)) );
-  tool_bar_file->AddTool( wxID_OPEN, _("Open..."), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, wxSize(16,16)) );
-  tool_bar_file->AddTool( wxID_SAVE, _("Save"), wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR, wxSize(16,16)) );
-  tool_bar_file->AddTool( wxID_SAVEAS, _("Save As..."), wxArtProvider::GetBitmap(wxART_FILE_SAVE_AS, wxART_TOOLBAR, wxSize(16,16)) );
+  tool_bar_file->AddTool( wxID_NEW, _("New"), wxArtProvider::GetBitmap(wxART_NEW_DIR, wxART_TOOLBAR, wxSize(16,16)), _("New") );
+  tool_bar_file->AddTool( wxID_OPEN, _("Open..."), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, wxSize(16,16)), _("Open...") );
+  tool_bar_file->AddTool( wxID_SAVE, _("Save"), wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR, wxSize(16,16)), _("Save") );
+  tool_bar_file->AddTool( wxID_SAVEAS, _("Save As..."), wxArtProvider::GetBitmap(wxART_FILE_SAVE_AS, wxART_TOOLBAR, wxSize(16,16)), _("Save As...") );
   tool_bar_file->Realize();
  
 
@@ -94,18 +96,26 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_mgr.AddPane( m_elementsctrl,
       wxAuiPaneInfo().Name(wxT("elements")).Caption(_("Elements")).MaximizeButton(true).CloseButton(false)
       );
+  m_configpreview = new wxTextCtrl(this, ID_TEXTCTRL_CONFIGPREVIEW, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
+  m_configpreview->SetFont(wxFont(8, wxMODERN, wxNORMAL, wxNORMAL, 0, wxT("")));
+  m_mgr.AddPane( m_configpreview, wxAuiPaneInfo().Name(wxT("configpreview")).Caption(_("Config Preview")).
+    CloseButton(true).MaximizeButton(true)
+    );
   m_mgr.AddPane( wxGetApp().factory()->create_displayctrl(this), 
-      wxAuiPaneInfo().Name(wxT("display")).Caption(_("Display")).MaximizeButton(true).
+      wxAuiPaneInfo().Name(wxT("display")).Caption(_("Display")).MaximizeButton(true).CloseButton(false).
       CenterPane()
       );
+
+  m_propsctrl = wxGetApp().factory()->create_propertiesctrl(this);
+  m_mgr.AddPane( m_propsctrl, 
+      wxAuiPaneInfo().Name(wxT("properties")).Caption(_("Properties")).MaximizeButton(true).CloseButton(false).
+      Right()
+      );
+
   m_mgr.AddPane(tool_bar_file, wxAuiPaneInfo().Name(wxT("tb-file")).Caption(_("File")).
 	  ToolbarPane().Top().Row(1).Position(1).LeftDockable(false).RightDockable(false)
 	  );
-  m_configpreview = new wxTextCtrl(this, ID_TEXTCTRL_CONFIGPREVIEW, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
-  m_configpreview->SetFont(wxFont(8, wxMODERN, wxNORMAL, wxNORMAL, 0, wxT("")));
-  m_mgr.AddPane( m_configpreview, wxAuiPaneInfo().Name(wxT("configpreview")).Caption(_("Config preview")).
-    CloseButton(true).MaximizeButton(true)
-    );
+  
 
   m_defaultperspective = m_mgr.SavePerspective();
   m_mgr.LoadPerspective( Prefs::get().perspective );
@@ -301,4 +311,62 @@ void MainFrame::OnMenuConfigPreview( wxCommandEvent& )
 {
   m_configpreview->Show( m_view_menu->IsChecked(ID_MENU_VIEW_CONFIGPREVIEW) );
   DoUpdate();
+}
+
+#include <wx/sstream.h>
+#include <wx/txtstrm.h>
+void MainFrame::OnElementSelectionChanged()
+{
+  wxASSERT(m_elementsctrl);
+  elements_type& els = m_elementsctrl->selected_elements();
+
+  // -- update propertiesctrl title
+  wxString caption;
+  wxAuiPaneInfo& propsinfo = m_mgr.GetPane(wxT("properties"));
+  if( els.size() == 1 )
+  {
+    caption = _("Properties");
+    caption += wxT(": ") + els.front()->name();
+  }
+  else if( els.size() == 0 )
+  {
+    caption = _("Properties");
+    caption += wxT(": ") + wxString(_("(none)"));
+  }
+  else
+  {
+    caption = _("Properties");
+    caption += wxT(": ") + wxString(_("(multiple)"));
+  }
+  propsinfo.Caption( caption );
+  DoUpdate();
+
+  update_configpreview();
+
+  // -- update propertiesctrl
+  m_propsctrl->update_from_element(els);
+}
+
+void MainFrame::OnPropertiesChanged()
+{
+  update_configpreview();
+}
+
+void MainFrame::update_configpreview()
+{
+  wxASSERT(m_elementsctrl);
+  elements_type& els = m_elementsctrl->selected_elements();
+  // -- update config preview
+  // TODO put configpreview in own class
+  wxString out;
+  wxStringOutputStream sos(&out);
+  wxTextOutputStream tos(sos);
+  // get all selected
+  wxListItem info;
+  HudFileBase *hf = wxGetApp().hudfile();
+  for( cit_elements cit = els.begin(); cit != els.end(); ++cit )
+  {
+    hf->write_element(tos, *(*cit));
+  }  
+  m_configpreview->SetValue(out);
 }

@@ -2,6 +2,7 @@
 
 #include "hudspecs.h"
 #include "elementsctrl.h"
+#include "propertiesctrl.h"
 #include "displayctrl.h"
 #include "hudfile.h"
 
@@ -14,6 +15,11 @@ bool CPMAFactory::init()
 ElementsCtrlBase* CPMAFactory::create_elementsctrl(wxWindow *parent)
 {
   return new CPMAElementsCtrl(parent);
+}
+
+PropertiesCtrlBase* CPMAFactory::create_propertiesctrl(wxWindow *parent)
+{
+  return new CPMAPropertiesCtrl(parent);
 }
 
 DisplayCtrlBase* CPMAFactory::create_displayctrl(wxWindow *parent)

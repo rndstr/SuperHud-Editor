@@ -10,6 +10,7 @@
 #include "superhudeditor.h"
 #include "mainframe.h"
 #include "common.h"
+#include "elementsctrlbase.h"
 
 
 #include <wx/stdpaths.h>
@@ -79,6 +80,8 @@ bool SHEApp::OnInit()
   m_mainframe = new MainFrame(0, wxID_ANY, APP_NAME, wxDefaultPosition, wxSize(800,600));
   SetTopWindow(m_mainframe);
   m_mainframe->Show();
+
+  m_mainframe->elementsctrl()->OnSelectionChanged();
 
   return true;
 }

@@ -40,21 +40,20 @@ void ElementsListCtrl::OnItemSelected( wxListEvent& ev )
 
 void ElementsListCtrl::OnItemActivated( wxListEvent& ev )
 {
-  ElementsCtrlBase::indecies_type sels = ((ElementsCtrlBase*)GetParent())->get_selection();
+  elements_type& els = static_cast<ElementsCtrlBase*>(GetParent())->selected_elements();
+  indecies_type& idx = static_cast<ElementsCtrlBase*>(GetParent())->selected_indecies();
   ElementBase *pel = 0;
-  for( ElementsCtrlBase::it_indecies it = sels.begin(); it != sels.end(); ++it )
+  cit_indecies idxit = idx.begin();
+  for( it_elements it = els.begin(); it != els.end(); ++it, ++idxit )
   {
-    wxASSERT( GetItemData(*it) );
-    if( GetItemData(*it) )
-    {
-      pel = reinterpret_cast<ElementBase*>( GetItemData(*it) );
-      pel->set_enabled( !pel->is_enabled() ); // toggle
-      update_item(*it, pel);
-    }
+    (*it)->set_enabled( !(*it)->is_enabled() ); // toggle
+    update_item(*idxit, *it);
   }
   wxGetApp().hudfile()->set_modified();
   // trigger update of other views relying on properties
-  ((ElementsCtrlBase*)GetParent())->OnSelectionChanged();
+
+  // propagate
+  wxGetApp().mainframe()->OnPropertiesChanged();
 }
 
 bool ElementsListCtrl::update_item( long idx, ElementBase *pel /*=0*/ )

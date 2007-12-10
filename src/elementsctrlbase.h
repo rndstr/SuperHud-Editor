@@ -19,12 +19,14 @@
 #include "hudfilebase.h"
 #include <list>
 
+typedef std::list<int>  indecies_type;
+typedef indecies_type::iterator it_indecies;
+typedef indecies_type::const_iterator cit_indecies;
+
 class ElementsCtrlBase: public wxPanel
 {
   public:
-    typedef std::list<int>  indecies_type;
-    typedef indecies_type::iterator it_indecies;
-    typedef indecies_type::const_iterator cit_indecies;
+    
 
   public:
     // begin wxGlade: ElementsCtrlBase::ids
@@ -35,14 +37,23 @@ class ElementsCtrlBase: public wxPanel
 
     virtual void clear();
     virtual void append( ElementBase *el );
-    virtual void list_refresh( const HudFileBase::elements_type& elements );
+    virtual void list_refresh( const elements_type& elements );
 
     virtual void OnSelectionChanged();
     //virtual void OnMouseDClick( wxMouseEvent& ev );
 
     ElementsListCtrl* elementslistctrl() { return m_listctrl; }
 
-    indecies_type get_selection() const;
+    indecies_type&  selected_indecies() { return m_selidx; }
+    elements_type&  selected_elements() { return m_selels; }
+
+  protected:
+    indecies_type   m_selidx;
+    elements_type   m_selels;
+
+    /// update m_selidx and m_selels according to current selection
+    void update_selection();
+
 
   private:
     void OnBtnCopy( wxCommandEvent& );

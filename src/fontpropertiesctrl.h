@@ -1,0 +1,4 @@
+#ifndef __FONTPROPERTIESCTRL_H__
+#define __FONTPROPERTIESCTRL_H__
+
+#endif // __FONTPROPERTIESCTRL_H__

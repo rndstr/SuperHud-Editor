@@ -118,3 +118,21 @@ void HudFileBase::write_element( wxTextOutputStream& stream, const ElementBase& 
     stream << wxT("\n}\n\n");
   }
 }
+
+const ElementBase* HudFileBase::get_parent( const ElementBase * const from, int specifies /*= E_HAS_NONE*/ ) const
+{
+  if( from->flags() & E_NOINHERIT )
+    return 0; // the item doesn't inherit at all.
+
+  const ElementBase *d = 0;
+  for( cit_elements cit = m_els.begin(); cit != m_els.end(); ++cit )
+  {
+    if( *cit == from )
+      break;
+    // is he a parent and does specify what we are looking for?
+    if( ((*cit)->flags() & E_PARENT) && ((*cit)->has() & specifies) )
+      d = *cit;
+    // since we start from top and we want the most near parent, we continue here :o
+  }
+  return d;
+}

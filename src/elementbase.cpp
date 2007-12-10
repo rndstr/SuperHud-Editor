@@ -1,4 +1,6 @@
 #include "elementbase.h"
+#include "superhudeditor.h"
+#include "hudfilebase.h"
 
 #include <wx/tokenzr.h>
 
@@ -32,3 +34,20 @@ void ElementBase::write_properties( wxTextOutputStream& stream ) const
       stream << wxString::Format(wxT("\n  rect %i %i %i %i"), m_rect.x, m_rect.y, m_rect.width, m_rect.height );
   }
 }
+
+
+wxRect ElementBase::iget_rect() const
+{
+  wxRect r = m_rect;
+  if( !(m_has & E_HAS_RECT) )
+  {
+    const ElementBase *parent = wxGetApp().hudfile()->get_parent( this, E_HAS_RECT );
+    if( parent == 0 ) r = E_RECT_DEFAULT;
+    else r = parent->iget_rect();
+  }
+  return r; 
+
+
+
+}
+

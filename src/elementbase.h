@@ -69,6 +69,8 @@ const wxString HF_PROPERTY_ARG_DELIM = wxT(" ");
 
 class ElementBase
 {
+   friend class CPMAPropertiesCtrl;
+   friend class PositionPropertiesCtrl;
   public:
     ElementBase( const wxString& name, const wxString& desc = wxT(""), int flags = E_NONE, int has = E_HAS_NONE, bool enabled = false, 
       const wxRect& rect = E_RECT_DEFAULT ) :
@@ -86,8 +88,13 @@ class ElementBase
     // get&set
     const wxString& name() const { return m_name; }
     int             flags() const { return m_flags; }
+    int             has() const { return m_has; }
     bool            is_enabled() const { return m_enabled; }
     void            set_enabled(bool en = true) { m_enabled = en; }
+    wxRect          rect() const { return m_rect; }
+
+    // get&set properties (with regard to `i'nheritance)
+    wxRect          iget_rect() const;
 
   protected:
     wxString  m_name; ///< is not unique
