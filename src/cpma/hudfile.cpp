@@ -86,7 +86,7 @@ bool CPMAHudFile::load( const wxString& filename )
     return false;
   }
   // removeo all non-unique elements that aren't enabled
-  for( cit_elements it = m_els.begin(); it != m_els.end(); ++it )
+  for( it_elements it = m_els.begin(); it != m_els.end(); ++it )
   {
     if( ((*it)->flags() & E_NOTUNIQ) && !(*it)->is_enabled() )
       m_els.erase( it );
@@ -267,7 +267,7 @@ bool CPMAHudFile::save( const wxString& filename )
   }
 
   if( decoratecount > HF_MAX_PREPOSTDECORATE )
-    wxLogWarning( _T("You have more than %d combined PreDecorat/PostDecorate elements which CPMA does not support"), HF_MAX_PREPOSTDECORATE );
+    wxLogWarning( _T("You have more than %d combined PreDecorate/PostDecorate elements which CPMA does not support"), HF_MAX_PREPOSTDECORATE );
 
   m_filename = filename;
   m_modified = false;
