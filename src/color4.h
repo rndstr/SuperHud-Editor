@@ -80,7 +80,6 @@ class Color4
 
     void set_a100( unsigned char _a_percent ) { a = (_a_percent>100 ? 1.f:_a_percent/100.f); }
 
-#ifndef DISABLE_OPENGL
     void glBind() const
     {
       switch( type )
@@ -96,7 +95,6 @@ class Color4
         glColor4f( r, g, b, a );
       }
     }
-#endif
 
     wxString to_string() const;
 

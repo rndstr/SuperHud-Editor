@@ -26,7 +26,7 @@ ElementBase(name, desc, flags, has, enable),
     m_color(E_COLOR_DEFAULT),
     m_bgcolor(E_BGCOLOR_DEFAULT),
     m_fill(E_FILL_DEFAULT),
-    m_fadecolor(E_COLOR_DEFAULT), // ?
+    m_fade(E_COLOR_DEFAULT), // ?
     m_image(wxT("")),
     m_model(wxT("")),
     m_offset_z(0.f), m_offset_x(0.f), m_offset_y(0.f),
@@ -55,7 +55,7 @@ CPMAElement::CPMAElement( const hsitem_s& def ) :
     m_color(E_COLOR_DEFAULT),
     m_bgcolor(E_BGCOLOR_DEFAULT),
     m_fill(E_FILL_DEFAULT),
-    m_fadecolor(E_COLOR_DEFAULT), // ?
+    m_fade(E_COLOR_DEFAULT), // ?
     m_image(wxT("")),
     m_model(wxT("")),
     m_offset_z(0.f), m_offset_x(0.f), m_offset_y(0.f),
@@ -144,7 +144,7 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
   }
   else if( cmd.CmpNoCase(wxT("fade"))==0 )
   {
-    if( !m_fadecolor.from_string( args ) )
+    if( !m_fade.from_string( args ) )
       wxLogWarning( _("Unknown `%s' argument: %s"), "fade", args.c_str() );
     m_has |= E_HAS_FADE;
   }
@@ -282,7 +282,7 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
   if( m_draw3d )
     lines.push_back(wxT("draw3d"));
   if( m_has & E_HAS_FADE )
-    lines.push_back(wxT("fade ") + m_fadecolor.to_string());
+    lines.push_back(wxT("fade ") + m_fade.to_string());
   /*
   if( m_ismodel )
   {
@@ -405,6 +405,50 @@ int CPMAElement::iget_fontsizey() const
     else s = parent->iget_fontsizey();
   }
   return s;
+}
+int CPMAElement::iget_textstyle() const
+{
+  int ts = m_textstyle;
+  if( !(m_has & E_HAS_TEXTSTYLE) )
+  {
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TEXTSTYLE ));
+    if( parent == 0 ) ts = E_TEXTSTYLE_DEFAULT;
+    else ts = parent->iget_textstyle();
+  }
+  return ts;
+}
+Color4 CPMAElement::iget_color() const
+{
+  Color4 c = m_color;
+  if( !(m_has & E_HAS_COLOR) )
+  {
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_COLOR ));
+    if( parent == 0 ) c = E_COLOR_DEFAULT;
+    else c = parent->iget_color();
+  }
+  return c;
+}
+Color4 CPMAElement::iget_bgcolor() const
+{
+  Color4 c = m_bgcolor;
+  if( !(m_has & E_HAS_COLOR) )
+  {
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_BGCOLOR ));
+    if( parent == 0 ) c = E_BGCOLOR_DEFAULT;
+    else c = parent->iget_color();
+  }
+  return c;
+}
+Color4 CPMAElement::iget_fade() const
+{
+  Color4 c = m_fade;
+  if( !(m_has & E_HAS_FADE) )
+  {
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FADE ));
+    if( parent == 0 ) c = E_FADE_DEFAULT;
+    else c = parent->iget_fade();
+  }
+  return c;
 }
 
 

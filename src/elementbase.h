@@ -89,7 +89,9 @@ class ElementBase
     const wxString& name() const { return m_name; }
     int             flags() const { return m_flags; }
     int             has() const { return m_has; }
-    void            add_has( int has ) { m_has |= has; }
+    /// adds a value (bitmask) to what this element overwrite
+    /// @arg bool add If false we actually remove it.
+    void            add_has( int has, int add = true ) { if( !add) remove_has(has); else m_has |= has; }
     void            remove_has( int has ) { m_has &= ~has; }
     bool            is_enabled() const { return (m_flags & E_ENABLEALWAYS ? true : m_enabled); }
     void            set_enabled(bool en = true) { m_enabled = en; }

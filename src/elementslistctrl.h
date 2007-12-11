@@ -22,11 +22,14 @@ class ElementsListCtrl : public wxListCtrl
     ElementsListCtrl( wxWindow *parent );
     virtual ~ElementsListCtrl() {}
 
+    bool          update_item( const ElementBase *pel );
+
+
   private:
     void          OnItemSelected( wxListEvent& ev );
     void          OnItemDeselected( wxListEvent& ev );
     void          OnItemActivated( wxListEvent& ev );
-    bool          update_item( long idx, ElementBase *pel =0 );
+    bool          update_item( long idx, const ElementBase *pel );
       
     
     wxImageList   m_imglist;

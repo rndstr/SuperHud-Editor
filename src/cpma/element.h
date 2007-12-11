@@ -45,6 +45,8 @@ const int E_FONTSIZE_DEFAULT_COORDY = 12; // verified 1.35
 
 const Color4 E_BGCOLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 0.f ); // (alpha==0) verified
 const Color4 E_COLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 1.f ); // verified
+const Color4 E_FADE_DEFAULT = E_COLOR_DEFAULT; // NOTverified
+
 const wxString E_FONT_DEFAULT = wxT("cpma"); // should be `cpma' or otherwise previews are drawn?
 const bool E_FILL_DEFAULT = false;
 const bool E_MONOSPACE_DEFAULT = false;
@@ -91,6 +93,19 @@ class CPMAElement : public ElementBase
     int         fontsizey() const { return m_fontsize_y; }
     int         iget_fontsizey() const;
 
+    void        set_textstyle( int textstyle ) { m_textstyle = textstyle; }
+    int         iget_textstyle() const;
+    int         textstyle() const { return m_textstyle; }
+
+    void        set_color( const wxColour& c ) { m_color.set(c); }
+    void        set_color( const Color4& c ) { m_color.set(c); }
+    void        set_color_a100( int a100 ) { m_color.set_a100(a100); }
+    Color4      iget_color() const;
+    void        set_bgcolor( const wxColour& c ) { m_bgcolor.set(c); }
+    Color4      iget_bgcolor() const;
+    void        set_fade( const wxColour& c ) { m_fade.set(c); }
+    Color4      iget_fade() const;
+
   protected:
     wxString      m_desc;
     int           m_type ; ///< eElementType    
@@ -118,7 +133,7 @@ class CPMAElement : public ElementBase
     Color4      m_bgcolor;
     bool        m_fill;
     
-    Color4      m_fadecolor; ///< only used if m_time bigger than 0.
+    Color4      m_fade; ///< only used if m_time bigger than 0.
 
     wxString    m_image;
 

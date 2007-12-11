@@ -34,10 +34,13 @@ FontPropertiesCtrl::FontPropertiesCtrl( wxWindow *parent ) :
   SetPropertyAttribute(wxT("monospace"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
   SetPropertyHelpString( wxT("monospace"), _("Displays all characters of the font with the same width") );
 
-  Append( wxParentProperty(_("Style"), wxT("style")) );
-  AppendIn( wxT("style"), wxBoolProperty(_("Shadow"), wxT("shadow"), false) );
-  SetPropertyAttribute(wxT("style"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
-
+  Append( wxPropertyCategory( _("Style") ) );
+  Append( wxBoolProperty(_("None"), wxT("style-none"), false) );
+  Append( wxBoolProperty(_("Shadow"), wxT("style-shadow"), false) );
+  SetPropertyAttribute(wxT("style-none"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
+  SetPropertyHelpString( wxT("style-none"), _("By default there is no `textstyle' set but if a parent item defines one you can reset the style here") );
+  SetPropertyAttribute(wxT("style-shadow"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
+  SetPropertyHelpString( wxT("style-shadow"), _("Dropshadowed text") );
 
   Append( wxPropertyCategory( _("Size") ) );
 
@@ -68,6 +71,7 @@ void FontPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   }
   CPMAElement *el = static_cast<CPMAElement*>(p->curel());
   wxString name = ev.GetPropertyName();
+  wxVariant val = ev.GetPropertyValue();
 
   if( name == wxT("font") )
   {
@@ -98,7 +102,7 @@ void FontPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   }
   else if( name == wxT("monospace") )
   {
-    bool ms = ev.GetPropertyValueAsBool();
+    bool ms = val.GetBool();
     if( el->flags() & E_PARENT && ms )
       wxMessageBox( _("Be aware that the `Monospace' you just ticked cannot be disabled on subsequent elements!") );
     el->set_monospace(ms);
@@ -106,9 +110,6 @@ void FontPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
       el->add_has( E_HAS_MONOSPACE );
     else
       el->remove_has( E_HAS_MONOSPACE );
-  }
-  else if( name == wxT("shadow") )
-  {
   }
   else if( name == wxT("fontsizetype") )
   {
@@ -141,6 +142,38 @@ void FontPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
       el->set_fontsizey( ev.GetPropertyValueAsInt() );
 
   }
+  else if( name == wxT("style-none") )
+  {
+    if( val.GetBool() )
+    {
+      el->add_has(E_HAS_TEXTSTYLE);
+      el->set_textstyle(E_TEXTSTYLE_NONE);
+    }
+    else
+    {
+      if( el->textstyle() == E_TEXTSTYLE_NONE )
+      { // shadow is not set, so remove stuff
+        el->remove_has(E_HAS_TEXTSTYLE);
+      }
+    }
+    SetPropertyValue( wxT("style-none"), el->iget_textstyle() == E_TEXTSTYLE_NONE );
+    SetPropertyValue( wxT("style-shadow"), el->iget_textstyle() == E_TEXTSTYLE_SHADOW );
+  }
+  else if( name == wxT("style-shadow") )
+  {
+    if( val.GetBool() )
+    {
+      el->add_has(E_HAS_TEXTSTYLE);
+      el->set_textstyle(E_TEXTSTYLE_SHADOW);
+    }
+    else
+    {
+      el->remove_has(E_HAS_TEXTSTYLE);
+      el->set_textstyle(E_TEXTSTYLE_NONE);
+    }
+    SetPropertyValue( wxT("style-shadow"), el->iget_textstyle() == E_TEXTSTYLE_SHADOW );
+    SetPropertyValue( wxT("style-none"), el->iget_textstyle() == E_TEXTSTYLE_NONE );
+  }
   else
     return; // nothing changed
 
@@ -155,6 +188,10 @@ void FontPropertiesCtrl::from_element( ElementBase *el )
   CPMAElement *cel = static_cast<CPMAElement*>(el);
   SetPropertyValue( wxT("monospace"), cel->monospace() );
   SetPropertyValue( wxT("fontsizetype"), fontsizetype_element_to_ui(cel->fontsizetype()) );
+  SetPropertyValue( wxT("style-none"), cel->iget_textstyle() == E_TEXTSTYLE_NONE );
+  SetPropertyValue( wxT("style-shadow"), cel->iget_textstyle() == E_TEXTSTYLE_SHADOW );
+  //SetPropertyValue( wxT("style-none"), cel->has() & E_HAS_TEXTSTYLE && cel->textstyle() == E_TEXTSTYLE_NONE );
+  //SetPropertyValue( wxT("style-shadow"), cel->has() & E_HAS_TEXTSTYLE && cel->textstyle() & E_TEXTSTYLE_SHADOW );
   update_layout();
 }
 
@@ -224,6 +261,22 @@ void FontPropertiesCtrl::update_layout()
   }
   SetPropertyValue( wxT("textalign"), textalign_element_to_ui(el->iget_textalign()) );
 
+  // -- textstyle
+  int textstyle = el->iget_textstyle();
+  if( el->has() & E_HAS_TEXTSTYLE )
+  {
+    SetPropertyTextColour( wxT("style-none"), PROPS_COLOR_NORMAL );
+    SetPropertyColour( wxT("style-none"), PROPS_BGCOLOR_NORMAL );
+    SetPropertyTextColour( wxT("style-shadow"), PROPS_COLOR_NORMAL );
+    SetPropertyColour( wxT("style-shadow"), PROPS_BGCOLOR_NORMAL );
+  }
+  else
+  {
+    SetPropertyTextColour( wxT("style-none"), PROPS_COLOR_INHERITED );
+    SetPropertyColour( wxT("style-none"), PROPS_BGCOLOR_INHERITED );
+    SetPropertyTextColour( wxT("style-shadow"), PROPS_COLOR_INHERITED );
+    SetPropertyColour( wxT("style-shadow"), PROPS_BGCOLOR_INHERITED );
+  }
 
   // -- fontsize
   int type = el->fontsizetype();

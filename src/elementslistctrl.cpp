@@ -3,8 +3,7 @@
 #include "mainframe.h"
 #include "elementsctrlbase.h"
 
-#include "xpm/icons/element_disabled.xpm"
-#include "xpm/icons/element_enabled.xpm"
+
 #include "xpm/icons/elements_collection_title.xpm"
 #include "xpm/icons/elements_collection_item.xpm"
 
@@ -19,8 +18,8 @@ ElementsListCtrl::ElementsListCtrl( wxWindow *parent ) :
   m_imglist(16, 16, TRUE)
 {
   SetImageList( &m_imglist, wxIMAGE_LIST_SMALL );
-  m_imglist.Add(wxBitmap(element_disabled_xpm));
-  m_imglist.Add(wxBitmap(element_enabled_xpm));
+  m_imglist.Add(wxArtProvider::GetBitmap(ART_ELEMENT_DISABLED, wxART_OTHER, wxSize(16,16)));
+  m_imglist.Add(wxArtProvider::GetBitmap(ART_ELEMENT_ENABLED, wxART_OTHER, wxSize(16,16)));
   m_imglist.Add(wxBitmap(elements_collection_title_xpm));
   m_imglist.Add(wxBitmap(elements_collection_item_xpm));
 
@@ -56,13 +55,13 @@ void ElementsListCtrl::OnItemActivated( wxListEvent& ev )
   wxGetApp().mainframe()->OnPropertiesChanged();
 }
 
-bool ElementsListCtrl::update_item( long idx, ElementBase *pel /*=0*/ )
+bool ElementsListCtrl::update_item( long idx, const ElementBase *pel )
 {
   if( !pel )
   { // fetch
     if( !GetItemData(idx) )
       return false;
-    pel = (ElementBase*)GetItemData(idx);
+    pel = reinterpret_cast<const ElementBase*>(GetItemData(idx));
   }
   wxASSERT(pel != 0);
   wxListItem info;
@@ -72,6 +71,22 @@ bool ElementsListCtrl::update_item( long idx, ElementBase *pel /*=0*/ )
   info.m_image = (pel->is_enabled() ? E_LIST_IMG_ENABLED : E_LIST_IMG_DISABLED);
   SetItem( info );
   return true;
+}
+
+bool ElementsListCtrl::update_item( const ElementBase *pel )
+{
+  // look for item index
+  long idx = -1;
+  wxListItem info;
+  for ( ;; )
+  {
+    idx = GetNextItem(idx, wxLIST_NEXT_ALL, wxLIST_STATE_DONTCARE);
+    if ( idx == -1 )
+        break;
+    if( GetItemData(idx) == reinterpret_cast<const wxUIntPtr>(pel) )
+      return update_item(idx, pel);
+  }
+  return false;
 }
 
 

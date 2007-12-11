@@ -21,6 +21,7 @@ class Prefs
 
     // -- display
     wxString perspective;
+    /// possible values 'q4max' or 'cpma'
     wxString game;
 
     // -- mis

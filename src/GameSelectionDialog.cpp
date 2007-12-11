@@ -2,9 +2,7 @@
 
 #include "GameSelectionDialog.h"
 #include "common.h"
-
-#include "xpm/icons/cpma48.xpm"
-#include "xpm/icons/q4max48.xpm"
+#include "artprovider.h"
 
 BEGIN_EVENT_TABLE(GameSelectionDialog, wxDialog)
   EVT_BUTTON(ID_BTN_CPMA, GameSelectionDialog::OnBtnCPMA)
@@ -20,12 +18,12 @@ GameSelectionDialog::GameSelectionDialog(wxWindow* parent, int id, const wxStrin
     wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE)
 {
   /* FIXMEHERE
-    bitmap_button_2 = new wxBitmapButton(this, ID_BTN_CPMA, wxBitmap(cpma48_xpm));
-    bitmap_button_3 = new wxBitmapButton(this, ID_BTN_Q4MAX, wxBitmap(q4max48_xpm));
+    bitmap_button_2 = new wxBitmapButton(this, ID_BTN_CPMA, wwxArtProvider::GetIcon(ART_CPMA, wxART_MESSAGE_BOX, wxSize(48,48)) );
+    bitmap_button_2 = new wxBitmapButton(this, ID_BTN_Q4MAX wwxArtProvider::GetIcon(ART_Q4MAX, wxART_MESSAGE_BOX, wxSize(48,48)) );
   */
     // begin wxGlade: GameSelectionDialog::GameSelectionDialog
-    bitmap_button_2 = new wxBitmapButton(this, ID_BTN_CPMA, wxBitmap(cpma48_xpm));
-    bitmap_button_3 = new wxBitmapButton(this, ID_BTN_Q4MAX, wxBitmap(q4max48_xpm));
+    bitmap_button_2 = new wxBitmapButton(this, ID_BTN_CPMA, wxArtProvider::GetBitmap(ART_CPMA, wxART_MESSAGE_BOX, wxSize(48,48)) );
+    bitmap_button_2 = new wxBitmapButton(this, ID_BTN_Q4MAX, wxArtProvider::GetBitmap(ART_Q4MAX, wxART_MESSAGE_BOX, wxSize(48,48)) );
     label_2 = new wxStaticText(this, wxID_ANY, wxT("CPMA"));
     label_3 = new wxStaticText(this, wxID_ANY, wxT("Q4MAX"));
     m_startup_gameselection = new wxCheckBox(this, wxID_ANY, wxT("Do not ask me again (can be changed in Tools->Game..."));

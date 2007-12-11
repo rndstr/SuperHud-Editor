@@ -6,6 +6,8 @@
 
 #include "xpm/icons/cpma16.xpm"
 #include "xpm/icons/q4max16.xpm"
+#include "xpm/icons/cpma48.xpm"
+#include "xpm/icons/q4max48.xpm"
 
 #include "xpm/icons/align_left.xpm"
 #include "xpm/icons/align_center.xpm"
@@ -16,6 +18,9 @@
 
 #include "xpm/icons/element_copy.xpm"
 #include "xpm/icons/element_paste.xpm"
+
+#include "xpm/icons/element_enabled.xpm"
+#include "xpm/icons/element_disabled.xpm"
 
 const wxArtID ART_CPMA = _T("ART_CPMA");
 const wxArtID ART_Q4MAX = _T("ART_Q4MAX");
@@ -28,6 +33,9 @@ const wxArtID ART_ALIGN_BOTTOM = _T("ART_ALIGN_BOTTOM");
 const wxArtID ART_ELEMENT_COPY = _T("ART_ELEMENT_COPY");
 const wxArtID ART_ELEMENT_PASTE = _T("ART_ELEMENT_PASTE");
 
+const wxArtID ART_ELEMENT_ENABLED = _T("ART_ELEMENT_ENABLED");
+const wxArtID ART_ELEMENT_DISABLED = _T("ART_ELEMENT_DISABLED");
+
 
 class ArtProvider : public wxArtProvider
 {
@@ -35,9 +43,9 @@ class ArtProvider : public wxArtProvider
     virtual wxBitmap CreateBitmap(const wxArtID& id, const wxArtClient& client, const wxSize& size)
     { 
       if( id == ART_CPMA )
-        return wxBitmap(cpma16_xpm);
+        return (size == wxSize(48,48) ? wxBitmap(cpma48_xpm) : wxBitmap(cpma16_xpm));
       else if( id == ART_Q4MAX )
-        return wxBitmap(q4max16_xpm);
+        return (size == wxSize(48,48) ? wxBitmap(q4max48_xpm) : wxBitmap(q4max16_xpm));
 
       else if( id == ART_ALIGN_LEFT )
         return wxBitmap(align_left_xpm);
@@ -57,6 +65,11 @@ class ArtProvider : public wxArtProvider
         return wxBitmap(element_copy_xpm);
       else if( id == ART_ELEMENT_PASTE )
         return wxBitmap(element_paste_xpm);
+
+      else if( id == ART_ELEMENT_ENABLED )
+        return wxBitmap(element_enabled_xpm);
+      else if( id == ART_ELEMENT_DISABLED )
+        return wxBitmap(element_disabled_xpm);
       
       return wxNullBitmap;
     }

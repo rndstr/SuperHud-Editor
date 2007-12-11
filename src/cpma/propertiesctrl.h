@@ -6,6 +6,7 @@
 
 class PositionPropertiesCtrl;
 class FontPropertiesCtrl;
+class ColorPropertiesCtrl;
 
 class CPMAPropertiesCtrl : public PropertiesCtrlBase
 {
@@ -17,6 +18,7 @@ class CPMAPropertiesCtrl : public PropertiesCtrlBase
   private:
     PositionPropertiesCtrl  *m_pos;
     FontPropertiesCtrl      *m_font;
+    ColorPropertiesCtrl     *m_color;
 
 };
 

@@ -121,6 +121,11 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_mgr.LoadPerspective( Prefs::get().perspective );
   m_view_menu->Check( ID_MENU_VIEW_CONFIGPREVIEW, m_configpreview->IsShown() );
 
+  if( Prefs::get().game == wxT("q4max") )
+    SetIcon( wxArtProvider::GetIcon(ART_Q4MAX, wxART_FRAME_ICON, wxSize(16,16)) );
+  else
+    SetIcon( wxArtProvider::GetIcon(ART_CPMA, wxART_FRAME_ICON, wxSize(16,16)) );
+
   // default transparency hints throw assertions all over the place
   // on linux
 #ifndef WIN32
@@ -341,6 +346,7 @@ void MainFrame::OnElementSelectionChanged()
   propsinfo.Caption( caption );
   DoUpdate();
 
+  // -- update configpreview
   update_configpreview();
 
   // -- update propertiesctrl

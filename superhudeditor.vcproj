@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(WXWIN)\include\msvc;$(WXWIN)\include;$(WXWIN)\contrib\include"
+				AdditionalIncludeDirectories="$(WXWIN)\include\msvc;$(WXWIN)\include;$(SolutionDir)\src\wxpropgrid\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw28ud_propgrid.lib wxmsw28ud_core.lib wxbase28ud.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib"
+				AdditionalDependencies="wxmsw28ud_core.lib wxbase28ud.lib comctl32.lib rpcrt4.lib winmm.lib advapi32.lib wsock32.lib"
 				OutputFile="$(SolutionDir)\$(ProjectName)d.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="$(WXWIN)\lib\vc_lib"
@@ -192,6 +192,34 @@
 				RelativePath=".\src\pgfontsizeproperty.h"
 				>
 			</File>
+			<Filter
+				Name="wxPropertyGrid"
+				>
+				<File
+					RelativePath=".\src\wxpropgrid\src\propgrid\advprops.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\wxpropgrid\src\propgrid\extras.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\wxpropgrid\src\propgrid\manager.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\wxpropgrid\src\propgrid\odcombo.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\wxpropgrid\src\propgrid\propgrid.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\wxpropgrid\src\propgrid\props.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="src"
@@ -206,6 +234,14 @@
 			</File>
 			<File
 				RelativePath=".\src\color4.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\colorpropertiesctrl.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\colorpropertiesctrl.h"
 				>
 			</File>
 			<File
