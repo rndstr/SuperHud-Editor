@@ -46,8 +46,5 @@ wxRect ElementBase::iget_rect() const
     else r = parent->iget_rect();
   }
   return r; 
-
-
-
 }
 

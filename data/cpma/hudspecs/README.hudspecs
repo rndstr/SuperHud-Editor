@@ -55,7 +55,7 @@ The format of the file itself is as following:
 #   parent
 #     the element will inherit its contents to the others.
 #   noinherit
-#     do not inherit from elements that are inheriter (default they all inherit from inheriters).
+#     do not inherit from elements that are parent (default they all inherit from inheriters).
 #   multheight=<int>
 #     the real height (how it's drawn on the screen) will be computed by 
 #     multiplying it with this value (see also WeaponList)

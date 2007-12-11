@@ -18,10 +18,16 @@ typedef enum
 
 typedef enum
 {
+  E_FST_NONE,
   E_FST_POINT,
   E_FST_COORD
 } eElementFontSizeType;
 
+typedef enum
+{
+  E_TEXTSTYLE_NONE = 0,
+  E_TEXTSTYLE_SHADOW = 1
+} eElementTextStyle;;
 
 
 const int E_PROPERTIES_DEFAULT = E_HAS_NONE;
@@ -39,12 +45,13 @@ const int E_FONTSIZE_DEFAULT_COORDY = 12; // verified 1.35
 
 const Color4 E_BGCOLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 0.f ); // (alpha==0) verified
 const Color4 E_COLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 1.f ); // verified
-const wxString E_FONT_DEFAULT = wxT(""); // should be `cpma' or otherwise previews are drawn?
+const wxString E_FONT_DEFAULT = wxT("cpma"); // should be `cpma' or otherwise previews are drawn?
 const bool E_FILL_DEFAULT = false;
 const bool E_MONOSPACE_DEFAULT = false;
 const bool E_DOUBLEBAR_DEFAULT = false;
 const bool E_DRAW3D_DEFAULT = false;
 const char E_TEXTALIGN_DEFAULT = 'L';
+const int E_TEXTSTYLE_DEFAULT = E_TEXTSTYLE_NONE;
 /// @}
 
 
@@ -59,6 +66,30 @@ class CPMAElement : public ElementBase
 
     virtual void  write_properties( wxTextOutputStream& stream ) const;
     virtual bool  parse_property( const wxString& cmd, wxString args );
+
+    void        set_font( const wxString& font ) { m_font = font; }
+    wxString    font() const { return m_font; }
+    wxString    iget_font() const;
+
+    void        set_textalign( const wxChar& ta ) { m_textalign = ta; }
+    wxChar      iget_textalign() const;
+
+    void        set_monospace( bool monospace ) { m_monospace = monospace; }
+    bool        monospace() const { return m_monospace; }
+    bool        iget_monospace() const;
+
+    void        set_fontsizetype( int fst ) { m_fontsize_type = fst; }
+    int         fontsizetype() const { return m_fontsize_type; }
+    int         iget_fontsizetype() const;
+    void        set_fontsizept( int pt ) { m_fontsize_pt = pt; }
+    int         fontsizept() const { return m_fontsize_pt; }
+    int         iget_fontsizept() const;
+    void        set_fontsizex( int x ) { m_fontsize_x = x; }
+    int         fontsizex() const { return m_fontsize_x; }
+    int         iget_fontsizex() const;
+    void        set_fontsizey( int y ) { m_fontsize_y = y; }
+    int         fontsizey() const { return m_fontsize_y; }
+    int         iget_fontsizey() const;
 
   protected:
     wxString      m_desc;

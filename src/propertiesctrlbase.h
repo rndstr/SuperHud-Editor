@@ -6,8 +6,10 @@
 #include "hudfilebase.h"
 #include <wx/aui/auibook.h>
 
-const wxColour PROPS_COLOR_INHERITED = wxColour(170, 170, 255);
+const wxColour PROPS_COLOR_INHERITED = wxColour(100, 100, 150);
+const wxColour PROPS_BGCOLOR_INHERITED = wxColour(240, 240, 255);
 const wxColour PROPS_COLOR_NORMAL = wxColour(0, 0, 0);
+const wxColour PROPS_BGCOLOR_NORMAL = wxColour(255, 255, 255);
 
 class PropertiesCtrlBase : public wxAuiNotebook
 {

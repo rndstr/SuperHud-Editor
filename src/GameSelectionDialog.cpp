@@ -24,8 +24,8 @@ GameSelectionDialog::GameSelectionDialog(wxWindow* parent, int id, const wxStrin
     bitmap_button_3 = new wxBitmapButton(this, ID_BTN_Q4MAX, wxBitmap(q4max48_xpm));
   */
     // begin wxGlade: GameSelectionDialog::GameSelectionDialog
-    bitmap_button_2 = new wxBitmapButton(this, ID_BTN_CPMA, wxBitmap(wxT("E:\\projects\\cpp\\superhudeditor\\src\\xpm\\icons\\cpma48.xpm"), wxBITMAP_TYPE_ANY));
-    bitmap_button_3 = new wxBitmapButton(this, ID_BTN_Q4MAX, wxBitmap(wxT("E:\\projects\\cpp\\superhudeditor\\src\\xpm\\icons\\q4max48.xpm"), wxBITMAP_TYPE_ANY));
+    bitmap_button_2 = new wxBitmapButton(this, ID_BTN_CPMA, wxBitmap(cpma48_xpm));
+    bitmap_button_3 = new wxBitmapButton(this, ID_BTN_Q4MAX, wxBitmap(q4max48_xpm));
     label_2 = new wxStaticText(this, wxID_ANY, wxT("CPMA"));
     label_3 = new wxStaticText(this, wxID_ANY, wxT("Q4MAX"));
     m_startup_gameselection = new wxCheckBox(this, wxID_ANY, wxT("Do not ask me again (can be changed in Tools->Game..."));

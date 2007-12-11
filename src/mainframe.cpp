@@ -370,3 +370,4 @@ void MainFrame::update_configpreview()
   }  
   m_configpreview->SetValue(out);
 }
+

@@ -16,11 +16,12 @@ PositionPropertiesCtrl::PositionPropertiesCtrl( wxWindow *parent ) :
 {
   SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES);
   AddPage(_("Position/Size"));
-  Append( wxBoolProperty( _("Overwrite"), wxT("overwrite-rect"), false) );
 
-  Append( wxPropertyCategory( _("Position")) );
+  Append( wxBoolProperty( _("Use"), wxT("overwrite-rect"), false) );
   SetPropertyAttribute(wxT("overwrite-rect"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
   SetPropertyHelpString( wxT("overwrite-rect"), _("By default an element is drawn at position (0,0) with width 64 and height 32. Check this box to specify your own values.") );
+
+  Append( wxPropertyCategory( _("Position")) );
 
   Append( wxIntProperty( wxT("X"), wxPG_LABEL, 0) );
   SetPropertyHelpString( wxT("X"), _("This sets where the element is drawn, how many pixels from left") );
@@ -84,10 +85,12 @@ void PositionPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
 void PositionPropertiesCtrl::from_element( ElementBase *el )
 {
   SetPropertyValue( wxT("overwrite-rect"), el->has() & E_HAS_RECT );
+  /*
   SetPropertyValue( wxT("X"), el->m_rect.GetX() );
   SetPropertyValue( wxT("Y"), el->m_rect.GetY() );
   SetPropertyValue( wxT("Width"), el->m_rect.GetWidth() );
   SetPropertyValue( wxT("Height"), el->m_rect.GetHeight() );
+  */
   update_layout();
 }
 
@@ -108,17 +111,25 @@ void PositionPropertiesCtrl::update_layout()
   {
     r = el->iget_rect();
     SetPropertyTextColour( wxT("X"), PROPS_COLOR_INHERITED );
+    SetPropertyColour( wxT("X"), PROPS_BGCOLOR_INHERITED );
     SetPropertyTextColour( wxT("Y"), PROPS_COLOR_INHERITED );
+    SetPropertyColour( wxT("Y"), PROPS_BGCOLOR_INHERITED );
     SetPropertyTextColour( wxT("Width"), PROPS_COLOR_INHERITED );
+    SetPropertyColour( wxT("Width"), PROPS_BGCOLOR_INHERITED );
     SetPropertyTextColour( wxT("Height"), PROPS_COLOR_INHERITED );
+    SetPropertyColour( wxT("Height"), PROPS_BGCOLOR_INHERITED );
   }
   else
   {
     r = el->rect();
     SetPropertyTextColour( wxT("X"), PROPS_COLOR_NORMAL );
+    SetPropertyColour( wxT("X"), PROPS_BGCOLOR_NORMAL );
     SetPropertyTextColour( wxT("Y"), PROPS_COLOR_NORMAL );
+    SetPropertyColour( wxT("Y"), PROPS_BGCOLOR_NORMAL );
     SetPropertyTextColour( wxT("Width"), PROPS_COLOR_NORMAL );
+    SetPropertyColour( wxT("Width"), PROPS_BGCOLOR_NORMAL );
     SetPropertyTextColour( wxT("Height"), PROPS_COLOR_NORMAL );
+    SetPropertyColour( wxT("Height"), PROPS_BGCOLOR_NORMAL );
   }
   SetPropertyValue( wxT("X"), r.x );
   SetPropertyValue( wxT("Y"), r.y );

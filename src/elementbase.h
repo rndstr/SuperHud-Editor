@@ -89,7 +89,9 @@ class ElementBase
     const wxString& name() const { return m_name; }
     int             flags() const { return m_flags; }
     int             has() const { return m_has; }
-    bool            is_enabled() const { return m_enabled; }
+    void            add_has( int has ) { m_has |= has; }
+    void            remove_has( int has ) { m_has &= ~has; }
+    bool            is_enabled() const { return (m_flags & E_ENABLEALWAYS ? true : m_enabled); }
     void            set_enabled(bool en = true) { m_enabled = en; }
     wxRect          rect() const { return m_rect; }
 

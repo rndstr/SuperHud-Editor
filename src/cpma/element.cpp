@@ -1,5 +1,6 @@
 
 #include "element.h"
+#include "../hudfilebase.h"
 
 #include <wx/tokenzr.h>
 
@@ -20,7 +21,7 @@ ElementBase(name, desc, flags, has, enable),
     m_fontsize_pt(E_FONTSIZE_DEFAULT_POINT), m_fontsize_x(E_FONTSIZE_DEFAULT_COORDX), m_fontsize_y(E_FONTSIZE_DEFAULT_COORDY),
     m_textalign(E_TEXTALIGN_DEFAULT),
     m_time(-1),
-    m_textstyle(0),
+    m_textstyle(E_TEXTSTYLE_DEFAULT),
     m_monospace(E_MONOSPACE_DEFAULT),
     m_color(E_COLOR_DEFAULT),
     m_bgcolor(E_BGCOLOR_DEFAULT),
@@ -49,7 +50,7 @@ CPMAElement::CPMAElement( const hsitem_s& def ) :
     m_fontsize_pt(E_FONTSIZE_DEFAULT_POINT), m_fontsize_x(E_FONTSIZE_DEFAULT_COORDX), m_fontsize_y(E_FONTSIZE_DEFAULT_COORDY),
     m_textalign(E_TEXTALIGN_DEFAULT),
     m_time(-1),
-    m_textstyle(0),
+    m_textstyle(E_TEXTSTYLE_DEFAULT),
     m_monospace(E_MONOSPACE_DEFAULT),
     m_color(E_COLOR_DEFAULT),
     m_bgcolor(E_BGCOLOR_DEFAULT),
@@ -105,8 +106,8 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
         wxLogWarning( _("Unknown `fontsize' argument in element `%s', should be one (pointsize) or two (xy-size) numbers. (defaultvalues set)"), m_name.c_str() );
         m_fontsize_pt = E_FONTSIZE_DEFAULT_POINT;
       }
-      m_fontsize_x = E_FONTSIZE_NONE;
-      m_fontsize_y = E_FONTSIZE_NONE;
+      m_fontsize_x = E_FONTSIZE_DEFAULT_COORDX;
+      m_fontsize_y = E_FONTSIZE_DEFAULT_COORDY;
       m_fontsize_type = E_FST_POINT;
       m_has |= E_HAS_FONTSIZE;
       break;
@@ -119,7 +120,7 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
         m_fontsize_x = E_FONTSIZE_DEFAULT_COORDX;
         m_fontsize_y = E_FONTSIZE_DEFAULT_COORDY;
       }
-      m_fontsize_pt = E_FONTSIZE_NONE;
+      m_fontsize_pt = E_FONTSIZE_DEFAULT_POINT;
       m_fontsize_type = E_FST_COORD;
       m_has |= E_HAS_FONTSIZE;
       break;
@@ -165,6 +166,7 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
   }
   else if( cmd.CmpNoCase(wxT("textstyle"))==0 )
   {
+    sscanf( args.mb_str(), "%i", &m_textstyle );
     m_has |= E_HAS_TEXTSTYLE;
   }
   else if( cmd.CmpNoCase(wxT("monospace"))==0 )
@@ -324,4 +326,85 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
       stream << wxT("\n  ") << *cit;
   }   
 }
+
+
+wxString CPMAElement::iget_font() const
+{
+  wxString f = m_font;
+  if( !(m_has & E_HAS_FONT) )
+  {
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONT ));
+    if( parent == 0 ) f = E_FONT_DEFAULT;
+    else f = parent->iget_font();
+  }
+  return f; 
+}
+wxChar CPMAElement::iget_textalign() const
+{
+  wxChar ta = m_textalign;
+  if( !(m_has & E_HAS_TEXTALIGN) )
+  {
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TEXTALIGN ));
+    if( parent == 0 ) ta = E_TEXTALIGN_DEFAULT;
+    else ta = parent->iget_textalign();
+  }
+  return ta; 
+}
+bool CPMAElement::iget_monospace() const
+{
+  if( m_monospace )
+    return true;
+
+  const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_MONOSPACE ));
+
+  if( parent == 0 )
+    return false;
+
+  return parent->iget_monospace();
+}
+int CPMAElement::iget_fontsizetype() const
+{
+  int fst = m_fontsize_type;
+  if( !(m_has & E_HAS_FONTSIZE) )
+  {
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
+    if( parent == 0 ) fst = E_FST_POINT;
+    else fst = parent->iget_fontsizetype();
+  }
+  return fst; 
+}
+int CPMAElement::iget_fontsizept() const
+{
+  int s = m_fontsize_pt;
+  if( !(m_has & E_HAS_FONTSIZE) )
+  {
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
+    if( parent == 0 ) s = E_FONTSIZE_DEFAULT_POINT;
+    else s = parent->iget_fontsizept();
+  }
+  return s;
+}
+int CPMAElement::iget_fontsizex() const
+{
+  int s = m_fontsize_x;
+  if( !(m_has & E_HAS_FONTSIZE) )
+  {
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
+    if( parent == 0 ) s = E_FONTSIZE_DEFAULT_COORDX;
+    else s = parent->iget_fontsizex();
+  }
+  return s;
+}
+int CPMAElement::iget_fontsizey() const
+{
+  int s = m_fontsize_y;
+  if( !(m_has & E_HAS_FONTSIZE) )
+  {
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
+    if( parent == 0 ) s = E_FONTSIZE_DEFAULT_COORDY;
+    else s = parent->iget_fontsizey();
+  }
+  return s;
+}
+
 

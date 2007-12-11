@@ -33,6 +33,7 @@ void CPMAPropertiesCtrl::update_from_element( const elements_type& els )
     m_pos->ExpandAll();
     m_pos->from_element(m_curel);
     m_font->ExpandAll();
+    m_font->from_element(m_curel);
   }
 }
 
