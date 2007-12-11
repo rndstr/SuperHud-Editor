@@ -70,7 +70,7 @@ const wxString HF_PROPERTY_ARG_DELIM = wxT(" ");
 class ElementBase
 {
    friend class CPMAPropertiesCtrl;
-   friend class PositionPropertiesCtrl;
+   friend class VisibilityPropertiesCtrl;
   public:
     ElementBase( const wxString& name, const wxString& desc = wxT(""), int flags = E_NONE, int has = E_HAS_NONE, bool enabled = false, 
       const wxRect& rect = E_RECT_DEFAULT ) :

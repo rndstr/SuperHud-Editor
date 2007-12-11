@@ -4,9 +4,10 @@
 #include "../propertiesctrlbase.h"
 
 
-class PositionPropertiesCtrl;
+class VisibilityPropertiesCtrl;
 class FontPropertiesCtrl;
 class ColorPropertiesCtrl;
+class MiscPropertiesCtrl;
 
 class CPMAPropertiesCtrl : public PropertiesCtrlBase
 {
@@ -16,9 +17,10 @@ class CPMAPropertiesCtrl : public PropertiesCtrlBase
     void update_from_element( const elements_type& els );
 
   private:
-    PositionPropertiesCtrl  *m_pos;
+    VisibilityPropertiesCtrl  *m_vis;
     FontPropertiesCtrl      *m_font;
     ColorPropertiesCtrl     *m_color;
+    MiscPropertiesCtrl        *m_misc;
 
 };
 

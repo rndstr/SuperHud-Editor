@@ -20,7 +20,7 @@ ElementBase(name, desc, flags, has, enable),
     m_fontsize_type(E_FST_POINT),
     m_fontsize_pt(E_FONTSIZE_DEFAULT_POINT), m_fontsize_x(E_FONTSIZE_DEFAULT_COORDX), m_fontsize_y(E_FONTSIZE_DEFAULT_COORDY),
     m_textalign(E_TEXTALIGN_DEFAULT),
-    m_time(-1),
+    m_time(E_TIME_DEFAULT),
     m_textstyle(E_TEXTSTYLE_DEFAULT),
     m_monospace(E_MONOSPACE_DEFAULT),
     m_color(E_COLOR_DEFAULT),
@@ -49,7 +49,7 @@ CPMAElement::CPMAElement( const hsitem_s& def ) :
     m_fontsize_type(E_FST_POINT),
     m_fontsize_pt(E_FONTSIZE_DEFAULT_POINT), m_fontsize_x(E_FONTSIZE_DEFAULT_COORDX), m_fontsize_y(E_FONTSIZE_DEFAULT_COORDY),
     m_textalign(E_TEXTALIGN_DEFAULT),
-    m_time(-1),
+    m_time(E_TIME_DEFAULT),
     m_textstyle(E_TEXTSTYLE_DEFAULT),
     m_monospace(E_MONOSPACE_DEFAULT),
     m_color(E_COLOR_DEFAULT),
@@ -327,7 +327,17 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
   }   
 }
 
-
+int CPMAElement::iget_time() const
+{
+  int t = m_time;
+  if( !(m_has & E_HAS_TIME) )
+  {
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TIME ));
+    if( parent == 0 ) t = E_TIME_DEFAULT;
+    else t = parent->iget_time();
+  }
+  return t; 
+}
 wxString CPMAElement::iget_font() const
 {
   wxString f = m_font;
@@ -352,7 +362,7 @@ wxChar CPMAElement::iget_textalign() const
 }
 bool CPMAElement::iget_monospace() const
 {
-  if( m_monospace )
+  if( m_has & E_HAS_MONOSPACE && m_monospace )
     return true;
 
   const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_MONOSPACE ));
@@ -361,6 +371,30 @@ bool CPMAElement::iget_monospace() const
     return false;
 
   return parent->iget_monospace();
+}
+bool CPMAElement::iget_doublebar() const
+{
+  if( m_has & E_HAS_DOUBLEBAR && m_doublebar )
+    return true;
+
+  const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_DOUBLEBAR ));
+
+  if( parent == 0 )
+    return false;
+
+  return parent->iget_doublebar();
+}
+bool CPMAElement::iget_draw3d() const
+{
+  if( m_has & E_HAS_DRAW3D && m_draw3d )
+    return true;
+
+  const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_DRAW3D ));
+
+  if( parent == 0 )
+    return false;
+
+  return parent->iget_draw3d();
 }
 int CPMAElement::iget_fontsizetype() const
 {

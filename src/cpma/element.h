@@ -54,6 +54,7 @@ const bool E_DOUBLEBAR_DEFAULT = false;
 const bool E_DRAW3D_DEFAULT = false;
 const char E_TEXTALIGN_DEFAULT = 'L';
 const int E_TEXTSTYLE_DEFAULT = E_TEXTSTYLE_NONE;
+const int E_TIME_DEFAULT = 0;
 /// @}
 
 
@@ -69,6 +70,9 @@ class CPMAElement : public ElementBase
     virtual void  write_properties( wxTextOutputStream& stream ) const;
     virtual bool  parse_property( const wxString& cmd, wxString args );
 
+    int         iget_time() const;
+    void        set_time( int time ) { m_time = time; }
+
     void        set_font( const wxString& font ) { m_font = font; }
     wxString    font() const { return m_font; }
     wxString    iget_font() const;
@@ -79,6 +83,14 @@ class CPMAElement : public ElementBase
     void        set_monospace( bool monospace ) { m_monospace = monospace; }
     bool        monospace() const { return m_monospace; }
     bool        iget_monospace() const;
+
+    void        set_draw3d( bool draw3d ) { m_draw3d = draw3d; }
+    bool        draw3d() const { return m_draw3d; }
+    bool        iget_draw3d() const;
+
+    void        set_doublebar( bool doublebar ) { m_doublebar = doublebar; }
+    bool        doublebar() const { return m_doublebar; }
+    bool        iget_doublebar() const;
 
     void        set_fontsizetype( int fst ) { m_fontsize_type = fst; }
     int         fontsizetype() const { return m_fontsize_type; }

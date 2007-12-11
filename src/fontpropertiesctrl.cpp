@@ -17,7 +17,7 @@ FontPropertiesCtrl::FontPropertiesCtrl( wxWindow *parent ) :
   wxPropertyGridManager( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
             wxDefaultSize, wxPG_BOLD_MODIFIED|wxPG_SPLITTER_AUTO_CENTER|wxPG_DESCRIPTION|wxPGMAN_DEFAULT_STYLE )
 {
-  SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES);
+  //SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES);
   AddPage(_("Font"));
 
   Append( wxPropertyCategory( _("Font")) );
@@ -25,13 +25,14 @@ FontPropertiesCtrl::FontPropertiesCtrl( wxWindow *parent ) :
   static const wxChar* font_type[] = {wxEmptyString, wxT("cpma"), wxT("id"), wxT("idblock"), wxT("threewave"), (const wxChar*)0};
   Append( wxEnumProperty(_("Type"), wxT("font"), font_type) );
   SetPropertyEditor(wxT("font"), wxPG_EDITOR(Choice));
+  wxPGCheckBoxEditor
 
   static const wxChar* align[] = {wxEmptyString, wxT("left"), wxT("center"), wxT("right"), (const wxChar*)0};
   Append( wxEnumProperty(_("Alignment"), wxT("textalign"), align) );
   SetPropertyEditor(wxT("textalign"), wxPG_EDITOR(Choice));
 
   Append( wxBoolProperty( _("Monospace"), wxT("monospace"), false) );
-  SetPropertyAttribute(wxT("monospace"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
+//  SetPropertyAttribute(wxT("monospace"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
   SetPropertyHelpString( wxT("monospace"), _("Displays all characters of the font with the same width") );
 
   Append( wxPropertyCategory( _("Style") ) );
@@ -66,7 +67,7 @@ void FontPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   PropertiesCtrlBase *p = wxGetApp().mainframe()->propsctrl();
   if( !p )
   {
-    wxLogDebug(wxT("PositionPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
+    wxLogDebug(wxT("FontPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
     return;
   }
   CPMAElement *el = static_cast<CPMAElement*>(p->curel());
@@ -106,10 +107,7 @@ void FontPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
     if( el->flags() & E_PARENT && ms )
       wxMessageBox( _("Be aware that the `Monospace' you just ticked cannot be disabled on subsequent elements!") );
     el->set_monospace(ms);
-    if( ms )
-      el->add_has( E_HAS_MONOSPACE );
-    else
-      el->remove_has( E_HAS_MONOSPACE );
+    el->add_has( E_HAS_MONOSPACE, ms );
   }
   else if( name == wxT("fontsizetype") )
   {
@@ -186,10 +184,11 @@ void FontPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
 void FontPropertiesCtrl::from_element( ElementBase *el )
 {
   CPMAElement *cel = static_cast<CPMAElement*>(el);
-  SetPropertyValue( wxT("monospace"), cel->monospace() );
+  SetPropertyValue( wxT("monospace"), cel->iget_monospace() );
   SetPropertyValue( wxT("fontsizetype"), fontsizetype_element_to_ui(cel->fontsizetype()) );
   SetPropertyValue( wxT("style-none"), cel->iget_textstyle() == E_TEXTSTYLE_NONE );
   SetPropertyValue( wxT("style-shadow"), cel->iget_textstyle() == E_TEXTSTYLE_SHADOW );
+
   //SetPropertyValue( wxT("style-none"), cel->has() & E_HAS_TEXTSTYLE && cel->textstyle() == E_TEXTSTYLE_NONE );
   //SetPropertyValue( wxT("style-shadow"), cel->has() & E_HAS_TEXTSTYLE && cel->textstyle() & E_TEXTSTYLE_SHADOW );
   update_layout();
@@ -230,7 +229,7 @@ void FontPropertiesCtrl::update_layout()
   PropertiesCtrlBase *p = wxGetApp().mainframe()->propsctrl();
   if( !p )
   {
-    wxLogDebug(wxT("PositionPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
+    wxLogDebug(wxT("FontPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
     return;
   }
   CPMAElement *el = static_cast<CPMAElement*>(p->curel());
@@ -262,7 +261,6 @@ void FontPropertiesCtrl::update_layout()
   SetPropertyValue( wxT("textalign"), textalign_element_to_ui(el->iget_textalign()) );
 
   // -- textstyle
-  int textstyle = el->iget_textstyle();
   if( el->has() & E_HAS_TEXTSTYLE )
   {
     SetPropertyTextColour( wxT("style-none"), PROPS_COLOR_NORMAL );
@@ -336,6 +334,19 @@ void FontPropertiesCtrl::update_layout()
       SetPropertyTextColour( wxT("fontsize_y"), PROPS_COLOR_INHERITED );
       SetPropertyColour( wxT("fontsize_y"), PROPS_BGCOLOR_INHERITED );
     }
+  }
+  bool ms = el->iget_monospace();
+  if( !(el->has() & E_HAS_MONOSPACE) && ms )
+  { // we inherit true.. so no way to turn it off :o
+    SetPropertyReadOnly( wxT("monospace"), true );
+    SetPropertyTextColour( wxT("monospace"), PROPS_COLOR_INHERITED );
+    SetPropertyColour( wxT("monospace"), PROPS_BGCOLOR_INHERITED );
+  }
+  else
+  {
+    SetPropertyReadOnly( wxT("monospace"), false );
+    SetPropertyTextColour( wxT("monospace"), PROPS_COLOR_NORMAL );
+    SetPropertyColour( wxT("monospace"), PROPS_BGCOLOR_NORMAL );
   }
 }
 

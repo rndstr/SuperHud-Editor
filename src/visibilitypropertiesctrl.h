@@ -1,5 +1,5 @@
-#ifndef __POSITIONPROPERTIESCTRL_H__
-#define __POSITIONPROPERTIESCTRL_H__
+#ifndef __VISIBILITYPROPERTIESCTRL_H__
+#define __VISIBILITYPROPERTIESCTRL_H__
 
 
 #include <wx/wx.h>
@@ -9,10 +9,10 @@
 
 class ElementBase;
 
-class PositionPropertiesCtrl : public wxPropertyGridManager
+class VisibilityPropertiesCtrl : public wxPropertyGridManager
 {
   public:
-    PositionPropertiesCtrl( wxWindow *parent );
+    VisibilityPropertiesCtrl( wxWindow *parent );
 
     void from_element( ElementBase *el );
     void update_layout();
@@ -28,4 +28,4 @@ class PositionPropertiesCtrl : public wxPropertyGridManager
 };
 
 
-#endif // __POSITIONPROPERTIESCTRL_H__
+#endif // __VISIBILITYPROPERTIESCTRL_H__

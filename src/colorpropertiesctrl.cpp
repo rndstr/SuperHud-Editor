@@ -3,7 +3,6 @@
 #include "common.h"
 #include "mainframe.h"
 #include "hudfilebase.h"
-#include "elementbase.h"
 #include "propertiesctrlbase.h"
 #include "pgfontsizeproperty.h"
 
@@ -20,7 +19,7 @@ ColorPropertiesCtrl::ColorPropertiesCtrl( wxWindow *parent ) :
   wxPropertyGridManager( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
             wxDefaultSize, wxPG_BOLD_MODIFIED|wxPG_SPLITTER_AUTO_CENTER|wxPG_DESCRIPTION|wxPGMAN_DEFAULT_STYLE )
 {
-  SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES);
+  //SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES);
   AddPage(_("Color"));
 
   Append( wxPropertyCategory(_("Foreground")) );
@@ -57,7 +56,7 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   PropertiesCtrlBase *p = wxGetApp().mainframe()->propsctrl();
   if( !p )
   {
-    wxLogDebug(wxT("PositionPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
+    wxLogDebug(wxT("VisibilityPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
     return;
   }
   CPMAElement *el = static_cast<CPMAElement*>(p->curel());
@@ -122,7 +121,7 @@ void ColorPropertiesCtrl::update_layout()
   PropertiesCtrlBase *p = wxGetApp().mainframe()->propsctrl();
   if( !p )
   {
-    wxLogDebug(wxT("PositionPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
+    wxLogDebug(wxT("ColorPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
     return;
   }
   CPMAElement *el = static_cast<CPMAElement*>(p->curel());

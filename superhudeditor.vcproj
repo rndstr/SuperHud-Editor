@@ -321,11 +321,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\positionpropertiesctrl.cpp"
+				RelativePath=".\src\miscpropertiesctrl.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\positionpropertiesctrl.h"
+				RelativePath=".\src\miscpropertiesctrl.h"
 				>
 			</File>
 			<File
@@ -350,6 +350,14 @@
 			</File>
 			<File
 				RelativePath=".\src\superhudeditor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\visibilitypropertiesctrl.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\visibilitypropertiesctrl.h"
 				>
 			</File>
 			<Filter
