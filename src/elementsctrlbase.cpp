@@ -18,7 +18,6 @@ using namespace std;
 BEGIN_EVENT_TABLE(ElementsCtrlBase, wxPanel)
   EVT_BUTTON(ID_BTN_COPY, ElementsCtrlBase::OnBtnCopy)
   EVT_BUTTON(ID_BTN_PASTE, ElementsCtrlBase::OnBtnPaste)
-
 END_EVENT_TABLE()
 
 // begin wxGlade: ::extracode

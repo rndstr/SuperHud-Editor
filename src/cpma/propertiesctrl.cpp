@@ -15,7 +15,7 @@ CPMAPropertiesCtrl::CPMAPropertiesCtrl( wxWindow *parent ) :
   m_pos = new PositionPropertiesCtrl(this);
   m_font = new FontPropertiesCtrl(this);
   m_color = new ColorPropertiesCtrl(this);
-  AddPage( m_pos, _("Position/Size") );
+  AddPage( m_pos, _("Position") );
   AddPage( m_font, _("Font") );
   AddPage( m_color, _("Color") );
 }

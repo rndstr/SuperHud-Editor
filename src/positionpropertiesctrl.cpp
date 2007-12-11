@@ -18,7 +18,7 @@ PositionPropertiesCtrl::PositionPropertiesCtrl( wxWindow *parent ) :
             wxDefaultSize, wxPG_BOLD_MODIFIED|wxPG_SPLITTER_AUTO_CENTER|wxPG_DESCRIPTION|wxPG_TOOLBAR|wxPGMAN_DEFAULT_STYLE )
 {
   SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES);
-  AddPage(_("Position/Size"));
+  AddPage(_("Position"));
 
   Append( wxBoolProperty( _("Use"), wxT("overwrite-rect"), false) );
   SetPropertyAttribute(wxT("overwrite-rect"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
@@ -68,14 +68,15 @@ void PositionPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   }
   ElementBase *el = p->curel();
   wxString name = ev.GetPropertyName();
+  wxVariant val = ev.GetPropertyValue();
   if( name == wxT("overwrite-rect") )
   {
-    if( ev.GetPropertyValueAsBool() )
-      el->m_has |= E_HAS_RECT;
-    else
-      el->m_has &= ~E_HAS_RECT;
-
-    update_layout();
+    el->add_has( E_HAS_RECT, val.GetBool() );
+    wxRect r = el->iget_rect();
+    SetPropertyValue( wxT("X"), r.GetX() );
+    SetPropertyValue( wxT("Y"), r.GetY() );
+    SetPropertyValue( wxT("Width"), r.GetWidth() );
+    SetPropertyValue( wxT("Height"), r.GetHeight() );
   }
   else if( name == wxT("X") || name == wxT("Y") || name == wxT("Height") || name == wxT("Width") )
   {
@@ -93,10 +94,11 @@ void PositionPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
       el->m_rect.width = ev.GetPropertyValueAsInt();
     else if( name == wxT("Height") )
       el->m_rect.height = ev.GetPropertyValueAsInt();
-    update_layout();
   }
   else
     return; // nothing changed
+
+  update_layout();
 
   // propagate
   wxGetApp().mainframe()->OnPropertiesChanged();
@@ -109,12 +111,12 @@ void PositionPropertiesCtrl::from_element( ElementBase *el )
   tb->ToggleTool( (el->is_enabled() ? ID_BTN_ELEMENT_ENABLE : ID_BTN_ELEMENT_DISABLE), true );
   tb->Enable( !(el->flags() & E_ENABLEALWAYS) );
     
-  /*
-  SetPropertyValue( wxT("X"), el->m_rect.GetX() );
-  SetPropertyValue( wxT("Y"), el->m_rect.GetY() );
-  SetPropertyValue( wxT("Width"), el->m_rect.GetWidth() );
-  SetPropertyValue( wxT("Height"), el->m_rect.GetHeight() );
-  */
+  wxRect r = el->iget_rect();
+  SetPropertyValue( wxT("X"), r.GetX() );
+  SetPropertyValue( wxT("Y"), r.GetY() );
+  SetPropertyValue( wxT("Width"), r.GetWidth() );
+  SetPropertyValue( wxT("Height"), r.GetHeight() );
+
   update_layout();
 }
 
@@ -128,24 +130,9 @@ void PositionPropertiesCtrl::update_layout()
   }
   ElementBase *el = p->curel();
 
-  bool ov = GetPropertyValueAsBool( wxT("overwrite-rect") );
   
-  wxRect r;
-  if( !ov )
+  if( el->has() & E_HAS_RECT )
   {
-    r = el->iget_rect();
-    SetPropertyTextColour( wxT("X"), PROPS_COLOR_INHERITED );
-    SetPropertyColour( wxT("X"), PROPS_BGCOLOR_INHERITED );
-    SetPropertyTextColour( wxT("Y"), PROPS_COLOR_INHERITED );
-    SetPropertyColour( wxT("Y"), PROPS_BGCOLOR_INHERITED );
-    SetPropertyTextColour( wxT("Width"), PROPS_COLOR_INHERITED );
-    SetPropertyColour( wxT("Width"), PROPS_BGCOLOR_INHERITED );
-    SetPropertyTextColour( wxT("Height"), PROPS_COLOR_INHERITED );
-    SetPropertyColour( wxT("Height"), PROPS_BGCOLOR_INHERITED );
-  }
-  else
-  {
-    r = el->rect();
     SetPropertyTextColour( wxT("X"), PROPS_COLOR_NORMAL );
     SetPropertyColour( wxT("X"), PROPS_BGCOLOR_NORMAL );
     SetPropertyTextColour( wxT("Y"), PROPS_COLOR_NORMAL );
@@ -155,10 +142,17 @@ void PositionPropertiesCtrl::update_layout()
     SetPropertyTextColour( wxT("Height"), PROPS_COLOR_NORMAL );
     SetPropertyColour( wxT("Height"), PROPS_BGCOLOR_NORMAL );
   }
-  SetPropertyValue( wxT("X"), r.x );
-  SetPropertyValue( wxT("Y"), r.y );
-  SetPropertyValue( wxT("Width"), r.width );
-  SetPropertyValue( wxT("Height"), r.height );
+  else
+  {
+    SetPropertyTextColour( wxT("X"), PROPS_COLOR_INHERITED );
+    SetPropertyColour( wxT("X"), PROPS_BGCOLOR_INHERITED );
+    SetPropertyTextColour( wxT("Y"), PROPS_COLOR_INHERITED );
+    SetPropertyColour( wxT("Y"), PROPS_BGCOLOR_INHERITED );
+    SetPropertyTextColour( wxT("Width"), PROPS_COLOR_INHERITED );
+    SetPropertyColour( wxT("Width"), PROPS_BGCOLOR_INHERITED );
+    SetPropertyTextColour( wxT("Height"), PROPS_COLOR_INHERITED );
+    SetPropertyColour( wxT("Height"), PROPS_BGCOLOR_INHERITED );
+  }
 }
 
 void PositionPropertiesCtrl::OnElementVisibility( wxCommandEvent& ev )
@@ -174,6 +168,9 @@ void PositionPropertiesCtrl::OnElementVisibility( wxCommandEvent& ev )
   ElementBase *el = p->curel();
   el->set_enabled( ev.GetId() == ID_BTN_ELEMENT_ENABLE );
 
+  // -- update elementicon in list
   wxGetApp().mainframe()->elementsctrl()->elementslistctrl()->update_item(el);
+
+  wxGetApp().mainframe()->OnPropertiesChanged();
 }
 

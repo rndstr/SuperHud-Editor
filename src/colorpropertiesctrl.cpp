@@ -9,7 +9,8 @@
 
 #include "cpma/element.h"
 
- #include <wx/propgrid/advprops.h>
+#include <wx/propgrid/advprops.h>
+#include <wx/propgrid/propgrid.h>
 
 BEGIN_EVENT_TABLE(ColorPropertiesCtrl, wxPropertyGridManager)
   EVT_PG_CHANGED(ID_NOTEBOOK_PROPERTIES, ColorPropertiesCtrl::OnItemChanged)
@@ -28,6 +29,8 @@ ColorPropertiesCtrl::ColorPropertiesCtrl( wxWindow *parent ) :
   Append( wxColourProperty(_("Color"), wxT("color")) );
   SetPropertyHelpString( wxT("color"), _("Sets the foreground color for the element.") );
   Append( wxUIntProperty(_("Opaqueness"), wxT("color-alpha")) );
+//  SetPropertyValidator( wxT("color-alpha"), alpha_validator );
+  
 
   Append( wxPropertyCategory(_("Background")) );
   Append( wxBoolProperty( _("Use"), wxT("bgcolor-use"), false) );

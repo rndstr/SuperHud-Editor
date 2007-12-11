@@ -1,0 +1,17 @@
+User Interface Design Conventions
+
+
+Element properties:
+
+- properties can be in groups, e.g. the position&size all belong to a single script
+  command named `rect'. So if a user overwrites the position he automatically overwrites
+  the size as well.
+- Properties that are being inherited are colored differently and contain the value they 
+  inherit (either from a parent (!DEFAULT) or by the game's default values)
+- if a user changes a colored property the whole property group is copied from the
+  parent and the newly modified value set. (i.e. he inherits the values but the own
+  change is applied and from now on that element overwrites that propertygroup)
+- if a user clicks the checkbox the parental values aren't copied but the element's
+  values are taken (which probably are either default or those that have been set
+  previously while the property was set to be overwritten)
+  
