@@ -1,19 +1,19 @@
 #include "fontpropertiesctrl.h"
 
-#include "common.h"
-#include "mainframe.h"
-#include "hudfilebase.h"
-#include "elementbase.h"
-#include "propertiesnotebookbase.h"
+#include "../common.h"
+#include "../mainframe.h"
+#include "../hudfilebase.h"
+#include "../elementbase.h"
+#include "../propertiesnotebookbase.h"
 
-#include "cpma/element.h"
+#include "element.h"
 
-BEGIN_EVENT_TABLE(FontPropertiesCtrl, wxPropertyGridManager)
+BEGIN_EVENT_TABLE(FontPropertiesCtrl, CPMAPropertyGridBase)
   EVT_PG_CHANGED(ID_NOTEBOOK_PROPERTIES, FontPropertiesCtrl::OnItemChanged)
 END_EVENT_TABLE()
 
 FontPropertiesCtrl::FontPropertiesCtrl( wxWindow *parent ) :
-  wxPropertyGridManager( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
+  CPMAPropertyGridBase( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
             wxDefaultSize, wxPG_BOLD_MODIFIED|wxPG_SPLITTER_AUTO_CENTER|wxPG_DESCRIPTION|wxPGMAN_DEFAULT_STYLE )
 {
   //SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES);

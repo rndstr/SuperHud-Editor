@@ -1,12 +1,12 @@
 #include "miscpropertiesctrl.h"
 
-#include "common.h"
-#include "mainframe.h"
-#include "hudfilebase.h"
-#include "elementbase.h"
-#include "propertiesnotebookbase.h"
+#include "../common.h"
+#include "../mainframe.h"
+#include "../hudfilebase.h"
+#include "../elementbase.h"
+#include "../propertiesnotebookbase.h"
 
-#include "cpma/element.h"
+#include "element.h"
 
 BEGIN_EVENT_TABLE(MiscPropertiesCtrl, CPMAPropertyGridBase)
   EVT_PG_CHANGED(ID_NOTEBOOK_PROPERTIES, MiscPropertiesCtrl::OnItemChanged)
@@ -39,13 +39,7 @@ void MiscPropertiesCtrl::OnItemChanging( wxPropertyGridEvent& ev )
   wxPGProperty *prop = ev.GetProperty();
   if( !prop ) return;
 
-  PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesnotebook();
-  if( !p )
-  {
-    wxLogDebug(wxT("MiscPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
-    return;
-  }
-  CPMAElement *el = static_cast<CPMAElement*>(p->curel());
+  CPMAElement *el = current_element();
   if( !el ) return;
 
   wxString name = prop->GetName();
@@ -62,13 +56,7 @@ void MiscPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   wxPGProperty *prop = ev.GetProperty();
   if( !prop ) return;
 
-  PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesnotebook();
-  if( !p )
-  {
-    wxLogDebug(wxT("MiscPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
-    return;
-  }
-  CPMAElement *el = static_cast<CPMAElement*>(p->curel());
+  CPMAElement *el = current_element();
   if( !el ) return;
 
   wxString name = prop->GetName();
@@ -126,13 +114,7 @@ void MiscPropertiesCtrl::from_element( ElementBase *el )
 
 void MiscPropertiesCtrl::update_layout()
 {
-  PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesnotebook();
-  if( !p )
-  {
-    wxLogDebug(wxT("MiscPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
-    return;
-  }
-  CPMAElement *el = static_cast<CPMAElement*>(p->curel());
+  CPMAElement *el = current_element();
 
   if( el->doublebar() )
   {

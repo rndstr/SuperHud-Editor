@@ -1,17 +1,18 @@
-#ifndef __COLORPROPERTIESCTRL_H__
-#define __COLORPROPERTIESCTRL_H__
+#ifndef __CPMA_FONTPROPERTIESCTRL_H__
+#define __CPMA_FONTPROPERTIESCTRL_H__
 
 #include <wx/wx.h>
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/manager.h>
 
+#include "propertygridbase.h"
 
 class ElementBase;
 
-class ColorPropertiesCtrl : public wxPropertyGridManager
+class FontPropertiesCtrl : public CPMAPropertyGridBase
 {
   public:
-    ColorPropertiesCtrl( wxWindow *parent );
+    FontPropertiesCtrl( wxWindow *parent );
 
     void from_element( ElementBase *el );
     void update_layout();

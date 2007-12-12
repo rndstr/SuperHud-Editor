@@ -1,5 +1,5 @@
-#ifndef __MISCPROPERTIESCTRL_H__
-#define __MISCPROPERTIESCTRL_H__
+#ifndef __CPMA_MISCPROPERTIESCTRL_H__
+#define __CPMA_MISCPROPERTIESCTRL_H__
 
 #include <wx/wx.h>
 #include <wx/propgrid/propgrid.h>

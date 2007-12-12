@@ -1,15 +1,16 @@
-#ifndef __VISIBILITYPROPERTIESCTRL_H__
-#define __VISIBILITYPROPERTIESCTRL_H__
+#ifndef __CPMA_VISIBILITYPROPERTIESCTRL_H__
+#define __CPMA_VISIBILITYPROPERTIESCTRL_H__
 
 
 #include <wx/wx.h>
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/manager.h>
 
+#include "propertygridbase.h"
 
 class ElementBase;
 
-class VisibilityPropertiesCtrl : public wxPropertyGridManager
+class VisibilityPropertiesCtrl : public CPMAPropertyGridBase
 {
   public:
     VisibilityPropertiesCtrl( wxWindow *parent );

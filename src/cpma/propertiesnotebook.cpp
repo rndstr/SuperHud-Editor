@@ -3,7 +3,7 @@
 #include "../visibilitypropertiesctrl.h"
 #include "../fontpropertiesctrl.h"
 #include "../colorpropertiesctrl.h"
-#include "../miscpropertiesctrl.h"
+#include "miscpropertiesctrl.h"
 
 #include "element.h"
 #include <wx/propgrid/propgrid.h>

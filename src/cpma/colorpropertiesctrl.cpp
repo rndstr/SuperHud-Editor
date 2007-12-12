@@ -1,21 +1,21 @@
 #include "colorpropertiesctrl.h"
 
-#include "common.h"
-#include "mainframe.h"
-#include "hudfilebase.h"
-#include "propertiesnotebookbase.h"
+#include "../common.h"
+#include "../mainframe.h"
+#include "../hudfilebase.h"
+#include "../propertiesnotebookbase.h"
 
-#include "cpma/element.h"
+#include "element.h"
 
 #include <wx/propgrid/advprops.h>
 #include <wx/propgrid/propgrid.h>
 
-BEGIN_EVENT_TABLE(ColorPropertiesCtrl, wxPropertyGridManager)
+BEGIN_EVENT_TABLE(ColorPropertiesCtrl, CPMAPropertyGridBase)
   EVT_PG_CHANGED(ID_NOTEBOOK_PROPERTIES, ColorPropertiesCtrl::OnItemChanged)
 END_EVENT_TABLE()
 
 ColorPropertiesCtrl::ColorPropertiesCtrl( wxWindow *parent ) :
-  wxPropertyGridManager( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
+  CPMAPropertyGridBase( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
             wxDefaultSize, wxPG_BOLD_MODIFIED|wxPG_SPLITTER_AUTO_CENTER|wxPG_DESCRIPTION|wxPGMAN_DEFAULT_STYLE )
 {
   //SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES);

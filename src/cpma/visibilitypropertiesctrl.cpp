@@ -1,21 +1,21 @@
 #include "visibilitypropertiesctrl.h"
 
-#include "common.h"
-#include "mainframe.h"
-#include "hudfilebase.h"
-#include "elementsctrlbase.h"
-#include "propertiesnotebookbase.h"
+#include "../common.h"
+#include "../mainframe.h"
+#include "../hudfilebase.h"
+#include "../elementsctrlbase.h"
+#include "../propertiesnotebookbase.h"
 
-#include "cpma/element.h"
+#include "element.h"
 
-BEGIN_EVENT_TABLE(VisibilityPropertiesCtrl, wxPropertyGridManager)
+BEGIN_EVENT_TABLE(VisibilityPropertiesCtrl, CPMAPropertyGridBase)
   EVT_PG_CHANGED(ID_NOTEBOOK_PROPERTIES, VisibilityPropertiesCtrl::OnItemChanged)
   EVT_TOOL_RANGE(ID_BTN_ELEMENT_ENABLE, ID_BTN_ELEMENT_DISABLE,
     VisibilityPropertiesCtrl::OnElementVisibility)
 END_EVENT_TABLE()
 
 VisibilityPropertiesCtrl::VisibilityPropertiesCtrl( wxWindow *parent ) :
-  wxPropertyGridManager( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
+  CPMAPropertyGridBase( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
             wxDefaultSize, wxPG_BOLD_MODIFIED|wxPG_SPLITTER_AUTO_CENTER|wxPG_DESCRIPTION|wxPG_TOOLBAR|wxPGMAN_DEFAULT_STYLE )
 {
   //SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES);
