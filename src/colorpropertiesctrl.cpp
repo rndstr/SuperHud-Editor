@@ -3,8 +3,7 @@
 #include "common.h"
 #include "mainframe.h"
 #include "hudfilebase.h"
-#include "propertiesctrlbase.h"
-#include "pgfontsizeproperty.h"
+#include "propertiesnotebookbase.h"
 
 #include "cpma/element.h"
 
@@ -22,38 +21,35 @@ ColorPropertiesCtrl::ColorPropertiesCtrl( wxWindow *parent ) :
   //SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES);
   AddPage(_("Color"));
 
-  Append( wxPropertyCategory(_("Foreground")) );
-  Append( wxBoolProperty( _("Use"), wxT("color-use"), false) );
-  SetPropertyAttribute(wxT("color-use"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
-  Append( wxColourProperty(_("Color"), wxT("color")) );
+  Append( new wxPropertyCategory(_("Foreground")) );
+  Append( new wxBoolProperty( _("Use"), wxT("color-use"), false) );
+  Append( new wxColourProperty(_("Color"), wxT("color")) );
   SetPropertyHelpString( wxT("color"), _("Sets the foreground color for the element.") );
-  Append( wxUIntProperty(_("Opaqueness"), wxT("color-alpha")) );
+  Append( new wxIntProperty(_("Opaqueness"), wxT("color-alpha"), -1) );
 //  SetPropertyValidator( wxT("color-alpha"), alpha_validator );
   
 
-  Append( wxPropertyCategory(_("Background")) );
-  Append( wxBoolProperty( _("Use"), wxT("bgcolor-use"), false) );
+  Append( new wxPropertyCategory(_("Background")) );
+  Append( new wxBoolProperty( _("Use"), wxT("bgcolor-use"), false) );
   SetPropertyAttribute(wxT("bgcolor-use"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
-  Append( wxColourProperty(_("Color"), wxT("bgcolor")) );
+  Append( new wxColourProperty(_("Color"), wxT("bgcolor")) );
   SetPropertyHelpString( wxT("bgcolor"), _("Sets the background color for the element. The element must have a width and height.") );
-  Append( wxUIntProperty(_("Opaqueness"), wxT("bgcolor-alpha")) );
-  Append( wxBoolProperty( _("Fill"), wxT("fill"), false) );
-  SetPropertyAttribute(wxT("fill"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
+  Append( new wxIntProperty(_("Opaqueness"), wxT("bgcolor-alpha"), -1) );
+  Append( new wxBoolProperty( _("Fill"), wxT("fill"), false) );
   SetPropertyHelpString( wxT("fill"), _("If the element has a background color, this fills the area it occupies with that color. The element must have a width and height.") );
 
-  Append( wxPropertyCategory(_("Fade")) );
-  Append( wxBoolProperty( _("Use"), wxT("fade-use"), false) );
-  SetPropertyAttribute(wxT("fade-use"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
-  Append( wxColourProperty(_("Color"), wxT("fade")) );
-  Append( wxUIntProperty(_("Opaqueness"), wxT("fade-alpha")) );
+  Append( new wxPropertyCategory(_("Fade")) );
+  Append( new wxBoolProperty( _("Use"), wxT("fade-use"), false) );
+  Append( new wxColourProperty(_("Color"), wxT("fade")) );
+  Append( new wxIntProperty(_("Opaqueness"), wxT("fade-alpha"), -1) );
 
-  SetTargetPage(0);
+  SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX,(long)1);
 }
 
 
 void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
 {
-  PropertiesCtrlBase *p = wxGetApp().mainframe()->propsctrl();
+  PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesnotebook();
   if( !p )
   {
     wxLogDebug(wxT("VisibilityPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
@@ -118,7 +114,7 @@ void ColorPropertiesCtrl::from_element( ElementBase *el )
 
 void ColorPropertiesCtrl::update_layout()
 {
-  PropertiesCtrlBase *p = wxGetApp().mainframe()->propsctrl();
+  PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesnotebook();
   if( !p )
   {
     wxLogDebug(wxT("ColorPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
@@ -129,16 +125,16 @@ void ColorPropertiesCtrl::update_layout()
   if( el->has() & E_HAS_COLOR )
   {
     SetPropertyTextColour( wxT("color"), PROPS_COLOR_NORMAL );
-    SetPropertyColour( wxT("color"), PROPS_BGCOLOR_NORMAL );
+    SetPropertyBackgroundColour( wxT("color"), PROPS_BGCOLOR_NORMAL );
     SetPropertyTextColour( wxT("color-alpha"), PROPS_COLOR_NORMAL );
-    SetPropertyColour( wxT("color-alpha"), PROPS_BGCOLOR_NORMAL );
+    SetPropertyBackgroundColour( wxT("color-alpha"), PROPS_BGCOLOR_NORMAL );
   }
   else
   {
     SetPropertyTextColour( wxT("color"), PROPS_COLOR_INHERITED );
-    SetPropertyColour( wxT("color"), PROPS_BGCOLOR_INHERITED );
+    SetPropertyBackgroundColour( wxT("color"), PROPS_BGCOLOR_INHERITED );
     SetPropertyTextColour( wxT("color-alpha"), PROPS_COLOR_INHERITED );
-    SetPropertyColour( wxT("color-alpha"), PROPS_BGCOLOR_INHERITED );
+    SetPropertyBackgroundColour( wxT("color-alpha"), PROPS_BGCOLOR_INHERITED );
   }
   // -- font
   /*

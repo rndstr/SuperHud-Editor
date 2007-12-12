@@ -4,7 +4,7 @@
 #include "mainframe.h"
 #include "hudfilebase.h"
 #include "elementsctrlbase.h"
-#include "propertiesctrlbase.h"
+#include "propertiesnotebookbase.h"
 
 #include "cpma/element.h"
 
@@ -23,23 +23,25 @@ VisibilityPropertiesCtrl::VisibilityPropertiesCtrl( wxWindow *parent ) :
 
   
 
-  Append( wxBoolProperty( _("Use"), wxT("overwrite-rect"), false) );
-  SetPropertyAttribute(wxT("overwrite-rect"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
+  Append( new wxBoolProperty( _("Use"), wxT("overwrite-rect"), false) );
   SetPropertyHelpString( wxT("overwrite-rect"), _("By default an element is drawn at position (0,0) with width 64 and height 32. Check this box to specify your own values.") );
 
-  Append( wxPropertyCategory( _("Position")) );
+  Append( new wxPropertyCategory( _("Position")) );
 
-  Append( wxIntProperty( wxT("X"), wxPG_LABEL, 0) );
+  Append( new wxIntProperty( wxT("X"), wxPG_LABEL, 0) );
   SetPropertyHelpString( wxT("X"), _("This sets where the element is drawn, how many pixels from left") );
   SetPropertyEditor(wxT("X"),wxPG_EDITOR(TextCtrl));
 
-  Append( wxIntProperty( _("Y"), wxPG_LABEL, 0) );
+  Append( new wxIntProperty( _("Y"), wxPG_LABEL, 0) );
   SetPropertyHelpString( wxT("Y"), _("This sets where the element is drawn, how many pixels from top") );
 
-  Append( wxPropertyCategory( _("Size")) );
-  Append( wxIntProperty( _("Width"), wxT("width"), 64) );
+  Append( new wxPropertyCategory( _("Size")) );
+  Append( new wxIntProperty( _("Width"), wxT("width"), 64) );
 
-  Append( wxIntProperty( _("Height"), wxT("height"), 32) );
+  Append( new wxIntProperty( _("Height"), wxT("height"), 32) );
+
+  SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX,(long)1);
+
   wxToolBar *tb = GetToolBar();
   // delete all
   while( tb->GetToolsCount() )
@@ -55,15 +57,12 @@ VisibilityPropertiesCtrl::VisibilityPropertiesCtrl( wxWindow *parent ) :
     _("Disable element")
     );
   tb->Realize();
-
-
-  SetTargetPage(0);
 }
 
 
 void VisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
 {
-  PropertiesCtrlBase *p = wxGetApp().mainframe()->propsctrl();
+  PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesnotebook();
   if( !p )
   {
     wxLogDebug(wxT("VisibilityPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
@@ -126,7 +125,7 @@ void VisibilityPropertiesCtrl::from_element( ElementBase *el )
 
 void VisibilityPropertiesCtrl::update_layout()
 {
-  PropertiesCtrlBase *p = wxGetApp().mainframe()->propsctrl();
+  PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesnotebook();
   if( !p )
   {
     wxLogDebug(wxT("VisibilityPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
@@ -138,24 +137,24 @@ void VisibilityPropertiesCtrl::update_layout()
   if( el->has() & E_HAS_RECT )
   {
     SetPropertyTextColour( wxT("X"), PROPS_COLOR_NORMAL );
-    SetPropertyColour( wxT("X"), PROPS_BGCOLOR_NORMAL );
+    SetPropertyBackgroundColour( wxT("X"), PROPS_BGCOLOR_NORMAL );
     SetPropertyTextColour( wxT("Y"), PROPS_COLOR_NORMAL );
-    SetPropertyColour( wxT("Y"), PROPS_BGCOLOR_NORMAL );
+    SetPropertyBackgroundColour( wxT("Y"), PROPS_BGCOLOR_NORMAL );
     SetPropertyTextColour( wxT("width"), PROPS_COLOR_NORMAL );
-    SetPropertyColour( wxT("width"), PROPS_BGCOLOR_NORMAL );
+    SetPropertyBackgroundColour( wxT("width"), PROPS_BGCOLOR_NORMAL );
     SetPropertyTextColour( wxT("height"), PROPS_COLOR_NORMAL );
-    SetPropertyColour( wxT("height"), PROPS_BGCOLOR_NORMAL );
+    SetPropertyBackgroundColour( wxT("height"), PROPS_BGCOLOR_NORMAL );
   }
   else
   {
     SetPropertyTextColour( wxT("X"), PROPS_COLOR_INHERITED );
-    SetPropertyColour( wxT("X"), PROPS_BGCOLOR_INHERITED );
+    SetPropertyBackgroundColour( wxT("X"), PROPS_BGCOLOR_INHERITED );
     SetPropertyTextColour( wxT("Y"), PROPS_COLOR_INHERITED );
-    SetPropertyColour( wxT("Y"), PROPS_BGCOLOR_INHERITED );
+    SetPropertyBackgroundColour( wxT("Y"), PROPS_BGCOLOR_INHERITED );
     SetPropertyTextColour( wxT("width"), PROPS_COLOR_INHERITED );
-    SetPropertyColour( wxT("width"), PROPS_BGCOLOR_INHERITED );
+    SetPropertyBackgroundColour( wxT("width"), PROPS_BGCOLOR_INHERITED );
     SetPropertyTextColour( wxT("height"), PROPS_COLOR_INHERITED );
-    SetPropertyColour( wxT("height"), PROPS_BGCOLOR_INHERITED );
+    SetPropertyBackgroundColour( wxT("height"), PROPS_BGCOLOR_INHERITED );
   }
   
 }
@@ -164,7 +163,7 @@ void VisibilityPropertiesCtrl::OnElementVisibility( wxCommandEvent& ev )
 {
   if( ev.GetId() != ID_BTN_ELEMENT_ENABLE && ev.GetId() != ID_BTN_ELEMENT_DISABLE )
     return;
-  PropertiesCtrlBase *p = wxGetApp().mainframe()->propsctrl();
+  PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesnotebook();
   if( !p )
   {
     wxLogDebug(wxT("VisibilityPropertiesCtrl::OnElementVisibility() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));

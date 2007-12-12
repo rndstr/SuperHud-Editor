@@ -18,6 +18,7 @@ class MiscPropertiesCtrl : public wxPropertyGridManager
 
   private:
     void OnItemChanged( wxPropertyGridEvent& ev );
+    void OnItemChanging( wxPropertyGridEvent& ev );
     
 
     DECLARE_EVENT_TABLE()

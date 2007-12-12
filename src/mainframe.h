@@ -7,7 +7,7 @@
 #include <wx/aui/aui.h>
 
 class ElementsCtrlBase;
-class PropertiesCtrlBase;
+class PropertiesNotebookBase;
 
 class MainFrame : public wxFrame
 {
@@ -26,7 +26,7 @@ class MainFrame : public wxFrame
 
 
     ElementsCtrlBase*   elementsctrl() { return m_elementsctrl; }
-    PropertiesCtrlBase* propsctrl() { return m_propsctrl; }
+    PropertiesNotebookBase* propertiesnotebook() { return m_propertiesnotebook; }
     wxTextCtrl*         configpreview() { return m_configpreview; }
 
     /// Selection changed in ElementsCtrl
@@ -41,7 +41,7 @@ class MainFrame : public wxFrame
     wxMenu            *m_view_menu;
 
     ElementsCtrlBase  *m_elementsctrl;
-    PropertiesCtrlBase *m_propsctrl;
+    PropertiesNotebookBase *m_propertiesnotebook;
     wxTextCtrl        *m_configpreview;
 
   private:

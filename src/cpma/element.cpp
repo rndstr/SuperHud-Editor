@@ -22,17 +22,13 @@ ElementBase(name, desc, flags, has, enable),
     m_textalign(E_TEXTALIGN_DEFAULT),
     m_time(E_TIME_DEFAULT),
     m_textstyle(E_TEXTSTYLE_DEFAULT),
-    m_monospace(E_MONOSPACE_DEFAULT),
     m_color(E_COLOR_DEFAULT),
     m_bgcolor(E_BGCOLOR_DEFAULT),
-    m_fill(E_FILL_DEFAULT),
     m_fade(E_COLOR_DEFAULT), // ?
     m_image(wxT("")),
     m_model(wxT("")),
     m_offset_z(0.f), m_offset_x(0.f), m_offset_y(0.f),
     m_angles_pitch(0), m_angles_yaw(0), m_angles_roll(0), m_angles_panrot(0),
-    m_doublebar(E_DOUBLEBAR_DEFAULT),
-    m_draw3d(E_DRAW3D_DEFAULT),
     m_text(text),
     m_icon(icon),
     //m_texid(HI_IMG_NOTLOADED),
@@ -51,17 +47,13 @@ CPMAElement::CPMAElement( const hsitem_s& def ) :
     m_textalign(E_TEXTALIGN_DEFAULT),
     m_time(E_TIME_DEFAULT),
     m_textstyle(E_TEXTSTYLE_DEFAULT),
-    m_monospace(E_MONOSPACE_DEFAULT),
     m_color(E_COLOR_DEFAULT),
     m_bgcolor(E_BGCOLOR_DEFAULT),
-    m_fill(E_FILL_DEFAULT),
     m_fade(E_COLOR_DEFAULT), // ?
     m_image(wxT("")),
     m_model(wxT("")),
     m_offset_z(0.f), m_offset_x(0.f), m_offset_y(0.f),
     m_angles_pitch(0), m_angles_yaw(0), m_angles_roll(0), m_angles_panrot(0),
-    m_doublebar(E_DOUBLEBAR_DEFAULT),
-    m_draw3d(E_DRAW3D_DEFAULT),
     m_text(def.text),
     m_icon(def.icon),
     //m_texid(HI_IMG_NOTLOADED),
@@ -86,7 +78,6 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
       wxLogWarning( _T("Found command `doublebar' which the element `%s' does not support."), m_name.c_str() );
     else
     {
-      m_doublebar = true;
       m_has |= E_HAS_DOUBLEBAR;
     }
   }
@@ -171,17 +162,14 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
   }
   else if( cmd.CmpNoCase(wxT("monospace"))==0 )
   {
-    m_monospace = true;
     m_has |= E_HAS_MONOSPACE;
   }
   else if( cmd.CmpNoCase(wxT("fill"))==0 )
   {
-    m_fill = true;
     m_has |= E_HAS_FILL;
   }
   else if( cmd.CmpNoCase(wxT("draw3d"))==0 )
   {
-    m_draw3d = true;
     m_has |= E_HAS_DRAW3D;
   }
   else if( cmd.CmpNoCase(wxT("image"))==0 )
@@ -195,7 +183,6 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
     m_model = args;
     if( m_type == E_T_ICON )
     { // model implies draw3d (and there is no model drawn, see hudspecs/README.superhud)
-      m_draw3d = true;
       m_has |= E_HAS_DRAW3D;
       m_model = wxT("");
     }
@@ -264,7 +251,7 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
     lines.push_back(wxString::Format( wxT("fontsize %i"),  m_fontsize_pt));
   if( (m_has & E_HAS_FONTSIZE) && m_fontsize_type == E_FST_COORD )
     lines.push_back(wxString::Format( wxT("fontsize %i %i"),  m_fontsize_x, m_fontsize_y ));
-  if( m_monospace )
+  if( monospace() )
     lines.push_back(wxT("monospace"));
   if( (m_has & E_HAS_TEXTSTYLE) && m_textstyle >= 0 )
     lines.push_back(wxString::Format( wxT("textstyle %i"), m_textstyle ));
@@ -275,11 +262,11 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
     lines.push_back(wxT("color ") + m_color.to_string());
   if( m_has & E_HAS_BGCOLOR )
     lines.push_back(wxT("bgcolor ") + m_bgcolor.to_string());
-  if( m_fill )
+  if( fill() )
     lines.push_back(wxT("fill"));
-  if( m_doublebar )
+  if( doublebar() )
     lines.push_back(wxT("doublebar"));
-  if( m_draw3d )
+  if( draw3d() )
     lines.push_back(wxT("draw3d"));
   if( m_has & E_HAS_FADE )
     lines.push_back(wxT("fade ") + m_fade.to_string());
@@ -362,39 +349,30 @@ wxChar CPMAElement::iget_textalign() const
 }
 bool CPMAElement::iget_monospace() const
 {
-  if( m_has & E_HAS_MONOSPACE && m_monospace )
+  if( m_has & E_HAS_MONOSPACE )
     return true;
 
   const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_MONOSPACE ));
 
-  if( parent == 0 )
-    return false;
-
-  return parent->iget_monospace();
+  return (parent != 0);
 }
 bool CPMAElement::iget_doublebar() const
 {
-  if( m_has & E_HAS_DOUBLEBAR && m_doublebar )
+  if( m_has & E_HAS_DOUBLEBAR )
     return true;
 
   const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_DOUBLEBAR ));
 
-  if( parent == 0 )
-    return false;
-
-  return parent->iget_doublebar();
+  return (parent != 0);
 }
 bool CPMAElement::iget_draw3d() const
 {
-  if( m_has & E_HAS_DRAW3D && m_draw3d )
+  if( m_has & E_HAS_DRAW3D )
     return true;
 
   const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_DRAW3D ));
 
-  if( parent == 0 )
-    return false;
-
-  return parent->iget_draw3d();
+  return (parent != 0);
 }
 int CPMAElement::iget_fontsizetype() const
 {

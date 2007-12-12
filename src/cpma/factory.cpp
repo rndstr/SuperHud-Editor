@@ -2,7 +2,7 @@
 
 #include "hudspecs.h"
 #include "elementsctrl.h"
-#include "propertiesctrl.h"
+#include "propertiesnotebook.h"
 #include "displayctrl.h"
 #include "hudfile.h"
 
@@ -17,9 +17,9 @@ ElementsCtrlBase* CPMAFactory::create_elementsctrl(wxWindow *parent)
   return new CPMAElementsCtrl(parent);
 }
 
-PropertiesCtrlBase* CPMAFactory::create_propertiesctrl(wxWindow *parent)
+PropertiesNotebookBase* CPMAFactory::create_propertiesnotebook(wxWindow *parent)
 {
-  return new CPMAPropertiesCtrl(parent);
+  return new CPMAPropertiesNotebook(parent);
 }
 
 DisplayCtrlBase* CPMAFactory::create_displayctrl(wxWindow *parent)

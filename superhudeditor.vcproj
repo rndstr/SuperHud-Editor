@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(WXWIN)\include\msvc;$(WXWIN)\include;$(SolutionDir)\src\wxpropgrid\include"
+				AdditionalIncludeDirectories="$(WXWIN)\include\msvc;$(WXWIN)\include;$(SolutionDir)\src\wxpropgrid-1.3\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -184,39 +184,39 @@
 				RelativePath=".\src\GameSelectionDialog.h"
 				>
 			</File>
-			<File
-				RelativePath=".\src\pgfontsizeproperty.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\pgfontsizeproperty.h"
-				>
-			</File>
 			<Filter
 				Name="wxPropertyGrid"
 				>
 				<File
-					RelativePath=".\src\wxpropgrid\src\propgrid\advprops.cpp"
+					RelativePath=".\src\wxpropgrid-1.3\src\advprops.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\wxpropgrid\src\propgrid\extras.cpp"
+					RelativePath=".\src\wxpropgrid-1.3\src\editors.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\wxpropgrid\src\propgrid\manager.cpp"
+					RelativePath=".\src\wxpropgrid-1.3\src\extras.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\wxpropgrid\src\propgrid\odcombo.cpp"
+					RelativePath=".\src\wxpropgrid-1.3\src\extras_backup.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\wxpropgrid\src\propgrid\propgrid.cpp"
+					RelativePath=".\src\wxpropgrid-1.3\src\manager.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\wxpropgrid\src\propgrid\props.cpp"
+					RelativePath=".\src\wxpropgrid-1.3\src\odcombo.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\wxpropgrid-1.3\src\propgrid.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\wxpropgrid-1.3\src\props.cpp"
 					>
 				</File>
 			</Filter>
@@ -337,14 +337,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\propertiesctrlbase.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\propertiesctrlbase.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\superhudeditor.cpp"
 				>
 			</File>
@@ -412,11 +404,11 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\propertiesctrl.cpp"
+					RelativePath=".\src\cpma\propertiesnotebook.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\propertiesctrl.h"
+					RelativePath=".\src\cpma\propertiesnotebook.h"
 					>
 				</File>
 			</Filter>

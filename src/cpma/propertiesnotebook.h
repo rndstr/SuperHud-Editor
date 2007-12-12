@@ -1,7 +1,7 @@
-#ifndef __CPMA_PROPERTIESCTRL_H__
-#define __CPMA_PROPERTIESCTRL_H__
+#ifndef __CPMA_PROPERTIESNOTEBOOK_H__
+#define __CPMA_PROPERTIESNOTEBOOK_H__
 
-#include "../propertiesctrlbase.h"
+#include "../propertiesnotebookbase.h"
 
 
 class VisibilityPropertiesCtrl;
@@ -9,10 +9,10 @@ class FontPropertiesCtrl;
 class ColorPropertiesCtrl;
 class MiscPropertiesCtrl;
 
-class CPMAPropertiesCtrl : public PropertiesCtrlBase
+class CPMAPropertiesNotebook : public PropertiesNotebookBase
 {
   public:
-    CPMAPropertiesCtrl( wxWindow *parent );
+    CPMAPropertiesNotebook( wxWindow *parent );
 
     void update_from_element( const elements_type& els );
 
@@ -24,4 +24,4 @@ class CPMAPropertiesCtrl : public PropertiesCtrlBase
 
 };
 
-#endif // __CPMA_PROPERTIESCTRL_H__
+#endif // __CPMA_PROPERTIESNOTEBOOK_H__

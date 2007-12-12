@@ -2,7 +2,7 @@
 #define __FACTORYBASE_H__
 
 class ElementsCtrlBase;
-class PropertiesCtrlBase;
+class PropertiesNotebookBase;
 class DisplayCtrlBase;
 class HudFileBase;
 class wxWindow;
@@ -16,7 +16,7 @@ class FactoryBase
     /// this can be used to shut down game specific stuff
     virtual void shutdown() {  }
     virtual ElementsCtrlBase*   create_elementsctrl( wxWindow *parent ) = 0;
-    virtual PropertiesCtrlBase* create_propertiesctrl( wxWindow *parent ) = 0;
+    virtual PropertiesNotebookBase* create_propertiesnotebook( wxWindow *parent ) = 0;
     virtual DisplayCtrlBase*    create_displayctrl( wxWindow *parent ) = 0;
     virtual HudFileBase*        create_hudfile() = 0;
 };

@@ -1,4 +1,4 @@
-#include "propertiesctrl.h"
+#include "propertiesnotebook.h"
 
 #include "../visibilitypropertiesctrl.h"
 #include "../fontpropertiesctrl.h"
@@ -10,9 +10,11 @@
 
 
 
-CPMAPropertiesCtrl::CPMAPropertiesCtrl( wxWindow *parent ) : 
-  PropertiesCtrlBase(parent)
+CPMAPropertiesNotebook::CPMAPropertiesNotebook( wxWindow *parent ) : 
+  PropertiesNotebookBase(parent)
 {
+  wxPropertyGrid::SetBoolChoices(_("On"), _("Off"));
+
   m_vis = new VisibilityPropertiesCtrl(this);
   m_font = new FontPropertiesCtrl(this);
   m_color = new ColorPropertiesCtrl(this);
@@ -23,11 +25,14 @@ CPMAPropertiesCtrl::CPMAPropertiesCtrl( wxWindow *parent ) :
   AddPage( m_misc, _("Misc") );
 }
 
-void CPMAPropertiesCtrl::update_from_element( const elements_type& els )
+void CPMAPropertiesNotebook::update_from_element( const elements_type& els )
 {
   if( els.size() != 1 )
   { // no properties selection
-    m_curel = 0;
+    
+    // CollapseAll/ExpandAll trigger EVT_PG_CHANGING/CHANGED if we have been editing
+    // a value that wasn't yet saved. so we have to make sure that we set
+    // m_curel _afterwards_
     m_vis->CollapseAll();
     m_font->CollapseAll();
     m_color->CollapseAll();
@@ -35,19 +40,24 @@ void CPMAPropertiesCtrl::update_from_element( const elements_type& els )
     m_vis->GetToolBar()->ToggleTool( ID_BTN_ELEMENT_ENABLE, false );
     m_vis->GetToolBar()->ToggleTool( ID_BTN_ELEMENT_DISABLE, false );
     Disable();
+    m_curel = 0;
   }
   else
   {
-    m_curel = els.front();
     Enable();
     m_vis->ExpandAll();
-    m_vis->from_element(m_curel);
     m_font->ExpandAll();
-    m_font->from_element(m_curel);
     m_color->ExpandAll();
-    m_color->from_element(m_curel);
     m_misc->ExpandAll();
+    m_curel = els.front();
+    m_vis->from_element(m_curel);
+    m_font->from_element(m_curel);
+    m_color->from_element(m_curel);
     m_misc->from_element(m_curel);
+    m_vis->ClearModifiedStatus();
+    m_font->ClearModifiedStatus();
+    m_color->ClearModifiedStatus();
+    m_misc->ClearModifiedStatus();
   }
 }
 

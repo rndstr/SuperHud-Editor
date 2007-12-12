@@ -1,5 +1,5 @@
-#ifndef __PROPERTIESCTRLBASE_H__
-#define __PROPERTIESCTRLBASE_H__
+#ifndef __PROPERTIESNOTEBOOKBASE_H__
+#define __PROPERTIESNOTEBOOKBASE_H__
 
 #include "superhudeditor.h"
 #include "elementbase.h"
@@ -11,10 +11,10 @@ const wxColour PROPS_BGCOLOR_INHERITED = wxColour(240, 240, 255);
 const wxColour PROPS_COLOR_NORMAL = wxColour(0, 0, 0);
 const wxColour PROPS_BGCOLOR_NORMAL = wxColour(255, 255, 255);
 
-class PropertiesCtrlBase : public wxAuiNotebook
+class PropertiesNotebookBase : public wxAuiNotebook
 {
   public:
-    PropertiesCtrlBase( wxWindow* parent ) :
+    PropertiesNotebookBase( wxWindow* parent ) :
       wxAuiNotebook( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, wxDefaultSize, 
         wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_TAB_EXTERNAL_MOVE | wxAUI_NB_TOP ),
         m_curel(0)

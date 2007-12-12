@@ -48,10 +48,6 @@ const Color4 E_COLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 1.f ); // verified
 const Color4 E_FADE_DEFAULT = E_COLOR_DEFAULT; // NOTverified
 
 const wxString E_FONT_DEFAULT = wxT("cpma"); // should be `cpma' or otherwise previews are drawn?
-const bool E_FILL_DEFAULT = false;
-const bool E_MONOSPACE_DEFAULT = false;
-const bool E_DOUBLEBAR_DEFAULT = false;
-const bool E_DRAW3D_DEFAULT = false;
 const char E_TEXTALIGN_DEFAULT = 'L';
 const int E_TEXTSTYLE_DEFAULT = E_TEXTSTYLE_NONE;
 const int E_TIME_DEFAULT = 0;
@@ -80,16 +76,18 @@ class CPMAElement : public ElementBase
     void        set_textalign( const wxChar& ta ) { m_textalign = ta; }
     wxChar      iget_textalign() const;
 
-    void        set_monospace( bool monospace ) { m_monospace = monospace; }
-    bool        monospace() const { return m_monospace; }
+    void        set_monospace( bool monospace = true ) { add_has( E_HAS_MONOSPACE, monospace ); }
+    bool        monospace() const { return (m_has & E_HAS_MONOSPACE) != 0; }
     bool        iget_monospace() const;
 
-    void        set_draw3d( bool draw3d ) { m_draw3d = draw3d; }
-    bool        draw3d() const { return m_draw3d; }
+    void        set_draw3d( bool draw3d = true ) { add_has( E_HAS_DRAW3D, draw3d ); }
+    bool        draw3d() const { return (m_has & E_HAS_DRAW3D) != 0; }
     bool        iget_draw3d() const;
 
-    void        set_doublebar( bool doublebar ) { m_doublebar = doublebar; }
-    bool        doublebar() const { return m_doublebar; }
+    bool        fill() const { return (m_has & E_HAS_FILL) != 0; }
+
+    void        set_doublebar( bool doublebar = true ) { add_has( E_HAS_DOUBLEBAR, doublebar ); }
+    bool        doublebar() const { return (m_has & E_HAS_DOUBLEBAR) != 0; }
     bool        iget_doublebar() const;
 
     void        set_fontsizetype( int fst ) { m_fontsize_type = fst; }
@@ -138,12 +136,12 @@ class CPMAElement : public ElementBase
     int         m_time; ///< milliseconds.
 
     int         m_textstyle; // 1 = dropshadow
-    bool        m_monospace;
+    
 
     Color4      m_color;
 
     Color4      m_bgcolor;
-    bool        m_fill;
+    
     
     Color4      m_fade; ///< only used if m_time bigger than 0.
 
@@ -161,8 +159,11 @@ class CPMAElement : public ElementBase
     int         m_angles_roll;
     int         m_angles_panrot;
 
-    bool        m_doublebar;
-    bool        m_draw3d;
+    // no longer stored, we just use E_HAS_name
+    //bool        m_doublebar;
+    //bool        m_draw3d;
+    //bool        m_monospace;
+    //bool        m_fill;
     /// @}
 
     wxString    m_text; ///< text for preview

@@ -11,7 +11,7 @@
 #include "factorybase.h"
 
 #include "cpma/elementsctrl.h"
-#include "cpma/propertiesctrl.h"
+#include "cpma/propertiesnotebook.h"
 #include "cpma/displayctrl.h"
 #include "cpma/hudfile.h"
 
@@ -106,8 +106,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
       CenterPane()
       );
 
-  m_propsctrl = wxGetApp().factory()->create_propertiesctrl(this);
-  m_mgr.AddPane( m_propsctrl, 
+  m_propertiesnotebook = wxGetApp().factory()->create_propertiesnotebook(this);
+  m_mgr.AddPane( m_propertiesnotebook, 
       wxAuiPaneInfo().Name(wxT("properties")).Caption(_("Properties")).MaximizeButton(true).CloseButton(false).
       Right()
       );
@@ -350,7 +350,7 @@ void MainFrame::OnElementSelectionChanged()
   update_configpreview();
 
   // -- update propertiesctrl
-  m_propsctrl->update_from_element(els);
+  m_propertiesnotebook->update_from_element(els);
 }
 
 void MainFrame::OnPropertiesChanged()

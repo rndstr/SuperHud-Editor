@@ -9,7 +9,9 @@ const wxString APP_VENDOR = wxEmptyString;
 const wxString APP_CAPTION = wxT("SuperHud Editor v") + APP_VERSION;
 const wxString APP_CONFIG = wxT("superhudeditor.conf");
 const wxString APP_URL = wxT("http://plrf.org/superhudeditor");
-const wxString BUG_MSG = wxT("Bug detected, please contact the author");
+const wxString BUG_MSG = _("Bug detected, please contact the author");
+
+const wxString CANTDISABLE_MSG = _("There is no way to disable this property on that element as a parent element specifies it.\nYou should remove the property on the parent `!DEFAULT' element.");
 
 class FactoryBase;
 class HudFileBase;
