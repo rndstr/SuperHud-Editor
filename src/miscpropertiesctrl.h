@@ -5,10 +5,11 @@
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/manager.h>
 
+#include "propertygridbase.h"
 
 class ElementBase;
 
-class MiscPropertiesCtrl : public wxPropertyGridManager
+class MiscPropertiesCtrl : public CPMAPropertyGridBase
 {
   public:
     MiscPropertiesCtrl( wxWindow *parent );

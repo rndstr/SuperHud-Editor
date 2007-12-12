@@ -8,13 +8,13 @@
 
 #include "cpma/element.h"
 
-BEGIN_EVENT_TABLE(MiscPropertiesCtrl, wxPropertyGridManager)
+BEGIN_EVENT_TABLE(MiscPropertiesCtrl, CPMAPropertyGridBase)
   EVT_PG_CHANGED(ID_NOTEBOOK_PROPERTIES, MiscPropertiesCtrl::OnItemChanged)
   EVT_PG_CHANGING(ID_NOTEBOOK_PROPERTIES, MiscPropertiesCtrl::OnItemChanging)
 END_EVENT_TABLE()
 
 MiscPropertiesCtrl::MiscPropertiesCtrl( wxWindow *parent ) :
-  wxPropertyGridManager( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
+  CPMAPropertyGridBase( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
             wxDefaultSize, wxPG_BOLD_MODIFIED|wxPG_SPLITTER_AUTO_CENTER|wxPG_DESCRIPTION|wxPGMAN_DEFAULT_STYLE )
 {
   SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES); // needed for `time' to revert back to inherital value
@@ -30,6 +30,7 @@ MiscPropertiesCtrl::MiscPropertiesCtrl( wxWindow *parent ) :
   Append( new wxIntProperty( _("Duration"), wxT("time"), 0) );
   SetPropertyHelpString( wxT("time"), _("How long the element will be displayed for if it doesn't update again. Generally used for item pickups, frag messages, chat, etc.\n\nClear to disable.") );
 
+  // the CheckBox editor does not obey the SetPropertyReadOnly? event vetoing doesn't work, neither. so stick to ComboBox.
   //SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX,(long)1);
 }
 
@@ -44,7 +45,7 @@ void MiscPropertiesCtrl::OnItemChanging( wxPropertyGridEvent& ev )
     wxLogDebug(wxT("MiscPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
     return;
   }
-  CPMAElement *el = (p->curel());
+  CPMAElement *el = static_cast<CPMAElement*>(p->curel());
   if( !el ) return;
 
   wxString name = prop->GetName();
