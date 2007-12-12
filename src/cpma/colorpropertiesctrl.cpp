@@ -63,7 +63,7 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   {
     el->add_has( E_HAS_COLOR, val.GetBool() );
     Color4 c = el->iget_color();
-    SetPropertyValue( wxT("color"), c.to_wxColour() );
+//    SetPropertyValue( wxT("color"), c.to_wxColour() );
     SetPropertyValue( wxT("color-alpha"), c.a100() );
   }
   else if( name == wxT("color") || name == wxT("color-alpha") )
@@ -98,15 +98,15 @@ void ColorPropertiesCtrl::from_element( ElementBase *el )
   CPMAElement *cel = static_cast<CPMAElement*>(el);
 
   SetPropertyValue( wxT("color-use"), (cel->has() & E_HAS_COLOR) != 0 );
-  SetPropertyValue( wxT("color"), cel->iget_color().to_wxColour() );
+//  SetPropertyValue( wxT("color"), cel->iget_color().to_wxColour() );
   SetPropertyValue( wxT("color-alpha"), cel->iget_color().a100() );
 
   SetPropertyValue( wxT("bgcolor-use"), (cel->has() & E_HAS_BGCOLOR) != 0 );
-  SetPropertyValue( wxT("bgcolor"), cel->iget_bgcolor().to_wxColour() );
+//  SetPropertyValue( wxT("bgcolor"), cel->iget_bgcolor().to_wxColour() );
   SetPropertyValue( wxT("bgcolor-alpha"), cel->iget_bgcolor().a100() );
 
   SetPropertyValue( wxT("fade-use"), (cel->has() & E_HAS_FADE) != 0 );
-  SetPropertyValue( wxT("fade"), cel->iget_fade().to_wxColour() );
+//  SetPropertyValue( wxT("fade"), cel->iget_fade().to_wxColour() );
   SetPropertyValue( wxT("fade-alpha"), cel->iget_fade().a100() );
   
   update_layout();
