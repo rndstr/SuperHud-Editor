@@ -76,8 +76,9 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
     }
     if( name == wxT("color") )
     {
-      wxColour& col = *wxDynamicCast(ev.GetPropertyValueAsWxObjectPtr(),wxColour);
-      el->set_color(col);
+      wxColour* col = static_cast<wxColour*>(val.GetWxObjectPtr());
+      wxASSERT( col );
+      el->set_color(*col);
     }
     else if( name == wxT("color-alpha") )
       el->set_color_a100( val.GetInteger() );
@@ -95,60 +96,35 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
 void ColorPropertiesCtrl::from_element( ElementBase *el )
 {
   CPMAElement *cel = static_cast<CPMAElement*>(el);
-  SetPropertyValue( wxT("color-use"), cel->has() & E_HAS_COLOR );
+
+  SetPropertyValue( wxT("color-use"), (cel->has() & E_HAS_COLOR) != 0 );
   SetPropertyValue( wxT("color"), cel->iget_color().to_wxColour() );
   SetPropertyValue( wxT("color-alpha"), cel->iget_color().a100() );
 
-  SetPropertyValue( wxT("bgcolor-use"), cel->has() & E_HAS_BGCOLOR );
+  SetPropertyValue( wxT("bgcolor-use"), (cel->has() & E_HAS_BGCOLOR) != 0 );
   SetPropertyValue( wxT("bgcolor"), cel->iget_bgcolor().to_wxColour() );
   SetPropertyValue( wxT("bgcolor-alpha"), cel->iget_bgcolor().a100() );
 
-  SetPropertyValue( wxT("fade-use"), cel->has() & E_HAS_FADE );
+  SetPropertyValue( wxT("fade-use"), (cel->has() & E_HAS_FADE) != 0 );
   SetPropertyValue( wxT("fade"), cel->iget_fade().to_wxColour() );
   SetPropertyValue( wxT("fade-alpha"), cel->iget_fade().a100() );
   
-  //SetPropertyValue( wxT("monospace"), cel->monospace() );
   update_layout();
 }
 
 
 void ColorPropertiesCtrl::update_layout()
 {
-  PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesnotebook();
-  if( !p )
-  {
-    wxLogDebug(wxT("ColorPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
-    return;
-  }
-  CPMAElement *el = static_cast<CPMAElement*>(p->curel());
+  CPMAElement *el = current_element();
 
-  if( el->has() & E_HAS_COLOR )
-  {
-    SetPropertyTextColour( wxT("color"), PROPS_COLOR_NORMAL );
-    SetPropertyBackgroundColour( wxT("color"), PROPS_BGCOLOR_NORMAL );
-    SetPropertyTextColour( wxT("color-alpha"), PROPS_COLOR_NORMAL );
-    SetPropertyBackgroundColour( wxT("color-alpha"), PROPS_BGCOLOR_NORMAL );
-  }
-  else
-  {
-    SetPropertyTextColour( wxT("color"), PROPS_COLOR_INHERITED );
-    SetPropertyBackgroundColour( wxT("color"), PROPS_BGCOLOR_INHERITED );
-    SetPropertyTextColour( wxT("color-alpha"), PROPS_COLOR_INHERITED );
-    SetPropertyBackgroundColour( wxT("color-alpha"), PROPS_BGCOLOR_INHERITED );
-  }
-  // -- font
-  /*
-  if( el->has() & E_HAS_FONT )
-  {
-    SetPropertyTextColour( wxT("font"), PROPS_COLOR_NORMAL );
-    SetPropertyColour( wxT("font"), PROPS_BGCOLOR_NORMAL );
-  }
-  else
-  { // inherit
-    SetPropertyTextColour( wxT("font"), PROPS_COLOR_INHERITED );
-    SetPropertyColour( wxT("font"), PROPS_BGCOLOR_INHERITED );
-  }
-  SetPropertyValue( wxT("font"), el->iget_font() );
-  */
+  property_defines(wxT("color"), (el->has() & E_HAS_COLOR) != 0);
+  property_defines(wxT("color-alpha"), (el->has() & E_HAS_COLOR) != 0);
+
+  property_defines(wxT("bgcolor"), (el->has() & E_HAS_BGCOLOR) != 0);
+  property_defines(wxT("bgcolor-alpha"), (el->has() & E_HAS_BGCOLOR) != 0);
+
+  property_defines(wxT("fade"), (el->has() & E_HAS_FADE) != 0);
+  property_defines(wxT("fade-alpha"), (el->has() & E_HAS_FADE) != 0);
+  
 }
 

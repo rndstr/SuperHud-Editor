@@ -10,6 +10,8 @@
 
 BEGIN_EVENT_TABLE(VisibilityPropertiesCtrl, CPMAPropertyGridBase)
   EVT_PG_CHANGED(ID_NOTEBOOK_PROPERTIES, VisibilityPropertiesCtrl::OnItemChanged)
+  EVT_TOOL_RANGE(ID_BTN_ALIGN_LEFT, ID_BTN_ALIGN_BOTTOM,
+    VisibilityPropertiesCtrl::OnAlign)
   EVT_TOOL_RANGE(ID_BTN_ELEMENT_ENABLE, ID_BTN_ELEMENT_DISABLE,
     VisibilityPropertiesCtrl::OnElementVisibility)
 END_EVENT_TABLE()
@@ -43,19 +45,27 @@ VisibilityPropertiesCtrl::VisibilityPropertiesCtrl( wxWindow *parent ) :
   SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX,(long)1);
 
   wxToolBar *tb = GetToolBar();
-  // delete all
+  // we ain't interested in the default buttons :o
   while( tb->GetToolsCount() )
     tb->DeleteToolByPos(0);
-  tb->AddRadioTool( ID_BTN_ELEMENT_ENABLE, _("Enable element"), 
-    wxArtProvider::GetBitmap(ART_ELEMENT_ENABLED, wxART_TOOLBAR, wxSize(16,16)),
-    wxArtProvider::GetBitmap(ART_ELEMENT_ENABLED, wxART_TOOLBAR, wxSize(16,16)),
-    _("Enable element")
-    );
-  tb->AddRadioTool( ID_BTN_ELEMENT_DISABLE, _("Disable element"), 
-    wxArtProvider::GetBitmap(ART_ELEMENT_DISABLED, wxART_TOOLBAR, wxSize(16,16)), 
-    wxArtProvider::GetBitmap(ART_ELEMENT_DISABLED, wxART_TOOLBAR, wxSize(16,16)),
-    _("Disable element")
-    );
+  tb->AddRadioTool( ID_BTN_ELEMENT_ENABLE, _("Enable element"), wxArtProvider::GetBitmap(ART_ELEMENT_ENABLED, wxART_TOOLBAR, wxSize(16,16)) );
+  tb->SetToolShortHelp( ID_BTN_ELEMENT_ENABLE, _("Enable element") );
+  tb->AddRadioTool( ID_BTN_ELEMENT_DISABLE, _("Disable element"), wxArtProvider::GetBitmap(ART_ELEMENT_DISABLED, wxART_TOOLBAR, wxSize(16,16)) );
+  tb->SetToolShortHelp( ID_BTN_ELEMENT_DISABLE, _("Disable element") );
+  tb->AddSeparator();
+  tb->AddTool( ID_BTN_ALIGN_LEFT, _("Align element left"), wxArtProvider::GetBitmap(ART_ALIGN_LEFT, wxART_TOOLBAR, wxSize(16,16)) );
+  tb->SetToolShortHelp( ID_BTN_ALIGN_LEFT, _("Align element left") );
+  tb->AddTool( ID_BTN_ALIGN_CENTER, _("Align element center"), wxArtProvider::GetBitmap(ART_ALIGN_CENTER, wxART_TOOLBAR, wxSize(16,16)) );
+  tb->SetToolShortHelp( ID_BTN_ALIGN_CENTER, _("Align element center") );
+  tb->AddTool( ID_BTN_ALIGN_RIGHT, _("Align element right"), wxArtProvider::GetBitmap(ART_ALIGN_RIGHT, wxART_TOOLBAR, wxSize(16,16)) );
+  tb->SetToolShortHelp( ID_BTN_ALIGN_RIGHT, _("Align element right") );
+  tb->AddSeparator();
+  tb->AddTool( ID_BTN_ALIGN_TOP, _("Align element top"), wxArtProvider::GetBitmap(ART_ALIGN_TOP, wxART_TOOLBAR, wxSize(16,16)) );
+  tb->SetToolShortHelp( ID_BTN_ALIGN_TOP, _("Align element top") );
+  tb->AddTool( ID_BTN_ALIGN_MIDDLE, _("Align element middle"), wxArtProvider::GetBitmap(ART_ALIGN_MIDDLE, wxART_TOOLBAR, wxSize(16,16)) );
+  tb->SetToolShortHelp( ID_BTN_ALIGN_MIDDLE, _("Align element middle") );
+  tb->AddTool( ID_BTN_ALIGN_BOTTOM, _("Align element bottom"), wxArtProvider::GetBitmap(ART_ALIGN_BOTTOM, wxART_TOOLBAR, wxSize(16,16)) );
+  tb->SetToolShortHelp( ID_BTN_ALIGN_BOTTOM, _("Align element bottom") );
   tb->Realize();
 }
 
@@ -112,7 +122,7 @@ void VisibilityPropertiesCtrl::from_element( ElementBase *el )
 
   wxToolBar *tb = GetToolBar();
   tb->ToggleTool( (el->is_enabled() ? ID_BTN_ELEMENT_ENABLE : ID_BTN_ELEMENT_DISABLE), true );
-  tb->Enable( !(el->flags() & E_ENABLEALWAYS) );
+  //tb->Enable( !(el->flags() & E_ENABLEALWAYS) );
     
   wxRect r = el->iget_rect();
   SetPropertyValue( wxT("X"), r.GetX() );
@@ -161,8 +171,6 @@ void VisibilityPropertiesCtrl::update_layout()
 
 void VisibilityPropertiesCtrl::OnElementVisibility( wxCommandEvent& ev )
 {
-  if( ev.GetId() != ID_BTN_ELEMENT_ENABLE && ev.GetId() != ID_BTN_ELEMENT_DISABLE )
-    return;
   PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesnotebook();
   if( !p )
   {
@@ -178,3 +186,25 @@ void VisibilityPropertiesCtrl::OnElementVisibility( wxCommandEvent& ev )
   wxGetApp().mainframe()->OnPropertiesChanged();
 }
 
+void VisibilityPropertiesCtrl::OnAlign( wxCommandEvent& ev )
+{
+  CPMAElement *el = current_element();
+  el->add_has( E_HAS_RECT );
+  wxRect r = el->rect();
+  switch( ev.GetId() )
+  {
+  case ID_BTN_ALIGN_LEFT: r.x = 0; break;
+  case ID_BTN_ALIGN_CENTER: r.x = (640-r.width)/2; break;
+  case ID_BTN_ALIGN_RIGHT: r.x = 640-r.width; break;
+  case ID_BTN_ALIGN_TOP: r.y = 0; break;
+  case ID_BTN_ALIGN_MIDDLE: r.y = (480-r.height)/2; break;
+  case ID_BTN_ALIGN_BOTTOM: r.y = 480-r.height; break;
+  default:
+    return;
+  }
+  el->set_rect(r);
+
+  // -- propagate
+  from_element(el); // update propertygrid
+  wxGetApp().mainframe()->OnPropertiesChanged();
+}

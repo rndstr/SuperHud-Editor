@@ -1,13 +1,7 @@
 # this is a file that specifies what elements are available.
-# if it's out of date (i.e. superHUD gets updated by CPMA) you 
-# can check the webpage (see README or Help->About for url)
-# for an updated version or update it yourself and then send it to me
-# :)
-#
-# see README.hudspecs if you plan to modify it.
 # --------------------------------------------------------------------
 
-___date=ongoing
+___date=2007-12-12
 ___name=CPMA 1.43
 ___author=veal
 
@@ -29,27 +23,30 @@ NetGraphPing=type=text:text=12ms
 _desc=Use FILL to show ammo for weapons you dont have, useful for tdm. Weaponlist wraps at the bottom of the screen so you can sneak a multi-column one in.
 WeaponList=multheight=9:multwidth=9:multdependalign:type=weaponlist
 
-_desc=Defaults to mynx icon but can be any model, image or shader found in pk3s (provided that the pk3 is on the pure server you join)
-# FIXME add mynx icon path
-StatusBar_HealthIcon=type=usericon:icon=...
+
 _desc=Numeric health level
 StatusBar_HealthCount=text=200:type=text
 _desc=Bar health level
 StatusBar_HealthBar=type=bar
+_desc=Defaults to mynx icon but can be any model, image or shader found in pk3s (provided that the pk3 is on the pure server you join)
+# FIXME add mynx icon path
+StatusBar_HealthIcon=type=usericon:icon=...
 
-_desc=Type of armor - essential in cpm but irrelevant in vq3
-StatusBar_ArmorIcon=type=icon:icon=icons/iconr_red.tga
+
 _desc=Numeric armor level.
 StatusBar_ArmorCount=text=200:type=text
 _desc=Bar armor level.
 StatusBar_ArmorBar=type=bar
+_desc=Type of armor - essential in cpm but irrelevant in vq3
+StatusBar_ArmorIcon=type=icon:icon=icons/iconr_red.tga
 
-_desc=Current weapon ammo icon
-StatusBar_AmmoIcon=type=icon:icon=icons/iconw_railgun.tga
 _desc=Numeric ammo level
 StatusBar_AmmoCount=text=15:type=text
 _desc=Bar ammo level
 StatusBar_AmmoBar=type=bar
+_desc=Current weapon ammo icon
+StatusBar_AmmoIcon=type=icon:icon=icons/iconw_railgun.tga
+
 
 AttackerIcon=type=icon:icon=models/players/tankjr/icon_pm.tga
 AttackerName=text=UnnamedPlayer:type=text

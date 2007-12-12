@@ -19,7 +19,7 @@ public:
     // begin wxGlade: GameSelectionDialog::ids
     // end wxGlade
 
-    GameSelectionDialog(wxWindow* parent, int id, const wxString& title, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxDEFAULT_DIALOG_STYLE);
+    GameSelectionDialog(wxWindow* parent);
 
     bool startup_gameselection() const { return !m_startup_gameselection->IsChecked(); }
 

@@ -22,6 +22,9 @@ class VisibilityPropertiesCtrl : public CPMAPropertyGridBase
     void OnRightClick( wxPropertyGridEvent& ev );
     void OnItemChanged( wxPropertyGridEvent& ev );
     void OnElementVisibility( wxCommandEvent& ev );
+    void OnAlign( wxCommandEvent& ev );
+ 
+
 
 
     DECLARE_EVENT_TABLE()

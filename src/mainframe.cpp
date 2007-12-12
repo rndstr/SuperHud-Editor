@@ -7,7 +7,6 @@
 #include <wx/file.h>
 
 #include "common.h"
-#include "GameSelectionDialog.h"
 #include "factorybase.h"
 
 #include "cpma/elementsctrl.h"
@@ -23,7 +22,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_MENU(wxID_SAVEAS, MainFrame::OnMenuSaveAs)
   EVT_MENU(wxID_OPEN, MainFrame::OnMenuOpen)
   EVT_MENU(wxID_NEW, MainFrame::OnMenuNew)
-  EVT_MENU(ID_MENU_TOOLS_GAMESELECTION, MainFrame::OnMenuGameSelection)
+  EVT_MENU(ID_MENU_TOOLS_SWITCHGAME, MainFrame::OnMenuSwitchGame)
   EVT_MENU(ID_MENU_TOOLS_PREFERENCES, MainFrame::OnMenuPreferences)
   EVT_MENU(ID_MENU_VIEW_DEFAULTPERSPECTIVE, MainFrame::OnMenuDefaultPerspective)
   EVT_CLOSE(MainFrame::OnClose)
@@ -55,8 +54,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   menu_bar->Append( file_menu, _("&File") );
 
   wxMenu *tools_menu = new wxMenu;
-  //tools_menu->Append( ID_MENU_TOOLS_GAMESELECTION, _("&Switch game...") );
-  //tools_menu->AppendSeparator();
+  tools_menu->Append( ID_MENU_TOOLS_SWITCHGAME, _("&Switch game") );
+  tools_menu->AppendSeparator();
   tools_menu->Append( ID_MENU_TOOLS_PREFERENCES, _("&Preferences\tAlt+P") );
   menu_bar->Append( tools_menu, _("&Tools") );
 
@@ -152,15 +151,11 @@ void MainFrame::OnMenuPreferences( wxCommandEvent& )
   wxMessageBox(wxT("Not yet available, edit config file directly:\n") + wxStandardPaths::Get().GetUserDataDir() + wxT("/") + APP_CONFIG );
 }
 
-void MainFrame::OnMenuGameSelection( wxCommandEvent& )
+void MainFrame::OnMenuSwitchGame( wxCommandEvent& )
 {
-  GameSelectionDialog dlg(this, wxID_ANY, _T("Select your game"));
-  int ret = dlg.ShowModal();
-  if( ret == ID_BTN_CPMA )
-    Prefs::get().game = wxT("cpma");
-  else if( ret == ID_BTN_Q4MAX )
-    Prefs::get().game = wxT("q4max");
-  Prefs::get().startup_gameselection = dlg.startup_gameselection();
+  Prefs::get().startup_gameselection = true;
+  Prefs::get().save();
+  wxMessageBox(_("Please restart the application to select your game"));
 }
 
 void MainFrame::OnMenuExit( wxCommandEvent& )

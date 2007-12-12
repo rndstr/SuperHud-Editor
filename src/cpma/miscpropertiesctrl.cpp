@@ -43,8 +43,15 @@ void MiscPropertiesCtrl::OnItemChanging( wxPropertyGridEvent& ev )
   if( !el ) return;
 
   wxString name = prop->GetName();
+
   // if user is trying to disable this but a parent has it enabled, tell him
   if( name == wxT("doublebar") && !ev.GetValue().GetBool() && el->iget_doublebar() && !el->doublebar() )
+  {
+    wxMessageBox(CANTDISABLE_MSG);
+    ev.Veto();
+  }
+  else // if user is trying to disable this but a parent has it enabled, tell him
+  if( name == wxT("draw3d") && !ev.GetValue().GetBool() && el->iget_draw3d() && !el->draw3d() )
   {
     wxMessageBox(CANTDISABLE_MSG);
     ev.Veto();
@@ -66,21 +73,21 @@ void MiscPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   {
     if( el->flags() & E_PARENT && val.GetBool() )
       wxMessageBox( _("Be aware that the `DOUBLEBAR' you just ticked cannot be disabled on subsequent elements!") );
-
     // first update current element value
     el->set_doublebar(val.GetBool());
+    // if we are disabling, we still want a parental value to be active (i.e. this only changes cell color)
     if( !val.GetBool() )
-    { // if we are disabling, we still want a parental value to be active (i.e. this only changes cell color)
       SetPropertyValue( wxT("doublebar"), el->iget_doublebar() );
-    }
   }
   else if( name == wxT("draw3d") )
   {
-    bool d3 = val.GetBool();
-    if( el->flags() & E_PARENT && d3 )
-      wxMessageBox( _("Be aware that the `Draw3d' you just ticked cannot be disabled on subsequent elements!") );
-    el->set_draw3d(d3);
-    el->add_has( E_HAS_DRAW3D, d3 );
+    if( el->flags() & E_PARENT && val.GetBool() )
+      wxMessageBox( _("Be aware that the `DRAW3D' you just ticked cannot be disabled on subsequent elements!") );
+    // first update current element value
+    el->set_draw3d(val.GetBool());
+    // if we are disabling, we still want a parental value to be active (i.e. this only changes cell color)
+    if( !val.GetBool() )
+      SetPropertyValue( wxT("draw3d"), el->iget_draw3d() );
   }
   else if( name == wxT("time") )
   {
@@ -116,28 +123,8 @@ void MiscPropertiesCtrl::update_layout()
 {
   CPMAElement *el = current_element();
 
-  if( el->doublebar() )
-  {
-    SetPropertyTextColour( wxT("doublebar"), PROPS_COLOR_NORMAL );
-    SetPropertyBackgroundColour( wxT("doublebar"), PROPS_BGCOLOR_NORMAL );
-  }
-  else
-  {
-    SetPropertyTextColour( wxT("doublebar"), PROPS_COLOR_INHERITED );
-    SetPropertyBackgroundColour( wxT("doublebar"), PROPS_BGCOLOR_INHERITED );
-  }
-
-  if( el->has() & E_HAS_TIME )
-  {
-    SetPropertyTextColour( wxT("time"), PROPS_COLOR_NORMAL );
-    SetPropertyBackgroundColour( wxT("time"), PROPS_BGCOLOR_NORMAL );
-  }
-  else
-  {
-    SetPropertyTextColour( wxT("time"), PROPS_COLOR_INHERITED );
-    SetPropertyBackgroundColour( wxT("time"), PROPS_BGCOLOR_INHERITED );
-  }
-
-  
+  property_defines(wxT("doublebar"), el->doublebar() );
+  property_defines(wxT("draw3d"), el->draw3d() );
+  property_defines(wxT("time"), (el->has() & E_HAS_TIME) != 0 );
 }
 

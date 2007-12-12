@@ -16,6 +16,7 @@
 #include <wx/stdpaths.h>
 #include "factorybase.h"
 #include "hudfilebase.h"
+#include "GameSelectionDialog.h"
 
 #ifndef DISABLE_CPMA
   #include "cpma/factory.h"
@@ -50,8 +51,14 @@ bool SHEApp::OnInit()
 
   if( (!is_cpma() && !is_q4max()) || Prefs::get().startup_gameselection )
   {
-    wxCommandEvent ev;
-    static_cast<MainFrame*>(GetTopWindow())->OnMenuGameSelection(ev);
+    GameSelectionDialog dlg(0);
+    int ret = dlg.ShowModal();
+    if( ID_BTN_CPMA == ret )
+      Prefs::get().game = wxT("cpma");
+    else if( ID_BTN_Q4MAX == ret )
+      Prefs::get().game = wxT("q4max");
+    Prefs::get().startup_gameselection = dlg.startup_gameselection();
+
     if( !is_cpma() && !is_q4max() )
     {
       wxLogFatalError(_("Invalid game in settings, loaded CPMA"));

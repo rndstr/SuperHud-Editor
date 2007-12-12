@@ -6,7 +6,8 @@ to overwrite it, like 136veal.dat if you make any changes).
 You may also set it to a certain file in the preferences or
 directly in the config file:
 
-hudspecs_filename=135.dat
+
+#hudspecs_filename=135.dat
 
 
 
@@ -30,9 +31,9 @@ The format of the file itself is as following:
 # to add a description for the element place __desc on a previous line.
 # it will be used by all following elements unless you set it again.
 #
-# elements are ordered in the treelist according to listing in hudspecs file.
+# ordering in the Elements Panel is according to listing in hudspecs file.
 #
-# options (see 135.dat for more comments on how and why):
+# options
 #
 #   short
 #     save this element all on one line (makes the hud file more 

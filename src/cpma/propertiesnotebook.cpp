@@ -1,8 +1,8 @@
 #include "propertiesnotebook.h"
 
-#include "../visibilitypropertiesctrl.h"
-#include "../fontpropertiesctrl.h"
-#include "../colorpropertiesctrl.h"
+#include "visibilitypropertiesctrl.h"
+#include "fontpropertiesctrl.h"
+#include "colorpropertiesctrl.h"
 #include "miscpropertiesctrl.h"
 
 #include "element.h"

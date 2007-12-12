@@ -96,6 +96,7 @@ class ElementBase
     bool            is_enabled() const { return (m_flags & E_ENABLEALWAYS ? true : m_enabled); }
     void            set_enabled(bool en = true) { m_enabled = en; }
     wxRect          rect() const { return m_rect; }
+    void            set_rect( const wxRect& r ) { m_rect = r; }
 
     // get&set properties (with regard to `i'nheritance)
     wxRect          iget_rect() const;

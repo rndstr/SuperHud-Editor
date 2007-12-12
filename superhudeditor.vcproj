@@ -237,14 +237,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\colorpropertiesctrl.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\colorpropertiesctrl.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\common.h"
 				>
 			</File>
@@ -289,14 +281,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\fontpropertiesctrl.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\fontpropertiesctrl.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\hudfilebase.cpp"
 				>
 			</File>
@@ -321,14 +305,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\miscpropertiesctrl.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\miscpropertiesctrl.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\prefs.cpp"
 				>
 			</File>
@@ -344,17 +320,17 @@
 				RelativePath=".\src\superhudeditor.h"
 				>
 			</File>
-			<File
-				RelativePath=".\src\visibilitypropertiesctrl.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\visibilitypropertiesctrl.h"
-				>
-			</File>
 			<Filter
 				Name="cpma"
 				>
+				<File
+					RelativePath=".\src\cpma\colorpropertiesctrl.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\cpma\colorpropertiesctrl.h"
+					>
+				</File>
 				<File
 					RelativePath=".\src\cpma\displayctrl.cpp"
 					>
@@ -388,6 +364,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\cpma\fontpropertiesctrl.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\cpma\fontpropertiesctrl.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\cpma\hudfile.cpp"
 					>
 				</File>
@@ -404,11 +388,31 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\cpma\miscpropertiesctrl.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\cpma\miscpropertiesctrl.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\cpma\propertiesnotebook.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\src\cpma\propertiesnotebook.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\cpma\propertygridbase.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\cpma\visibilitypropertiesctrl.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\cpma\visibilitypropertiesctrl.h"
 					>
 				</File>
 			</Filter>

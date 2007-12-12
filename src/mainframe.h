@@ -22,7 +22,7 @@ class MainFrame : public wxFrame
 
     void update_title();
 
-    void OnMenuGameSelection( wxCommandEvent& );
+    
 
 
     ElementsCtrlBase*   elementsctrl() { return m_elementsctrl; }
@@ -56,6 +56,7 @@ class MainFrame : public wxFrame
     void OnMenuPreferences( wxCommandEvent& );
     void OnMenuDefaultPerspective( wxCommandEvent& );
     void OnMenuConfigPreview( wxCommandEvent& );
+    void OnMenuSwitchGame( wxCommandEvent& );
 
   private:
     wxAuiManager m_mgr;

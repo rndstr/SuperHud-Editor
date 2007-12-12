@@ -13,7 +13,7 @@ class Prefs
 
     void load();
     /// stores all preferences in config file
-    /// @arg from_prefs_dialog Whether we are coming from the preferences dialog
+    /// @arg from_prefs_dialog Whether we are coming from the preferences dialog (and thus only saving change that can be changed there)
     void save( bool from_prefs_dialog = false );
 
   // settings
