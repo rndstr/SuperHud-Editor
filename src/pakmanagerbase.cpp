@@ -29,11 +29,11 @@ void PakManagerBase::cleanup()
       it->second.bufsize = 0;
     }
   }
+  m_pakcontent.clear();
 }
 
 wxString PakManagerBase::get_location( const wxString& fpath, bool allow_absolute /*=false*/) const
 {
-  wxLogDebug(wxT("looking for %s"), fpath);
   wxString loc;
   // absolute
   // TODO check if wxFileSystem::FindFirst also finds absolute paths
@@ -68,8 +68,42 @@ wxString PakManagerBase::get_location( const wxString& fpath, bool allow_absolut
   return loc;
 }
 
-bool PakManagerBase::load( char **buf, const wxString& fpath, size_t *size /*= 0*/ )
+
+
+bool PakManagerBase::load_from_location( char **buf, const wxString& location, size_t *psize /*=0*/ )
 {
+  wxFileSystem fs;
+  wxFSFile *file = 0;
+  {
+    //wxLogNull unfortunately_this_gives_us_invalidzipfile_without_any_information_which_one_so_just_shut_the_fuck_up;
+    file = fs.OpenFile( location );
+  }
+  if( 0 == file )
+    return false;
+  
+  wxStreamBuffer streambuf( *file->GetStream(), wxStreamBuffer::read ); 
+ 
+  size_t size = file->GetStream()->GetSize(); 
+  if( psize )
+    *psize = size;
+  if (!size ) 
+  {
+    delete file;
+    return false; 
+  }
+ 
+  *buf = new char[ size ];                             
+  streambuf.Read( *buf, size );
+  delete file;
+  return true;
+}
+
+
+
+bool PakManagerBase::load( char **buf, const wxString& fpath, size_t *psize /*= 0*/ )
+{
+  wxASSERT(buf != 0);
+  // FIXME if the file doesn't belong to a valid game data file we shouldn't add it to cache! (pakcontent)
   wxFSFile *file = 0;
   // maybe we don't even need pak access?
 
@@ -77,55 +111,21 @@ bool PakManagerBase::load( char **buf, const wxString& fpath, size_t *size /*= 0
   // although not really allowed
   wxString location = get_location(fpath);; // final location uri to be used with wxFileSystem
 
-  wxLogDebug(location);
-  
-  return false;
-
-/*
-
-  pakcontent_t::iterator cont = m_pakcontent.find( pakpath );
-  if( cont == m_pakcontent.end() )
-  { // not found.
-    //if( !prefs_cache_enable )
-    if( false )
-    { // that's okay, look in all pk3s.
-      for( wxArrayString::reverse_iterator it = m_pakfiles.rbegin(); it != m_pakfiles.rend(); ++it )
-      {
-        if( load_from_zip( buf, *it, pakpath, size ) )
-        {
-          std::pair<pk3content_t::iterator, bool> mofo = m_pk3content.insert( std::make_pair(pk3path, pk3contentnode_t( &(*it), *buf, *size )) );
-          cont = mofo.first;
-          m_justloaded = cont;
-          return true;
-        }
-      }
-      return false; // cannot find file in pk3s
+  pakcontent_t::iterator cont = m_pakcontent.find( fpath );
+  if( cont == m_pakcontent.end() || cont->second.buffer == 0 )
+  { // not found or cache not available
+    // load
+    size_t size;
+    if( !load_from_location(buf, location, &size) )
+      return false;
+    if( cont == m_pakcontent.end() )
+    { // no entry, add it
+      std::pair<pakcontent_t::iterator, bool> mofo = m_pakcontent.insert( std::make_pair(fpath, pakcontentnode_t( fpath, *buf, size)) );
     }
-    else
-      return false; // cannot find file in pk3 cache
+    if( psize )
+      *psize = size;
   }
-  else
-  {
-    if( cont->second.buffer == 0 )
-    {
-      if( !load_from_zip( buf, *cont->second.pakfile, pakpath, size ) )
-      {
-        wxLogError( wxT("Failed loading Pak content: ") + pakpath + wxT("\nfrom file: ") + *cont->second.pakfile);
-        return false;
-      }
-      cont->second.buffer = *buf;
-      cont->second.bufsize = *size;
-    }
-    else
-    {
-      *buf = cont->second.buffer;
-      *size = cont->second.bufsize;
-    }
-    
-  }
-  //m_justloaded = cont;
   return true;
-*/
 }
 
 size_t PakManagerBase::enumerate_pak_files( wxArrayString *files )
@@ -176,28 +176,19 @@ size_t PakManagerBase::enumerate_pak_files( wxArrayString *files )
   return count;
 }
 
-bool PakManagerBase::load_from_zip( char **buf, const wxString& filepath, const wxString& entrypath, size_t *psize )
+void PakManagerBase::debug() const
 {
-  wxFileSystem fs;
-  wxFSFile *file = 0;
+  wxLogDebug(wxT(" PAKFILES"));
+  for( wxArrayString::const_reverse_iterator it = m_pakfiles.rbegin(); it != m_pakfiles.rend(); ++it )
   {
-    wxLogNull unfortunately_this_gives_us_invalidzipfile_without_any_information_which_one_so_just_shut_the_fuck_up;
-    file = fs.OpenFile( filepath + wxT("#zip:") + entrypath );
+    wxLogDebug(*it);
   }
-  if( 0 == file )
-    return false;
-  
-  wxStreamBuffer streambuf(   *file->GetStream(), wxStreamBuffer::read ); 
- 
-  size_t size = file->GetStream()->GetSize(); 
-  if( psize )
-    *psize = size;
-  if (!size ) 
-    return false; 
- 
-  *buf = new char[ size ];                             
-  streambuf.Read( *buf, size );
-  delete file;
+  wxLogDebug(wxT(" PAKCONTENTS"));
+  for( pakcontent_t::const_iterator cit = m_pakcontent.begin(); cit != m_pakcontent.end(); ++cit )
+  {
+    wxLogDebug(cit->first);
+    wxLogDebug(wxT("0x%x"), cit->second.buffer);
+    wxLogDebug(wxT("%d"), cit->second.bufsize);
+  }
 
-  return true;
 }

@@ -167,8 +167,10 @@ void MainFrame::OnMenuExit( wxCommandEvent& )
 void MainFrame::OnMenuAbout( wxCommandEvent& )
 {
   wxLogDebug(wxT("about"));
-  wxGetApp().pakmanager()->load(0, wxT("test/test.txt"));
-  wxGetApp().pakmanager()->load(0, wxT("icons/iconf_red1.tga"));
+  wxGetApp().pakmanager()->debug();
+  char *buf;
+  wxGetApp().pakmanager()->load(&buf, wxT("test/test.txt"));
+  wxGetApp().pakmanager()->load(&buf, wxT("icons/iconf_red1.tga"));
 }
 
 void MainFrame::OnMenuNew( wxCommandEvent& )

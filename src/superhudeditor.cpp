@@ -14,6 +14,7 @@
 
 
 #include <wx/stdpaths.h>
+#include <wx/fs_arc.h>
 #include "factorybase.h"
 #include "hudfilebase.h"
 #include "pakmanagerbase.h"
@@ -45,6 +46,7 @@ bool SHEApp::OnInit()
 #endif
 
   wxArtProvider::Push( new ArtProvider );
+  wxFileSystem::AddHandler(new wxArchiveFSHandler);
 
   // set up config file
   
