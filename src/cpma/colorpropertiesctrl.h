@@ -18,7 +18,9 @@ class ColorPropertiesCtrl : public CPMAPropertyGridBase
     void update_layout();
 
   private:
+    void OnItemChanging( wxPropertyGridEvent& ev );
     void OnItemChanged( wxPropertyGridEvent& ev );
+
     static wxString textalign_element_to_ui( const wxChar& ta );
     static int fontsizetype_ui_to_element( const wxString& fs );
     static wxString fontsizetype_element_to_ui( int fst );

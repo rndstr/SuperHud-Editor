@@ -3,6 +3,8 @@
 
 #include <wx/string.h>
 
+const wxString PREFS_Q3_PAKFILES_DEFAULT = wxT("baseq3/pak*.pk3;baseq3/map_cpm*.pk3;cpma/z-cpma-pak*.pk3");
+
 class Prefs
 {
   public:
@@ -23,6 +25,13 @@ class Prefs
     wxString perspective;
     /// possible values 'q4max' or 'cpma'
     wxString game;
+
+    // -- game specific
+    // cpma
+    wxString q3_gamedir; ///< "C:\games\quake3"
+    wxString q3_pakfiles;
+    // q4max
+    wxString q4_gamedir; ///< "C:\games\quake4"
 
     // -- mis
     wxString hudspecs; ///< NOARCHIVE

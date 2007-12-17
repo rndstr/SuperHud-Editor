@@ -451,6 +451,15 @@ Color4 CPMAElement::iget_bgcolor() const
   }
   return c;
 }
+bool CPMAElement::iget_fill() const
+{
+  if( m_has & E_HAS_FILL )
+    return true;
+
+  const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FILL ));
+
+  return (parent != 0);
+}
 Color4 CPMAElement::iget_fade() const
 {
   Color4 c = m_fade;

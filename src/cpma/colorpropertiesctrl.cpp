@@ -11,6 +11,7 @@
 #include <wx/propgrid/propgrid.h>
 
 BEGIN_EVENT_TABLE(ColorPropertiesCtrl, CPMAPropertyGridBase)
+  EVT_PG_CHANGING(ID_NOTEBOOK_PROPERTIES, ColorPropertiesCtrl::OnItemChanging)
   EVT_PG_CHANGED(ID_NOTEBOOK_PROPERTIES, ColorPropertiesCtrl::OnItemChanged)
 END_EVENT_TABLE()
 
@@ -23,6 +24,7 @@ ColorPropertiesCtrl::ColorPropertiesCtrl( wxWindow *parent ) :
 
   Append( new wxPropertyCategory(_("Foreground")) );
   Append( new wxBoolProperty( _("Use"), wxT("color-use"), false) );
+  SetPropertyAttribute(wxT("color-use"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
   Append( new wxColourProperty(_("Color"), wxT("color")) );
   SetPropertyHelpString( wxT("color"), _("Sets the foreground color for the element.") );
   Append( new wxIntProperty(_("Opaqueness"), wxT("color-alpha"), -1) );
@@ -40,23 +42,40 @@ ColorPropertiesCtrl::ColorPropertiesCtrl( wxWindow *parent ) :
 
   Append( new wxPropertyCategory(_("Fade")) );
   Append( new wxBoolProperty( _("Use"), wxT("fade-use"), false) );
+  SetPropertyAttribute(wxT("fade-use"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
   Append( new wxColourProperty(_("Color"), wxT("fade")) );
   Append( new wxIntProperty(_("Opaqueness"), wxT("fade-alpha"), -1) );
 
-  SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX,(long)1);
+  //SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX,(long)1);
 }
 
+void ColorPropertiesCtrl::OnItemChanging( wxPropertyGridEvent& ev )
+{
+  wxPGProperty *prop = ev.GetProperty();
+  if( !prop ) return;
+
+  CPMAElement *el = current_element();
+  if( !el ) return;
+
+  wxString name = prop->GetName();
+
+  // if user is trying to disable this but a parent has it enabled, tell him
+  if( name == wxT("fill") && !ev.GetValue().GetBool() && el->iget_fill() && !el->fill() )
+  {
+    wxMessageBox(CANTDISABLE_MSG);
+    ev.Veto();
+  }
+}
 
 void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
 {
-  PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesnotebook();
-  if( !p )
-  {
-    wxLogDebug(wxT("VisibilityPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
-    return;
-  }
-  CPMAElement *el = static_cast<CPMAElement*>(p->curel());
-  wxString name = ev.GetPropertyName();
+  wxPGProperty *prop = ev.GetProperty();
+  if( !prop ) return;
+
+  CPMAElement *el = current_element();
+  if( !el ) return;
+
+  wxString name = prop->GetName();
   wxVariant val = ev.GetPropertyValue();
 
   if( name == wxT("color-use") )
@@ -83,6 +102,16 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
     else if( name == wxT("color-alpha") )
       el->set_color_a100( val.GetInteger() );
 
+  }
+  else if( name == wxT("fill") )
+  {
+    if( el->flags() & E_PARENT && val.GetBool() )
+      wxMessageBox( _("Be aware that the `FILL' you just ticked cannot be disabled on subsequent elements!") );
+    // first update current element value
+    el->set_fill(val.GetBool());
+    // if we are disabling, we still want a parental value to be active (i.e. this only changes cell color)
+    if( !val.GetBool() )
+      SetPropertyValue( wxT("fill"), el->iget_fill() );
   }
   else
     return; // nothing changed

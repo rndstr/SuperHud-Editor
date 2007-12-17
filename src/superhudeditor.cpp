@@ -16,6 +16,7 @@
 #include <wx/stdpaths.h>
 #include "factorybase.h"
 #include "hudfilebase.h"
+#include "pakmanagerbase.h"
 #include "GameSelectionDialog.h"
 
 #ifndef DISABLE_CPMA
@@ -83,6 +84,8 @@ bool SHEApp::OnInit()
   }
 
   m_hudfile = m_factory->create_hudfile();
+  m_pakmanager = m_factory->create_pakmanager();
+  m_pakmanager->init();
 
   m_mainframe = new MainFrame(0, wxID_ANY, APP_NAME, wxDefaultPosition, wxSize(800,600));
   SetTopWindow(m_mainframe);
@@ -120,6 +123,8 @@ int SHEApp::OnExit()
   m_factory->shutdown();
   wxDELETE(m_factory);
   wxDELETE(m_hudfile);
+  m_pakmanager->shutdown();
+  wxDELETE(m_pakmanager);
 
   return 0;
 }

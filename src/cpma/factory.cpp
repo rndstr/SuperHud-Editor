@@ -5,6 +5,7 @@
 #include "propertiesnotebook.h"
 #include "displayctrl.h"
 #include "hudfile.h"
+#include "../pakmanagerbase.h"
 
 
 bool CPMAFactory::init()
@@ -12,22 +13,27 @@ bool CPMAFactory::init()
   return CPMAHudSpecs::get().load();
 }
 
-ElementsCtrlBase* CPMAFactory::create_elementsctrl(wxWindow *parent)
+ElementsCtrlBase* CPMAFactory::create_elementsctrl(wxWindow *parent) const
 {
   return new CPMAElementsCtrl(parent);
 }
 
-PropertiesNotebookBase* CPMAFactory::create_propertiesnotebook(wxWindow *parent)
+PropertiesNotebookBase* CPMAFactory::create_propertiesnotebook(wxWindow *parent) const
 {
   return new CPMAPropertiesNotebook(parent);
 }
 
-DisplayCtrlBase* CPMAFactory::create_displayctrl(wxWindow *parent)
+DisplayCtrlBase* CPMAFactory::create_displayctrl(wxWindow *parent) const
 {
   return new CPMADisplayCtrl(parent);
 }
 
-HudFileBase* CPMAFactory::create_hudfile()
+HudFileBase* CPMAFactory::create_hudfile() const
 {
   return new CPMAHudFile;
+}
+
+PakManagerBase* CPMAFactory::create_pakmanager() const
+{
+  return new PakManagerBase();
 }

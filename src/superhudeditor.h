@@ -9,14 +9,16 @@ const wxString APP_VENDOR = wxEmptyString;
 const wxString APP_CAPTION = wxT("SuperHud Editor v") + APP_VERSION;
 const wxString APP_CONFIG = wxT("superhudeditor.conf");
 const wxString APP_URL = wxT("http://plrf.org/superhudeditor");
-const wxString BUG_MSG = _("Bug detected, please contact the author");
 
+const wxString BUG_MSG = _("Bug detected, please contact the author");
 const wxString CANTDISABLE_MSG = _("There is no way to disable this property on that element as a parent element specifies it.\nYou should remove the property on the parent `!DEFAULT' element.");
+const wxString INVALIDGAME_MSG = _("No valid game selected?");
 
 class FactoryBase;
 class HudFileBase;
 class ElementsCtrlBase;
 class MainFrame;
+class PakManagerBase;
 
 class SHEApp : public wxApp
 {
@@ -37,6 +39,7 @@ class SHEApp : public wxApp
     FactoryBase* factory() { return m_factory; }
     HudFileBase* hudfile() { return m_hudfile; }
     ElementsCtrlBase* elementsctrl();
+    PakManagerBase* pakmanager() { return m_pakmanager; }
 
   protected:
     void load_config();
@@ -46,6 +49,7 @@ class SHEApp : public wxApp
     MainFrame   *m_mainframe;
     FactoryBase *m_factory;
     HudFileBase *m_hudfile;
+    PakManagerBase *m_pakmanager;
 };
 
 DECLARE_APP(SHEApp)

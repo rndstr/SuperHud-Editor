@@ -17,6 +17,7 @@
 //DECLARE_APP(SHEApp);
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
+  EVT_MENU(wxID_ABOUT, MainFrame::OnMenuAbout)
   EVT_MENU(wxID_EXIT, MainFrame::OnMenuExit)
   EVT_MENU(wxID_SAVE, MainFrame::OnMenuSave)
   EVT_MENU(wxID_SAVEAS, MainFrame::OnMenuSaveAs)
@@ -161,6 +162,13 @@ void MainFrame::OnMenuSwitchGame( wxCommandEvent& )
 void MainFrame::OnMenuExit( wxCommandEvent& )
 {
   Close(true);
+}
+#include "pakmanagerbase.h"
+void MainFrame::OnMenuAbout( wxCommandEvent& )
+{
+  wxLogDebug(wxT("about"));
+  wxGetApp().pakmanager()->load(0, wxT("test/test.txt"));
+  wxGetApp().pakmanager()->load(0, wxT("icons/iconf_red1.tga"));
 }
 
 void MainFrame::OnMenuNew( wxCommandEvent& )

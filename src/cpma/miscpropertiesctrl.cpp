@@ -50,8 +50,7 @@ void MiscPropertiesCtrl::OnItemChanging( wxPropertyGridEvent& ev )
     wxMessageBox(CANTDISABLE_MSG);
     ev.Veto();
   }
-  else // if user is trying to disable this but a parent has it enabled, tell him
-  if( name == wxT("draw3d") && !ev.GetValue().GetBool() && el->iget_draw3d() && !el->draw3d() )
+  else if( name == wxT("draw3d") && !ev.GetValue().GetBool() && el->iget_draw3d() && !el->draw3d() )
   {
     wxMessageBox(CANTDISABLE_MSG);
     ev.Veto();

@@ -48,6 +48,7 @@ class MainFrame : public wxFrame
 
     void OnClose( wxCloseEvent& ev );
 
+    void OnMenuAbout( wxCommandEvent& );
     void OnMenuExit( wxCommandEvent& );
     void OnMenuNew( wxCommandEvent& );
     void OnMenuOpen( wxCommandEvent& );

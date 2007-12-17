@@ -27,6 +27,13 @@ void Prefs::load()
   c->Read(wxT("game"), &game, wxT(""));
   c->Read(wxT("perspective"), &perspective, wxT(""));
 
+  // -- game specific
+  // cpma
+  c->Read(wxT("q3_gamedir"), &q3_gamedir, wxT(""));
+  c->Read(wxT("q3_pakfiles"), &q3_pakfiles, PREFS_Q3_PAKFILES_DEFAULT);
+  // q4max
+  c->Read(wxT("q4_gamedir"), &q4_gamedir, wxT(""));
+
   // -- misc
   c->Read(wxT("hudspecs"), &hudspecs, wxT("")); // this is only read
 
@@ -45,6 +52,14 @@ void Prefs::save( bool from_prefs_dialog /*= false*/ )
   // -- display
   c->Write(wxT("game"), game);
   c->Write(wxT("perspective"), perspective);
+
+  // -- game specific
+  // cpma
+  c->Write(wxT("q3_gamedir"), q3_gamedir);
+  //c->Write(wxT("q3_pakfiles"), q3_pakfiles);
+
+  // q4max
+  c->Write(wxT("q4_gamedir"), q4_gamedir);
 
   // -- startup
   c->Write(wxT("startup_gameselection"), startup_gameselection);

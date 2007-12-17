@@ -84,8 +84,6 @@ class CPMAElement : public ElementBase
     bool        draw3d() const { return (m_has & E_HAS_DRAW3D) != 0; }
     bool        iget_draw3d() const;
 
-    bool        fill() const { return (m_has & E_HAS_FILL) != 0; }
-
     void        set_doublebar( bool doublebar = true ) { add_has( E_HAS_DOUBLEBAR, doublebar ); }
     bool        doublebar() const { return (m_has & E_HAS_DOUBLEBAR) != 0; }
     bool        iget_doublebar() const;
@@ -115,6 +113,9 @@ class CPMAElement : public ElementBase
     Color4      iget_bgcolor() const;
     void        set_fade( const wxColour& c ) { m_fade.set(c); }
     Color4      iget_fade() const;
+    void        set_fill( bool fill = true ) { add_has( E_HAS_FILL, fill ); }
+    bool        fill() const { return (m_has & E_HAS_FILL) != 0; }
+    bool        iget_fill() const;
 
   protected:
     wxString      m_desc;
