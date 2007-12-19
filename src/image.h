@@ -1,5 +1,5 @@
-#ifndef __IMAGE_H__
-#define __IMAGE_H__
+#ifndef __TEXTURE_H__
+#define __TEXTURE_H__
 
 #ifdef __WXMAC__
   #include "OpenGL/gl.h"
@@ -7,15 +7,13 @@
   #include <GL/gl.h>
 #endif
 
-class Image
+class Texture
 {
   public:
-    Image( const wxString& filepath );
-    virtual ~Image();
+    Texture( const wxString& filepath );
+    virtual ~Texture();
 
-    void load( const wxString& filepath );
-
-
+    bool load( const wxString& fpath );
 
 
   protected:

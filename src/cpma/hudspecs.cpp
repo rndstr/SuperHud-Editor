@@ -21,9 +21,9 @@ bool CPMAHudSpecs::load()
   if( hudspecs.empty() )
   { // enumerate one
     wxArrayString files;
-    size_t count = wxDir::GetAllFiles(wxStandardPaths::Get().GetDataDir() + wxT("/data/cpma/hudspecs/"), &files, wxT("*.dat"), wxDIR_FILES);
+    size_t count = wxDir::GetAllFiles(wxStandardPaths::Get().GetDataDir() + wxT("/data/cpma/hudspecs/"), &files, wxT("*.dat"), GETALLFILES_FLAGS);
     if( wxDir::Exists( wxStandardPaths::Get().GetUserDataDir() + wxT("/data/cpma/hudspecs/") ) )
-      count += wxDir::GetAllFiles(wxStandardPaths::Get().GetUserDataDir() + wxT("/data/cpma/hudspecs/"), &files, wxT("*.dat"), wxDIR_FILES);
+      count += wxDir::GetAllFiles(wxStandardPaths::Get().GetUserDataDir() + wxT("/data/cpma/hudspecs/"), &files, wxT("*.dat"), GETALLFILES_FLAGS);
     if( count == 1 )
       fpath = files[0];
     else if( count > 1 )

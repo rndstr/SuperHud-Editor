@@ -4,11 +4,22 @@
 #include "../displayctrlbase.h"
 class CPMADisplayCtrl : public DisplayCtrlBase
 {
+  static const int WIDTH = 640;
+  static const int HEIGHT = 480;
   public:
     CPMADisplayCtrl( wxWindow *parent ) :
       DisplayCtrlBase(parent)
     {
     }
+
+    void init();
+    void cleanup();
+
+    void load_background();
+
+    void render();
+    int width() const { return CPMADisplayCtrl::WIDTH; }
+    int height() const { return CPMADisplayCtrl::HEIGHT; }
 
 };
 

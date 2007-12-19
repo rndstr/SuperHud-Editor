@@ -69,11 +69,6 @@ wxString safe_filename( const wxString& filename )
   return ret;
 }
 
-void dir_to_forward_slash( wxString& str )
-{
-  str.Replace( wxT("\\"), wxT("/"), true );
-}
-
 bool exists_in_zip( const wxString& filepath, const wxString& entrypath )
 {
   wxFileSystem fs;
@@ -133,6 +128,7 @@ int common_start( const wxString& lhs, const wxString& rhs )
     ++i;
   return i;
 }
+
 
 /*
 /// Checks if the latest version is newer than our.

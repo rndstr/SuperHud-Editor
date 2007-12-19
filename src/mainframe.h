@@ -1,13 +1,17 @@
 #ifndef __MAINFRAME_H__
 #define __MAINFRAME_H__
 
-#include "hudfilebase.h"
 
 #include <wx/frame.h>
 #include <wx/aui/aui.h>
 
+/// statusbar column
+const int SB_MOUSEPOS = 1;
+
+class wxTextCtrl;
 class ElementsCtrlBase;
 class PropertiesNotebookBase;
+class DisplayCtrlBase;
 
 class MainFrame : public wxFrame
 {
@@ -28,6 +32,7 @@ class MainFrame : public wxFrame
     ElementsCtrlBase*   elementsctrl() { return m_elementsctrl; }
     PropertiesNotebookBase* propertiesnotebook() { return m_propertiesnotebook; }
     wxTextCtrl*         configpreview() { return m_configpreview; }
+    wxStatusBar*        statusbar() { return m_statusbar; }
 
     /// Selection changed in ElementsCtrl
     void                OnElementSelectionChanged();
@@ -39,10 +44,12 @@ class MainFrame : public wxFrame
     void update_configpreview();
 
     wxMenu            *m_view_menu;
+    wxStatusBar       *m_statusbar;
 
     ElementsCtrlBase  *m_elementsctrl;
     PropertiesNotebookBase *m_propertiesnotebook;
     wxTextCtrl        *m_configpreview;
+    DisplayCtrlBase   *m_displayctrl;
 
   private:
 
@@ -58,6 +65,7 @@ class MainFrame : public wxFrame
     void OnMenuDefaultPerspective( wxCommandEvent& );
     void OnMenuConfigPreview( wxCommandEvent& );
     void OnMenuSwitchGame( wxCommandEvent& );
+    void OnMenuViewGrid( wxCommandEvent& ev );
 
   private:
     wxAuiManager m_mgr;

@@ -2,8 +2,7 @@
 #define __PREFS_H__
 
 #include <wx/string.h>
-
-const wxString PREFS_Q3_PAKFILES_DEFAULT = wxT("baseq3/pak*.pk3;baseq3/map_cpm*.pk3;cpma/z-cpma-pak*.pk3");
+#include "color4.h"
 
 class Prefs
 {
@@ -19,17 +18,25 @@ class Prefs
     void save( bool from_prefs_dialog = false );
 
   // settings
+  // NOARCHIVE = we don't write it.. only read
   public:
 
     // -- display
-    wxString perspective;
+    wxString  perspective;
+    bool      grid;
+    int       grid_x, grid_y;
+    Color4    grid_color;
     /// possible values 'q4max' or 'cpma'
     wxString game;
 
     // -- game specific
     // cpma
     wxString q3_gamedir; ///< "C:\games\quake3"
+#ifndef WIN32
+    wxString q3_homedirname; ///< NOARCHIVE ".q3a"
+#endif
     wxString q3_pakfiles;
+    wxString q3_background;
     // q4max
     wxString q4_gamedir; ///< "C:\games\quake4"
 

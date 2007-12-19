@@ -1,12 +1,13 @@
 
 #include "mainframe.h"
 
+#include "common.h"
+
 #include <wx/artprov.h>
 #include <wx/menu.h>
 #include <wx/stdpaths.h>
 #include <wx/file.h>
 
-#include "common.h"
 #include "factorybase.h"
 
 #include "cpma/elementsctrl.h"
@@ -28,6 +29,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_MENU(ID_MENU_VIEW_DEFAULTPERSPECTIVE, MainFrame::OnMenuDefaultPerspective)
   EVT_CLOSE(MainFrame::OnClose)
   EVT_MENU(ID_MENU_VIEW_CONFIGPREVIEW, MainFrame::OnMenuConfigPreview)
+  EVT_MENU(ID_MENU_VIEW_GRID, MainFrame::OnMenuViewGrid)
 END_EVENT_TABLE()
 
 
@@ -42,6 +44,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_mgr.SetManagedWindow(this);
 
   // create menu
+  wxMenuItem *mit;
   wxMenuBar *menu_bar = new wxMenuBar;
 
   wxMenu *file_menu = new wxMenu;
@@ -66,6 +69,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_view_menu= new wxMenu;
   m_view_menu->Append( ID_MENU_VIEW_DEFAULTPERSPECTIVE, _("&Reset View") );
   m_view_menu->AppendSeparator();
+  mit = m_view_menu->AppendCheckItem( ID_MENU_VIEW_GRID, _("Display Grid"), _("Draws a grid over the hud") );
+  mit->Check(Prefs::get().grid);
   m_view_menu->AppendCheckItem( ID_MENU_VIEW_CONFIGPREVIEW, _("[FIXME]Config Preview"), _("Display the Config Preview panel") );
   m_view_menu->AppendCheckItem( ID_MENU_VIEW_TOOLBAR_FILE, _("[FIXME]Toolbar File"), _("Display the File toolbar") );
   menu_bar->Append( m_view_menu, _("&View") );
@@ -77,8 +82,13 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   SetMenuBar( menu_bar );
 
   // statusbar plz
-  CreateStatusBar();
-  GetStatusBar()->SetStatusText(_("Ready"));
+  m_statusbar = CreateStatusBar(2);
+  m_statusbar->SetStatusText(_("Ready"));
+  int statusbar_widths[] = { -1, 100 };
+  m_statusbar->SetStatusWidths(2, statusbar_widths);
+  int statusbar_styles[] = { wxSB_NORMAL, wxSB_FLAT };
+  m_statusbar->SetStatusStyles( 2, statusbar_styles );
+  
 
   // create toolbar
   wxToolBar *tool_bar_file = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
@@ -101,7 +111,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_mgr.AddPane( m_configpreview, wxAuiPaneInfo().Name(wxT("configpreview")).Caption(_("Config Preview")).
     CloseButton(true).MaximizeButton(true)
     );
-  m_mgr.AddPane( wxGetApp().factory()->create_displayctrl(this), 
+  m_displayctrl = wxGetApp().factory()->create_displayctrl(this);
+  m_mgr.AddPane( m_displayctrl, 
       wxAuiPaneInfo().Name(wxT("display")).Caption(_("Display")).MaximizeButton(true).CloseButton(false).
       CenterPane()
       );
@@ -132,6 +143,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   set_floating_hint( wxAUI_MGR_RECTANGLE_HINT );
 #endif
   m_mgr.Update();
+
+  m_displayctrl->init();
 }
 
 
@@ -168,9 +181,6 @@ void MainFrame::OnMenuAbout( wxCommandEvent& )
 {
   wxLogDebug(wxT("about"));
   wxGetApp().pakmanager()->debug();
-  char *buf;
-  wxGetApp().pakmanager()->load(&buf, wxT("test/test.txt"));
-  wxGetApp().pakmanager()->load(&buf, wxT("icons/iconf_red1.tga"));
 }
 
 void MainFrame::OnMenuNew( wxCommandEvent& )
@@ -307,7 +317,9 @@ void MainFrame::OnClose( wxCloseEvent& ev )
 {
 
   wxLogDebug(wxT("CLOSE"));
+  // do some shutting down
   Prefs::get().perspective = m_mgr.SavePerspective();
+  m_displayctrl->cleanup();
 
   ev.Skip();
 }
@@ -321,6 +333,11 @@ void MainFrame::OnMenuConfigPreview( wxCommandEvent& )
 {
   m_configpreview->Show( m_view_menu->IsChecked(ID_MENU_VIEW_CONFIGPREVIEW) );
   DoUpdate();
+}
+
+void MainFrame::OnMenuViewGrid( wxCommandEvent& ev )
+{
+  Prefs::get().grid = ev.IsChecked();
 }
 
 #include <wx/sstream.h>

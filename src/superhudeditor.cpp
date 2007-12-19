@@ -47,6 +47,7 @@ bool SHEApp::OnInit()
 
   wxArtProvider::Push( new ArtProvider );
   wxFileSystem::AddHandler(new wxArchiveFSHandler);
+  wxInitAllImageHandlers();
 
   // set up config file
   

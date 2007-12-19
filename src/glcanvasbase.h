@@ -11,7 +11,7 @@ class GLCanvasBase : public wxGLCanvas
     void OnPaint( wxPaintEvent& ev );
 
   private:
-    void Render();
+    virtual void render() {}
   protected:
     DECLARE_EVENT_TABLE()
 };

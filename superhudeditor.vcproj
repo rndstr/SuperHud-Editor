@@ -281,6 +281,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\displayctrlbase.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\displayctrlbase.h"
 				>
 			</File>
@@ -374,6 +378,22 @@
 			</File>
 			<File
 				RelativePath=".\src\superhudeditor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\texture.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\texture.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tgaloader.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tgaloader.h"
 				>
 			</File>
 			<Filter

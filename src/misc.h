@@ -47,14 +47,13 @@ wxString pretty_print_float(float f, int aftercomma = 3);
 
 wxString safe_filename( const wxString& filename );
 
-void dir_to_forward_slash( wxString& str );
-
 bool exists_in_zip( const wxString& filepath, const wxString& entrypath );
 bool load_from_zip( char **buf, const wxString& filepath, const wxString& entrypath, size_t *size=0 );
 
 wxString file_ext( const wxString& str );
 
 int common_start( const wxString& lhs, const wxString& rhs );
+
 
 /// Checks if the latest version is newer than our.
 /// @return <0 if our<latest, =0 if our=latest, >0 if our>latest.
