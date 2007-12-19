@@ -1,1 +1,4 @@
 % move the enable/disable element buttons to the ElementsCtrlBase panel
+
+[UNIX] the logfile is written as relative path, this will go into wrong place definitely
+[UNIX] disable the webupdater to actually update something.. just tell that there is a new version

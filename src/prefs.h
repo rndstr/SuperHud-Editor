@@ -23,6 +23,8 @@ class Prefs
 
     // -- display
     wxString  perspective;
+    wxString  aspectratio; ///< human readable '4:3', '16:9'. this will be read/written
+    double    aspectratiod; ///< use this for calculations, will be updated after read
     bool      grid;
     int       grid_x, grid_y;
     Color4    grid_color;

@@ -101,7 +101,8 @@ bool SHEApp::OnInit()
 
 int SHEApp::OnRun()
 {
-  m_hudfile->on_new();
+  m_hudfile->OnNew();
+  m_mainframe->update_title();
   /*
   if( m_firststart )
   {
@@ -131,6 +132,7 @@ int SHEApp::OnExit()
 
   return 0;
 }
+
 
 
 bool SHEApp::is_cpma() const

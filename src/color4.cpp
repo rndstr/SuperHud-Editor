@@ -48,6 +48,7 @@ bool Color4::from_string( const wxString& str )
 {
   float _r, _g, _b, _a;
 
+  // FIXME use wxTextInputStream
   if( 4 != sscanf( str.mb_str(), "%f %f %f %f", &_r, &_g, &_b, &_a ) )
   {
     char special;

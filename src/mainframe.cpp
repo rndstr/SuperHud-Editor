@@ -24,12 +24,16 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_MENU(wxID_SAVEAS, MainFrame::OnMenuSaveAs)
   EVT_MENU(wxID_OPEN, MainFrame::OnMenuOpen)
   EVT_MENU(wxID_NEW, MainFrame::OnMenuNew)
-  EVT_MENU(ID_MENU_TOOLS_SWITCHGAME, MainFrame::OnMenuSwitchGame)
-  EVT_MENU(ID_MENU_TOOLS_PREFERENCES, MainFrame::OnMenuPreferences)
-  EVT_MENU(ID_MENU_VIEW_DEFAULTPERSPECTIVE, MainFrame::OnMenuDefaultPerspective)
+  EVT_MENU(ID_MENU_TOOLS_SWITCHGAME, MainFrame::OnMenuToolsSwitchGame)
+  EVT_MENU(ID_MENU_TOOLS_PREFERENCES, MainFrame::OnMenuToolsPreferences)
+  EVT_MENU(ID_MENU_VIEW_DEFAULTPERSPECTIVE, MainFrame::OnMenuViewDefaultPerspective)
   EVT_CLOSE(MainFrame::OnClose)
-  EVT_MENU(ID_MENU_VIEW_CONFIGPREVIEW, MainFrame::OnMenuConfigPreview)
+  EVT_MENU(ID_MENU_VIEW_CONFIGPREVIEW, MainFrame::OnMenuViewConfigPreview)
+  EVT_MENU(ID_MENU_VIEW_TOOLBAR_FILE, MainFrame::OnMenuViewToolbarFile)
   EVT_MENU(ID_MENU_VIEW_GRID, MainFrame::OnMenuViewGrid)
+  EVT_MENU(ID_MENU_HELP_UPDATE, MainFrame::OnMenuHelpUpdate)
+  
+  EVT_UPDATE_UI_RANGE(ID_MENU_VIEW_CONFIGPREVIEW, ID_MENU_VIEW_TOOLBAR_FILE, MainFrame::OnUpdateViewPanes)
 END_EVENT_TABLE()
 
 
@@ -44,7 +48,6 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_mgr.SetManagedWindow(this);
 
   // create menu
-  wxMenuItem *mit;
   wxMenuBar *menu_bar = new wxMenuBar;
 
   wxMenu *file_menu = new wxMenu;
@@ -66,17 +69,20 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   wxMenu *elements_menu = new wxMenu;
   menu_bar->Append( elements_menu, _("&Elements") );
 
-  m_view_menu= new wxMenu;
+  m_view_menu = new wxMenu;
   m_view_menu->Append( ID_MENU_VIEW_DEFAULTPERSPECTIVE, _("&Reset View") );
+  wxMenu *view_panes_submenu = new wxMenu;
+  view_panes_submenu->AppendCheckItem( ID_MENU_VIEW_CONFIGPREVIEW, _("Config Preview\tCtrl+P"), _("Display the config preview panel") );
+  view_panes_submenu->AppendCheckItem( ID_MENU_VIEW_TOOLBAR_FILE, _("Toolbar File"), _("Display the file toolbar") );
+  m_view_menu->AppendSubMenu(view_panes_submenu, _("Panes"), _("Select which panes you would like to be visible or not"));
   m_view_menu->AppendSeparator();
-  mit = m_view_menu->AppendCheckItem( ID_MENU_VIEW_GRID, _("Display Grid"), _("Draws a grid over the hud") );
-  mit->Check(Prefs::get().grid);
-  m_view_menu->AppendCheckItem( ID_MENU_VIEW_CONFIGPREVIEW, _("[FIXME]Config Preview"), _("Display the Config Preview panel") );
-  m_view_menu->AppendCheckItem( ID_MENU_VIEW_TOOLBAR_FILE, _("[FIXME]Toolbar File"), _("Display the File toolbar") );
+  m_view_menu->AppendCheckItem( ID_MENU_VIEW_GRID, _("Display Grid\tCtrl+G"), _("Draws a grid over the hud") );
+  
   menu_bar->Append( m_view_menu, _("&View") );
 
   wxMenu *help_menu = new wxMenu;
   help_menu->Append( wxID_ABOUT, _("&About") );
+  help_menu->Append( ID_MENU_HELP_UPDATE, _("Check for updates...") );
   menu_bar->Append( help_menu, _("Help") );
 
   SetMenuBar( menu_bar );
@@ -91,13 +97,13 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   
 
   // create toolbar
-  wxToolBar *tool_bar_file = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
-  tool_bar_file->SetToolBitmapSize(wxSize(16,16));
-  tool_bar_file->AddTool( wxID_NEW, _("New"), wxArtProvider::GetBitmap(wxART_NEW_DIR, wxART_TOOLBAR, wxSize(16,16)), _("New") );
-  tool_bar_file->AddTool( wxID_OPEN, _("Open..."), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, wxSize(16,16)), _("Open...") );
-  tool_bar_file->AddTool( wxID_SAVE, _("Save"), wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR, wxSize(16,16)), _("Save") );
-  tool_bar_file->AddTool( wxID_SAVEAS, _("Save As..."), wxArtProvider::GetBitmap(wxART_FILE_SAVE_AS, wxART_TOOLBAR, wxSize(16,16)), _("Save As...") );
-  tool_bar_file->Realize();
+  m_toolbar_file = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
+  m_toolbar_file->SetToolBitmapSize(wxSize(16,16));
+  m_toolbar_file->AddTool( wxID_NEW, _("New"), wxArtProvider::GetBitmap(wxART_NEW_DIR, wxART_TOOLBAR, wxSize(16,16)), _("New") );
+  m_toolbar_file->AddTool( wxID_OPEN, _("Open..."), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, wxSize(16,16)), _("Open...") );
+  m_toolbar_file->AddTool( wxID_SAVE, _("Save"), wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR, wxSize(16,16)), _("Save") );
+  m_toolbar_file->AddTool( wxID_SAVEAS, _("Save As..."), wxArtProvider::GetBitmap(wxART_FILE_SAVE_AS, wxART_TOOLBAR, wxSize(16,16)), _("Save As...") );
+  m_toolbar_file->Realize();
  
 
 
@@ -123,14 +129,19 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
       Right()
       );
 
-  m_mgr.AddPane(tool_bar_file, wxAuiPaneInfo().Name(wxT("tb-file")).Caption(_("File")).
+  m_mgr.AddPane(m_toolbar_file, wxAuiPaneInfo().Name(wxT("tb-file")).Caption(_("File")).
 	  ToolbarPane().Top().Row(1).Position(1).LeftDockable(false).RightDockable(false)
 	  );
   
 
   m_defaultperspective = m_mgr.SavePerspective();
+
+  // update stuff
   m_mgr.LoadPerspective( Prefs::get().perspective );
-  m_view_menu->Check( ID_MENU_VIEW_CONFIGPREVIEW, m_configpreview->IsShown() );
+  //m_view_menu->Check( ID_MENU_VIEW_TOOLBAR_FILE, m_toolbar_file->IsShown() ); // done through UpdateUI event
+  //m_view_menu->Check( ID_MENU_VIEW_CONFIGPREVIEW, m_configpreview->IsShown() ); // done through UpdateUI event
+  m_view_menu->Check( ID_MENU_VIEW_GRID, Prefs::get().grid );
+  
 
   if( Prefs::get().game == wxT("q4max") )
     SetIcon( wxArtProvider::GetIcon(ART_Q4MAX, wxART_FRAME_ICON, wxSize(16,16)) );
@@ -160,16 +171,19 @@ void MainFrame::set_floating_hint( wxAuiManagerOption hint )
   m_mgr.SetFlags(f);
 }
 
-void MainFrame::OnMenuPreferences( wxCommandEvent& )
+
+
+void MainFrame::OnMenuToolsPreferences( wxCommandEvent& )
 {
   wxMessageBox(wxT("Not yet available, edit config file directly:\n") + wxStandardPaths::Get().GetUserDataDir() + wxT("/") + APP_CONFIG );
 }
 
-void MainFrame::OnMenuSwitchGame( wxCommandEvent& )
+void MainFrame::OnMenuToolsSwitchGame( wxCommandEvent& )
 {
   Prefs::get().startup_gameselection = true;
   Prefs::get().save();
-  wxMessageBox(_("Please restart the application to select your game"));
+  wxMessageBox(_("The application will now restart"));
+  restart_app();
 }
 
 void MainFrame::OnMenuExit( wxCommandEvent& )
@@ -185,76 +199,27 @@ void MainFrame::OnMenuAbout( wxCommandEvent& )
 
 void MainFrame::OnMenuNew( wxCommandEvent& )
 {
-  wxGetApp().hudfile()->on_new();
+  if( !confirm_saving() )
+    return;
+  wxGetApp().hudfile()->OnNew();
   update_title();
   m_elementsctrl->OnSelectionChanged();
 }
 
 void MainFrame::OnMenuOpen( wxCommandEvent& )
 {
-  wxLogDebug(wxT("open"));
-  int ret = wxID_OK;
-  wxFileDialog dlg(
-      this,
-      _("Open..."),
-      wxT(""),
-      wxT(""),
-      wxT("Hud Files (*.cfg)|*.cfg|All Files (*.*)|*.*"),
-#if wxCHECK_VERSION(2,7,0)
-      wxFD_OPEN | wxFD_FILE_MUST_EXIST
-#else
-      wxOPEN | wxFILE_MUST_EXIST
-#endif
-      );
-  if( wxID_OK == (ret = dlg.ShowModal()) )
-  {
-    wxBeginBusyCursor();
-    if( wxGetApp().hudfile()->load( dlg.GetPath() ) )
-    {
-    }
-    else
-      wxLogError( _("Failed reading Hud from file `%s'"), dlg.GetPath().c_str() );
-    update_title();
-    wxEndBusyCursor();
-    m_elementsctrl->OnSelectionChanged();
-  }
+  if( !confirm_saving() )
+    return;
+  wxGetApp().hudfile()->OnOpen();
+  update_title();
+  m_elementsctrl->OnSelectionChanged();
+  
 }
 
 void MainFrame::OnMenuSave( wxCommandEvent& )
 {
-  wxString filename = wxGetApp().hudfile()->filename();
-  if( filename.empty() )
-  {
-    int ret = wxID_OK;
-    wxFileDialog dlg(
-        this,
-        _("Save..."),
-        wxT(""),
-        wxT(""),
-        wxT("Hud Files (*.cfg)|*.cfg|All Files (*.*)|*.*"),
-  #if wxCHECK_VERSION(2,7,0)
-        wxFD_SAVE | wxFD_OVERWRITE_PROMPT
-  #else // 2.6
-        wxSAVE|wxOVERWRITE_PROMPT
-  #endif
-        );
-    if( wxID_OK == (ret = dlg.ShowModal()) )
-      filename = dlg.GetPath();
-  }
-  if( filename.empty() )
-    return; // user clicked cancel
-
-  if( Prefs::get().save_backup && wxFile::Exists(filename)  )
-  {
-    wxString target = filename + wxT(".bak");
-    if( !wxCopyFile( filename, target, true ) )
-      wxLogError( _("Failed creating backup file: %s"), target.c_str() );
-  }
-  wxBeginBusyCursor();
-  if( !wxGetApp().hudfile()->save( filename ) )
-    wxLogError( _("Failed writing Hud to `%s'"), filename.c_str() );
+  wxGetApp().hudfile()->OnSave();
   update_title();
-  wxEndBusyCursor();
 }
 
 void MainFrame::OnMenuSaveAs( wxCommandEvent& )
@@ -310,34 +275,135 @@ void MainFrame::update_title()
   else
     SetTitle( mod + wxT("[no file] - ") + APP_CAPTION );
 
+}
 
+int MainFrame::confirm_savechanges_dlg()
+{
+  wxMessageDialog dlg(
+      this,
+      _("Do you want to save the changes?"),
+      _("Save changes?"),
+      wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION );
+  return dlg.ShowModal();
+}
+
+bool MainFrame::confirm_saving()
+{
+  HudFileBase *hf = wxGetApp().hudfile();
+
+  // we save it if filename is not empty (kann nie schaden zu speichern, auch wenn
+  // es nicht als modifiziert gilt, evtl haben wir wo was vergessen...) oder es
+  // modifiziert ist
+  int save = ((!hf->filename().empty() || hf->is_modified())? wxID_YES : wxID_NO);
+  
+  // ask if it's modified
+  if( wxGetApp().hudfile()->is_modified() )
+    save = confirm_savechanges_dlg();
+
+  if( wxID_CANCEL == save )
+    return false; // user aborted question
+  if( wxID_YES == save )
+    if( wxID_CANCEL == wxGetApp().hudfile()->OnSave() )
+      return false; // user aborted save dialog
+
+  return true; // user went through... 
 }
 
 void MainFrame::OnClose( wxCloseEvent& ev )
 {
+  if( !confirm_saving() )
+    return;
 
   wxLogDebug(wxT("CLOSE"));
   // do some shutting down
   Prefs::get().perspective = m_mgr.SavePerspective();
   m_displayctrl->cleanup();
 
-  ev.Skip();
+  ev.Skip();// this->Destroy()?!
 }
 
-void MainFrame::OnMenuDefaultPerspective( wxCommandEvent& )
+void MainFrame::OnMenuViewDefaultPerspective( wxCommandEvent& )
 {
   m_mgr.LoadPerspective( m_defaultperspective );
 }
 
-void MainFrame::OnMenuConfigPreview( wxCommandEvent& )
+void MainFrame::OnMenuViewConfigPreview( wxCommandEvent& )
 {
-  m_configpreview->Show( m_view_menu->IsChecked(ID_MENU_VIEW_CONFIGPREVIEW) );
+  wxAuiPaneInfo& info = m_mgr.GetPane(wxT("configpreview"));
+  info.Show( m_view_menu->IsChecked(ID_MENU_VIEW_CONFIGPREVIEW) );
+  DoUpdate();
+}
+
+void MainFrame::OnMenuViewToolbarFile( wxCommandEvent& )
+{
+  wxAuiPaneInfo& info = m_mgr.GetPane(wxT("tb-file"));
+  info.Show( m_view_menu->IsChecked(ID_MENU_VIEW_TOOLBAR_FILE) );
   DoUpdate();
 }
 
 void MainFrame::OnMenuViewGrid( wxCommandEvent& ev )
 {
   Prefs::get().grid = ev.IsChecked();
+  m_displayctrl->Refresh(); // FIXME this flickers :/ y?
+}
+
+void MainFrame::OnUpdateViewPanes( wxUpdateUIEvent& ev )
+{
+  ev.Enable( m_configpreview->IsShown() );
+  ev.Enable( m_toolbar_file->IsShown() );
+
+}
+
+// call this in the event handler used to show the wxWebUpdateDlg
+static void wxUpdateAndExit(wxFrame *caller, 
+					bool savelog = FALSE,
+     				bool restart = TRUE,
+     				const wxString &xrc = wxEmptyString, 	// --xrc option won't be given using wxEmptyString
+         			const wxString &res = wxEmptyString,	// --res option won't be given using wxEmptyString
+            		const wxString &xml = wxEmptyString,	// --xml option won't be given using wxEmptyString
+         			const wxString &uri = wxEmptyString)	// --uri option won't be given using wxEmptyString
+{
+	wxString opts;
+ 
+ 	if (savelog)
+  		opts += wxT(" --savelog");
+    if (restart)
+    	opts += wxT(" --restart");
+    if (!xrc.IsEmpty())
+     	opts += wxT(" --xrc=") + xrc;
+    if (!res.IsEmpty())
+    	opts += wxT(" --res=") + res;
+ 	if (!xml.IsEmpty())
+  		opts += wxT(" --xml=") + xml;
+ 	if (!uri.IsEmpty())
+  		opts += wxT(" --uri=") + uri;
+
+#ifdef __WXMSW__
+	wxExecute(wxT("webupdater.exe") + opts);
+#else	
+	wxExecute(wxT("./webupdater") + opts);
+#endif
+	caller->Close(true);
+}
+
+void MainFrame::restart_app()
+{
+  wxString cmd = wxStandardPaths::Get().GetExecutablePath();
+  wxLogDebug(wxT("restart_app() - restarting [%s]"), cmd.c_str());
+  wxExecute( cmd, wxEXEC_ASYNC );
+	Close(true);
+}
+
+
+void MainFrame::OnMenuHelpUpdate( wxCommandEvent& )
+{
+  wxString dd = wxStandardPaths::Get().GetUserDataDir() + PATH_SEP;
+  wxUpdateAndExit(this, true, true, 
+    dd + wxT("data/webupdater/webupdatedlg.xrc"), 
+    wxT("wxWebUpdateLogDlg"),
+    dd + wxT("data/webupdater/local.xml")
+    );
+
 }
 
 #include <wx/sstream.h>
@@ -398,4 +464,5 @@ void MainFrame::update_configpreview()
   }  
   m_configpreview->SetValue(out);
 }
+
 

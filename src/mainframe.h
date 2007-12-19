@@ -39,12 +39,22 @@ class MainFrame : public wxFrame
     /// Properties changed in PropertiesCtrl
     void                OnPropertiesChanged();
 
+    
+
   protected:
     void set_floating_hint( wxAuiManagerOption hint );
     void update_configpreview();
+    int  confirm_savechanges_dlg();
+    /// call this if you are about to clear the current hudfile (e.g. closing the app,
+    /// opening new file, etc). it does all the checks and prompts
+    /// @return False if abort
+    bool confirm_saving();
+
+    void restart_app();
 
     wxMenu            *m_view_menu;
     wxStatusBar       *m_statusbar;
+    wxToolBar         *m_toolbar_file;
 
     ElementsCtrlBase  *m_elementsctrl;
     PropertiesNotebookBase *m_propertiesnotebook;
@@ -61,11 +71,15 @@ class MainFrame : public wxFrame
     void OnMenuOpen( wxCommandEvent& );
     void OnMenuSave( wxCommandEvent& );
     void OnMenuSaveAs( wxCommandEvent& );
-    void OnMenuPreferences( wxCommandEvent& );
-    void OnMenuDefaultPerspective( wxCommandEvent& );
-    void OnMenuConfigPreview( wxCommandEvent& );
-    void OnMenuSwitchGame( wxCommandEvent& );
-    void OnMenuViewGrid( wxCommandEvent& ev );
+    void OnMenuToolsPreferences( wxCommandEvent& );
+    void OnMenuViewDefaultPerspective( wxCommandEvent& );
+    void OnMenuViewConfigPreview( wxCommandEvent& );
+    void OnMenuViewToolbarFile( wxCommandEvent& );
+    void OnMenuToolsSwitchGame( wxCommandEvent& );
+    void OnMenuViewGrid( wxCommandEvent& );
+    void OnUpdateViewPanes( wxUpdateUIEvent& );
+
+    void OnMenuHelpUpdate( wxCommandEvent& );
 
   private:
     wxAuiManager m_mgr;

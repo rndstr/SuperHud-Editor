@@ -16,11 +16,10 @@ void DisplayCtrlBase::prepare2d()
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
   //
-  double aspect = 4.0/3.0;
   double w = (double)GetSize().x;
   double h = (double)GetSize().y;
   GLdouble hudw = width(), hudh = height();
-  double aspectcorrect = (w/h)/aspect;
+  double aspectcorrect = (w/h)/Prefs::get().aspectratiod;
   double empty; // how much space left/right or bottom/top has to be empty
 
   // topleft is 0,0

@@ -17,6 +17,7 @@ class CPMADisplayCtrl : public DisplayCtrlBase
 
     void load_background();
 
+  protected:
     void render();
     int width() const { return CPMADisplayCtrl::WIDTH; }
     int height() const { return CPMADisplayCtrl::HEIGHT; }

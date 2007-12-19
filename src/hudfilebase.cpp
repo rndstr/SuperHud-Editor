@@ -17,6 +17,8 @@ HudFileBase::HudFileBase() :
 }
 
 
+
+
 void HudFileBase::set_modified( bool modified /*= true*/ )
 { 
   if( m_modified != modified )
@@ -24,6 +26,77 @@ void HudFileBase::set_modified( bool modified /*= true*/ )
     m_modified = modified;
     wxGetApp().mainframe()->update_title();
   }
+}
+int HudFileBase::OnOpen()
+{
+  int ret = wxID_OK;
+  wxFileDialog dlg(
+      wxGetApp().mainframe(),
+      _("Open..."),
+      wxT(""),
+      wxT(""),
+      wxT("Hud Files (*.cfg)|*.cfg|All Files (*.*)|*.*"),
+#if wxCHECK_VERSION(2,7,0)
+      wxFD_OPEN | wxFD_FILE_MUST_EXIST
+#else
+      wxOPEN | wxFILE_MUST_EXIST
+#endif
+      );
+  if( wxID_OK == (ret = dlg.ShowModal()) )
+  {
+    wxGetApp().mainframe()->statusbar()->PushStatusText(wxString::Format(_("Loading hud: %s"), dlg.GetPath().c_str()));
+    wxBusyCursor wait0r;
+    if( !load( dlg.GetPath() ) )
+      wxLogError( _("Failed reading Hud from file `%s'"), dlg.GetPath().c_str() );
+    wxGetApp().mainframe()->statusbar()->PopStatusText();
+  }
+  return ret;
+}
+
+int HudFileBase::OnSave( )
+{
+  int ret = wxID_OK;
+  if( m_filename.empty() )
+  {
+    wxFileDialog dlg(
+        wxGetApp().mainframe(),
+        _("Save..."),
+        wxT(""),
+        wxT(""),
+        wxT("Hud Files (*.cfg)|*.cfg|All Files (*.*)|*.*"),
+  #if wxCHECK_VERSION(2,7,0)
+        wxFD_SAVE | wxFD_OVERWRITE_PROMPT
+  #else // 2.6
+        wxSAVE|wxOVERWRITE_PROMPT
+  #endif
+        );
+    if( wxID_OK == (ret = dlg.ShowModal()) )
+      m_filename = dlg.GetPath();
+    else
+      return wxID_CANCEL;
+  }
+  if( m_filename.empty() )
+    return wxID_CANCEL; // this shouldn't reach here.. but make sure anyway
+
+  if( Prefs::get().save_backup && wxFile::Exists(m_filename)  )
+  {
+    wxString target = m_filename + wxT(".bak");
+    wxGetApp().mainframe()->statusbar()->PushStatusText(wxString::Format(_("Creating backup hud: %s"), target.c_str()));
+    if( !wxCopyFile( m_filename, target, true ) )
+      wxLogError( _("Failed creating backup hud: %s"), target.c_str() );
+    wxGetApp().mainframe()->statusbar()->PopStatusText();
+  }
+  wxGetApp().mainframe()->statusbar()->PushStatusText(wxString::Format(_("Saving hud: %s"), m_filename.c_str()));
+  wxBusyCursor wait;
+  if( !save( m_filename ) )
+  {
+    wxLogError( _("Failed writing hud to `%s'"), m_filename.c_str() );
+    wxGetApp().mainframe()->statusbar()->PopStatusText();
+    return wxID_CANCEL;
+  }
+  wxGetApp().mainframe()->statusbar()->PopStatusText();
+  return wxID_OK;
+
 }
 
 void HudFileBase::clear()
@@ -34,7 +107,7 @@ void HudFileBase::clear()
 }
 
 
-void HudFileBase::on_new()
+void HudFileBase::OnNew()
 {
   clear();
   load_default_elements();

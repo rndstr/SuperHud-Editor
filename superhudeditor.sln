@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "superhudeditor", "superhudeditor.vcproj", "{5E389EF3-D0D7-4AF3-AB87-4E4E1887CB94}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "webupdater", "webupdater\webupdater.vcproj", "{A812AE4A-103E-4DB7-88DE-671FA0084191}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Unicode Debug|Win32 = Unicode Debug|Win32
@@ -13,6 +15,10 @@ Global
 		{5E389EF3-D0D7-4AF3-AB87-4E4E1887CB94}.Unicode Debug|Win32.Build.0 = Unicode Debug|Win32
 		{5E389EF3-D0D7-4AF3-AB87-4E4E1887CB94}.Unicode Release|Win32.ActiveCfg = Unicode Release|Win32
 		{5E389EF3-D0D7-4AF3-AB87-4E4E1887CB94}.Unicode Release|Win32.Build.0 = Unicode Release|Win32
+		{A812AE4A-103E-4DB7-88DE-671FA0084191}.Unicode Debug|Win32.ActiveCfg = Unicode Debug|Win32
+		{A812AE4A-103E-4DB7-88DE-671FA0084191}.Unicode Debug|Win32.Build.0 = Unicode Debug|Win32
+		{A812AE4A-103E-4DB7-88DE-671FA0084191}.Unicode Release|Win32.ActiveCfg = Unicode Release|Win32
+		{A812AE4A-103E-4DB7-88DE-671FA0084191}.Unicode Release|Win32.Build.0 = Unicode Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

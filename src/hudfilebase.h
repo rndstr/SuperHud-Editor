@@ -22,8 +22,17 @@ class HudFileBase
     bool is_modified() const { return m_modified; }
     const wxString& filename() const { return m_filename; }
 
+    /// displays open filedialog
+    int OnOpen();
+
+
     /// sets up the document after user clicked File->New
-    void on_new();
+    void OnNew();
+
+    /// save the current hudfile (will display save filedialog if no filename is set)
+    /// @return wxID_OK or wxID_CANCEL (if user pressed cancel)
+    int OnSave();
+
     /// clears all items
     void clear(); 
     /// adds an element

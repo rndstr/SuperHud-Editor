@@ -22,6 +22,8 @@ void CPMADisplayCtrl::load_background()
 
 void CPMADisplayCtrl::render()
 {
+  if(!IsShown()) return;
+
   wxGLCanvas::SetCurrent();
   wxPaintDC(this);
 

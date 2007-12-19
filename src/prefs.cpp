@@ -32,6 +32,21 @@ void Prefs::load()
 
   // -- display
   c->Read(wxT("game"), &game, wxT(""));
+  c->Read(wxT("aspectratio"), &aspectratio, wxT("4:3"));
+  size_t pos = aspectratio.Find(wxT(":"));
+  if( pos == wxString::npos )
+    aspectratiod = 4/3.0;
+  else
+  {
+    long w, h;
+    if( !aspectratio.Left(pos).ToLong(&w) || !aspectratio.Right(aspectratio.length() - pos - 1).ToLong(&h) )
+    {
+      wxLogError(wxT("Invalid value for aspectratio in logfile"));
+      aspectratiod = 4/3.0;
+    }
+    else
+      aspectratiod = (double)w/(double)h;
+  }
   c->Read(wxT("perspective"), &perspective, wxT(""));
   c->Read(wxT("grid"), &grid, true);
   c->Read(wxT("grid_x"), &grid_x, 10);
@@ -71,6 +86,8 @@ void Prefs::save( bool from_prefs_dialog /*= false*/ )
   wxConfigBase *c = wxConfigBase::Get();
   // -- display
   c->Write(wxT("game"), game);
+
+  c->Write(wxT("aspectratio"), aspectratio);
   c->Write(wxT("perspective"), perspective);
 
   // -- game specific

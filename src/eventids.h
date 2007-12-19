@@ -26,9 +26,15 @@ enum
   ID_MENU_TOOLS_PREFERENCES,
 
   ID_MENU_VIEW_DEFAULTPERSPECTIVE,
+  ID_MENU_VIEW_GRID,
+  /// all the panes that can be switched on/off
+  /// keep first and last in order as we add evthandler with range
+  /// @{
   ID_MENU_VIEW_CONFIGPREVIEW,
   ID_MENU_VIEW_TOOLBAR_FILE,
-  ID_MENU_VIEW_GRID,
+  /// @}
+
+  ID_MENU_HELP_UPDATE,
 
 
   ID_NOTEBOOK_PROPERTIES,
