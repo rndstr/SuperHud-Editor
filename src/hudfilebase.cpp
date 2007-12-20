@@ -195,7 +195,7 @@ void HudFileBase::write_element( wxTextOutputStream& stream, const ElementBase& 
 const ElementBase* HudFileBase::get_parent( const ElementBase * const from, int specifies /*= E_HAS_NONE*/ ) const
 {
   if( from->flags() & E_NOINHERIT )
-    return 0; // the item doesn't inherit at all.
+    return 0; // the item (of which we would like to retrieve the parent) doesn't inherit at all.
 
   const ElementBase *d = 0;
   for( cit_elements cit = m_els.begin(); cit != m_els.end(); ++cit )

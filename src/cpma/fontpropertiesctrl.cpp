@@ -10,6 +10,7 @@
 
 BEGIN_EVENT_TABLE(FontPropertiesCtrl, CPMAPropertyGridBase)
   EVT_PG_CHANGED(ID_NOTEBOOK_PROPERTIES, FontPropertiesCtrl::OnItemChanged)
+  EVT_PG_CHANGING(ID_NOTEBOOK_PROPERTIES, FontPropertiesCtrl::OnItemChanging)
 END_EVENT_TABLE()
 
 FontPropertiesCtrl::FontPropertiesCtrl( wxWindow *parent ) :
@@ -23,18 +24,18 @@ FontPropertiesCtrl::FontPropertiesCtrl( wxWindow *parent ) :
   
   static const wxChar* font_type[] = {wxEmptyString, wxT("cpma"), wxT("id"), wxT("idblock"), wxT("threewave"), (const wxChar*)0};
   Append( new wxEnumProperty(_("Type"), wxT("font"), font_type) );
-  SetPropertyEditor(wxT("font"), wxPG_EDITOR(Choice));
+  //SetPropertyEditor(wxT("font"), wxPG_EDITOR(Choice));
 
   static const wxChar* align[] = {wxEmptyString, wxT("left"), wxT("center"), wxT("right"), (const wxChar*)0};
   Append( new wxEnumProperty(_("Alignment"), wxT("textalign"), align) );
-  SetPropertyEditor(wxT("textalign"), wxPG_EDITOR(Choice));
+  //SetPropertyEditor(wxT("textalign"), wxPG_EDITOR(Choice));
 
   Append( new wxBoolProperty( _("Monospace"), wxT("monospace"), false) );
-//  SetPropertyAttribute(wxT("monospace"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
   SetPropertyHelpString( wxT("monospace"), _("Displays all characters of the font with the same width") );
 
   Append( new wxPropertyCategory( _("Style") ) );
-  Append( new wxBoolProperty(_("None"), wxT("style-none"), false) );
+  // valid combos: no|no (not defined), no|yes (textstyle 1), yes|no (textstyle 0)
+  Append( new wxBoolProperty(_("Force none"), wxT("style-none"), false) );
   Append( new wxBoolProperty(_("Shadow"), wxT("style-shadow"), false) );
   SetPropertyHelpString( wxT("style-none"), _("By default there is no `textstyle' set but if a parent item defines one you can reset the style here") );
   SetPropertyHelpString( wxT("style-shadow"), _("Dropshadowed text") );
@@ -47,70 +48,106 @@ FontPropertiesCtrl::FontPropertiesCtrl( wxWindow *parent ) :
   size_type.Add(fontsizetype_element_to_ui(E_FST_COORD));
 //  static const wxChar* size_type[] = {fontsizetype_element_to_ui(E_FST_POINT), fontsizetype_element_to_ui(E_FST_COORD), (const wxChar*)0};
   Append( new wxEnumProperty(_("Type"), wxT("fontsizetype"), size_type) );
-
-  SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX,(long)1);
 }
 
+void FontPropertiesCtrl::OnItemChanging( wxPropertyGridEvent& ev )
+{
+  wxPGProperty *prop = ev.GetProperty();
+  if( !prop ) return;
+
+  CPMAElement *el = current_element();
+  if( !el ) return;
+
+  wxString name = prop->GetName();
+
+  // if user is trying to disable this but a parent has it enabled, tell him
+  if( name == wxT("monospace") && !ev.GetValue().GetBool() && el->iget_monospace() && !el->monospace() )
+  {
+    wxMessageBox(CANTDISABLEPROPERTY_MSG);
+    ev.Veto();
+  }
+  else if( name == wxT("style-shadow") && !ev.GetValue().GetBool() && !(el->has() & E_HAS_TEXTSTYLE) && el->iget_textstyle() == E_TEXTSTYLE_SHADOW )
+  {
+    wxMessageBox(_("There is no way to disable this property on that element as a parent element specifies it.\nYou should enable `Enforce none'."));
+    ev.Veto();
+  }
+}
 
 void FontPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
 {
-  PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesnotebook();
-  if( !p )
-  {
-    wxLogDebug(wxT("FontPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
-    return;
-  }
-  CPMAElement *el = static_cast<CPMAElement*>(p->curel());
-  wxString name = ev.GetPropertyName();
-  wxVariant val = ev.GetPropertyValue();
+  wxPGProperty *prop = ev.GetProperty();
+  if( !prop ) return;
 
-  if( name == wxT("font") )
+  CPMAElement *el = current_element();
+  if( !el ) return;
+
+  wxString name = prop->GetName();
+  wxVariant val = prop->GetValue();
+
+  if( name == wxT("monospace") )
   {
+    if( el->flags() & E_PARENT && val.GetBool() )
+      wxMessageBox( CHECKBOXWARNING_MSG );
+    // first update current element value
+    el->set_monospace(val.GetBool());
+    // if we are disabling, we still want a parental value to be active (i.e. this only changes cell color)
+    if( !val.GetBool() )
+      SetPropertyValue( wxT("monospace"), el->iget_monospace() );
+  }
+  else if( name == wxT("font") )
+  { // dropdown
     wxString font = ev.GetPropertyValueAsString();
-    if( font.empty() )
-    { // go back to inheritance
-      el->remove_has( E_HAS_FONT );
-    }
-    else
-    {
-      el->set_font( font );
-      el->add_has( E_HAS_FONT );
-    }
+    el->add_has( E_HAS_FONT, !font.empty() );
+    el->set_font( font );
+    SetPropertyValue( wxT("font"), el->iget_font() );
   }
   else if( name == wxT("textalign") )
   {
-    wxString textalign = ev.GetPropertyValueAsString();
-    if( textalign.empty() )
-    { // inheritance
-      el->remove_has( E_HAS_TEXTALIGN );
+    wxString ta = ev.GetPropertyValueAsString();
+    el->add_has( E_HAS_TEXTALIGN, !ta.empty() );
+    if( !ta.empty() )
+      el->set_textalign( FontPropertiesCtrl::textalign_ui_to_element(ta) );
+    SetPropertyValue( wxT("textalign"), FontPropertiesCtrl::textalign_element_to_ui(el->iget_textalign()) );
+  }
+  else if( name == wxT("style-none") )
+  {
+    if( val.GetBool() )
+    {
+      el->add_has(E_HAS_TEXTSTYLE);
+      el->set_textstyle(E_TEXTSTYLE_NONE);
     }
     else
     {
-      wxString ta = ev.GetPropertyValueAsString();
-      el->set_textalign( toupper(ta[0]) );
-      el->add_has( E_HAS_TEXTALIGN );
+      if( el->textstyle() == E_TEXTSTYLE_NONE )
+      { // shadow is not set, so remove stuff
+        el->remove_has(E_HAS_TEXTSTYLE);
+      }
     }
+    SetPropertyValue( wxT("style-none"), el->has() & E_HAS_TEXTSTYLE && el->iget_textstyle() == E_TEXTSTYLE_NONE );
+    SetPropertyValue( wxT("style-shadow"), el->iget_textstyle() == E_TEXTSTYLE_SHADOW );
   }
-  else if( name == wxT("monospace") )
+  else if( name == wxT("style-shadow") )
   {
-    bool ms = val.GetBool();
-    if( el->flags() & E_PARENT && ms )
-      wxMessageBox( _("Be aware that the `Monospace' you just ticked cannot be disabled on subsequent elements!") );
-    el->set_monospace(ms);
-    el->add_has( E_HAS_MONOSPACE, ms );
+    if( val.GetBool() )
+    {
+      el->add_has(E_HAS_TEXTSTYLE);
+      el->set_textstyle(E_TEXTSTYLE_SHADOW);
+    }
+    else
+    {
+      el->remove_has(E_HAS_TEXTSTYLE);
+      el->set_textstyle(E_TEXTSTYLE_NONE);
+    }
+    SetPropertyValue( wxT("style-shadow"), el->iget_textstyle() == E_TEXTSTYLE_SHADOW );
+    SetPropertyValue( wxT("style-none"), el->has() & E_HAS_TEXTSTYLE && el->iget_textstyle() == E_TEXTSTYLE_NONE );
   }
   else if( name == wxT("fontsizetype") )
   {
-    int type = fontsizetype_ui_to_element(ev.GetPropertyValueAsString());
-    if( type == E_FST_NONE)
-    { // inherit
-      el->remove_has( E_HAS_FONTSIZE );
-    }
-    else
-    {
-      el->add_has( E_HAS_FONTSIZE );
+    int type = FontPropertiesCtrl::fontsizetype_ui_to_element(ev.GetPropertyValueAsString());
+    el->add_has( E_HAS_FONTSIZE, type != E_FST_NONE );
+    if( type != E_FST_NONE)
       el->set_fontsizetype( type );
-    }
+    
   }
   else if( name == wxT("fontsize_pt") || name == wxT("fontsize_x") || name == wxT("fontsize_y") )
   {
@@ -130,38 +167,7 @@ void FontPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
       el->set_fontsizey( ev.GetPropertyValueAsInt() );
 
   }
-  else if( name == wxT("style-none") )
-  {
-    if( val.GetBool() )
-    {
-      el->add_has(E_HAS_TEXTSTYLE);
-      el->set_textstyle(E_TEXTSTYLE_NONE);
-    }
-    else
-    {
-      if( el->textstyle() == E_TEXTSTYLE_NONE )
-      { // shadow is not set, so remove stuff
-        el->remove_has(E_HAS_TEXTSTYLE);
-      }
-    }
-    SetPropertyValue( wxT("style-none"), el->iget_textstyle() == E_TEXTSTYLE_NONE );
-    SetPropertyValue( wxT("style-shadow"), el->iget_textstyle() == E_TEXTSTYLE_SHADOW );
-  }
-  else if( name == wxT("style-shadow") )
-  {
-    if( val.GetBool() )
-    {
-      el->add_has(E_HAS_TEXTSTYLE);
-      el->set_textstyle(E_TEXTSTYLE_SHADOW);
-    }
-    else
-    {
-      el->remove_has(E_HAS_TEXTSTYLE);
-      el->set_textstyle(E_TEXTSTYLE_NONE);
-    }
-    SetPropertyValue( wxT("style-shadow"), el->iget_textstyle() == E_TEXTSTYLE_SHADOW );
-    SetPropertyValue( wxT("style-none"), el->iget_textstyle() == E_TEXTSTYLE_NONE );
-  }
+  
   else
     return; // nothing changed
 
@@ -174,10 +180,14 @@ void FontPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
 void FontPropertiesCtrl::from_element( ElementBase *el )
 {
   CPMAElement *cel = static_cast<CPMAElement*>(el);
+
+  SetPropertyValue( wxT("font"), cel->iget_font() );
+  SetPropertyValue( wxT("textalign"), textalign_element_to_ui(cel->iget_textalign()) );
   SetPropertyValue( wxT("monospace"), cel->iget_monospace() );
-  SetPropertyValue( wxT("fontsizetype"), fontsizetype_element_to_ui(cel->fontsizetype()) );
-  SetPropertyValue( wxT("style-none"), cel->iget_textstyle() == E_TEXTSTYLE_NONE );
+  SetPropertyValue( wxT("style-none"), cel->has() & E_HAS_TEXTSTYLE && cel->iget_textstyle() == E_TEXTSTYLE_NONE );
   SetPropertyValue( wxT("style-shadow"), cel->iget_textstyle() == E_TEXTSTYLE_SHADOW );
+  SetPropertyValue( wxT("fontsizetype"), fontsizetype_element_to_ui(cel->fontsizetype()) );
+  
 
   //SetPropertyValue( wxT("style-none"), cel->has() & E_HAS_TEXTSTYLE && cel->textstyle() == E_TEXTSTYLE_NONE );
   //SetPropertyValue( wxT("style-shadow"), cel->has() & E_HAS_TEXTSTYLE && cel->textstyle() & E_TEXTSTYLE_SHADOW );
@@ -207,84 +217,76 @@ wxString FontPropertiesCtrl::fontsizetype_element_to_ui( int fst )
 
 wxString FontPropertiesCtrl::textalign_element_to_ui( const wxChar& ta )
 {
-  if( ta == 'L' ) return wxT("left");
-  else if( ta == 'C' ) return wxT("center");
-  else if( ta == 'R' ) return wxT("right");
+  if( toupper(ta) == 'L' ) return wxT("left");
+  else if( toupper(ta) == 'C' ) return wxT("center");
+  else if( toupper(ta) == 'R' ) return wxT("right");
+  wxLogDebug(wxT("FontPropertiesCtrl::textalign_element_to_ui - unknown textalign `%c'"), ta);
   return wxT("");
 }
 
+wxChar FontPropertiesCtrl::textalign_ui_to_element( const wxString& ta )
+{
+  if( ta == wxT("left") )
+    return 'L';
+  else if( ta == wxT("center") )
+    return 'C';
+  else if( ta == wxT("right") )
+    return 'R';
+
+  wxLogDebug(wxT("FontPropertiesCtrl::textalign_ui_to_element - unknown textalign `%s'"), ta.c_str());
+  return 'L';
+}
 
 void FontPropertiesCtrl::update_layout()
 {
-  PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesnotebook();
-  if( !p )
-  {
-    wxLogDebug(wxT("FontPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
-    return;
-  }
-  CPMAElement *el = static_cast<CPMAElement*>(p->curel());
+  CPMAElement *el = current_element();
+  
 
-  // -- font
-  if( el->has() & E_HAS_FONT )
-  {
-    SetPropertyTextColour( wxT("font"), PROPS_COLOR_NORMAL );
-    SetPropertyBackgroundColour( wxT("font"), PROPS_BGCOLOR_NORMAL );
-  }
-  else
-  { // inherit
-    SetPropertyTextColour( wxT("font"), PROPS_COLOR_INHERITED );
-    SetPropertyBackgroundColour( wxT("font"), PROPS_BGCOLOR_INHERITED );
-  }
-  SetPropertyValue( wxT("font"), el->iget_font() );
+  property_defines( wxT("font"), (el->has() & E_HAS_FONT) != 0);
+  property_defines( wxT("textalign"), (el->has() & E_HAS_TEXTALIGN) != 0);
+  property_defines(wxT("monospace"), el->monospace() );
+  property_defines( wxT("style-shadow"), (el->has() & E_HAS_TEXTSTYLE) != 0 );
 
-  // -- textalign
-  if( el->has() & E_HAS_TEXTALIGN )
-  {
-    SetPropertyTextColour( wxT("textalign"), PROPS_COLOR_NORMAL );
-    SetPropertyBackgroundColour( wxT("textalign"), PROPS_BGCOLOR_NORMAL );
-  }
-  else
-  { // inherit
-    SetPropertyTextColour( wxT("textalign"), PROPS_COLOR_INHERITED );
-    SetPropertyBackgroundColour( wxT("textalign"), PROPS_BGCOLOR_INHERITED );
-  }
-  SetPropertyValue( wxT("textalign"), textalign_element_to_ui(el->iget_textalign()) );
+  property_defines( wxT("fontsizetype"), (el->has() & E_HAS_FONTSIZE) != 0 );
 
-  // -- textstyle
-  if( el->has() & E_HAS_TEXTSTYLE )
+  int type = el->iget_fontsizetype();
+  SetPropertyValue( wxT("fontsizetype"), fontsizetype_element_to_ui(type) );
+  // remove propertyrows and re-add those we are looking for
+  wxPGId id = GetPropertyByName(wxT("fontsize_pt"));
+  if( id ) DeleteProperty(wxT("fontsize_pt"));
+  id = GetPropertyByName(wxT("fontsize_x"));
+  if( id ) DeleteProperty(wxT("fontsize_x"));
+  id = GetPropertyByName(wxT("fontsize_y"));
+  if( id ) DeleteProperty(wxT("fontsize_y"));
+  if( type == E_FST_POINT )
   {
-    SetPropertyTextColour( wxT("style-none"), PROPS_COLOR_NORMAL );
-    SetPropertyBackgroundColour( wxT("style-none"), PROPS_BGCOLOR_NORMAL );
-    SetPropertyTextColour( wxT("style-shadow"), PROPS_COLOR_NORMAL );
-    SetPropertyBackgroundColour( wxT("style-shadow"), PROPS_BGCOLOR_NORMAL );
+    Append( new wxIntProperty(_("Size"), wxT("fontsize_pt"), el->iget_fontsizept()) );
+    HideProperty(wxT("fontsize_pt"));
+    property_defines( wxT("fontsize_pt"), (el->has() & E_HAS_FONTSIZE) != 0 );
   }
-  else
+  else if( type == E_FST_COORD )
   {
-    SetPropertyTextColour( wxT("style-none"), PROPS_COLOR_INHERITED );
-    SetPropertyBackgroundColour( wxT("style-none"), PROPS_BGCOLOR_INHERITED );
-    SetPropertyTextColour( wxT("style-shadow"), PROPS_COLOR_INHERITED );
-    SetPropertyBackgroundColour( wxT("style-shadow"), PROPS_BGCOLOR_INHERITED );
+    Append( new wxIntProperty(_("X Size"), wxT("fontsize_x"), el->iget_fontsizex()) );
+    Append( new wxIntProperty(_("Y Size"), wxT("fontsize_y"), el->iget_fontsizey()) );
+    property_defines( wxT("fontsize_x"), (el->has() & E_HAS_FONTSIZE) != 0 );
+    property_defines( wxT("fontsize_y"), (el->has() & E_HAS_FONTSIZE) != 0 );
   }
 
+/*
   // -- fontsize
   int type = el->fontsizetype();
   int fspt = el->fontsizept();
   int fsx = el->fontsizex();
   int fsy = el->fontsizey();
+  property_defines( wxT("fontsizetype"), (el->has() & E_HAS_FONTSIZE) != 0) );
   if( !(el->has() & E_HAS_FONTSIZE) )
   {
     type = el->iget_fontsizetype();
     fspt = el->iget_fontsizept();
     fsx = el->iget_fontsizex();
     fsy = el->iget_fontsizey();
-    SetPropertyTextColour( wxT("fontsizetype"), PROPS_COLOR_INHERITED );
-    SetPropertyBackgroundColour( wxT("fontsizetype"), PROPS_BGCOLOR_INHERITED );
   }
-  else
-  {
-    SetPropertyTextColour( wxT("fontsizetype"), PROPS_COLOR_NORMAL );
-    SetPropertyBackgroundColour( wxT("fontsizetype"), PROPS_BGCOLOR_NORMAL );
-  }
+  
   SetPropertyValue( wxT("fontsizetype"), fontsizetype_element_to_ui(type) );
   wxPGId id = GetPropertyByName(wxT("fontsize_pt"));
   if( id ) DeleteProperty(wxT("fontsize_pt"));
@@ -325,18 +327,7 @@ void FontPropertiesCtrl::update_layout()
       SetPropertyBackgroundColour( wxT("fontsize_y"), PROPS_BGCOLOR_INHERITED );
     }
   }
-  bool ms = el->iget_monospace();
-  if( !(el->has() & E_HAS_MONOSPACE) && ms )
-  { // we inherit true.. so no way to turn it off :o
-    SetPropertyReadOnly( wxT("monospace"), true );
-    SetPropertyTextColour( wxT("monospace"), PROPS_COLOR_INHERITED );
-    SetPropertyBackgroundColour( wxT("monospace"), PROPS_BGCOLOR_INHERITED );
-  }
-  else
-  {
-    SetPropertyReadOnly( wxT("monospace"), false );
-    SetPropertyTextColour( wxT("monospace"), PROPS_COLOR_NORMAL );
-    SetPropertyBackgroundColour( wxT("monospace"), PROPS_BGCOLOR_NORMAL );
-  }
-}
 
+  
+  */
+}

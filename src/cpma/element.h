@@ -47,7 +47,7 @@ const Color4 E_BGCOLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 0.f ); // (alpha==0) ver
 const Color4 E_COLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 1.f ); // verified
 const Color4 E_FADE_DEFAULT = E_COLOR_DEFAULT; // NOTverified
 
-const wxString E_FONT_DEFAULT = wxT("cpma"); // should be `cpma' or otherwise previews are drawn?
+const wxString E_FONT_DEFAULT = wxT("cpma"); // should be `cpma' or otherwise previews are drawn? <-- oO what is that supposed to mean?
 const char E_TEXTALIGN_DEFAULT = 'L';
 const int E_TEXTSTYLE_DEFAULT = E_TEXTSTYLE_NONE;
 const int E_TIME_DEFAULT = 0;

@@ -27,8 +27,9 @@
 
 // some general messages
 const wxString BUG_MSG = _("Bug detected, please contact the author");
-const wxString CANTDISABLE_MSG = _("There is no way to disable this property on that element as a parent element specifies it.\nYou should remove the property on the parent `!DEFAULT' element.");
+const wxString CANTDISABLEPROPERTY_MSG = _("There is no way to disable this property on that element as a parent element specifies it.\nYou should remove the property on the parent `!DEFAULT' element.");
 const wxString INVALIDGAME_MSG = _("No valid game selected?");
+const wxString CHECKBOXWARNING_MSG = _("Be aware that you won't be able to disable that property on subsequents element!");
 
 #include <wx/dir.h>
 #include <wx/filename.h>

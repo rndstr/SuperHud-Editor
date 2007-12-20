@@ -17,7 +17,9 @@ MiscPropertiesCtrl::MiscPropertiesCtrl( wxWindow *parent ) :
   CPMAPropertyGridBase( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
             wxDefaultSize, wxPG_BOLD_MODIFIED|wxPG_SPLITTER_AUTO_CENTER|wxPG_DESCRIPTION|wxPGMAN_DEFAULT_STYLE )
 {
-  SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES); // needed for `time' to revert back to inherital value
+  // needed for `time' to give the user possibility to revert back to inherital value
+  // TODO we could also add a [x] button that goes back to inherited!
+  SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES); 
   AddPage(_("Misc"));
   
   Append( new wxBoolProperty( _("Double line bar"), wxT("doublebar"), false) );
@@ -27,6 +29,7 @@ MiscPropertiesCtrl::MiscPropertiesCtrl( wxWindow *parent ) :
   SetPropertyHelpString( wxT("draw3d"), _("If both a model and an icon are present, use the model (irrelevant for most stuff).") );
 
 
+  // a value of 0 (=disable) isn't the same as unspecified (=inherit)
   Append( new wxIntProperty( _("Duration"), wxT("time"), 0) );
   SetPropertyHelpString( wxT("time"), _("How long the element will be displayed for if it doesn't update again. Generally used for item pickups, frag messages, chat, etc.\n\nClear to disable.") );
 
@@ -47,12 +50,12 @@ void MiscPropertiesCtrl::OnItemChanging( wxPropertyGridEvent& ev )
   // if user is trying to disable this but a parent has it enabled, tell him
   if( name == wxT("doublebar") && !ev.GetValue().GetBool() && el->iget_doublebar() && !el->doublebar() )
   {
-    wxMessageBox(CANTDISABLE_MSG);
+    wxMessageBox(CANTDISABLEPROPERTY_MSG);
     ev.Veto();
   }
   else if( name == wxT("draw3d") && !ev.GetValue().GetBool() && el->iget_draw3d() && !el->draw3d() )
   {
-    wxMessageBox(CANTDISABLE_MSG);
+    wxMessageBox(CANTDISABLEPROPERTY_MSG);
     ev.Veto();
   }
 }
@@ -90,7 +93,6 @@ void MiscPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   }
   else if( name == wxT("time") )
   {
-    wxLogDebug(wxT("`%s' %d"), val.GetString().c_str(), prop->IsValueUnspecified());
     el->add_has( E_HAS_TIME, !prop->IsValueUnspecified() );
     if( !prop->IsValueUnspecified() )
       el->set_time(val.GetInteger());
@@ -121,7 +123,6 @@ void MiscPropertiesCtrl::from_element( ElementBase *el )
 void MiscPropertiesCtrl::update_layout()
 {
   CPMAElement *el = current_element();
-
   property_defines(wxT("doublebar"), el->doublebar() );
   property_defines(wxT("draw3d"), el->draw3d() );
   property_defines(wxT("time"), (el->has() & E_HAS_TIME) != 0 );

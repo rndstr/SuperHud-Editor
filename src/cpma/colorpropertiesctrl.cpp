@@ -62,7 +62,7 @@ void ColorPropertiesCtrl::OnItemChanging( wxPropertyGridEvent& ev )
   // if user is trying to disable this but a parent has it enabled, tell him
   if( name == wxT("fill") && !ev.GetValue().GetBool() && el->iget_fill() && !el->fill() )
   {
-    wxMessageBox(CANTDISABLE_MSG);
+    wxMessageBox(CANTDISABLEPROPERTY_MSG);
     ev.Veto();
   }
 }

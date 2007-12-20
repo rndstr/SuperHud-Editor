@@ -78,9 +78,9 @@ wxString PakManagerBase::get_location( const wxString& fpath, int search_where /
   }
   if( !found && search_where & PM_SEARCH_GAMEPAK )
   { // search pak files
-    for( wxArrayString::const_reverse_iterator it = m_pakfiles.rbegin(); it != m_pakfiles.rend(); ++it )
+    for( int i=m_pakfiles.Count()-1; i >= 0; --i )
     {
-      if( fs.FindFileInPath(&loc, *it + wxT("#zip:"), fpath) )
+      if( fs.FindFileInPath(&loc, m_pakfiles[i] + wxT("#zip:"), fpath) )
       {
         found = PM_SEARCH_GAMEPAK;
         break;
@@ -97,9 +97,9 @@ wxString PakManagerBase::get_location( const wxString& fpath, int search_where /
     wxArrayString apppaks;
     wxDir::GetAllFiles( wxStandardPaths::Get().GetDataDir(), &apppaks, PM_APPPAK_FILES, GETALLFILES_FLAGS);
     apppaks.Sort();
-    for( wxArrayString::const_reverse_iterator it = apppaks.rbegin(); it != apppaks.rend(); ++it )
+    for( int i=apppaks.Count()-1; i >= 0; --i )
     {
-      if( fs.FindFileInPath(&loc, *it + wxT("#zip:"), fpath) )
+      if( fs.FindFileInPath(&loc, apppaks[i] + wxT("#zip:"), fpath) )
       {
         found = PM_SEARCH_APPPAK;
         break;
@@ -267,9 +267,9 @@ size_t PakManagerBase::enumerate_pak_files( wxArrayString *files )
 void PakManagerBase::debug() const
 {
   wxLogDebug(wxT(" PAKFILES"));
-  for( wxArrayString::const_reverse_iterator it = m_pakfiles.rbegin(); it != m_pakfiles.rend(); ++it )
+  for( int i=m_pakfiles.Count()-1; i >= 0; --i )
   {
-    wxLogDebug(*it);
+    wxLogDebug(m_pakfiles[i]);
   }
   wxLogDebug(wxT(" PAKCONTENTS"));
   for( pakcontent_t::const_iterator cit = m_pakcontent.begin(); cit != m_pakcontent.end(); ++cit )

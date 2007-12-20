@@ -23,6 +23,8 @@ class Prefs
 
     // -- display
     wxString  perspective;
+    bool      app_maximized;
+    int       app_width, app_height;
     wxString  aspectratio; ///< human readable '4:3', '16:9'. this will be read/written
     double    aspectratiod; ///< use this for calculations, will be updated after read
     bool      grid;

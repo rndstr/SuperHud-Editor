@@ -1,0 +1,101 @@
+body {
+  background-color:#fff;
+  font-family: verdana;
+  margin:0;
+  padding:0;
+}
+
+a { color:#0b2bfe; text-decoration:underline; margin:2px}
+a:link { text-decoration:underline; }
+a:visited { text-decoration:underline; }
+a:hover { background-color:#eef; color:#002; text-decoration:underline; }
+a:active {text-decoration:underline; }
+
+ul li {
+  margin:3px;
+}
+
+
+div.header {
+  border-bottom:15px solid #eee;
+}
+
+div#google {
+  text-align:center;
+}
+
+h1 {
+  font-size:64px;
+  margin:0;
+  padding:20px 20px 20px 60px;
+  font-style:italic;
+  border-bottom:20px solid #002;
+}
+
+h2 {
+  padding-left:10px;
+  text-transform:uppercase;
+  background-color:#eee;
+}
+
+h2 a,
+h2 a:link,
+h2 a:visited,
+h2 a:hover,
+h2 a:active
+{
+  color:#000;
+  text-decoration:none;
+  background-color:#eee;
+  padding-left:2em;
+}
+
+#nav ul {
+}
+
+#nav ul li {
+  display:inline;
+}
+
+div.content {
+  padding:1em;
+}
+
+div.newsitem {
+}
+
+div.newsitem h3 {
+}
+
+div.newsitem div.newstext {
+}
+
+div.newsitem a.newstoggle {
+  margin-left:1em;
+}
+
+div.infobox {
+  background-color:#ddd;
+  border:1px solid #000;
+  margin:1em 1em 1em 50px;
+  padding:0.5em;
+}
+div.code {
+  font-family:"Courier New";
+  background-color:#efeff8;
+  border:1px dotted #000;
+  margin:1em 1em 1em 20px;
+  padding:3px 3px 3px 30px;
+}
+
+
+div.question {
+  font-weight:bold;
+  font-style:italic;
+}
+
+div.answer {
+  margin:1em;
+}
+  
+

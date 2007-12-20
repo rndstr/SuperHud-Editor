@@ -32,6 +32,9 @@ void Prefs::load()
 
   // -- display
   c->Read(wxT("game"), &game, wxT(""));
+  c->Read(wxT("app_maximized"), &app_maximized, false);
+  c->Read(wxT("app_width"), &app_width, -1);
+  c->Read(wxT("app_height"), &app_height, -1);
   c->Read(wxT("aspectratio"), &aspectratio, wxT("4:3"));
   size_t pos = aspectratio.Find(wxT(":"));
   if( pos == wxString::npos )
@@ -86,6 +89,13 @@ void Prefs::save( bool from_prefs_dialog /*= false*/ )
   wxConfigBase *c = wxConfigBase::Get();
   // -- display
   c->Write(wxT("game"), game);
+  c->Write(wxT("app_maximized"), app_maximized);
+  c->Write(wxT("app_width"), app_width);
+  c->Write(wxT("app_height"), app_height);
+  c->Write(wxT("grid"), grid);
+  c->Write(wxT("grid_x"), grid_x);
+  c->Write(wxT("grid_y"), grid_y);
+  c->Write(wxT("grid_color"), grid_color.to_string());
 
   c->Write(wxT("aspectratio"), aspectratio);
   c->Write(wxT("perspective"), perspective);

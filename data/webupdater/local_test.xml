@@ -6,7 +6,7 @@
   <res>wxWebUpdateLogDlg</res>
   <restart>1</restart>
   <savelog>1</savelog>
-  <remoteuri>http://plrf.org/superhudeditor/webupdater/remote.xml</remoteuri>
+  <remoteuri>http://plrf.org/superhudeditor/webupdater/remote_test.xml</remoteuri>
   <keywords></keywords>
   <local-package id="superhudeditor">
     <version>0.3.0</version>

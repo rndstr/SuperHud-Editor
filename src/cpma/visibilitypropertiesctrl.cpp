@@ -142,7 +142,7 @@ void VisibilityPropertiesCtrl::update_layout()
     return;
   }
   ElementBase *el = p->curel();
-
+/*
   
   if( el->has() & E_HAS_RECT )
   {
@@ -166,6 +166,7 @@ void VisibilityPropertiesCtrl::update_layout()
     SetPropertyTextColour( wxT("height"), PROPS_COLOR_INHERITED );
     SetPropertyBackgroundColour( wxT("height"), PROPS_BGCOLOR_INHERITED );
   }
+  */
   
 }
 

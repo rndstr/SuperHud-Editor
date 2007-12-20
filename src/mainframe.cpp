@@ -148,9 +148,13 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   else
     SetIcon( wxArtProvider::GetIcon(ART_CPMA, wxART_FRAME_ICON, wxSize(16,16)) );
 
-  // default transparency hints throw assertions all over the place
-  // on linux
+  if( Prefs::get().app_maximized )
+    Maximize();
+  else if( Prefs::get().app_height != -1 && Prefs::get().app_width != -1 )
+    SetSize( Prefs::get().app_width, Prefs::get().app_height );
+  
 #ifndef WIN32
+  // default transparency hints on linux throw assertions all over the place 
   set_floating_hint( wxAUI_MGR_RECTANGLE_HINT );
 #endif
   m_mgr.Update();
@@ -294,7 +298,10 @@ bool MainFrame::confirm_saving()
   // we save it if filename is not empty (kann nie schaden zu speichern, auch wenn
   // es nicht als modifiziert gilt, evtl haben wir wo was vergessen...) oder es
   // modifiziert ist
-  int save = ((!hf->filename().empty() || hf->is_modified())? wxID_YES : wxID_NO);
+  //int save = ((!hf->filename().empty() || hf->is_modified())? wxID_YES : wxID_NO);
+
+  // naaah, if we cannot save it there will be endless loop :x
+  int save = (hf->is_modified()? wxID_YES : wxID_NO);
   
   // ask if it's modified
   if( wxGetApp().hudfile()->is_modified() )
@@ -311,12 +318,20 @@ bool MainFrame::confirm_saving()
 
 void MainFrame::OnClose( wxCloseEvent& ev )
 {
+  wxLogDebug(wxT("MainFrame::OnClose"));
+
   if( !confirm_saving() )
     return;
 
-  wxLogDebug(wxT("CLOSE"));
-  // do some shutting down
+  
+  // save view
   Prefs::get().perspective = m_mgr.SavePerspective();
+  Prefs::get().app_width = GetSize().GetWidth();
+  Prefs::get().app_height = GetSize().GetHeight();
+  Prefs::get().app_maximized = IsMaximized();
+
+
+  // cleanup
   m_displayctrl->cleanup();
 
   ev.Skip();// this->Destroy()?!
@@ -349,9 +364,10 @@ void MainFrame::OnMenuViewGrid( wxCommandEvent& ev )
 
 void MainFrame::OnUpdateViewPanes( wxUpdateUIEvent& ev )
 {
-  ev.Enable( m_configpreview->IsShown() );
-  ev.Enable( m_toolbar_file->IsShown() );
-
+  if( ev.GetId() == ID_MENU_VIEW_CONFIGPREVIEW )
+    ev.Check( m_configpreview->IsShown() );
+  else if( ev.GetId() == ID_MENU_VIEW_TOOLBAR_FILE )
+    ev.Check( m_toolbar_file->IsShown() );
 }
 
 // call this in the event handler used to show the wxWebUpdateDlg
@@ -370,20 +386,21 @@ static void wxUpdateAndExit(wxFrame *caller,
     if (restart)
     	opts += wxT(" --restart");
     if (!xrc.IsEmpty())
-     	opts += wxT(" --xrc=") + xrc;
+     	opts += wxT(" --xrc=\"") + xrc + wxT("\"");
     if (!res.IsEmpty())
-    	opts += wxT(" --res=") + res;
+    	opts += wxT(" --res=\"") + res + wxT("\"");
  	if (!xml.IsEmpty())
-  		opts += wxT(" --xml=") + xml;
+  		opts += wxT(" --xml=\"") + xml + wxT("\"");
  	if (!uri.IsEmpty())
-  		opts += wxT(" --uri=") + uri;
+  		opts += wxT(" --uri=\"") + uri + wxT("\"");
 
+  wxLogDebug(wxT("Invoking webupdater: ") + opts);
 #ifdef __WXMSW__
 	wxExecute(wxT("webupdater.exe") + opts);
 #else	
 	wxExecute(wxT("./webupdater") + opts);
 #endif
-	caller->Close(true);
+	caller->Close(true); // FIXME this does not go through MainFrame::OnClose?!
 }
 
 void MainFrame::restart_app()
@@ -397,7 +414,9 @@ void MainFrame::restart_app()
 
 void MainFrame::OnMenuHelpUpdate( wxCommandEvent& )
 {
-  wxString dd = wxStandardPaths::Get().GetUserDataDir() + PATH_SEP;
+  wxLogError(wxT("FIXME: this does not go through MainFrame::OnClose"));
+
+  wxString dd = wxStandardPaths::Get().GetDataDir() + PATH_SEP;
   wxUpdateAndExit(this, true, true, 
     dd + wxT("data/webupdater/webupdatedlg.xrc"), 
     wxT("wxWebUpdateLogDlg"),
