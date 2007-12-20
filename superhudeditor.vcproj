@@ -357,6 +357,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\model.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\model.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\pakmanagerbase.cpp"
 				>
 			</File>

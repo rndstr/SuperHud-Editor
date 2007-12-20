@@ -188,7 +188,7 @@ bool CPMAHudFile::parse_item( wxString s )
   el->set_enabled( true );
   // make sure the order is the same as in hudfile.
   if( el != m_load_prevel && !move_element_after( el, m_load_prevel ) )
-      wxLogError( BUG_MSG + wxT(": Failed moving item `") + el->name() + wxT("'."));
+      wxLogError( BUG_MSG + wxT("Failed moving item `") + el->name() + wxT("'."));
   m_load_prevel = el;
   
   // read properties

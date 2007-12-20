@@ -24,6 +24,7 @@ void Texture::load( const wxString& fpath, int search_where, bool mipmap /*=fals
   m_texid = 0;
 
   wxLogDebug(wxT("Loading texture: ") + fpath);
+
   char *buf;
   size_t size;
   if( !wxGetApp().pakmanager()->load( &buf, fpath, search_where, &size ) )

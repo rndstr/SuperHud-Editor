@@ -11,6 +11,7 @@
 #include "mainframe.h"
 #include "common.h"
 #include "elementsctrlbase.h"
+#include "displayctrlbase.h"
 
 
 #include <wx/stdpaths.h>
@@ -30,11 +31,12 @@
 IMPLEMENT_APP(SHEApp)
 
 SHEApp::SHEApp() :
-  m_firststart(false)
+  m_firststart(false),
+  m_mainframe(0)
 {
 
 }
-  ElementsCtrlBase* SHEApp::elementsctrl() { return m_mainframe->elementsctrl(); }
+ElementsCtrlBase* SHEApp::elementsctrl() { return m_mainframe->elementsctrl(); }
 
 bool SHEApp::OnInit()
 {
@@ -98,6 +100,7 @@ bool SHEApp::OnInit()
 
   return true;
 }
+
 
 int SHEApp::OnRun()
 {

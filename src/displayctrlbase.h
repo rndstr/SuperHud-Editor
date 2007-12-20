@@ -23,6 +23,7 @@ class DisplayCtrlBase : public GLCanvasBase
 
     // events
     virtual void OnMotion( wxMouseEvent& );
+    virtual void OnIdle( wxIdleEvent& ) {}
   protected:
     Texture   *m_background;
     wxRect    m_hudrect;
@@ -33,6 +34,7 @@ class DisplayCtrlBase : public GLCanvasBase
     virtual int height() const = 0;
     /// sets up the opengl view to use 2D
     virtual void prepare2d();
+    virtual void prepare3d();
     wxPoint panel_to_hud( const wxPoint& p ) const;
 
     DECLARE_EVENT_TABLE()

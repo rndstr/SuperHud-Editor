@@ -9,6 +9,7 @@
 #include <wx/file.h>
 
 #include "factorybase.h"
+#include "model.h"
 
 #include "cpma/elementsctrl.h"
 #include "cpma/propertiesnotebook.h"
@@ -42,7 +43,8 @@ END_EVENT_TABLE()
 MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title, 
         const wxPoint& pos /*= wxDefaultPosition*/, const wxSize& size /*= wxDefaultSize*/,
         long style /*= wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER*/) :
-  wxFrame(parent, id, title, pos, size, style)
+  wxFrame(parent, id, title, pos, size, style),
+    m_model(0)
 {
 
   m_mgr.SetManagedWindow(this);
@@ -195,10 +197,13 @@ void MainFrame::OnMenuExit( wxCommandEvent& )
   Close(true);
 }
 #include "pakmanagerbase.h"
+#include "model.h"
 void MainFrame::OnMenuAbout( wxCommandEvent& )
 {
   wxLogDebug(wxT("about"));
   wxGetApp().pakmanager()->debug();
+  m_model = new Model();
+  m_model->load_mde(wxT("data/model/dfegg.mde"), PM_SEARCH_APPFILE);
 }
 
 void MainFrame::OnMenuNew( wxCommandEvent& )
@@ -323,6 +328,8 @@ void MainFrame::OnClose( wxCloseEvent& ev )
   if( !confirm_saving() )
     return;
 
+  if( m_model )
+    wxDELETE( m_model );
   
   // save view
   Prefs::get().perspective = m_mgr.SavePerspective();

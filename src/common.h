@@ -26,7 +26,7 @@
 
 
 // some general messages
-const wxString BUG_MSG = _("Bug detected, please contact the author");
+const wxString BUG_MSG = _("Bug detected, please contact the author and tell him the error message.\n\nError:\n");
 const wxString CANTDISABLEPROPERTY_MSG = _("There is no way to disable this property on that element as a parent element specifies it.\nYou should remove the property on the parent `!DEFAULT' element.");
 const wxString INVALIDGAME_MSG = _("No valid game selected?");
 const wxString CHECKBOXWARNING_MSG = _("Be aware that you won't be able to disable that property on subsequents element!");

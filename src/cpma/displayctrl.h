@@ -16,6 +16,7 @@ class CPMADisplayCtrl : public DisplayCtrlBase
     void cleanup();
 
     void load_background();
+    void OnIdle( wxIdleEvent& );
 
   protected:
     void render();

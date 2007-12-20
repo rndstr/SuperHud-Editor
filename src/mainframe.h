@@ -12,6 +12,7 @@ class wxTextCtrl;
 class ElementsCtrlBase;
 class PropertiesNotebookBase;
 class DisplayCtrlBase;
+class Model;
 
 class MainFrame : public wxFrame
 {
@@ -33,6 +34,7 @@ class MainFrame : public wxFrame
     PropertiesNotebookBase* propertiesnotebook() { return m_propertiesnotebook; }
     wxTextCtrl*         configpreview() { return m_configpreview; }
     wxStatusBar*        statusbar() { return m_statusbar; }
+    Model*              model() { return m_model; }
 
     /// Selection changed in ElementsCtrl
     void                OnElementSelectionChanged();
@@ -60,6 +62,7 @@ class MainFrame : public wxFrame
     PropertiesNotebookBase *m_propertiesnotebook;
     wxTextCtrl        *m_configpreview;
     DisplayCtrlBase   *m_displayctrl;
+    Model             *m_model;
 
   private:
 

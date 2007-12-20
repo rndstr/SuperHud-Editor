@@ -3,6 +3,7 @@
 
 BEGIN_EVENT_TABLE(DisplayCtrlBase, GLCanvasBase)
   EVT_MOTION(DisplayCtrlBase::OnMotion)
+  EVT_IDLE(DisplayCtrlBase::OnIdle)
 END_EVENT_TABLE()
 
 void DisplayCtrlBase::prepare2d()
@@ -56,6 +57,41 @@ void DisplayCtrlBase::prepare2d()
   glLoadIdentity();
   // topleft is (0,0)
   gluOrtho2D( m_hudrect.GetLeft(), m_hudrect.GetRight(), m_hudrect.GetBottom(), m_hudrect.GetTop() );
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+}
+
+void DisplayCtrlBase::prepare3d()
+{
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black Background
+  glClearDepth(1.0f);	// Depth Buffer Setup
+  glEnable(GL_DEPTH_TEST); // Enables Depth Testing
+  glDepthFunc(GL_LEQUAL); // The Type Of Depth Testing To Do
+  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+  glDisable( GL_CULL_FACE );
+
+  glEnable( GL_LIGHTING );
+  GLfloat global_ambient[] = { .2f, .2f, .2f, 1.f };
+  GLfloat ambient[] = { .1f, .1f, .1f, 1.f };
+  GLfloat specular[] = { 1.f, 1.f, 1.f, 1.f, 1.f };
+  glLightModelfv( GL_LIGHT_MODEL_AMBIENT, global_ambient );
+  glShadeModel(GL_SMOOTH);
+  glLightfv( GL_LIGHT0, GL_SPECULAR, specular );
+  glEnable( GL_LIGHT0 );
+  GLfloat lightpos[] = {0.f, 0.f, 25.f, 1.f };
+  glLightfv( GL_LIGHT0, GL_POSITION, lightpos );
+
+  //glEnable(GL_COLOR_MATERIAL);
+
+  wxRect hudrect(0, 0, GetSize().GetWidth(), GetSize().GetHeight());
+
+  //glViewport(topleft_x, topleft_y, bottomrigth_x-topleft_x, bottomrigth_y-topleft_y);
+  glViewport(hudrect.GetLeft(), hudrect.GetTop(), hudrect.GetWidth(), hudrect.GetHeight());
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+
+  float ratio_w_h = (float)hudrect.GetWidth()/(float)hudrect.GetHeight();
+  gluPerspective(45 /*view angle*/, ratio_w_h, 0.1 /*clip close*/, 200 /*clip far*/);
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 }
