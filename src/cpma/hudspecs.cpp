@@ -19,7 +19,13 @@ bool CPMAHudSpecs::load()
   m_items.clear();
 
   if( hudspecs.empty() )
-  { // enumerate one
+  {
+    // TODO make this use PakManager. we only have one hudspecs now, no longer several.
+    // but user can still specify one himself
+
+    // pick default!
+
+    // enumerate one
     wxArrayString files;
     size_t count = wxDir::GetAllFiles(wxStandardPaths::Get().GetDataDir() + wxT("/data/cpma/hudspecs/"), &files, wxT("*.dat"), GETALLFILES_FLAGS);
     if( wxDir::Exists( wxStandardPaths::Get().GetUserDataDir() + wxT("/data/cpma/hudspecs/") ) )

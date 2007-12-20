@@ -78,7 +78,7 @@ void DisplayCtrlBase::prepare3d()
   glShadeModel(GL_SMOOTH);
   glLightfv( GL_LIGHT0, GL_SPECULAR, specular );
   glEnable( GL_LIGHT0 );
-  GLfloat lightpos[] = {0.f, 0.f, 25.f, 1.f };
+  GLfloat lightpos[] = {0.f, 0.f, 50.f, 1.f };
   glLightfv( GL_LIGHT0, GL_POSITION, lightpos );
 
   //glEnable(GL_COLOR_MATERIAL);

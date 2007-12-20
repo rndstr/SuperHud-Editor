@@ -17,7 +17,7 @@ void CPMADisplayCtrl::load_background()
     wxDELETE(m_background);
   wxString bgfpath = Prefs::get().q3_background;
   if( bgfpath.empty() )
-    bgfpath = wxT("data/cpma/imgs/background.jpg"); // FIXME what about path separator? :/
+    bgfpath = wxT("cpma/imgs/background.jpg"); // FIXME what about path separator? :/
   m_background = new Texture(bgfpath, PM_SEARCH_APPFILE, true);
 }
 
@@ -46,8 +46,8 @@ void CPMADisplayCtrl::render()
   {
     prepare3d();
     
-    glTranslatef(0.f, 0.f, -20.f);
-    glRotatef(20.f, 0.f, 1.f, 0.f);
+    glTranslatef(0.f, 0.f, -40.f);
+    glRotatef(30.f, 0.f, 1.f, 0.f);
     glClearColor(0.f, 0.f, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 //    glRotatef( (GLfloat)count, 0.f, 1.f, 0.f );
