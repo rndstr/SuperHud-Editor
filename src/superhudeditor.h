@@ -16,7 +16,6 @@ class FactoryBase;
 class HudFileBase;
 class ElementsCtrlBase;
 class MainFrame;
-class PakManagerBase;
 
 class SHEApp : public wxApp
 {
@@ -32,12 +31,13 @@ class SHEApp : public wxApp
     bool is_cpma() const;
     bool is_q4max() const;
 
+    bool is_firststart() const { return m_firststart; }
+
 
     MainFrame*    mainframe() { return m_mainframe; }
     FactoryBase* factory() { return m_factory; }
     HudFileBase* hudfile() { return m_hudfile; }
     ElementsCtrlBase* elementsctrl();
-    PakManagerBase* pakmanager() { return m_pakmanager; }
 
   protected:
     void load_config();
@@ -47,7 +47,6 @@ class SHEApp : public wxApp
     MainFrame   *m_mainframe;
     FactoryBase *m_factory;
     HudFileBase *m_hudfile;
-    PakManagerBase *m_pakmanager;
 };
 
 DECLARE_APP(SHEApp)

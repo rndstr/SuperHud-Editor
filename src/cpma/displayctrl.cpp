@@ -1,7 +1,7 @@
 #include "displayctrl.h"
 
 #include "../common.h"
-#include "../pakmanagerbase.h"
+#include "../pakmanager.h"
 #include "../model.h"
 
 

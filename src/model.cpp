@@ -1,7 +1,7 @@
 
 #include "model.h"
 #include "common.h"
-#include "pakmanagerbase.h"
+#include "pakmanager.h"
 
 Model::Model()
 {
@@ -32,7 +32,7 @@ void Model::render()
   glDisableClientState( GL_VERTEX_ARRAY );
 #else
   glBegin(GL_TRIANGLES);
-  for( int i=0; i<m_inds.size(); i+=3 )
+  for( size_t i=0; i<m_inds.size(); i+=3 )
   {
     glNormal3f(
       m_verts[m_inds[i]].norm.x,
@@ -87,12 +87,14 @@ bool Model::load_mde( const wxString& fpath, int search_where )
 {
   cleanup();
   wxLogDebug(wxT("Loading model: ") + fpath);
+  wxGetApp().mainframe()->statusbar()->PushStatusText(_("Loading model ") + fpath);
 
   char *buf;
   size_t size;
-  if( !wxGetApp().pakmanager()->load( &buf, fpath, search_where, &size ) )
+  if( !PakManager::get().load( &buf, fpath, search_where, &size ) )
   {
     wxLogError(_("Couldn't find/load file: %s"), fpath.c_str());
+    wxGetApp().mainframe()->statusbar()->PopStatusText();
     return false;
   }
   wxMemoryInputStream mis( buf, size );
@@ -177,13 +179,15 @@ bool Model::load_mde( const wxString& fpath, int search_where )
   wxLogDebug(wxT(" vert indecies ref'ed by face: min = %d max = %d"),minidx, maxidx);
   
   // we no longer need the buffer
-  wxGetApp().pakmanager()->cleanup_lastloaded();
+  PakManager::get().cleanup_lastloaded();
   if( minidx == 0 )
   {
     wxLogDebug( BUG_MSG + wxT("face references vertices starting at 0") );
+    wxGetApp().mainframe()->statusbar()->PopStatusText();
     cleanup();
     return false;
   }
 
+  wxGetApp().mainframe()->statusbar()->PopStatusText();
   return true;
 }

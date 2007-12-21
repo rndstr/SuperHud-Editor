@@ -22,6 +22,8 @@
 #include "xpm/icons/element_enabled.xpm"
 #include "xpm/icons/element_disabled.xpm"
 
+#include "xpm/bitmaps/wiztest.xpm"
+
 const wxArtID ART_CPMA = _T("ART_CPMA");
 const wxArtID ART_Q4MAX = _T("ART_Q4MAX");
 const wxArtID ART_ALIGN_LEFT = _T("ART_ALIGN_LEFT");
@@ -35,6 +37,8 @@ const wxArtID ART_ELEMENT_PASTE = _T("ART_ELEMENT_PASTE");
 
 const wxArtID ART_ELEMENT_ENABLED = _T("ART_ELEMENT_ENABLED");
 const wxArtID ART_ELEMENT_DISABLED = _T("ART_ELEMENT_DISABLED");
+
+const wxArtID ART_BMP_SETUPWIZARD = _T("ART_BMP_SETUPWIZARD");
 
 
 class ArtProvider : public wxArtProvider
@@ -70,6 +74,9 @@ class ArtProvider : public wxArtProvider
         return wxBitmap(element_enabled_xpm);
       else if( id == ART_ELEMENT_DISABLED )
         return wxBitmap(element_disabled_xpm);
+
+      else if( id == ART_BMP_SETUPWIZARD )
+        return wxBitmap(wiztest_xpm);
       
       return wxNullBitmap;
     }

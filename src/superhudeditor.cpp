@@ -14,11 +14,12 @@
 #include "displayctrlbase.h"
 
 
+
 #include <wx/stdpaths.h>
 #include <wx/fs_arc.h>
 #include "factorybase.h"
 #include "hudfilebase.h"
-#include "pakmanagerbase.h"
+#include "pakmanager.h"
 #include "GameSelectionDialog.h"
 
 #ifndef DISABLE_CPMA
@@ -88,14 +89,13 @@ bool SHEApp::OnInit()
     return false;
   }
 
-  m_hudfile = m_factory->create_hudfile();
-  m_pakmanager = m_factory->create_pakmanager();
-  m_pakmanager->init();
 
   m_mainframe = new MainFrame(0, wxID_ANY, APP_NAME, wxDefaultPosition, wxSize(800,600));
   SetTopWindow(m_mainframe);
   m_mainframe->Show();
 
+  m_hudfile = m_factory->create_hudfile();
+  PakManager::get().init();
   m_mainframe->elementsctrl()->OnSelectionChanged();
 
   return true;
@@ -106,6 +106,9 @@ int SHEApp::OnRun()
 {
   m_hudfile->OnNew();
   m_mainframe->update_title();
+  if( m_firststart )
+  {
+  }
   /*
   if( m_firststart )
   {
@@ -130,8 +133,7 @@ int SHEApp::OnExit()
   m_factory->shutdown();
   wxDELETE(m_factory);
   wxDELETE(m_hudfile);
-  m_pakmanager->shutdown();
-  wxDELETE(m_pakmanager);
+  PakManager::get().shutdown();
 
   return 0;
 }

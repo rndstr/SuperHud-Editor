@@ -365,11 +365,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\pakmanagerbase.cpp"
+				RelativePath=".\src\pakmanager.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\pakmanagerbase.h"
+				RelativePath=".\src\pakmanager.h"
 				>
 			</File>
 			<File
@@ -378,6 +378,18 @@
 			</File>
 			<File
 				RelativePath=".\src\prefs.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\propertiesnotebookbase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\setupwizard.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\setupwizard.h"
 				>
 			</File>
 			<File

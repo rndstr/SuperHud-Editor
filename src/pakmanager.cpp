@@ -1,4 +1,4 @@
-#include "pakmanagerbase.h"
+#include "pakmanager.h"
 
 #include "common.h"
 
@@ -12,13 +12,23 @@
 #include <wx/arrstr.h>
 
 
-void PakManagerBase::init()
+PakManager& PakManager::get() 
 {
-  PakManagerBase::enumerate_pak_files(&m_pakfiles);
+  static PakManager pinstance;
+  return pinstance;
 }
 
 
-void PakManagerBase::cleanup()
+void PakManager::init()
+{
+  PakManager::enumerate_game_pakfiles(&m_pakfiles);
+
+  wxDir::GetAllFiles( wxStandardPaths::Get().GetDataDir() + PATH_SEP + wxT("data"), &m_apppakfiles, PM_APPPAK_FILES, GETALLFILES_FLAGS );
+  m_apppakfiles.Sort();
+}
+
+
+void PakManager::cleanup()
 {
   for( pakcontent_t::iterator it = m_pakcontent.begin(); it != m_pakcontent.end(); ++it )
   {
@@ -33,7 +43,7 @@ void PakManagerBase::cleanup()
   m_pakcontent.clear();
 }
 
-void PakManagerBase::cleanup_lastloaded()
+void PakManager::cleanup_lastloaded()
 {
   if( m_lastloaded != m_pakcontent.end() )
   {
@@ -43,7 +53,7 @@ void PakManagerBase::cleanup_lastloaded()
   }
 }
 
-wxString PakManagerBase::get_location( const wxString& fpath, int search_where /*=PM_SEARCH_ALL*/, ePakManagerSearchWhere *pfound_where /*=0*/ ) const
+wxString PakManager::get_location( const wxString& fpath, int search_where /*=PM_SEARCH_ALL*/, ePakManagerSearchWhere *pfound_where /*=0*/ ) const
 {
   wxString loc;
   wxFileSystem fs;
@@ -68,12 +78,11 @@ wxString PakManagerBase::get_location( const wxString& fpath, int search_where /
     // TODO does this find something if the fpath is absolute dir but not below cpma?
     // what about `..' hacks?
 
-    // FIXME should in specialized class
     // mod dir
-    if( fs.FindFileInPath(&loc, Prefs::get().q3_gamedir + PATH_SEP + wxT("cpma") + PATH_SEP, fpath) )
+    if( fs.FindFileInPath(&loc, wxGetApp().factory()->dir_game() + PATH_SEP + wxGetApp().factory()->dirname_moddata() + PATH_SEP, fpath) )
       found = PM_SEARCH_GAMERELATIVE;
     // game data dir
-    else if( fs.FindFileInPath(&loc, Prefs::get().q3_gamedir + PATH_SEP + wxT("baseq3") + PATH_SEP, fpath) )
+    else if( fs.FindFileInPath(&loc, wxGetApp().factory()->dir_game() + PATH_SEP + wxGetApp().factory()->dirname_gamedata() + PATH_SEP, fpath) )
       found = PM_SEARCH_GAMERELATIVE;
   }
   if( !found && search_where & PM_SEARCH_GAMEPAK )
@@ -94,12 +103,9 @@ wxString PakManagerBase::get_location( const wxString& fpath, int search_where /
   }
   if( !found && search_where & PM_SEARCH_APPPAK )
   { // find all files in datadir *.pke
-    wxArrayString apppaks;
-    wxDir::GetAllFiles( wxStandardPaths::Get().GetDataDir(), &apppaks, PM_APPPAK_FILES, GETALLFILES_FLAGS);
-    apppaks.Sort();
-    for( int i=apppaks.Count()-1; i >= 0; --i )
+    for( int i=m_apppakfiles.Count()-1; i >= 0; --i )
     {
-      if( fs.FindFileInPath(&loc, apppaks[i] + wxT("#zip:"), fpath) )
+      if( fs.FindFileInPath(&loc, m_apppakfiles[i] + wxT("#zip:"), fpath) )
       {
         found = PM_SEARCH_APPPAK;
         break;
@@ -112,17 +118,19 @@ wxString PakManagerBase::get_location( const wxString& fpath, int search_where /
 
 
 
-bool PakManagerBase::load_from_location( char **buf, const wxString& location, size_t *psize /*=0*/ )
+bool PakManager::load_from_location( char **buf, const wxString& location, size_t *psize /*=0*/ )
 {
   wxFileSystem fs;
   wxFSFile *file = 0;
   {
-    //wxLogNull unfortunately_this_gives_us_invalidzipfile_without_any_information_which_one_so_just_shut_the_fuck_up;
+#ifndef NDEBUG
+    wxLogNull unfortunately_this_gives_us_invalidzipfile_without_any_information_which_one_so_just_shut_the_fuck_up;
+#endif
     file = fs.OpenFile( location, wxFS_READ );
   }
   if( 0 == file )
   {
-    wxLogDebug(wxT("Failed openingfile"));
+    wxLogDebug(wxT("Failed opening file"));
     return false;
   }
   
@@ -143,7 +151,7 @@ bool PakManagerBase::load_from_location( char **buf, const wxString& location, s
   return true;
 }
 
-wxString PakManagerBase::searchwhere2string( ePakManagerSearchWhere wher )
+wxString PakManager::searchwhere2string( ePakManagerSearchWhere wher )
 {
   switch(wher)
   {
@@ -159,7 +167,7 @@ wxString PakManagerBase::searchwhere2string( ePakManagerSearchWhere wher )
   return wxT("UNKNOWN");
 }
 
-bool PakManagerBase::load( char **buf, const wxString& fpath, int search_where, size_t *psize /*= 0*/)
+bool PakManager::load( char **buf, const wxString& fpath, int search_where, size_t *psize /*= 0*/)
 {
   wxASSERT(buf != 0);
   // FIXME if the file doesn't belong to a valid game data file we shouldn't add it to cache! (pakcontent)
@@ -170,7 +178,7 @@ bool PakManagerBase::load( char **buf, const wxString& fpath, int search_where, 
   // although not really allowed
   ePakManagerSearchWhere found;
   wxString location = get_location(fpath, search_where, &found); // final location uri to be used with wxFileSystem
-  wxLogDebug(wxT("Found file `%s' at %s (%s)"), fpath.c_str(), location.c_str(), PakManagerBase::searchwhere2string(found).c_str());
+  wxLogDebug(wxT("Found file `%s' at %s (%s)"), fpath.c_str(), location.c_str(), PakManager::searchwhere2string(found).c_str());
 
   pakcontent_t::iterator cont = m_pakcontent.find( fpath );
   if( cont == m_pakcontent.end() || cont->second.buffer == 0 )
@@ -178,7 +186,7 @@ bool PakManagerBase::load( char **buf, const wxString& fpath, int search_where, 
     // load
     wxLogDebug(wxT("Outdated or non-existant cache entry: %s"), location.c_str());
     size_t size;
-    if( !PakManagerBase::load_from_location(buf, location, &size) )
+    if( !PakManager::load_from_location(buf, location, &size) )
       return false;
     if( cont == m_pakcontent.end() )
     { // no entry, add it but only if 
@@ -208,11 +216,10 @@ bool PakManagerBase::load( char **buf, const wxString& fpath, int search_where, 
 }
 
 
-// FIXME should in specialized class
-size_t PakManagerBase::enumerate_pak_files( wxArrayString *files )
+size_t PakManager::enumerate_game_pakfiles( wxArrayString *files )
 {
   size_t count=0;
-  wxStringTokenizer tok(Prefs::get().q3_pakfiles, wxT(";"));
+  wxStringTokenizer tok(wxGetApp().factory()->pakfiles(), wxT(";"));
   wxString token;
 #ifndef WIN32
   wxArrayString homefiles; // files in homedir (~/.q3a/), they overwrite quake3_data_dir.
@@ -222,37 +229,13 @@ size_t PakManagerBase::enumerate_pak_files( wxArrayString *files )
   {
     token = tok.GetNextToken();
     wxTrim( token );
-    count += wxDir::GetAllFiles( Prefs::get().q3_gamedir, files, token, GETALLFILES_FLAGS );
+    // TODO the problem here is, if token contains directorynames (e.g. baseq3/*.pk3) and that
+    // directory does not exist, an error box pops up complaining 'the system cannot find the path specified'
+    // but with reference to the dirgame, which _does_ exist.
+    count += wxDir::GetAllFiles( wxGetApp().factory()->dir_game(), files, token, GETALLFILES_FLAGS );
 #ifndef WIN32
-    count += wxDir::GetAllFiles( homedir + PATH_SEP + Prefs::get().q3_homedirname, &homefiles, token, GETALLFILES_FLAGS );
+    count += wxDir::GetAllFiles( homedir + PATH_SEP + wxGetApp().factory()->unixdirname_userdata(), &homefiles, token, GETALLFILES_FLAGS );
 #endif
-
-    // get basename :o
-    //pos = token.find_last_of( wxT("\\/") );
-    /*
-    wxString basename;
-    wxString dirname;
-    wxFileName::SplitPath( token, &dirname, &basename, 0, 0 );
-    if( pos != wxString::npos )
-    {
-      //wxLogDebug( Prefs::get()->quake3_data_dir + wxT("/") + token.substr(0, pos+1) + wxT(" # ") + token.substr(pos+1, token.length()-pos-1) );
-      count += wxDir::GetAllFiles( Prefs::get().q3_gamedir + PATH_SEP + wxString(token.substr(0, pos+1)), files, token.substr(pos+1, token.length()-pos-1), GETALLFILES_FLAGS);
-
-#ifndef WIN32
-      // NOTE this is not entirely correct.. we need to figure out how to get $HOME the correct way 
-      // for e.g. Mac builds, i don't know where they store the userfiles.
-      count += wxDir::GetAllFiles( homedir + PATH_SEP + wxT(".q3a") + PATH_SEP + token.substr(0, pos+1), &homefiles, token.substr(pos+1, token.length()-pos-1), GETALLFILES_FLAGS);
-#endif
-    }
-    else
-    {
-      //wxLogDebug( Prefs::get()->quake3_data_dir + wxT(" # ") + token );
-      count += wxDir::GetAllFiles( Prefs::get().q3_gamedir, files, token, GETALLFILES_FLAGS);
-#ifndef WIN32
-      count += wxDir::GetAllFiles( homedir + PATH_SEP + wxT(".q3a") + PATH_SEP + token.substr(0, pos+1), &homefiles, token.substr(pos+1, token.length()-pos-1), GETALLFILES_FLAGS);
-#endif
-    }
-    */
   }
   files->Sort();
 #ifndef WIN32
@@ -264,7 +247,8 @@ size_t PakManagerBase::enumerate_pak_files( wxArrayString *files )
   return count;
 }
 
-void PakManagerBase::debug() const
+
+void PakManager::debug() const
 {
   wxLogDebug(wxT(" PAKFILES"));
   for( int i=m_pakfiles.Count()-1; i >= 0; --i )
@@ -275,8 +259,7 @@ void PakManagerBase::debug() const
   for( pakcontent_t::const_iterator cit = m_pakcontent.begin(); cit != m_pakcontent.end(); ++cit )
   {
     wxLogDebug(cit->first);
-    wxLogDebug(wxT("0x%x"), cit->second.buffer);
-    wxLogDebug(wxT("%d"), cit->second.bufsize);
+    wxLogDebug(wxT("buf: 0x%x bufsize: %d"), cit->second.buffer, cit->second.bufsize);
   }
 
 }

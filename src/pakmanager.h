@@ -1,5 +1,5 @@
-#ifndef __PAKMANAGERBASE_H__
-#define __PAKMANAGERBASE_H__
+#ifndef __PAKMANAGER_H__
+#define __PAKMANAGER_H__
 
 #include <wx/wx.h>
 #include <wx/arrstr.h>
@@ -19,7 +19,8 @@ typedef enum
 
 const wxString PM_APPPAK_FILES = wxT("*.pke");
 
-class PakManagerBase
+
+class PakManager
 {
    struct pakcontentnode_t
    {
@@ -36,8 +37,6 @@ class PakManagerBase
    typedef std::map<wxString, pakcontentnode_t> pakcontent_t;
 
   public:
-    PakManagerBase() {}
-    virtual ~PakManagerBase() {}
 
     virtual void init();
     virtual void shutdown() { cleanup(); }
@@ -68,7 +67,9 @@ class PakManagerBase
     /// @return The full location path to be used in wxFileSystem, only has forward dir slashes (needed for the cache to be consistent..)
     wxString get_location( const wxString& fpath, int search_where /*= PM_SEARCH_ALL*/, ePakManagerSearchWhere *pfound_where = 0 ) const;
 
-    static size_t enumerate_pak_files( wxArrayString *files );
+
+    /// looks for pakfiles for the currently loaded game and stores them in $files
+    static size_t enumerate_game_pakfiles( wxArrayString *files );
 
     static wxString searchwhere2string( ePakManagerSearchWhere wher );
 
@@ -76,11 +77,11 @@ class PakManagerBase
 
 
   protected:
-    /// contains all pk3 filepaths with length.
-    /// this gets cached to a file. (ORLY?)
-    /// at next startup we only check if filesizes
-    /// have changed and update the contents unless filesize unchanged.
+    /// contains all available game pakfiles
     wxArrayString m_pakfiles;
+
+    /// contains all available app pakfiles
+    wxArrayString m_apppakfiles;
 
     /// has internal pk3 paths to actual content of the 
     /// file referenced by this path.
@@ -89,6 +90,14 @@ class PakManagerBase
 
     /// we keep track so user can just call cleanup_lastloaded()
     pakcontent_t::iterator m_lastloaded;
+
+    // singleton
+  public:
+    static PakManager& get();
+  protected:
+    PakManager() {}
+    PakManager(const PakManager&);
+    PakManager& operator= (const PakManager&);
 };
 
-#endif // __PAKMANAGERBASE_H__
+#endif // __PAKMANAGER_H__

@@ -10,6 +10,7 @@
 
 #include "factorybase.h"
 #include "model.h"
+#include "setupwizard.h"
 
 #include "cpma/elementsctrl.h"
 #include "cpma/propertiesnotebook.h"
@@ -65,7 +66,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   wxMenu *tools_menu = new wxMenu;
   tools_menu->Append( ID_MENU_TOOLS_SWITCHGAME, _("&Switch game") );
   tools_menu->AppendSeparator();
-  tools_menu->Append( ID_MENU_TOOLS_PREFERENCES, _("&Preferences\tAlt+P") );
+  tools_menu->Append( ID_MENU_TOOLS_PREFERENCES, _("&Preferences\tCtrl+P") );
   menu_bar->Append( tools_menu, _("&Tools") );
 
   wxMenu *elements_menu = new wxMenu;
@@ -83,8 +84,9 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   menu_bar->Append( m_view_menu, _("&View") );
 
   wxMenu *help_menu = new wxMenu;
-  help_menu->Append( wxID_ABOUT, _("&About") );
   help_menu->Append( ID_MENU_HELP_UPDATE, _("Check for updates...") );
+  help_menu->Append( wxID_ABOUT, _("&About") );
+  
   menu_bar->Append( help_menu, _("Help") );
 
   SetMenuBar( menu_bar );
@@ -135,8 +137,13 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
 	  ToolbarPane().Top().Row(1).Position(1).LeftDockable(false).RightDockable(false)
 	  );
   
-
   m_defaultperspective = m_mgr.SavePerspective();
+
+  GetDockArt()->SetColor(wxAUI_DOCKART_INACTIVE_CAPTION_COLOUR, wxColour(200, 200, 200));
+  GetDockArt()->SetColor(wxAUI_DOCKART_INACTIVE_CAPTION_GRADIENT_COLOUR, wxColour(200, 200, 200));
+  GetDockArt()->SetColor(wxAUI_DOCKART_ACTIVE_CAPTION_COLOUR, wxColour(100, 100, 100));
+  GetDockArt()->SetColor(wxAUI_DOCKART_ACTIVE_CAPTION_GRADIENT_COLOUR, wxColour(100, 100, 100));
+  
 
   // update stuff
   m_mgr.LoadPerspective( Prefs::get().perspective );
@@ -162,6 +169,13 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_mgr.Update();
 
   m_displayctrl->init();
+
+  if( wxGetApp().is_firststart() )
+  {
+    SetupWizard wizard(this);
+    if( wizard.RunWizard(wizard.GetFirstPage()) )
+      wxGetApp().factory()->set_dir_game(wizard.gamedir());
+  }
 }
 
 
@@ -196,14 +210,12 @@ void MainFrame::OnMenuExit( wxCommandEvent& )
 {
   Close(true);
 }
-#include "pakmanagerbase.h"
 #include "model.h"
 void MainFrame::OnMenuAbout( wxCommandEvent& )
 {
   wxLogDebug(wxT("about"));
-  wxGetApp().pakmanager()->debug();
   m_model = new Model();
-  m_model->load_mde(wxT("data/model/dfegg.mde"), PM_SEARCH_APPFILE);
+  m_model->load_mde(wxT("model/dfegg.mde"), PM_SEARCH_APPFILE);
 }
 
 void MainFrame::OnMenuNew( wxCommandEvent& )

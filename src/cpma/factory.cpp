@@ -5,7 +5,6 @@
 #include "propertiesnotebook.h"
 #include "displayctrl.h"
 #include "hudfile.h"
-#include "../pakmanagerbase.h"
 
 
 bool CPMAFactory::init()
@@ -33,7 +32,3 @@ HudFileBase* CPMAFactory::create_hudfile() const
   return new CPMAHudFile;
 }
 
-PakManagerBase* CPMAFactory::create_pakmanager() const
-{
-  return new PakManagerBase();
-}

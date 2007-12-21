@@ -14,7 +14,7 @@ struct Vec3
 
 struct Vertex
 {
-  Vertex( float x, float y, float z ) : pos(x, y, z) {}
+  Vertex( float x, float y, float z ) : pos(x, y, z), col(1.f, 1.f, 1.f) {}
   Vec3 pos;
   Vec3 norm;
   Vec3 col;

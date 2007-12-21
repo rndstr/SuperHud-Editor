@@ -1,6 +1,6 @@
 #include "texture.h"
 #include "common.h"
-#include "pakmanagerbase.h"
+#include "pakmanager.h"
 #include <wx/mstream.h>
 #include "tgaloader.h"
 
@@ -27,7 +27,7 @@ void Texture::load( const wxString& fpath, int search_where, bool mipmap /*=fals
 
   char *buf;
   size_t size;
-  if( !wxGetApp().pakmanager()->load( &buf, fpath, search_where, &size ) )
+  if( !PakManager::get().load( &buf, fpath, search_where, &size ) )
   {
     wxLogError(_("Couldn't find/load file: %s"), fpath.c_str());
     return;
@@ -56,7 +56,7 @@ void Texture::load( const wxString& fpath, int search_where, bool mipmap /*=fals
     m_texid = Texture::create_texture( img, mipmap );
   }
   // we no longer need the buffer
-  wxGetApp().pakmanager()->cleanup_lastloaded();
+  PakManager::get().cleanup_lastloaded();
 }
 
 void Texture::glBind()
