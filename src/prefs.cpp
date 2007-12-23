@@ -25,6 +25,25 @@ bool Prefs::init()
   return !confexists;
 }
 
+
+void Prefs::set_aspectratio( const wxString& ar )
+{
+  size_t pos = ar.Find(wxT(":"));
+  if( pos == wxString::npos )
+    aspectratiod = 4/3.0;
+  else
+  {
+    long w, h;
+    if( !ar.Left(pos).ToLong(&w) || !ar.Right(aspectratio.length() - pos - 1).ToLong(&h) )
+    {
+      wxLogError(wxT("Invalid value for aspectratio"));
+      aspectratiod = 4/3.0;
+    }
+    else
+      aspectratiod = (double)w/(double)h;
+  }
+}
+
 void Prefs::load()
 {
   wxString str;
@@ -36,26 +55,23 @@ void Prefs::load()
   c->Read(wxT("app_width"), &app_width, -1);
   c->Read(wxT("app_height"), &app_height, -1);
   c->Read(wxT("aspectratio"), &aspectratio, wxT("4:3"));
-  size_t pos = aspectratio.Find(wxT(":"));
-  if( pos == wxString::npos )
-    aspectratiod = 4/3.0;
-  else
-  {
-    long w, h;
-    if( !aspectratio.Left(pos).ToLong(&w) || !aspectratio.Right(aspectratio.length() - pos - 1).ToLong(&h) )
-    {
-      wxLogError(wxT("Invalid value for aspectratio in logfile"));
-      aspectratiod = 4/3.0;
-    }
-    else
-      aspectratiod = (double)w/(double)h;
-  }
+  set_aspectratio( aspectratio );
   c->Read(wxT("perspective"), &perspective, wxT(""));
   c->Read(wxT("grid"), &grid, true);
   c->Read(wxT("grid_x"), &grid_x, 10);
   c->Read(wxT("grid_y"), &grid_y, 10);
   c->Read(wxT("grid_color"), &str, wxT("1 1 1 0.3"));
-  grid_color.from_string(str);
+  grid_color.set(str);
+  c->Read(wxT("helper"), &helper, true);
+  c->Read(wxT("helper_border"), &str, wxT("1 1 1 0.8"));
+  helper_border.set(helper_border);
+  c->Read(wxT("helper_fill"), &str, wxT("1 1 1 0.1"));
+  helper_fill.set(helper_fill);
+  c->Read(wxT("helper_border_selected"), &str, wxT("1 0 0 0.8"));
+  helper_border_selected.set(helper_border_selected);
+  c->Read(wxT("helper_fill_selected"), &str, wxT("1 0 0 0.1"));
+  helper_fill_selected.set(helper_fill_selected);
+  
 
 
 

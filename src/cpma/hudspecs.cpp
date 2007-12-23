@@ -11,71 +11,27 @@
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
 #include <wx/tokenzr.h>
+#include <wx/sstream.h>
 
 bool CPMAHudSpecs::load()
 {
   wxString hudspecs = Prefs::get().hudspecs;
-  wxString fpath; // full hudspecs filepath
+  if( hudspecs.empty() )
+    hudspecs = wxT("cpma/hudspecs.dat");
+  
   m_items.clear();
 
-  if( hudspecs.empty() )
+  char *buf;
+  size_t size;
+  if( !PakManager::get().load( &buf, hudspecs, PM_SEARCH_APPFILE, &size ) )
   {
-    // TODO make this use PakManager. we only have one hudspecs now, no longer several.
-    // but user can still specify one himself
-
-    // pick default!
-
-    // enumerate one
-    wxArrayString files;
-    size_t count = wxDir::GetAllFiles(wxStandardPaths::Get().GetDataDir() + wxT("/data/cpma/hudspecs/"), &files, wxT("*.dat"), GETALLFILES_FLAGS);
-    if( wxDir::Exists( wxStandardPaths::Get().GetUserDataDir() + wxT("/data/cpma/hudspecs/") ) )
-      count += wxDir::GetAllFiles(wxStandardPaths::Get().GetUserDataDir() + wxT("/data/cpma/hudspecs/"), &files, wxT("*.dat"), GETALLFILES_FLAGS);
-    if( count == 1 )
-      fpath = files[0];
-    else if( count > 1 )
-    {
-      fpath = wxT("");
-      wxString fname;
-      wxString curmax = wxT("0");
-      size_t pos;
-      for( unsigned int i=0; i < files.size(); ++i )
-      {
-        pos = files[i].find_last_of(wxT("\\/"));
-        fname = files[i].substr(pos+1, files[i].length() - pos - 1);
-        if( curmax.CmpNoCase(fname) < 0 )
-        {
-          curmax = fname;
-          fpath = files[i];
-        }
-      }
-    }
-    if( fpath.empty() )
-    {
-      wxLogError( _("Cannot find any hudspecs file. Try re-installing and if this doesn't fix it contact the author.") );
-      return false;
-    }
-  }
-  else 
-  {
-    fpath = wxStandardPaths::Get().GetDataDir() + wxT("/data/cpma/hudspecs/") + hudspecs;
-    
-    if( !wxFile::Exists( fpath.c_str() ) )
-    {
-      fpath = wxStandardPaths::Get().GetUserDataDir() + wxT("/data/cpma/hudspecs/") + hudspecs;
-      if( !wxFile::Exists( fpath.c_str() ) )
-      {
-        wxLogError( _("Cannot find `%s' which you probably set manually in your configfile (hudspecs). Make sure it only contains the filename (e.g. '143.dat')."), fpath.c_str() );
-        return false;
-      }
-    }
-  }
-  
-  wxLogDebug( wxT("Loading hudspecs: ") + fpath );
-  wxFileInputStream fis( fpath );
-  
-  if (!fis.Ok())
+    wxLogError(_("Couldn't find/load hudspecs file: %s"), hudspecs.c_str());
     return false;
-  wxTextInputStream tis(fis);
+  }
+  wxStringInputStream sis( wxString(buf, wxConvUTF8, size) );
+  
+  
+  wxTextInputStream tis(sis);
   wxString line;
   size_t pos;
   wxString name; // name
@@ -84,7 +40,7 @@ bool CPMAHudSpecs::load()
   wxString arg; // optionally an argument (if a '=' is found)
   CPMAElement *hi = 0;
   wxString desc = wxT(""); // desc which is written as _desc=... on a single line
-  while(!fis.Eof())
+  while(!sis.Eof())
   {
     line = tis.ReadLine();
     wxTrim(line);
@@ -107,7 +63,7 @@ bool CPMAHudSpecs::load()
       }
       else
       {
-        wxLogWarning( _("Found invalid element in hudspecs file (`%s'): no previous item found that specifies the options for `%s', ignoring."), fpath.c_str(), line.c_str());
+        wxLogError( wxT("Found invalid element in hudspecs file: no previous item found that specifies the options for `%s', ignoring."), name.c_str());
       }
       continue;
     }
@@ -179,7 +135,7 @@ bool CPMAHudSpecs::load()
       }
       else if( key.CmpNoCase(wxT("icon"))==0 ) icon = arg;
       else
-        wxLogError( wxT("Found unknown option `") + key + wxT("' for element `") + name + wxT("' in hudspec file (`") + fpath + wxT("'), was ignored.") );
+        wxLogError( wxT("Found unknown option `") + key + wxT("' for element `") + name + wxT("' in hudspec file, was ignored.") );
     }
     // NOTE: that items with HIF_NODEFAULT will still be stored here. but we won't add them upon File->New
     wxLogDebug( wxT("adding: ") + name );

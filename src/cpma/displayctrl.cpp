@@ -3,6 +3,7 @@
 #include "../common.h"
 #include "../pakmanager.h"
 #include "../model.h"
+#include "../hudfilebase.h"
 
 
 void CPMADisplayCtrl::init()
@@ -104,6 +105,12 @@ void CPMADisplayCtrl::render()
           glVertex2i(x, y);
       glEnd();
       glEnable(GL_TEXTURE_2D);
+    }
+    // draw itemz0r
+    const elements_type& els = wxGetApp().hudfile()->elements();
+    for( cit_elements cit  = els.begin(); cit != els.end(); ++cit )
+    {
+      (*cit)->render();
     }
   }
 

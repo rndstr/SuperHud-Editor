@@ -78,6 +78,11 @@ class Color4
       b = col.Blue()/255.f;
     }
 
+    void set(const wxString& str )
+    {
+      from_string(str);
+    }
+
     void set_a100( unsigned char _a_percent ) { a = (_a_percent>100 ? 1.f:_a_percent/100.f); }
 
     void glBind() const

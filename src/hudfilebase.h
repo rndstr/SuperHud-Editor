@@ -52,6 +52,8 @@ class HudFileBase
 
     void write_element( wxTextOutputStream& stream, const ElementBase& el );
 
+    const elements_type& elements() const { return m_els; }
+
   protected:
     ElementBase*        find_element( const wxString& name );
 

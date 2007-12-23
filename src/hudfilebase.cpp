@@ -1,6 +1,7 @@
 #include "hudfilebase.h"
 #include "mainframe.h"
 #include "elementsctrlbase.h"
+#include "displayctrlbase.h"
 
 #include <wx/txtstrm.h>
 #include <wx/wfstream.h>
@@ -25,6 +26,7 @@ void HudFileBase::set_modified( bool modified /*= true*/ )
   {
     m_modified = modified;
     wxGetApp().mainframe()->update_title();
+    if( modified ) wxGetApp().mainframe()->displayctrl()->Refresh();
   }
 }
 int HudFileBase::OnOpen()

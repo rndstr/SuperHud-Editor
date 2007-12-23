@@ -65,6 +65,9 @@ class CPMAElement : public ElementBase
 
     virtual void  write_properties( wxTextOutputStream& stream ) const;
     virtual bool  parse_property( const wxString& cmd, wxString args );
+    virtual void render() const;
+
+    bool        iget_has(int what) const;
 
     int         iget_time() const;
     void        set_time( int time ) { m_time = time; }
@@ -117,6 +120,19 @@ class CPMAElement : public ElementBase
     bool        fill() const { return (m_has & E_HAS_FILL) != 0; }
     bool        iget_fill() const;
 
+    wxString    iget_image() const;
+    void        set_image( const wxString& image ) { m_image = image; }
+    wxString    image() const { return m_image; }
+    wxString    iget_model() const;
+    void        set_model( const wxString& model ) { m_model = model; }
+    wxString    model() const { return m_model; }
+    wxString    iget_skin() const;
+    void        set_skin( const wxString& skin ) { m_skin = skin; }
+    wxString    skin() const { return m_skin; }
+
+    bool        usemodel() const { return m_usemodel; }
+    void        set_usemodel( bool um = true ) { m_usemodel = um; }
+
   protected:
     wxString      m_desc;
     int           m_type ; ///< eElementType    
@@ -150,6 +166,10 @@ class CPMAElement : public ElementBase
 
     /// the model to display, only if type == HIT_ICON|HIT_USERICON|HIT_TEXT
     wxString    m_model; ///< if this is set, m_image contains skinpath!
+
+    wxString    m_skin; ///< will finally go to m_image
+
+    bool        m_usemodel; ///< for prefs dialog whether use model is selected
 
     float       m_offset_z;
     float       m_offset_x;

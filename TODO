@@ -1,6 +1,6 @@
 % move the enable/disable element buttons to the ElementsCtrlBase panel
 ? if hud is modified, SwitchGame behaves wrongly.. launches 2 instances
-% make CPMAHudSpecs::load use PakManagerBase
++ add second background image for 16:10
 
 [UNIX] the logfile is written as relative path, this will go into wrong place definitely
 [UNIX] disable the webupdater to actually update something.. just tell that there is a new version

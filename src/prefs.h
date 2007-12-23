@@ -17,6 +17,9 @@ class Prefs
     /// @arg from_prefs_dialog Whether we are coming from the preferences dialog (and thus only saving change that can be changed there)
     void save( bool from_prefs_dialog = false );
 
+    void set_aspectratio( const wxString& ar );
+    double get_aspectratio() const { return aspectratiod; }
+
   // settings
   // NOARCHIVE = we don't write it.. only read
   public:
@@ -25,11 +28,17 @@ class Prefs
     wxString  perspective;
     bool      app_maximized;
     int       app_width, app_height;
-    wxString  aspectratio; ///< human readable '4:3', '16:9'. this will be read/written
-    double    aspectratiod; ///< use this for calculations, will be updated after read
+    
     bool      grid;
     int       grid_x, grid_y;
     Color4    grid_color;
+    bool      helper;
+    Color4    helper_border;
+    Color4    helper_fill;
+    Color4    helper_border_selected;
+    Color4    helper_fill_selected;
+    
+
     /// possible values 'q4max' or 'cpma'
     wxString game;
 
@@ -55,6 +64,10 @@ class Prefs
     // -- saving
     bool save_writedisabled; ///< whether we write the disabled elements (commented out ofc)
     bool save_backup; ///< whether to create backup files upon saving
+
+  private:
+    wxString  aspectratio; ///< human readable '4:3', '16:9'. this will be read/written
+    double    aspectratiod; ///< use this for calculations, will be updated after read
 
   // singleton
   public:

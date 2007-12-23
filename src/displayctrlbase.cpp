@@ -6,6 +6,20 @@ BEGIN_EVENT_TABLE(DisplayCtrlBase, GLCanvasBase)
   EVT_IDLE(DisplayCtrlBase::OnIdle)
 END_EVENT_TABLE()
 
+void DisplayCtrlBase::draw_rect( const wxRect& r, bool texcoords /*=false*/ )
+{
+glBegin( GL_QUADS );
+  if( texcoords) glTexCoord2i(0,1);
+  glVertex2i( r.GetLeft(), r.GetBottom()+1 );
+  if( texcoords) glTexCoord2i(1,1);
+  glVertex2i( r.GetRight()+1, r.GetBottom()+1 );
+  if( texcoords) glTexCoord2i(1,0);
+  glVertex2i( r.GetRight()+1, r.GetTop() );
+  if( texcoords) glTexCoord2i(0,0);
+  glVertex2i( r.GetLeft(), r.GetTop()   );
+glEnd();
+}
+
 void DisplayCtrlBase::prepare2d()
 {
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black Background
@@ -20,7 +34,7 @@ void DisplayCtrlBase::prepare2d()
   double w = (double)GetSize().x;
   double h = (double)GetSize().y;
   GLdouble hudw = width(), hudh = height();
-  double aspectcorrect = (w/h)/Prefs::get().aspectratiod;
+  double aspectcorrect = (w/h)/Prefs::get().get_aspectratio();
   double empty; // how much space left/right or bottom/top has to be empty
 
   // topleft is 0,0

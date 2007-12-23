@@ -4,6 +4,7 @@
 #include <wx/wizard.h>
 
 #include <wx/textctrl.h>
+#include <wx/combobox.h>
 class GameDirPage : public wxWizardPageSimple
 {
 public:
@@ -17,8 +18,18 @@ protected:
   void OnBtnSelectGameDir( wxCommandEvent& );
 
 private:
-  wxTextCtrl *m_gamedir;
+  wxTextCtrl    *m_gamedir;
   DECLARE_EVENT_TABLE()
+};
+
+class DisplayPage : public wxWizardPageSimple
+{
+  public:
+    DisplayPage( wxWizard *parent );
+
+    wxString aspectratio() const;
+  private:
+    wxComboBox  *m_aspectratio;
 };
 
 class SetupWizard : public wxWizard
@@ -29,10 +40,12 @@ class SetupWizard : public wxWizard
     wxWizardPage *GetFirstPage() const { return m_two; }
 
     wxString    gamedir() const { return m_two->gamedir(); }
+    wxString    aspectratio() const { return m_three->aspectratio(); }
 
   private:
     wxWizardPageSimple  *m_one;
     GameDirPage         *m_two;
+    DisplayPage         *m_three;
 };
 
 

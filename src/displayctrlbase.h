@@ -19,6 +19,8 @@ class DisplayCtrlBase : public GLCanvasBase
 
     virtual void init() {}
     virtual void cleanup() {}
+
+    static void draw_rect( const wxRect& r, bool texcoords =false );
     
 
     // events
@@ -35,6 +37,7 @@ class DisplayCtrlBase : public GLCanvasBase
     /// sets up the opengl view to use 2D
     virtual void prepare2d();
     virtual void prepare3d();
+    
     wxPoint panel_to_hud( const wxPoint& p ) const;
 
     DECLARE_EVENT_TABLE()

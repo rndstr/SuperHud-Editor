@@ -1,6 +1,7 @@
 
 #include "element.h"
 #include "../hudfilebase.h"
+#include "../displayctrlbase.h"
 
 #include <wx/tokenzr.h>
 
@@ -25,8 +26,9 @@ ElementBase(name, desc, flags, has, enable),
     m_color(E_COLOR_DEFAULT),
     m_bgcolor(E_BGCOLOR_DEFAULT),
     m_fade(E_COLOR_DEFAULT), // ?
-    m_image(wxT("")),
-    m_model(wxT("")),
+    m_image(),
+    m_model(),
+    m_usemodel(false),
     m_offset_z(0.f), m_offset_x(0.f), m_offset_y(0.f),
     m_angles_pitch(0), m_angles_yaw(0), m_angles_roll(0), m_angles_panrot(0),
     m_text(text),
@@ -50,8 +52,9 @@ CPMAElement::CPMAElement( const hsitem_s& def ) :
     m_color(E_COLOR_DEFAULT),
     m_bgcolor(E_BGCOLOR_DEFAULT),
     m_fade(E_COLOR_DEFAULT), // ?
-    m_image(wxT("")),
-    m_model(wxT("")),
+    m_image(),
+    m_model(),
+    m_usemodel(false),
     m_offset_z(0.f), m_offset_x(0.f), m_offset_y(0.f),
     m_angles_pitch(0), m_angles_yaw(0), m_angles_roll(0), m_angles_panrot(0),
     m_text(def.text),
@@ -182,7 +185,7 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
   {
     m_model = args;
     if( m_type == E_T_ICON )
-    { // model implies draw3d (and there is no model drawn, see hudspecs/README.superhud)
+    { // model implies draw3d (and there is no model drawn, see data/cpma/docs/README.superhud)
       m_has |= E_HAS_DRAW3D;
       m_model = wxT("");
     }
@@ -270,6 +273,14 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
     lines.push_back(wxT("draw3d"));
   if( m_has & E_HAS_FADE )
     lines.push_back(wxT("fade ") + m_fade.to_string());
+  if( m_has & E_HAS_MODEL )
+  {
+    lines.push_back(wxT("model \"") + m_model + wxT("\""));
+    if( m_has & E_HAS_SKIN )
+      lines.push_back(wxT("image \"") + m_skin + wxT("\""));
+  }
+  else if( m_has & E_HAS_IMAGE )
+    lines.push_back(wxT("image \"") + m_image + wxT("\""));
   /*
   if( m_ismodel )
   {
@@ -472,4 +483,246 @@ Color4 CPMAElement::iget_fade() const
   return c;
 }
 
+bool CPMAElement::iget_has(int what) const
+{
+  bool has = (m_has & what) != 0;
+  if( !has )
+  {
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, has ));
+    has = (parent != 0);
+  }
+  return has;
+}
 
+wxString CPMAElement::iget_image() const
+{
+  wxString img = m_image;
+  if( !(m_has & E_HAS_IMAGE) )
+  {
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_IMAGE ));
+    if( parent == 0 ) img = wxEmptyString;
+    else img = parent->iget_image();
+  }
+  return img;
+}
+wxString CPMAElement::iget_model() const
+{
+  wxString m = m_model;
+  if( !(m_has & E_HAS_MODEL) )
+  {
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_MODEL ));
+    if( parent == 0 ) m = wxEmptyString;
+    else m = parent->iget_model();
+  }
+  return m;
+}
+wxString CPMAElement::iget_skin() const
+{
+  wxString s = m_skin;
+  if( !(m_has & E_HAS_SKIN) )
+  {
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_SKIN ));
+    if( parent == 0 ) s = wxEmptyString;
+    else s = parent->iget_skin();
+  }
+  return s;
+}
+
+void CPMAElement::render() const
+{
+  bool hasownbg = true;
+
+  switch( m_type )
+  {
+  case E_T_BAR:
+    {
+      Color4 color =  iget_color();
+      color.glBind();
+      if( iget_doublebar() )
+      {
+        wxRect top(m_rect), bottom(m_rect);
+        top.height = top.height/2-2;
+        bottom.height = top.height;
+        bottom.y += bottom.height+4;
+        DisplayCtrlBase::draw_rect(top);
+        DisplayCtrlBase::draw_rect(top);(bottom);
+      }
+      else
+        DisplayCtrlBase::draw_rect(m_rect);
+    }
+    break;
+
+  case E_T_USERICON:
+    { // COLOR_T && FILL = border around ...
+      /*
+      int texid = hi->get_image_texid();
+      bool fill = hi->get_fill();
+      bool hasimage = (!hi->get_image().empty() && !hi->m_ismodel);
+      Color4 bgcolor = hi->get_bgcolor();
+      Color4 color = hi->get_color();
+      if( color.is_special() )
+      {
+        bgcolor.set_type( color.get_type() );
+        color.set_a1( bgcolor.a1() );
+
+
+      }
+
+      if( fill && bgcolor.a1() != 0.f )
+      {
+        bgcolor.glBind();
+        render_rect(r);
+      }
+      if( (!fill || bgcolor.a1() == 0.f) &&
+          (!hasimage || color.a1() == 0.f) )
+      {
+        render_helper_bg( hi, r );
+      }
+      if( hasimage )
+      {
+        glEnable( GL_TEXTURE_2D );
+        color.glBind();
+        glBindTexture( GL_TEXTURE_2D, (texid > 0 ? texid : m_default_texid) );
+        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        render_rect( r, true );
+        glDisable( GL_TEXTURE_2D );
+      }
+      else if( hi->m_ismodel && m_model_texid > 0)
+      {
+        glEnable( GL_TEXTURE_2D );
+        color.glBind();
+        glBindTexture( GL_TEXTURE_2D, m_model_texid );
+        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        render_rect( r, true );
+        glDisable( GL_TEXTURE_2D );
+      }
+      */
+    }
+    break;
+
+  case E_T_ICON:
+    {
+      /*
+      Color4 bgcolor = hi->get_bgcolor();
+      Color4 color = hi->get_color();
+      if( color.is_special() )
+      {
+        bgcolor.set_type( color.get_type() );
+        color = HI_DEFAULTCOLOR;
+      }
+      color.set_a1(1.f); // NB for eg StatusBar_ArmorIcon the color would be completely discarded.
+
+      if( hi->get_fill() )
+      {
+        bgcolor.glBind();
+        render_rect(r);
+      }
+      else
+        render_helper_bg( hi, r );
+ 
+      if( !hi->m_icon.empty() && hi->m_texid > 0 )
+      {
+        glEnable( GL_TEXTURE_2D );
+        color.glBind();
+        glBindTexture( GL_TEXTURE_2D, hi->m_texid );
+        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        render_rect( r, true );
+        glDisable( GL_TEXTURE_2D );
+      }
+      */
+    }
+    break;
+
+
+  case E_T_TEXT:
+    { // COLOR_T && FILL = border around ...
+      /*
+      int sx, sy;
+      wxString text = m_text;
+      bool monospace = iget_monospace();
+      fonts_t::const_iterator fit = m_fonts.find( hi->get_font() );
+      wxRect rr(r);
+      Color4 bgcolor = hi->get_bgcolor();
+      Color4 color = hi->get_color();
+      if( color.is_special() )
+      {
+        bgcolor.set_type( color.get_type() );
+        color = HI_DEFAULTCOLOR;
+      }
+
+      hi->get_fontsize( &sx, &sy );
+      
+      if( !hi->get_fill() )
+      {
+        
+        int w = (fit == m_fonts.end() ? 0 : fit->second->get_width(sx, text, monospace));
+        switch( hi->get_textalign() )
+        {
+          case 'C':
+            rr.x = rr.x + (rr.width - w)/2 ;
+            break;
+          case 'R':
+            rr.x = rr.x + rr.width - w;
+            break;
+        }
+        rr.width = w;
+      }
+
+      if( rr.width && rr.height && bgcolor.a1() != 0.f )
+      {
+        bgcolor.glBind();
+        render_rect(rr);
+      }
+      else
+        render_helper_bg( hi, r );
+
+      if( fit != m_fonts.end() && !text.empty())
+      {
+        color.glBind();
+        switch( hi->get_fontsizetype() )
+        {
+        case HIFST_POINT:
+          fit->second->print( dc, r, sx, text, monospace, hi->get_textalign() );
+          break;
+
+        case HIFST_COORD:
+          fit->second->print( dc, r, sx, sy, text, monospace, hi->get_textalign() );
+          break;
+        }
+      }
+      */
+    }
+    break;
+  }
+
+  // -- draw helper outline
+  if( Prefs::get().helper )
+  {
+    if( false /*is_selected() && */ )
+    {
+      Prefs::get().helper_fill_selected.glBind();
+      DisplayCtrlBase::draw_rect(m_rect);
+
+      Prefs::get().helper_border_selected.glBind();
+    glBegin( GL_LINE_LOOP );
+      glVertex2i( m_rect.GetLeft(), m_rect.GetBottom()+1 );
+      glVertex2i( m_rect.GetRight(), m_rect.GetBottom()+1 );
+      glVertex2i( m_rect.GetRight(), m_rect.GetTop()+1 );
+      glVertex2i( m_rect.GetLeft(), m_rect.GetTop()+1 );
+    glEnd();
+    }
+    else
+    {
+      Prefs::get().helper_fill.glBind();
+      DisplayCtrlBase::draw_rect(m_rect);
+
+      Prefs::get().helper_border.glBind();
+    glBegin( GL_LINE_LOOP );
+      glVertex2i( m_rect.GetLeft(), m_rect.GetBottom()+1 );
+      glVertex2i( m_rect.GetRight(), m_rect.GetBottom()+1 );
+      glVertex2i( m_rect.GetRight(), m_rect.GetTop()+1 );
+      glVertex2i( m_rect.GetLeft(), m_rect.GetTop()+1 );
+    glEnd();
+    }
+  }
+}

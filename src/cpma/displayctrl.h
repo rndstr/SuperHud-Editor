@@ -18,8 +18,10 @@ class CPMADisplayCtrl : public DisplayCtrlBase
     void load_background();
     void OnIdle( wxIdleEvent& );
 
-  protected:
     void render();
+
+  protected:
+    
     int width() const { return CPMADisplayCtrl::WIDTH; }
     int height() const { return CPMADisplayCtrl::HEIGHT; }
 

@@ -10,8 +10,10 @@ class GLCanvasBase : public wxGLCanvas
     GLCanvasBase( wxWindow* parent );
     void OnPaint( wxPaintEvent& ev );
 
-  protected:
     virtual void render() {}
+
+  protected:
+    
 
   protected:
     DECLARE_EVENT_TABLE()

@@ -32,6 +32,7 @@ class MainFrame : public wxFrame
 
     ElementsCtrlBase*   elementsctrl() { return m_elementsctrl; }
     PropertiesNotebookBase* propertiesnotebook() { return m_propertiesnotebook; }
+    DisplayCtrlBase*    displayctrl() { return m_displayctrl; }
     wxTextCtrl*         configpreview() { return m_configpreview; }
     wxStatusBar*        statusbar() { return m_statusbar; }
     Model*              model() { return m_model; }

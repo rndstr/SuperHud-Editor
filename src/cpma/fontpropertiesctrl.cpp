@@ -250,7 +250,7 @@ void FontPropertiesCtrl::update_layout()
   property_defines( wxT("fontsizetype"), (el->has() & E_HAS_FONTSIZE) != 0 );
 
   int type = el->iget_fontsizetype();
-  SetPropertyValue( wxT("fontsizetype"), fontsizetype_element_to_ui(type) );
+  SetPropertyValue( wxT("fontsizetype"), FontPropertiesCtrl::fontsizetype_element_to_ui(type) );
   // remove propertyrows and re-add those we are looking for
   wxPGId id = GetPropertyByName(wxT("fontsize_pt"));
   if( id ) DeleteProperty(wxT("fontsize_pt"));
@@ -261,7 +261,7 @@ void FontPropertiesCtrl::update_layout()
   if( type == E_FST_POINT )
   {
     Append( new wxIntProperty(_("Size"), wxT("fontsize_pt"), el->iget_fontsizept()) );
-    HideProperty(wxT("fontsize_pt"));
+//    HideProperty(wxT("fontsize_pt"));
     property_defines( wxT("fontsize_pt"), (el->has() & E_HAS_FONTSIZE) != 0 );
   }
   else if( type == E_FST_COORD )

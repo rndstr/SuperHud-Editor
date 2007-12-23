@@ -75,7 +75,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_view_menu = new wxMenu;
   m_view_menu->Append( ID_MENU_VIEW_DEFAULTPERSPECTIVE, _("&Reset View") );
   wxMenu *view_panes_submenu = new wxMenu;
-  view_panes_submenu->AppendCheckItem( ID_MENU_VIEW_CONFIGPREVIEW, _("Config Preview\tCtrl+P"), _("Display the config preview panel") );
+  view_panes_submenu->AppendCheckItem( ID_MENU_VIEW_CONFIGPREVIEW, _("Config Preview\tCtrl+C"), _("Display the config preview panel") );
   view_panes_submenu->AppendCheckItem( ID_MENU_VIEW_TOOLBAR_FILE, _("Toolbar File"), _("Display the file toolbar") );
   m_view_menu->AppendSubMenu(view_panes_submenu, _("Panes"), _("Select which panes you would like to be visible or not"));
   m_view_menu->AppendSeparator();
@@ -174,7 +174,10 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   {
     SetupWizard wizard(this);
     if( wizard.RunWizard(wizard.GetFirstPage()) )
+    {
       wxGetApp().factory()->set_dir_game(wizard.gamedir());
+      Prefs::get().set_aspectratio( wizard.aspectratio() );
+    }
   }
 }
 

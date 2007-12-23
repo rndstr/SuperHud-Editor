@@ -3,6 +3,7 @@
 #include "visibilitypropertiesctrl.h"
 #include "fontpropertiesctrl.h"
 #include "colorpropertiesctrl.h"
+#include "imagepropertiesctrl.h"
 #include "miscpropertiesctrl.h"
 
 #include "element.h"
@@ -18,10 +19,12 @@ CPMAPropertiesNotebook::CPMAPropertiesNotebook( wxWindow *parent ) :
   m_vis = new VisibilityPropertiesCtrl(this);
   m_font = new FontPropertiesCtrl(this);
   m_color = new ColorPropertiesCtrl(this);
+  m_image = new ImagePropertiesCtrl(this);
   m_misc = new MiscPropertiesCtrl(this);
   AddPage( m_vis, _("Visibility") );
   AddPage( m_font, _("Font") );
   AddPage( m_color, _("Color") );
+  AddPage( m_image, _("Image") );
   AddPage( m_misc, _("Misc") );
 }
 
@@ -36,6 +39,7 @@ void CPMAPropertiesNotebook::update_from_element( const elements_type& els )
     m_vis->CollapseAll();
     m_font->CollapseAll();
     m_color->CollapseAll();
+    m_image->CollapseAll();
     m_misc->CollapseAll();
     m_vis->GetToolBar()->ToggleTool( ID_BTN_ELEMENT_ENABLE, false );
     m_vis->GetToolBar()->ToggleTool( ID_BTN_ELEMENT_DISABLE, false );
@@ -48,15 +52,20 @@ void CPMAPropertiesNotebook::update_from_element( const elements_type& els )
     m_vis->ExpandAll();
     m_font->ExpandAll();
     m_color->ExpandAll();
+    m_image->ExpandAll();
     m_misc->ExpandAll();
     m_curel = els.front();
+
     m_vis->from_element(m_curel);
     m_font->from_element(m_curel);
     m_color->from_element(m_curel);
+    m_image->from_element(m_curel);
     m_misc->from_element(m_curel);
+
     m_vis->ClearModifiedStatus();
     m_font->ClearModifiedStatus();
     m_color->ClearModifiedStatus();
+    m_image->ClearModifiedStatus();
     m_misc->ClearModifiedStatus();
   }
 }

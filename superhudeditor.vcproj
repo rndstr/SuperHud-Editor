@@ -484,6 +484,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\cpma\imagepropertiesctrl.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\cpma\imagepropertiesctrl.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\cpma\miscpropertiesctrl.cpp"
 					>
 				</File>

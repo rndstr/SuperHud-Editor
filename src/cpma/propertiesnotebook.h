@@ -8,6 +8,7 @@ class VisibilityPropertiesCtrl;
 class FontPropertiesCtrl;
 class ColorPropertiesCtrl;
 class MiscPropertiesCtrl;
+class ImagePropertiesCtrl;
 
 class CPMAPropertiesNotebook : public PropertiesNotebookBase
 {
@@ -20,6 +21,7 @@ class CPMAPropertiesNotebook : public PropertiesNotebookBase
     VisibilityPropertiesCtrl  *m_vis;
     FontPropertiesCtrl      *m_font;
     ColorPropertiesCtrl     *m_color;
+    ImagePropertiesCtrl     *m_image;
     MiscPropertiesCtrl        *m_misc;
 
 };

@@ -85,6 +85,8 @@ class ElementBase
     virtual bool    parse_property( const wxString& cmd, wxString args );
     virtual void    write_properties( wxTextOutputStream& stream ) const;
 
+    virtual void render() const {};
+
     // get&set
     const wxString& name() const { return m_name; }
     int             flags() const { return m_flags; }

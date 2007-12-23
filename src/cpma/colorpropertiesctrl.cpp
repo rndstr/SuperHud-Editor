@@ -25,7 +25,9 @@ ColorPropertiesCtrl::ColorPropertiesCtrl( wxWindow *parent ) :
   Append( new wxPropertyCategory(_("Foreground")) );
   Append( new wxBoolProperty( _("Use"), wxT("color-use"), false) );
   SetPropertyAttribute(wxT("color-use"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
-  Append( new wxColourProperty(_("Color"), wxT("color")) );
+  //Append( new wxColourProperty(_("Color"), wxT("color")) );
+  m_color = new wxColourProperty(_("Color"), wxT("color"));
+  Append( m_color );
   SetPropertyHelpString( wxT("color"), _("Sets the foreground color for the element.") );
   Append( new wxIntProperty(_("Opaqueness"), wxT("color-alpha"), -1) );
 //  SetPropertyValidator( wxT("color-alpha"), alpha_validator );
@@ -81,8 +83,9 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   if( name == wxT("color-use") )
   {
     el->add_has( E_HAS_COLOR, val.GetBool() );
+    // use own color (not parental)
     Color4 c = el->iget_color();
-//    SetPropertyValue( wxT("color"), c.to_wxColour() );
+    SetPropertyValue( wxT("color"), c.to_wxColour() );
     SetPropertyValue( wxT("color-alpha"), c.a100() );
   }
   else if( name == wxT("color") || name == wxT("color-alpha") )
@@ -95,9 +98,15 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
     }
     if( name == wxT("color") )
     {
-      wxColour* col = static_cast<wxColour*>(val.GetWxObjectPtr());
-      wxASSERT( col );
-      el->set_color(*col);
+      wxLogDebug(GetPropertyValueType(name));
+      //if ( GetPropertyValueType(name) == wxT("wxColour") )
+      {
+        wxColourPropertyValue* v1 = &wxColourPropertyValueFromVariant(val);
+        int i=0;
+        //wxColourVariantData *cpv = wxGetVariantCast(val,wxColourVariantData);
+        //wxColourPropertyValue* pcolval = wxDynamicCast(GetPropertyValueAsWxObjectPtr(name),wxColourPropertyValue);
+        //el->set_color(cpv->);
+      }
     }
     else if( name == wxT("color-alpha") )
       el->set_color_a100( val.GetInteger() );
@@ -127,7 +136,7 @@ void ColorPropertiesCtrl::from_element( ElementBase *el )
   CPMAElement *cel = static_cast<CPMAElement*>(el);
 
   SetPropertyValue( wxT("color-use"), (cel->has() & E_HAS_COLOR) != 0 );
-//  SetPropertyValue( wxT("color"), cel->iget_color().to_wxColour() );
+  SetPropertyValue( wxT("color"), cel->iget_color().to_wxColour() );
   SetPropertyValue( wxT("color-alpha"), cel->iget_color().a100() );
 
   SetPropertyValue( wxT("bgcolor-use"), (cel->has() & E_HAS_BGCOLOR) != 0 );
