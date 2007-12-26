@@ -30,7 +30,7 @@ ElementBase(name, desc, flags, has, enable),
     m_model(),
     m_usemodel(false),
     m_offset_z(0.f), m_offset_x(0.f), m_offset_y(0.f),
-    m_angles_pitch(0), m_angles_yaw(0), m_angles_roll(0), m_angles_panrot(0),
+    m_angle_pitch(0), m_angle_yaw(0), m_angle_roll(0), m_angle_panrot(0),
     m_text(text),
     m_icon(icon),
     //m_texid(HI_IMG_NOTLOADED),
@@ -56,7 +56,7 @@ CPMAElement::CPMAElement( const hsitem_s& def ) :
     m_model(),
     m_usemodel(false),
     m_offset_z(0.f), m_offset_x(0.f), m_offset_y(0.f),
-    m_angles_pitch(0), m_angles_yaw(0), m_angles_roll(0), m_angles_panrot(0),
+    m_angle_pitch(0), m_angle_yaw(0), m_angle_roll(0), m_angle_panrot(0),
     m_text(def.text),
     m_icon(def.icon),
     //m_texid(HI_IMG_NOTLOADED),
@@ -194,6 +194,7 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
       wxTrim(m_model, wxT("\"'"));
       m_has |= E_HAS_MODEL;
     }
+    set_usemodel();
   }
   else if( cmd.CmpNoCase(wxT("offset"))==0 )
   {
@@ -224,10 +225,10 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
     }
     else if( targ.CountTokens() == 1 )
       sscanf(targ.GetNextToken().mb_str(), "%f", &panrot); // optional
-    m_angles_pitch = static_cast<int>(pitch);
-    m_angles_yaw = static_cast<int>(yaw);
-    m_angles_roll = static_cast<int>(roll);
-    m_angles_panrot = static_cast<int>(panrot);
+    m_angle_pitch = static_cast<int>(pitch);
+    m_angle_yaw = static_cast<int>(yaw);
+    m_angle_roll = static_cast<int>(roll);
+    m_angle_panrot = static_cast<int>(panrot);
 
       
     m_has |= E_HAS_ANGLES;
@@ -273,7 +274,7 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
     lines.push_back(wxT("draw3d"));
   if( m_has & E_HAS_FADE )
     lines.push_back(wxT("fade ") + m_fade.to_string());
-  if( m_has & E_HAS_MODEL )
+  if( usemodel() ) //m_has & E_HAS_MODEL )
   {
     lines.push_back(wxT("model \"") + m_model + wxT("\""));
     if( m_has & E_HAS_SKIN )
@@ -527,7 +528,30 @@ wxString CPMAElement::iget_skin() const
   }
   return s;
 }
-
+int CPMAElement::iget_angle(int which) const
+{
+  int d = angle(which);
+  if( !(m_has & E_HAS_ANGLES) )
+  {
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_ANGLES ));
+    if( parent == 0 ) d = 0;
+    else d = parent->iget_angle(which);
+  }
+  return d;
+}
+int CPMAElement::angle(int which) const
+{
+  switch(which)
+  {
+  case E_ANGLE_YAW: return m_angle_yaw;
+  case E_ANGLE_PITCH: return m_angle_pitch;
+  case E_ANGLE_ROLL: return m_angle_roll;
+  case E_ANGLE_PAN: return m_angle_pan;
+  default:
+    break;
+  }
+  return 0;
+}
 void CPMAElement::render() const
 {
   bool hasownbg = true;

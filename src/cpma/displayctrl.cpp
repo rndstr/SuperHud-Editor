@@ -24,34 +24,29 @@ void CPMADisplayCtrl::load_background()
 
 void CPMADisplayCtrl::OnIdle( wxIdleEvent& )
 {// animation flickers
-  /*
   static wxLongLong last = 0;
   if( wxGetLocalTimeMillis() - last > 100 )
   {
     Refresh();
     last = wxGetLocalTimeMillis();
   }
-  */
 }
 
 void CPMADisplayCtrl::render()
 {
+  static int count = 0;
   if(!IsShown()) return;
-
-  wxGLCanvas::SetCurrent();
-  wxPaintDC(this);
-
-  wxLogDebug(wxT("render"));
+  wxLogDebug(wxT("CPMADisplayCtrl::render"));
 
   if( wxGetApp().mainframe()->model() )
   {
-    prepare3d();
-    
+    count += 10;
+    glLoadIdentity();
     glTranslatef(0.f, 0.f, -40.f);
-    glRotatef(30.f, 0.f, 1.f, 0.f);
+    glRotatef(30.f+count, 0.f, 1.f, 0.f);
     glClearColor(0.f, 0.f, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//    glRotatef( (GLfloat)count, 0.f, 1.f, 0.f );
+    
     glColor4f(1.f, 1.f, 1.f, 1.f);
     glDisable(GL_TEXTURE_2D);
     wxGetApp().mainframe()->model()->render();
@@ -73,8 +68,7 @@ void CPMADisplayCtrl::render()
   else
   {
 
-    prepare2d();
-  glClearColor(0.f, 0.f, 0.f, 1.f);
+    glClearColor(0.f, 0.f, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if( !m_background )
@@ -113,9 +107,6 @@ void CPMADisplayCtrl::render()
       (*cit)->render();
     }
   }
-
-  glFlush();
-  SwapBuffers();
 }
 
 void CPMADisplayCtrl::cleanup()

@@ -1,34 +1,92 @@
 #include "displayctrlbase.h"
 #include "common.h"
 
-BEGIN_EVENT_TABLE(DisplayCtrlBase, GLCanvasBase)
-  EVT_MOTION(DisplayCtrlBase::OnMotion)
+BEGIN_EVENT_TABLE(DisplayCtrlBase, wxGLCanvas)
   EVT_IDLE(DisplayCtrlBase::OnIdle)
+  EVT_SIZE(DisplayCtrlBase::OnSize)
+  EVT_ERASE_BACKGROUND(DisplayCtrlBase::OnEraseBackground)
+  EVT_MOUSE_EVENTS(DisplayCtrlBase::OnMouse)
+  EVT_PAINT(DisplayCtrlBase::OnPaint)
 END_EVENT_TABLE()
 
-void DisplayCtrlBase::draw_rect( const wxRect& r, bool texcoords /*=false*/ )
+
+DisplayCtrlBase::DisplayCtrlBase( wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) :
+    wxGLCanvas(parent, id, pos, size, style|wxFULL_REPAINT_ON_RESIZE),
+    m_background(0),
+    m_initialized(false)
 {
-glBegin( GL_QUADS );
-  if( texcoords) glTexCoord2i(0,1);
-  glVertex2i( r.GetLeft(), r.GetBottom()+1 );
-  if( texcoords) glTexCoord2i(1,1);
-  glVertex2i( r.GetRight()+1, r.GetBottom()+1 );
-  if( texcoords) glTexCoord2i(1,0);
-  glVertex2i( r.GetRight()+1, r.GetTop() );
-  if( texcoords) glTexCoord2i(0,0);
-  glVertex2i( r.GetLeft(), r.GetTop()   );
-glEnd();
+}
+
+DisplayCtrlBase::~DisplayCtrlBase()
+{
+}
+
+void DisplayCtrlBase::OnPaint( wxPaintEvent& )
+{
+  wxLogDebug(wxT("DisplayCtrlBase::OnPaint"));
+  // must always be here
+  wxPaintDC dc(this);
+
+#ifndef __WXMOTIF__
+  if (!GetContext()) return;
+#endif
+
+  SetCurrent();
+  if( !m_initialized )
+  {
+    reset_projection_mode();
+    m_initialized = true;
+  }
+
+  render();
+
+  glFlush();
+  SwapBuffers();
+}
+
+void DisplayCtrlBase::OnEraseBackground( wxEraseEvent& )
+{
+  // do nothing to avoid flashing on MSW
+}
+
+void DisplayCtrlBase::OnSize( wxSizeEvent& ev )
+{
+  // this is also necessary to update the context on some platforms
+  wxGLCanvas::OnSize(ev);
+  // Reset the OpenGL view aspect
+  reset_projection_mode();
+}
+
+void DisplayCtrlBase::OnIdle( wxIdleEvent& )
+{
+
+}
+
+void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
+{
+  wxPoint clientpos = DisplayCtrlBase::panel_to_hud(ev.GetPosition());
+  //wxPoint clientpos = ev.GetPosition();
+  wxGetApp().mainframe()->statusbar()->SetStatusText(wxString::Format(wxT("(%i,%i)"), clientpos.x, clientpos.y), SB_MOUSEPOS);
+}
+
+void DisplayCtrlBase::reset_projection_mode()
+{
+  if( wxGetApp().mainframe() &&  wxGetApp().mainframe()->model() )
+    prepare3d();
+  else
+    prepare2d();
+
 }
 
 void DisplayCtrlBase::prepare2d()
 {
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black Background
-    glEnable(GL_TEXTURE_2D);   // textures
-    glEnable(GL_COLOR_MATERIAL);
-    glEnable(GL_BLEND);
-    glDisable(GL_DEPTH_TEST);
-    glDisable( GL_CULL_FACE );
-    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_TEXTURE_2D);   // textures
+  glEnable(GL_COLOR_MATERIAL);
+  glEnable(GL_BLEND);
+  glDisable(GL_DEPTH_TEST);
+  glDisable( GL_CULL_FACE );
+  glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
   //
   double w = (double)GetSize().x;
@@ -122,9 +180,16 @@ wxPoint DisplayCtrlBase::panel_to_hud( const wxPoint& p ) const
 
 }
 
-void DisplayCtrlBase::OnMotion( wxMouseEvent& ev )
+void DisplayCtrlBase::draw_rect( const wxRect& r, bool texcoords /*=false*/ )
 {
-  wxPoint clientpos = DisplayCtrlBase::panel_to_hud(ev.GetPosition());
-  //wxPoint clientpos = ev.GetPosition();
-  wxGetApp().mainframe()->statusbar()->SetStatusText(wxString::Format(wxT("(%i,%i)"), clientpos.x, clientpos.y), SB_MOUSEPOS);
+glBegin( GL_QUADS );
+  if( texcoords) glTexCoord2i(0,1);
+  glVertex2i( r.GetLeft(), r.GetBottom()+1 );
+  if( texcoords) glTexCoord2i(1,1);
+  glVertex2i( r.GetRight()+1, r.GetBottom()+1 );
+  if( texcoords) glTexCoord2i(1,0);
+  glVertex2i( r.GetRight()+1, r.GetTop() );
+  if( texcoords) glTexCoord2i(0,0);
+  glVertex2i( r.GetLeft(), r.GetTop()   );
+glEnd();
 }

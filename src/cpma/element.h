@@ -29,6 +29,14 @@ typedef enum
   E_TEXTSTYLE_SHADOW = 1
 } eElementTextStyle;;
 
+enum
+{
+  E_ANGLES_PITCH,
+  E_ANGLES_YAW,
+  E_ANGLES_ROLL,
+  E_ANGLES_PAN
+}
+
 
 const int E_PROPERTIES_DEFAULT = E_HAS_NONE;
 
@@ -53,6 +61,17 @@ const int E_TEXTSTYLE_DEFAULT = E_TEXTSTYLE_NONE;
 const int E_TIME_DEFAULT = 0;
 /// @}
 
+
+class Property 
+{
+  public:
+    union
+    {
+      wxString  sval;
+      int       ival;
+      double    dval;
+    } m_value;
+};
 
 class CPMAElement : public ElementBase
 {
@@ -90,6 +109,10 @@ class CPMAElement : public ElementBase
     void        set_doublebar( bool doublebar = true ) { add_has( E_HAS_DOUBLEBAR, doublebar ); }
     bool        doublebar() const { return (m_has & E_HAS_DOUBLEBAR) != 0; }
     bool        iget_doublebar() const;
+
+    void        set_angle( int which, int val );
+    int         angle( int which ) const;
+    int         iget_angle( int which ) const;
 
     void        set_fontsizetype( int fst ) { m_fontsize_type = fst; }
     int         fontsizetype() const { return m_fontsize_type; }
@@ -175,10 +198,10 @@ class CPMAElement : public ElementBase
     float       m_offset_x;
     float       m_offset_y;
 
-    int         m_angles_pitch;
-    int         m_angles_yaw;
-    int         m_angles_roll;
-    int         m_angles_panrot;
+    int         m_angle_pitch;
+    int         m_angle_yaw;
+    int         m_angle_roll;
+    int         m_angle_panrot;
 
     // no longer stored, we just use E_HAS_name
     //bool        m_doublebar;

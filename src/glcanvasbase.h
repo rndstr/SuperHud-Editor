@@ -10,9 +10,11 @@ class GLCanvasBase : public wxGLCanvas
     GLCanvasBase( wxWindow* parent );
     void OnPaint( wxPaintEvent& ev );
 
+    virtual void initgl() {}
     virtual void render() {}
 
   protected:
+    bool    m_initialized;
     
 
   protected:

@@ -21,10 +21,9 @@ class ImagePropertiesCtrl : public CPMAPropertyGridBase
     static bool use_model( CPMAElement *el );
     void OnItemChanged( wxPropertyGridEvent& ev );
     void OnItemChanging( wxPropertyGridEvent& ev );
-    static wxString textalign_element_to_ui( const wxChar& ta );
-    static wxChar textalign_ui_to_element( const wxString& ta );
-    static int fontsizetype_ui_to_element( const wxString& fs );
-    static wxString fontsizetype_element_to_ui( int fst );
+    void append_picture_properties( CPMAElement *el =0 );
+    void append_model_properties( CPMAElement *el =0 );
+
 
 
     DECLARE_EVENT_TABLE()

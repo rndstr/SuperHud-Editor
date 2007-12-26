@@ -4,16 +4,15 @@
 #include "glcanvasbase.h"
 #include "texture.h"
 
-class DisplayCtrlBase : public GLCanvasBase
+class DisplayCtrlBase : public wxGLCanvas
 {
 
   public:
-    DisplayCtrlBase( wxWindow *parent ) :
-        GLCanvasBase(parent),
-          m_background(0)
-      //wxTextCtrl( parent, wxID_ANY, wxT(":k"), wxPoint(0,0), wxSize(100,100), wxNO_BORDER | wxTE_MULTILINE )
-    {
-    }
+    DisplayCtrlBase( wxWindow *parent, wxWindowID id = wxID_ANY,
+        const wxPoint& pos = wxDefaultPosition,
+        const wxSize& size = wxDefaultSize, long style = 0);
+    virtual ~DisplayCtrlBase();
+        
 
     
 
@@ -24,19 +23,32 @@ class DisplayCtrlBase : public GLCanvasBase
     
 
     // events
-    virtual void OnMotion( wxMouseEvent& );
-    virtual void OnIdle( wxIdleEvent& ) {}
+    
   protected:
+    bool      m_initialized;
     Texture   *m_background;
     wxRect    m_hudrect;
+
+    virtual void OnIdle( wxIdleEvent& );
+    void OnSize( wxSizeEvent& );
+    void OnEraseBackground( wxEraseEvent& );
+    void OnMouse( wxMouseEvent& );
+    void OnPaint( wxPaintEvent& );
+
+    virtual void render() {}
+    
 
     /// width of internal coordinate system
     virtual int width() const = 0;
     /// height of internal coordinate system
     virtual int height() const = 0;
+
+    void reset_projection_mode();
+
     /// sets up the opengl view to use 2D
-    virtual void prepare2d();
-    virtual void prepare3d();
+    void prepare2d();
+    /// sets up the opengl view to use 3D
+    void prepare3d();
     
     wxPoint panel_to_hud( const wxPoint& p ) const;
 

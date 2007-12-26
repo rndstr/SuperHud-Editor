@@ -21,13 +21,31 @@ ImagePropertiesCtrl::ImagePropertiesCtrl( wxWindow *parent ) :
   AddPage(_("Image"));
 
   Append( new wxBoolProperty(_("3D Model?"), wxT("use-model"), false) );
+  SetPropertyHelpString(wxT("use-model"), _("Can be any model in the game. Note that most Q3 models do not work properly if r_vertexlight is on.\n\nModels have file extension .md3"));
 
-  Append( new wxPropertyCategory(_("Picture"), wxT("cat-picture")) );
-  Append( new wxStringProperty(_("File"), wxT("image")) );
+  append_picture_properties();
+  append_model_properties();
 
+  /*
   Append( new wxPropertyCategory(_("Model"), wxT("cat-model")) );
   Append( new wxStringProperty(_("File"), wxT("model")) );
   Append( new wxStringProperty(_("Skin"), wxT("skin")) );
+  Append( new wxPropertyCategory(_("Rotation"), wxT("cat-rotation")) );
+  SetPropertyHelpString( wxT("cat-rotation"), _("Alters the display of MODEL. Note that most Q3 models do not work properly if r_vertexlight is on.") );
+  Append( new wxBoolProperty(_("Use"), wxT("use-rotation"), false) );
+  Append( new wxIntProperty(_("Pitch"), wxT("pitch"), 0) );
+  SetPropertyHelpString( wxT("pitch"), _("Rotation around axis pointing right (horizontal, X).") ); 
+  Append( new wxIntProperty(_("Yaw"), wxT("yaw"), 0) );
+  SetPropertyHelpString( wxT("yaw"), _("Rotation around axis pointing up axis (vertical, Y).") ); 
+  Append( new wxIntProperty(_("Roll"), wxT("roll"), 0) );
+  SetPropertyHelpString( wxT("roll"), _("Rotation around axis pointing ahead (Z).") ); 
+  Append( new wxIntProperty(_("Pan+/Rotate-"), wxT("pan"), 0) );
+  SetPropertyHelpString( wxT("pan"), _("Use a positive value for left/right panning, a negative value for continuous rotation.") ); 
+  Append( new wxPropertyCategory(_("Offset"), wxT("cat-offset")) );
+  SetPropertyHelpString( wxT("cat-offset"), _("Moves the model along the X/Y/Z axis.") );
+  Append( new wxIntProperty(wxT("X"), wxT("x"), 0) );
+  Append( new wxIntProperty(wxT("y"), wxT("y"), 0) );
+  Append( new wxIntProperty(wxT("z"), wxT("z"), 0) );
 
   /*
   static const wxChar* font_type[] = {wxEmptyString, wxT("cpma"), wxT("id"), wxT("idblock"), wxT("threewave"), (const wxChar*)0};
@@ -58,6 +76,10 @@ ImagePropertiesCtrl::ImagePropertiesCtrl( wxWindow *parent ) :
   Append( new wxEnumProperty(_("Type"), wxT("fontsizetype"), size_type) );
   */
 }
+
+
+
+
 
 void ImagePropertiesCtrl::OnItemChanging( wxPropertyGridEvent& ev )
 {
@@ -119,6 +141,40 @@ void ImagePropertiesCtrl::from_element( ElementBase *el )
   update_layout();
 }
 
+void ImagePropertiesCtrl::append_picture_properties( CPMAElement *el /*=0*/ )
+{
+  Append( new wxPropertyCategory(_("Picture"), wxT("cat-picture")) );
+
+  Append( new wxStringProperty(_("File"), wxT("image"), el ? el->iget_image() : wxEmptyString) );
+}
+
+void ImagePropertiesCtrl::append_model_properties( CPMAElement *el /*=0*/ )
+{
+  Append( new wxPropertyCategory(_("Model"), wxT("cat-model")) );
+
+  Append( new wxPropertyCategory(_("Model"), wxT("cat-model")) );
+  // if E_T_ICON then model is fix! why not write it readonly? :)
+  Append( new wxStringProperty(_("File"), wxT("model"), el ? el->iget_model() : wxEmptyString) );
+  Append( new wxStringProperty(_("Skin"), wxT("skin"), el ? el->iget_skin() : wxEmptyString) );
+  Append( new wxPropertyCategory(_("Rotation"), wxT("cat-rotation")) );
+  SetPropertyHelpString( wxT("cat-rotation"), _("Alters the display of MODEL. Note that most Q3 models do not work properly if r_vertexlight is on.") );
+  Append( new wxBoolProperty(_("Use"), wxT("use-rotation"), el ? (el->has() & E_HAS_ANGLES) != 0 : false) );
+  Append( new wxIntProperty(_("Pitch"), wxT("pitch"), el ? el->) );
+  SetPropertyHelpString( wxT("pitch"), _("Rotation around axis pointing right (horizontal, X).") ); 
+  Append( new wxIntProperty(_("Yaw"), wxT("yaw"), 0) );
+  SetPropertyHelpString( wxT("yaw"), _("Rotation around axis pointing up axis (vertical, Y).") ); 
+  Append( new wxIntProperty(_("Roll"), wxT("roll"), 0) );
+  SetPropertyHelpString( wxT("roll"), _("Rotation around axis pointing ahead (Z).") ); 
+  Append( new wxIntProperty(_("Pan+/Rotate-"), wxT("pan"), 0) );
+  SetPropertyHelpString( wxT("pan"), _("Use a positive value for left/right panning, a negative value for continuous rotation.") ); 
+  Append( new wxPropertyCategory(_("Offset"), wxT("cat-offset")) );
+  SetPropertyHelpString( wxT("cat-offset"), _("Moves the model along the X/Y/Z axis.") );
+  Append( new wxBoolProperty(_("Use"), wxT("use-offset"), false) );
+  Append( new wxIntProperty(wxT("X"), wxT("x"), 0) );
+  Append( new wxIntProperty(wxT("y"), wxT("y"), 0) );
+  Append( new wxIntProperty(wxT("z"), wxT("z"), 0) );
+}
+
 void ImagePropertiesCtrl::update_layout()
 {
   CPMAElement *el = current_element();
@@ -129,24 +185,44 @@ void ImagePropertiesCtrl::update_layout()
   if( id ) DeleteProperty(wxT("cat-picture"));
   id = GetPropertyByName(wxT("image"));
   if( id ) DeleteProperty(wxT("image"));
+
   id = GetPropertyByName(wxT("cat-model"));
   if( id ) DeleteProperty(wxT("cat-model"));
   id = GetPropertyByName(wxT("model"));
   if( id ) DeleteProperty(wxT("model"));
   id = GetPropertyByName(wxT("skin"));
   if( id ) DeleteProperty(wxT("skin"));
+  id = GetPropertyByName(wxT("cat-rotation"));
+  if( id ) DeleteProperty(wxT("cat-rotation"));
+  id = GetPropertyByName(wxT("use-rotation"));
+  if( id ) DeleteProperty(wxT("use-rotation"));
+  id = GetPropertyByName(wxT("pitch"));
+  if( id ) DeleteProperty(wxT("pitch"));
+  id = GetPropertyByName(wxT("yaw"));
+  if( id ) DeleteProperty(wxT("yaw"));
+  id = GetPropertyByName(wxT("roll"));
+  if( id ) DeleteProperty(wxT("roll"));
+  id = GetPropertyByName(wxT("pan"));
+  if( id ) DeleteProperty(wxT("pan"));
+  id = GetPropertyByName(wxT("cat-offset"));
+  if( id ) DeleteProperty(wxT("cat-offset"));
+  id = GetPropertyByName(wxT("x"));
+  if( id ) DeleteProperty(wxT("x"));
+  id = GetPropertyByName(wxT("y"));
+  if( id ) DeleteProperty(wxT("y"));
+  id = GetPropertyByName(wxT("z"));
+  if( id ) DeleteProperty(wxT("z"));
+
   if( el->usemodel() )
   {
-    Append( new wxPropertyCategory(_("Model"), wxT("cat-model")) );
-    Append( new wxStringProperty(_("File"), wxT("model"), el->iget_model()) );
-    Append( new wxStringProperty(_("Skin"), wxT("skin"), el->iget_skin()) );
+    
+    append_model_properties(el);
     property_defines( wxT("model"), (el->has() & E_HAS_MODEL) != 0 );
     property_defines( wxT("skin"), (el->has() & E_HAS_SKIN) != 0 );
   }
   else
   {
-    Append( new wxPropertyCategory(_("Picture"), wxT("cat-picture")) );
-    Append( new wxStringProperty(_("File"), wxT("image"), el->iget_image()) );
+    append_picture_properties(el);
     property_defines( wxT("image"), (el->has() & E_HAS_IMAGE) != 0 );
   }
   /*
