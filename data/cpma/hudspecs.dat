@@ -11,9 +11,9 @@ _desc=The first element in the hudfile MUST be "!DEFAULT", and every other eleme
 !DEFAULT=notuniq:drawnever:parent:enable:enablealways
 
 _desc=Empty elements that can be used to draw separator bars etc. Will be drawn BEFORE other elements.
-PreDecorate=notuniq:nodefault:enable:enablealways:type=usericon
+PreDecorate=notuniq:nodefault:enable:enablealways:drawback:type=usericon
 _desc=Empty elements that can be used to draw separator bars etc. Will be drawn AFTER other elements.
-PostDecorate=notuniq:nodefault:enable:enablealways:type=usericon
+PostDecorate=notuniq:nodefault:enable:enablealways:drawfront:type=usericon
 
 _desc=Lagometer
 NetGraph=

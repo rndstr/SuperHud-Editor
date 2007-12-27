@@ -13,17 +13,9 @@ class DisplayCtrlBase : public wxGLCanvas
         const wxSize& size = wxDefaultSize, long style = 0);
     virtual ~DisplayCtrlBase();
         
-
-    
-
     virtual void init() {}
     virtual void cleanup() {}
 
-    static void draw_rect( const wxRect& r, bool texcoords =false );
-    
-
-    // events
-    
   protected:
     bool      m_initialized;
     Texture   *m_background;

@@ -25,56 +25,6 @@ ImagePropertiesCtrl::ImagePropertiesCtrl( wxWindow *parent ) :
 
   append_picture_properties();
   append_model_properties();
-
-  /*
-  Append( new wxPropertyCategory(_("Model"), wxT("cat-model")) );
-  Append( new wxStringProperty(_("File"), wxT("model")) );
-  Append( new wxStringProperty(_("Skin"), wxT("skin")) );
-  Append( new wxPropertyCategory(_("Rotation"), wxT("cat-rotation")) );
-  SetPropertyHelpString( wxT("cat-rotation"), _("Alters the display of MODEL. Note that most Q3 models do not work properly if r_vertexlight is on.") );
-  Append( new wxBoolProperty(_("Use"), wxT("use-rotation"), false) );
-  Append( new wxIntProperty(_("Pitch"), wxT("pitch"), 0) );
-  SetPropertyHelpString( wxT("pitch"), _("Rotation around axis pointing right (horizontal, X).") ); 
-  Append( new wxIntProperty(_("Yaw"), wxT("yaw"), 0) );
-  SetPropertyHelpString( wxT("yaw"), _("Rotation around axis pointing up axis (vertical, Y).") ); 
-  Append( new wxIntProperty(_("Roll"), wxT("roll"), 0) );
-  SetPropertyHelpString( wxT("roll"), _("Rotation around axis pointing ahead (Z).") ); 
-  Append( new wxIntProperty(_("Pan+/Rotate-"), wxT("pan"), 0) );
-  SetPropertyHelpString( wxT("pan"), _("Use a positive value for left/right panning, a negative value for continuous rotation.") ); 
-  Append( new wxPropertyCategory(_("Offset"), wxT("cat-offset")) );
-  SetPropertyHelpString( wxT("cat-offset"), _("Moves the model along the X/Y/Z axis.") );
-  Append( new wxIntProperty(wxT("X"), wxT("x"), 0) );
-  Append( new wxIntProperty(wxT("y"), wxT("y"), 0) );
-  Append( new wxIntProperty(wxT("z"), wxT("z"), 0) );
-
-  /*
-  static const wxChar* font_type[] = {wxEmptyString, wxT("cpma"), wxT("id"), wxT("idblock"), wxT("threewave"), (const wxChar*)0};
-  Append( new wxEnumProperty(_("Type"), wxT("font"), font_type) );
-  //SetPropertyEditor(wxT("font"), wxPG_EDITOR(Choice));
-
-  static const wxChar* align[] = {wxEmptyString, wxT("left"), wxT("center"), wxT("right"), (const wxChar*)0};
-  Append( new wxEnumProperty(_("Alignment"), wxT("textalign"), align) );
-  //SetPropertyEditor(wxT("textalign"), wxPG_EDITOR(Choice));
-
-  Append( new wxBoolProperty( _("Monospace"), wxT("monospace"), false) );
-  SetPropertyHelpString( wxT("monospace"), _("Displays all characters of the font with the same width") );
-
-  Append( new wxPropertyCategory( _("Style") ) );
-  // valid combos: no|no (not defined), no|yes (textstyle 1), yes|no (textstyle 0)
-  Append( new wxBoolProperty(_("Force none"), wxT("style-none"), false) );
-  Append( new wxBoolProperty(_("Shadow"), wxT("style-shadow"), false) );
-  SetPropertyHelpString( wxT("style-none"), _("By default there is no `textstyle' set but if a parent item defines one you can reset the style here") );
-  SetPropertyHelpString( wxT("style-shadow"), _("Dropshadowed text") );
-
-  Append( new wxPropertyCategory( _("Size") ) );
-
-  wxArrayString size_type;
-  size_type.Add(wxEmptyString);
-  size_type.Add(fontsizetype_element_to_ui(E_FST_POINT));
-  size_type.Add(fontsizetype_element_to_ui(E_FST_COORD));
-//  static const wxChar* size_type[] = {fontsizetype_element_to_ui(E_FST_POINT), fontsizetype_element_to_ui(E_FST_COORD), (const wxChar*)0};
-  Append( new wxEnumProperty(_("Type"), wxT("fontsizetype"), size_type) );
-  */
 }
 
 
@@ -124,6 +74,49 @@ void ImagePropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   {
     el->set_usemodel( val.GetBool() );
   }
+  else if( name == wxT("use-angles") )
+  {
+    el->add_has( E_HAS_ANGLES, val.GetBool() );
+  }
+  else if( name == wxT("yaw") || name == wxT("roll") || name == wxT("pitch") || name == wxT("pan") )
+  {
+    if( !(el->has() & E_HAS_ANGLES) )
+    { // user was starting to edit while seeing the inherited values, copy them over
+      el->set_angle(E_ANGLE_YAW, el->iget_angle(E_ANGLE_YAW));
+      el->set_angle(E_ANGLE_ROLL, el->iget_angle(E_ANGLE_ROLL));
+      el->set_angle(E_ANGLE_PITCH, el->iget_angle(E_ANGLE_PITCH));
+      el->set_angle(E_ANGLE_PAN, el->iget_angle(E_ANGLE_PAN));
+      el->add_has( E_HAS_ANGLES );
+    }
+    if( name == wxT("yaw") )
+      el->set_angle(E_ANGLE_YAW, val.GetInteger() );
+    else if( name == wxT("pitch") )
+      el->set_angle(E_ANGLE_PITCH, val.GetInteger() );
+    else if( name == wxT("roll") )
+      el->set_angle(E_ANGLE_ROLL, val.GetInteger() );
+    else if( name == wxT("pan") )
+      el->set_angle(E_ANGLE_PAN, val.GetInteger() );
+  }
+  else if( name == wxT("use-offset") )
+  {
+    el->add_has( E_HAS_OFFSET, val.GetBool() );
+  }
+  else if( name == wxT("x") || name == wxT("y") || name == wxT("z") )
+  {
+    if( !(el->has() & E_HAS_OFFSET) )
+    { // user was starting to edit while seeing the inherited values, copy them over
+      el->set_offset(E_OFFSET_X, el->iget_offset(E_OFFSET_X));
+      el->set_offset(E_OFFSET_Y, el->iget_offset(E_OFFSET_Y));
+      el->set_offset(E_OFFSET_Z, el->iget_offset(E_OFFSET_Z));
+      el->add_has( E_HAS_OFFSET );
+    }
+    if( name == wxT("x") )
+      el->set_offset(E_OFFSET_X, val.GetInteger() );
+    else if( name == wxT("y") )
+      el->set_offset(E_OFFSET_Y, val.GetInteger() );
+    else if( name == wxT("z") )
+      el->set_offset(E_OFFSET_Z, val.GetInteger() );
+  }
   else
     return; // nothing changed
 
@@ -156,23 +149,25 @@ void ImagePropertiesCtrl::append_model_properties( CPMAElement *el /*=0*/ )
   // if E_T_ICON then model is fix! why not write it readonly? :)
   Append( new wxStringProperty(_("File"), wxT("model"), el ? el->iget_model() : wxEmptyString) );
   Append( new wxStringProperty(_("Skin"), wxT("skin"), el ? el->iget_skin() : wxEmptyString) );
-  Append( new wxPropertyCategory(_("Rotation"), wxT("cat-rotation")) );
-  SetPropertyHelpString( wxT("cat-rotation"), _("Alters the display of MODEL. Note that most Q3 models do not work properly if r_vertexlight is on.") );
-  Append( new wxBoolProperty(_("Use"), wxT("use-rotation"), el ? (el->has() & E_HAS_ANGLES) != 0 : false) );
-  Append( new wxIntProperty(_("Pitch"), wxT("pitch"), el ? el->) );
+
+  Append( new wxPropertyCategory(_("Rotation"), wxT("cat-angles")) );
+  SetPropertyHelpString( wxT("cat-angles"), _("Alters the display of MODEL. Note that most Q3 models do not work properly if r_vertexlight is on.") );
+  Append( new wxBoolProperty(_("Use"), wxT("use-angles"), el ? (el->has() & E_HAS_ANGLES) != 0 : false) );
+  Append( new wxIntProperty(_("Pitch"), wxT("pitch"), el ? el->iget_angle(E_ANGLE_PITCH) : 0) );
   SetPropertyHelpString( wxT("pitch"), _("Rotation around axis pointing right (horizontal, X).") ); 
-  Append( new wxIntProperty(_("Yaw"), wxT("yaw"), 0) );
+  Append( new wxIntProperty(_("Yaw"), wxT("yaw"), el ? el->iget_angle(E_ANGLE_YAW) : 0) );
   SetPropertyHelpString( wxT("yaw"), _("Rotation around axis pointing up axis (vertical, Y).") ); 
-  Append( new wxIntProperty(_("Roll"), wxT("roll"), 0) );
+  Append( new wxIntProperty(_("Roll"), wxT("roll"), el ? el->iget_angle(E_ANGLE_ROLL) : 0) );
   SetPropertyHelpString( wxT("roll"), _("Rotation around axis pointing ahead (Z).") ); 
-  Append( new wxIntProperty(_("Pan+/Rotate-"), wxT("pan"), 0) );
+  Append( new wxIntProperty(_("Pan+/Rotate-"), wxT("pan"), el ? el->iget_angle(E_ANGLE_PAN) : 0) );
   SetPropertyHelpString( wxT("pan"), _("Use a positive value for left/right panning, a negative value for continuous rotation.") ); 
+
   Append( new wxPropertyCategory(_("Offset"), wxT("cat-offset")) );
   SetPropertyHelpString( wxT("cat-offset"), _("Moves the model along the X/Y/Z axis.") );
-  Append( new wxBoolProperty(_("Use"), wxT("use-offset"), false) );
-  Append( new wxIntProperty(wxT("X"), wxT("x"), 0) );
-  Append( new wxIntProperty(wxT("y"), wxT("y"), 0) );
-  Append( new wxIntProperty(wxT("z"), wxT("z"), 0) );
+  Append( new wxBoolProperty(_("Use"), wxT("use-offset"), el ? (el->has() & E_HAS_OFFSET) != 0 : false) );
+  Append( new wxIntProperty(wxT("X"), wxT("x"), el ? el->iget_offset(E_OFFSET_X) : 0) );
+  Append( new wxIntProperty(wxT("y"), wxT("y"), el ? el->iget_offset(E_OFFSET_Y) : 0) );
+  Append( new wxIntProperty(wxT("z"), wxT("z"), el ? el->iget_offset(E_OFFSET_Z) : 0) );
 }
 
 void ImagePropertiesCtrl::update_layout()
@@ -192,10 +187,10 @@ void ImagePropertiesCtrl::update_layout()
   if( id ) DeleteProperty(wxT("model"));
   id = GetPropertyByName(wxT("skin"));
   if( id ) DeleteProperty(wxT("skin"));
-  id = GetPropertyByName(wxT("cat-rotation"));
-  if( id ) DeleteProperty(wxT("cat-rotation"));
-  id = GetPropertyByName(wxT("use-rotation"));
-  if( id ) DeleteProperty(wxT("use-rotation"));
+  id = GetPropertyByName(wxT("cat-angles"));
+  if( id ) DeleteProperty(wxT("cat-angles"));
+  id = GetPropertyByName(wxT("use-angles"));
+  if( id ) DeleteProperty(wxT("use-angles"));
   id = GetPropertyByName(wxT("pitch"));
   if( id ) DeleteProperty(wxT("pitch"));
   id = GetPropertyByName(wxT("yaw"));
@@ -206,6 +201,8 @@ void ImagePropertiesCtrl::update_layout()
   if( id ) DeleteProperty(wxT("pan"));
   id = GetPropertyByName(wxT("cat-offset"));
   if( id ) DeleteProperty(wxT("cat-offset"));
+  id = GetPropertyByName(wxT("use-offset"));
+  if( id ) DeleteProperty(wxT("use-offset"));
   id = GetPropertyByName(wxT("x"));
   if( id ) DeleteProperty(wxT("x"));
   id = GetPropertyByName(wxT("y"));
@@ -219,42 +216,19 @@ void ImagePropertiesCtrl::update_layout()
     append_model_properties(el);
     property_defines( wxT("model"), (el->has() & E_HAS_MODEL) != 0 );
     property_defines( wxT("skin"), (el->has() & E_HAS_SKIN) != 0 );
+    property_defines( wxT("yaw"), (el->has() & E_HAS_ANGLES) != 0 );
+    property_defines( wxT("roll"), (el->has() & E_HAS_ANGLES) != 0 );
+    property_defines( wxT("pitch"), (el->has() & E_HAS_ANGLES) != 0 );
+    property_defines( wxT("pan"), (el->has() & E_HAS_ANGLES) != 0 );
+    property_defines( wxT("x"), (el->has() & E_HAS_OFFSET) != 0 );
+    property_defines( wxT("y"), (el->has() & E_HAS_OFFSET) != 0 );
+    property_defines( wxT("z"), (el->has() & E_HAS_OFFSET) != 0 );
+
   }
   else
   {
     append_picture_properties(el);
     property_defines( wxT("image"), (el->has() & E_HAS_IMAGE) != 0 );
   }
-  /*
-  property_defines( wxT("textalign"), (el->has() & E_HAS_TEXTALIGN) != 0);
-  property_defines(wxT("monospace"), el->monospace() );
-  property_defines( wxT("style-shadow"), (el->has() & E_HAS_TEXTSTYLE) != 0 );
-
-  property_defines( wxT("fontsizetype"), (el->has() & E_HAS_FONTSIZE) != 0 );
-
-  int type = el->iget_fontsizetype();
-  SetPropertyValue( wxT("fontsizetype"), fontsizetype_element_to_ui(type) );
-  // remove propertyrows and re-add those we are looking for
-  wxPGId id = GetPropertyByName(wxT("fontsize_pt"));
-  if( id ) DeleteProperty(wxT("fontsize_pt"));
-  id = GetPropertyByName(wxT("fontsize_x"));
-  if( id ) DeleteProperty(wxT("fontsize_x"));
-  id = GetPropertyByName(wxT("fontsize_y"));
-  if( id ) DeleteProperty(wxT("fontsize_y"));
-  if( type == E_FST_POINT )
-  {
-    Append( new wxIntProperty(_("Size"), wxT("fontsize_pt"), el->iget_fontsizept()) );
-//    HideProperty(wxT("fontsize_pt"));
-    property_defines( wxT("fontsize_pt"), (el->has() & E_HAS_FONTSIZE) != 0 );
-  }
-  else if( type == E_FST_COORD )
-  {
-    Append( new wxIntProperty(_("X Size"), wxT("fontsize_x"), el->iget_fontsizex()) );
-    Append( new wxIntProperty(_("Y Size"), wxT("fontsize_y"), el->iget_fontsizey()) );
-    property_defines( wxT("fontsize_x"), (el->has() & E_HAS_FONTSIZE) != 0 );
-    property_defines( wxT("fontsize_y"), (el->has() & E_HAS_FONTSIZE) != 0 );
-  }
-
-  
-  */
 }
+

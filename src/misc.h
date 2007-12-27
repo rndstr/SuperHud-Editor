@@ -19,6 +19,7 @@
 #ifndef __MISC_H__
 #define __MISC_H__
 #include <wx/string.h>
+#include <wx/gdicmn.h>
 #include <string>
 
 template<class T> 
@@ -45,6 +46,7 @@ void wxRTrim( wxStringBase& s, const wxStringBase& trimset=wxT(" \n\r\t"));
 void wxTrim( wxStringBase& s, const wxStringBase& trimset=wxT(" \n\r\t"));
 wxString pretty_print_float(float f, int aftercomma = 3);
 
+void draw_rect( const wxRect& r, bool texcoords =false );
 wxString safe_filename( const wxString& filename );
 
 bool exists_in_zip( const wxString& filepath, const wxString& entrypath );

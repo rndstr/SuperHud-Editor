@@ -51,6 +51,10 @@ The format of the file itself is as following:
 #     `notuniq` currently)
 #   drawnever
 #     never draw this element not even if it's enabled.
+#   drawfront
+#     will make sure it's drawn in front of elements that do not have that flag.
+#   drawback
+#     draws the element in the back (first).
 #   drawalways
 #     draw it always even if it's disabled.
 #   parent

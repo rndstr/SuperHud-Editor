@@ -475,6 +475,9 @@ void MainFrame::OnElementSelectionChanged()
   propsinfo.Caption( caption );
   DoUpdate();
 
+  // -- render view
+  m_displayctrl->Refresh();
+
   // -- update configpreview
   update_configpreview();
 
@@ -484,6 +487,9 @@ void MainFrame::OnElementSelectionChanged()
 
 void MainFrame::OnPropertiesChanged()
 {
+  // -- render view
+  m_displayctrl->Refresh();
+
   update_configpreview();
 }
 

@@ -5,6 +5,7 @@
 #include "../model.h"
 #include "../hudfilebase.h"
 
+#include <algorithm>
 
 void CPMADisplayCtrl::init()
 {
@@ -23,13 +24,34 @@ void CPMADisplayCtrl::load_background()
 }
 
 void CPMADisplayCtrl::OnIdle( wxIdleEvent& )
-{// animation flickers
+{
+  if( 0 == wxGetApp().mainframe()->model() )
+    return;
+
   static wxLongLong last = 0;
   if( wxGetLocalTimeMillis() - last > 100 )
   {
     Refresh();
     last = wxGetLocalTimeMillis();
   }
+}
+
+int render_sort( ElementBase *a, ElementBase *b )
+{
+  if( a->flags() & E_DRAWFRONT )
+  {
+    if( b->flags() & E_DRAWFRONT )
+      return 0;
+    return 1;
+  }
+  if( b->flags() & E_DRAWBACK )
+  {
+    if( a->flags() & E_DRAWBACK )
+      return 0;
+    return -1;
+  }
+  return 0;
+
 }
 
 void CPMADisplayCtrl::render()
@@ -71,11 +93,15 @@ void CPMADisplayCtrl::render()
     glClearColor(0.f, 0.f, 0.f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // FIXME what if load_background fails... will it attempt to load every frame? ;) amg
     if( !m_background )
       load_background();
 
     m_background->glBind();
     // background
+    glColor4f(1.f, 1.f, 1.f, 1.f);
+    draw_rect(wxRect(0, 0, WIDTH, HEIGHT), true);
+    /*
     glBegin(GL_QUADS);
       glColor4f(1.f, 1.f, 1.f, 1.f);
       glTexCoord2f(0.f, 0.f);
@@ -87,6 +113,7 @@ void CPMADisplayCtrl::render()
       glTexCoord2f(0.f, 1.f);
       glVertex2i(0, HEIGHT);
     glEnd();
+    */
     
     if( Prefs::get().grid )
     {
@@ -101,7 +128,9 @@ void CPMADisplayCtrl::render()
       glEnable(GL_TEXTURE_2D);
     }
     // draw itemz0r
-    const elements_type& els = wxGetApp().hudfile()->elements();
+    elements_type els = wxGetApp().hudfile()->elements();
+    // sort by: PreDecorate>Other>PostDecorate, Selected>NotSelected
+    std::sort(els.begin(), els.end(), render_sort);
     for( cit_elements cit  = els.begin(); cit != els.end(); ++cit )
     {
       (*cit)->render();

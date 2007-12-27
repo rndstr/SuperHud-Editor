@@ -179,17 +179,3 @@ wxPoint DisplayCtrlBase::panel_to_hud( const wxPoint& p ) const
 
 
 }
-
-void DisplayCtrlBase::draw_rect( const wxRect& r, bool texcoords /*=false*/ )
-{
-glBegin( GL_QUADS );
-  if( texcoords) glTexCoord2i(0,1);
-  glVertex2i( r.GetLeft(), r.GetBottom()+1 );
-  if( texcoords) glTexCoord2i(1,1);
-  glVertex2i( r.GetRight()+1, r.GetBottom()+1 );
-  if( texcoords) glTexCoord2i(1,0);
-  glVertex2i( r.GetRight()+1, r.GetTop() );
-  if( texcoords) glTexCoord2i(0,0);
-  glVertex2i( r.GetLeft(), r.GetTop()   );
-glEnd();
-}

@@ -29,14 +29,14 @@ ElementBase(name, desc, flags, has, enable),
     m_image(),
     m_model(),
     m_usemodel(false),
-    m_offset_z(0.f), m_offset_x(0.f), m_offset_y(0.f),
-    m_angle_pitch(0), m_angle_yaw(0), m_angle_roll(0), m_angle_panrot(0),
+    m_angle_pitch(0), m_angle_yaw(0), m_angle_roll(0), m_angle_pan(0),
     m_text(text),
     m_icon(icon),
     //m_texid(HI_IMG_NOTLOADED),
     m_modelfound(false),
     m_skinfound(false)
 {
+  m_offset[0] = 0.f; m_offset[1] = 0.f; m_offset[2] = 0.f;
 }
 
 CPMAElement::CPMAElement( const hsitem_s& def ) :
@@ -55,14 +55,14 @@ CPMAElement::CPMAElement( const hsitem_s& def ) :
     m_image(),
     m_model(),
     m_usemodel(false),
-    m_offset_z(0.f), m_offset_x(0.f), m_offset_y(0.f),
-    m_angle_pitch(0), m_angle_yaw(0), m_angle_roll(0), m_angle_panrot(0),
+    m_angle_pitch(0), m_angle_yaw(0), m_angle_roll(0), m_angle_pan(0),
     m_text(def.text),
     m_icon(def.icon),
     //m_texid(HI_IMG_NOTLOADED),
     m_modelfound(false),
     m_skinfound(false)
 {
+  m_offset[0] = 0.f; m_offset[1] = 0.f; m_offset[2] = 0.f;
 }
 
 
@@ -200,9 +200,9 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
   {
     wxStringTokenizer targ( args, HF_PROPERTY_ARG_DELIM );
     if( targ.CountTokens() != 3 ||
-        1 != sscanf(targ.GetNextToken().mb_str(), "%f", &m_offset_x) ||
-        1 != sscanf(targ.GetNextToken().mb_str(), "%f", &m_offset_y) ||
-        1 != sscanf(targ.GetNextToken().mb_str(), "%f", &m_offset_z)
+        1 != sscanf(targ.GetNextToken().mb_str(), "%f", &m_offset[E_OFFSET_X]) ||
+        1 != sscanf(targ.GetNextToken().mb_str(), "%f", &m_offset[E_OFFSET_Y]) ||
+        1 != sscanf(targ.GetNextToken().mb_str(), "%f", &m_offset[E_OFFSET_Z])
         )
       wxLogWarning( _("Unknown `offset' argument in element `%s', should be three numbers (z x y). (ignored)"), m_name.c_str() );
     m_has |= E_HAS_OFFSET;
@@ -210,7 +210,7 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
   else if( cmd.CmpNoCase(wxT("angles"))==0 )
   {
     wxStringTokenizer targ( args, HF_PROPERTY_ARG_DELIM );
-    float pitch = 0.f, yaw = 0.f, roll = 0.f, panrot = 0.f;
+    float pitch = 0.f, yaw = 0.f, roll = 0.f, pan = 0.f;
     if( targ.CountTokens() != 3 && targ.CountTokens() != 4 )
     {
       wxLogWarning( _("Unknown `angles' argument in element `%s', should be three numbers (z x y). (ignored)"), m_name.c_str() );
@@ -224,11 +224,11 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
       wxLogWarning( _("Unknown `angles' argument in element `%s', should be three numbers (z x y). (ignored)"), m_name.c_str() );
     }
     else if( targ.CountTokens() == 1 )
-      sscanf(targ.GetNextToken().mb_str(), "%f", &panrot); // optional
+      sscanf(targ.GetNextToken().mb_str(), "%f", &pan); // optional
     m_angle_pitch = static_cast<int>(pitch);
     m_angle_yaw = static_cast<int>(yaw);
     m_angle_roll = static_cast<int>(roll);
-    m_angle_panrot = static_cast<int>(panrot);
+    m_angle_pan = static_cast<int>(pan);
 
       
     m_has |= E_HAS_ANGLES;
@@ -276,9 +276,26 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
     lines.push_back(wxT("fade ") + m_fade.to_string());
   if( usemodel() ) //m_has & E_HAS_MODEL )
   {
-    lines.push_back(wxT("model \"") + m_model + wxT("\""));
+    if( m_has & E_HAS_MODEL )
+      lines.push_back(wxT("model \"") + m_model + wxT("\""));
     if( m_has & E_HAS_SKIN )
       lines.push_back(wxT("image \"") + m_skin + wxT("\""));
+    if( m_has & E_HAS_ANGLES )
+    {
+      wxString angles;
+      if( m_angle_pan == 0 )
+        angles = wxString::Format( wxT("angles %d %d %d"), m_angle_pitch, m_angle_yaw, m_angle_roll );
+      else
+        angles = wxString::Format( wxT("angles %d %d %d %d"), m_angle_pitch, m_angle_yaw, m_angle_roll, m_angle_pan );
+      lines.push_back( angles );
+    }
+    if( m_has & E_HAS_OFFSET )
+    {
+      wxString offset = wxT("offset ") + pretty_print_float(m_offset[E_OFFSET_X]) + wxT(" ") + 
+        pretty_print_float(m_offset[E_OFFSET_Y]) + wxT(" ") +
+        pretty_print_float(m_offset[E_OFFSET_Z]);
+      lines.push_back( offset );
+    }
   }
   else if( m_has & E_HAS_IMAGE )
     lines.push_back(wxT("image \"") + m_image + wxT("\""));
@@ -301,8 +318,8 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
       wxString angles = wxT("angles ") + pretty_print_float(m_angles_pitch) + wxT(" ") + 
         pretty_print_float(m_angles_yaw) + wxT(" ") +
         pretty_print_float(m_angles_roll);
-      if( m_angles_panrot != 0.f )
-        angles += wxT(" ") + pretty_print_float(m_angles_panrot);
+      if( m_angles_pan != 0.f )
+        angles += wxT(" ") + pretty_print_float(m_angles_pan);
       lines.push_back( angles );
     }
     
@@ -528,6 +545,23 @@ wxString CPMAElement::iget_skin() const
   }
   return s;
 }
+float CPMAElement::iget_offset(int which) const
+{
+  float d = m_offset[which];
+  if( !(m_has & E_HAS_OFFSET) )
+  {
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_OFFSET ));
+    if( parent == 0 ) d = 0.f;
+    else d = parent->iget_offset(which);
+  }
+  return d;
+}
+void CPMAElement::set_offset( int which, float val )
+{
+  if( which < E_OFFSET_X || which > E_OFFSET_Z )
+    return;
+  m_offset[which] = val;
+}
 int CPMAElement::iget_angle(int which) const
 {
   int d = angle(which);
@@ -538,6 +572,16 @@ int CPMAElement::iget_angle(int which) const
     else d = parent->iget_angle(which);
   }
   return d;
+}
+void CPMAElement::set_angle( int which, int val )
+{
+  switch(which)
+  {
+  case E_ANGLE_YAW: m_angle_yaw = val; break;
+  case E_ANGLE_PITCH: m_angle_pitch = val; break;
+  case E_ANGLE_ROLL: m_angle_roll = val; break;
+  case E_ANGLE_PAN: m_angle_pan = val; break;
+  }
 }
 int CPMAElement::angle(int which) const
 {
@@ -554,6 +598,9 @@ int CPMAElement::angle(int which) const
 }
 void CPMAElement::render() const
 {
+  wxLogDebug(wxT("RENDER ") + m_name);
+  if( m_flags & E_DRAWNEVER )
+    return;
   bool hasownbg = true;
 
   switch( m_type )
@@ -568,11 +615,11 @@ void CPMAElement::render() const
         top.height = top.height/2-2;
         bottom.height = top.height;
         bottom.y += bottom.height+4;
-        DisplayCtrlBase::draw_rect(top);
-        DisplayCtrlBase::draw_rect(top);(bottom);
+        draw_rect(top);
+        draw_rect(top);(bottom);
       }
       else
-        DisplayCtrlBase::draw_rect(m_rect);
+        draw_rect(m_rect);
     }
     break;
 
@@ -719,13 +766,14 @@ void CPMAElement::render() const
     break;
   }
 
+  glDisable(GL_TEXTURE_2D);
   // -- draw helper outline
   if( Prefs::get().helper )
   {
     if( false /*is_selected() && */ )
     {
       Prefs::get().helper_fill_selected.glBind();
-      DisplayCtrlBase::draw_rect(m_rect);
+      draw_rect(m_rect);
 
       Prefs::get().helper_border_selected.glBind();
     glBegin( GL_LINE_LOOP );
@@ -738,7 +786,7 @@ void CPMAElement::render() const
     else
     {
       Prefs::get().helper_fill.glBind();
-      DisplayCtrlBase::draw_rect(m_rect);
+      draw_rect(m_rect);
 
       Prefs::get().helper_border.glBind();
     glBegin( GL_LINE_LOOP );
@@ -749,4 +797,5 @@ void CPMAElement::render() const
     glEnd();
     }
   }
+  glEnable(GL_TEXTURE_2D);
 }

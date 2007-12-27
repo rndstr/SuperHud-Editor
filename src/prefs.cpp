@@ -64,13 +64,13 @@ void Prefs::load()
   grid_color.set(str);
   c->Read(wxT("helper"), &helper, true);
   c->Read(wxT("helper_border"), &str, wxT("1 1 1 0.8"));
-  helper_border.set(helper_border);
+  helper_border.set(str);
   c->Read(wxT("helper_fill"), &str, wxT("1 1 1 0.1"));
-  helper_fill.set(helper_fill);
+  helper_fill.set(str);
   c->Read(wxT("helper_border_selected"), &str, wxT("1 0 0 0.8"));
-  helper_border_selected.set(helper_border_selected);
+  helper_border_selected.set(str);
   c->Read(wxT("helper_fill_selected"), &str, wxT("1 0 0 0.1"));
-  helper_fill_selected.set(helper_fill_selected);
+  helper_fill_selected.set(str);
   
 
 

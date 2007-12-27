@@ -21,6 +21,7 @@
 #include <wx/log.h>
 
 #include "misc.h"
+#include "common.h"
 
 void wxLTrim( wxStringBase& s, const wxStringBase& trimset /*=" \n\r\t"*/)
 {
@@ -49,6 +50,21 @@ wxString pretty_print_float(float f, int aftercomma /*= 3*/)
     sf = sf.substr(0, sf.length()-1);
   return sf;
 }
+
+void draw_rect( const wxRect& r, bool texcoords /*=false*/ )
+{
+glBegin( GL_QUADS );
+  if( texcoords) glTexCoord2i(0,1);
+  glVertex2i( r.GetLeft(), r.GetBottom()+1 );
+  if( texcoords) glTexCoord2i(1,1);
+  glVertex2i( r.GetRight()+1, r.GetBottom()+1 );
+  if( texcoords) glTexCoord2i(1,0);
+  glVertex2i( r.GetRight()+1, r.GetTop() );
+  if( texcoords) glTexCoord2i(0,0);
+  glVertex2i( r.GetLeft(), r.GetTop()   );
+glEnd();
+}
+
 
 wxString safe_filename( const wxString& filename )
 {

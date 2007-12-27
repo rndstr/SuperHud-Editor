@@ -40,20 +40,22 @@ typedef enum {
   E_PARENT = 1<<2, ///< is an inheriter.
   E_NOINHERIT = 1<<3, ///< this item does not inherit from previous !DEFAULT items.
   E_DRAWNEVER = 1<<4, ///< never draw the item no matter if it's enabled or not.
-  E_DRAWALWAYS = 1<<5, ///< NOTINUSE
-  E_SHORT = 1<<6, ///< while saving writes a oneliner instead of each property on one line.
+  E_DRAWBACK = 1<<5,
+  E_DRAWFRONT = 1<<6,
+  E_DRAWALWAYS = 1<<7, ///< NOTINUSE
+  E_SHORT = 1<<8, ///< while saving writes a oneliner instead of each property on one line.
 
   /// cannot be disabled.
-  E_ENABLEALWAYS = 1<<7,
+  E_ENABLEALWAYS = 1<<9,
 
   /// multiply height with m_multheight to get screen_height
-  E_MULTHEIGHT = 1<<8,
+  E_MULTHEIGHT = 1<<10,
 
   /// multiply width with m_multwidth to get screen_width
-  E_MULTWIDTH = 1<<9, 
+  E_MULTWIDTH = 1<<11, 
 
   /// depends on textalign property, if 'C' then we use only multwidth otherwise only multheight.
-  E_MULTDEPENDALIGN = 1<<10
+  E_MULTDEPENDALIGN = 1<<12
 } eElementFlags;
 
 /// Defaults
