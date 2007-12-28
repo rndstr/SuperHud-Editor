@@ -22,7 +22,7 @@
 #include "xpm/icons/element_enabled.xpm"
 #include "xpm/icons/element_disabled.xpm"
 
-#include "xpm/bitmaps/wiztest.xpm"
+#include "xpm/bitmaps/setupwizard.xpm"
 
 const wxArtID ART_CPMA = _T("ART_CPMA");
 const wxArtID ART_Q4MAX = _T("ART_Q4MAX");
@@ -76,7 +76,7 @@ class ArtProvider : public wxArtProvider
         return wxBitmap(element_disabled_xpm);
 
       else if( id == ART_BMP_SETUPWIZARD )
-        return wxBitmap(wiztest_xpm);
+        return wxBitmap(setupwizard_xpm);
       
       return wxNullBitmap;
     }
