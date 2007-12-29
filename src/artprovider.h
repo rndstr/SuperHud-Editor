@@ -21,6 +21,8 @@
 
 #include "xpm/icons/element_enabled.xpm"
 #include "xpm/icons/element_disabled.xpm"
+#include "xpm/icons/elements_collection_title.xpm"
+#include "xpm/icons/elements_collection_item.xpm"
 
 #include "xpm/bitmaps/setupwizard.xpm"
 
@@ -37,6 +39,8 @@ const wxArtID ART_ELEMENT_PASTE = _T("ART_ELEMENT_PASTE");
 
 const wxArtID ART_ELEMENT_ENABLED = _T("ART_ELEMENT_ENABLED");
 const wxArtID ART_ELEMENT_DISABLED = _T("ART_ELEMENT_DISABLED");
+const wxArtID ART_ELEMENTS_COLLECTION_TITLE = _T("ART_ELEMENTS_COLLECTION_TITLE");
+const wxArtID ART_ELEMENTS_COLLECTION_ITEM = _T("ART_ELEMENTS_COLLECTION_ITEM");
 
 const wxArtID ART_BMP_SETUPWIZARD = _T("ART_BMP_SETUPWIZARD");
 
@@ -74,6 +78,10 @@ class ArtProvider : public wxArtProvider
         return wxBitmap(element_enabled_xpm);
       else if( id == ART_ELEMENT_DISABLED )
         return wxBitmap(element_disabled_xpm);
+      else if( id == ART_ELEMENTS_COLLECTION_TITLE )
+        return wxBitmap(elements_collection_title_xpm);
+      else if( id == ART_ELEMENTS_COLLECTION_ITEM )
+        return wxBitmap(elements_collection_item_xpm);
 
       else if( id == ART_BMP_SETUPWIZARD )
         return wxBitmap(setupwizard_xpm);

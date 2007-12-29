@@ -43,7 +43,9 @@ class FactoryBase
     virtual wxString filename_gamebin() const = 0;
 
     /// e.g. '.q3a' only used on unix systems
+#ifndef WIN32
     virtual wxString unixdirname_userdata() const = 0;
+#endif
 
 };
 

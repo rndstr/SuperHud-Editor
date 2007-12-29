@@ -137,12 +137,28 @@ wxString file_ext( const wxString& fp )
       fp.substr( pos+1, fp.length()-pos-1 ));
 }
 
+bool is_image_ext( const wxString& ext )
+{
+  return (wxT("tga") == ext || wxT("jpg") == ext || wxT("png") == ext ||
+    wxT("bmp") == ext || wxT("gif") == ext || wxT("xpm") == ext || wxT("ico") == ext ||
+    wxT("cur") == ext);
+}
+
 int common_start( const wxString& lhs, const wxString& rhs )
 {
   size_t i=0;
   while( lhs[i] == rhs[i] && i < lhs.size() && i < rhs.size() ) 
     ++i;
   return i;
+}
+
+long bitmap_type_by_ext( const wxString& ext )
+{
+  // for some reason we need the bitmap type specified in wxImage::LoadFile
+  // for tgas.. won't find it otherwise
+  if( ext == wxT("tga") )
+    return wxBITMAP_TYPE_TGA;
+  return wxBITMAP_TYPE_ANY; // auto
 }
 
 

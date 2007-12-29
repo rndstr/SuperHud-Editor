@@ -17,10 +17,13 @@ class CPMAFactory : public FactoryBase
     wxString            modname() const { return wxT("CPMA"); }
     wxString            dirname_gamedata() const { return wxT("baseq3"); }
     wxString            dirname_moddata() const { return wxT("cpma"); }
-    wxString            dir_game() const { return Prefs::get().q3_gamedir; }
-    virtual void set_dir_game( const wxString& dir ) const { Prefs::get().q3_gamedir = dir; }
-    wxString            pakfiles() const { return Prefs::get().q3_pakfiles; }
-    wxString            unixdirname_userdata() const { return wxT(".q3a"); }
+    wxString            dir_game() const { return Prefs::get().var(wxT("q3_gamedir")); }
+    virtual void set_dir_game( const wxString& dir ) const { Prefs::get().set(wxT("q3_gamedir"), dir); }
+    wxString            pakfiles() const { return Prefs::get().var(wxT("q3_pakfiles")); }
+#ifndef WIN32
+    wxString            unixdirname_userdata() const { return { Prefs::get().var(wxT("q3_homedirname")); }
+#endif
+
 #ifdef WIN32
     wxString            filename_gamebin() const { return wxT("quake3.exe"); }
 #else // unix

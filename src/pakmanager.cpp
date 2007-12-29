@@ -123,7 +123,7 @@ bool PakManager::load_from_location( char **buf, const wxString& location, size_
   wxFileSystem fs;
   wxFSFile *file = 0;
   {
-#ifndef NDEBUG
+#ifdef NDEBUG
     wxLogNull unfortunately_this_gives_us_invalidzipfile_without_any_information_which_one_so_just_shut_the_fuck_up;
 #endif
     file = fs.OpenFile( location, wxFS_READ );
@@ -174,8 +174,6 @@ bool PakManager::load( char **buf, const wxString& fpath, int search_where, size
   wxFSFile *file = 0;
   // maybe we don't even need pak access?
 
-  // absolute filepath
-  // although not really allowed
   ePakManagerSearchWhere found;
   wxString location = get_location(fpath, search_where, &found); // final location uri to be used with wxFileSystem
   wxLogDebug(wxT("Found file `%s' at %s (%s)"), fpath.c_str(), location.c_str(), PakManager::searchwhere2string(found).c_str());
@@ -218,9 +216,12 @@ bool PakManager::load( char **buf, const wxString& fpath, int search_where, size
 
 size_t PakManager::enumerate_game_pakfiles( wxArrayString *files )
 {
+  wxLogDebug( wxT("PakManager::enumerate_game_pakfiles") );
   size_t count=0;
+  
   wxStringTokenizer tok(wxGetApp().factory()->pakfiles(), wxT(";"));
   wxString token;
+  size_t pos;
 #ifndef WIN32
   wxArrayString homefiles; // files in homedir (~/.q3a/), they overwrite quake3_data_dir.
   wxString homedir = wxStandardPaths::Get().GetUserConfigDir(); // /home/veal
@@ -229,13 +230,29 @@ size_t PakManager::enumerate_game_pakfiles( wxArrayString *files )
   {
     token = tok.GetNextToken();
     wxTrim( token );
-    // TODO the problem here is, if token contains directorynames (e.g. baseq3/*.pk3) and that
-    // directory does not exist, an error box pops up complaining 'the system cannot find the path specified'
-    // but with reference to the dirgame, which _does_ exist.
-    count += wxDir::GetAllFiles( wxGetApp().factory()->dir_game(), files, token, GETALLFILES_FLAGS );
+    // get basename :o
+    pos = token.find_last_of( wxT("\\/") );
+    if( pos != wxString::npos )
+    { // there is a subdir
+      wxLogDebug( wxT(" >") + wxGetApp().factory()->dir_game() + PATH_SEP + token.substr(0, pos+1) + wxT("#") + token.substr(pos+1, token.length()-pos-1) );
+      count += wxDir::GetAllFiles( wxGetApp().factory()->dir_game() + PATH_SEP + token.substr(0, pos+1), files, token.substr(pos+1, token.length()-pos-1), GETALLFILES_FLAGS);
+
 #ifndef WIN32
-    count += wxDir::GetAllFiles( homedir + PATH_SEP + wxGetApp().factory()->unixdirname_userdata(), &homefiles, token, GETALLFILES_FLAGS );
+      // NB this is not entirely correct.. we need to figure out how to get $HOME the correct way 
+      // for e.g. Mac builds, i don't know where they store the userfiles.
+      wxLogDebug( wxT(" >") + homedir + PATH_SEP + wxGetApp().factory()->unixdirname_userdata() + token.substr(0, pos+1) + wxT("#") + token.substr(pos+1, token.length()-pos-1) );
+      count += wxDir::GetAllFiles( homedir + PATH_SEP + wxGetApp().factory()->unixdirname_userdata() + token.substr(0, pos+1), &homefiles, token.substr(pos+1, token.length()-pos-1), GETALLFILES_FLAGS);
 #endif
+    }
+    else
+    { // no subdir, NOTE that this doesn't occur normally... as all gamepakfiles are in subdirs
+      wxLogDebug( wxT(" >") + wxGetApp().factory()->dir_game() + wxT("#") + token );
+      count += wxDir::GetAllFiles( wxGetApp().factory()->dir_game(), files, token, GETALLFILES_FLAGS);
+#ifndef WIN32
+      wxLogDebug( wxT(" >") + homedir + PATH_SEP + wxGetApp().factory()->unixdirname_userdata() + wxT("#") + token );
+      count += wxDir::GetAllFiles( homedir + PATH_SEP + wxGetApp().factory()->unixdirname_userdata(), &homefiles, token, GETALLFILES_FLAGS);
+#endif
+    }
   }
   files->Sort();
 #ifndef WIN32
@@ -245,6 +262,63 @@ size_t PakManager::enumerate_game_pakfiles( wxArrayString *files )
     files->Add( *cit );
 #endif
   return count;
+}
+
+void PakManager::enumerate_pakdircontents( const wxString& pakpath, pakbrowser_dirs_type *dirs, pakbrowser_files_type *files, wxGauge *gauge /*=0*/) const
+{
+#ifdef NDEBUG
+  wxLogNull unfortunately_this_gives_us_invalidzipfile_without_any_information_which_one_so_just_shut_the_fuck_up;
+#endif
+  wxFileSystem fs;
+  wxString fn; // finding
+  wxString rel; // relative to pak
+  wxString dirname; // last dirname only
+  size_t pos;
+  wxStatusBar *sb = wxGetApp().mainframe()->statusbar();
+
+  int g = 0;
+  if( gauge )
+  {
+    gauge->SetRange( m_pakfiles.Count() );
+    gauge->SetValue(0);
+  }
+  for( int i=m_pakfiles.Count()-1; i >= 0; --i )
+  {
+    sb->PushStatusText( m_pakfiles[i], SB_MSG );
+    fs.ChangePathTo( m_pakfiles[i] + wxT("#zip:") + pakpath, true );
+    // dirs first
+    fn = fs.FindFirst( wxT("*"), wxDIR );
+    while( !fn.empty() )
+    {
+      if( (pos = fn.find(wxT("#zip:"))) == wxString::npos )
+        continue;
+      rel = fn.substr(pos+5, fn.length() - pos - 5);
+      pos = rel.find_last_of(wxT("/"));
+      dirname = rel.substr(pos+1, rel.length() - pos - 1);
+      wxLogDebug(wxT(" +DIR %s"), dirname.c_str());
+      dirs->push_back(dirname);
+      fn = fs.FindNext();
+    }
+    // files now
+    fn = fs.FindFirst( wxT("*"), wxFILE );
+    while( !fn.empty() )
+    {
+      if( (pos = fn.find(wxT("#zip:"))) == wxString::npos )
+        continue;
+      rel = fn.substr(pos+5, fn.length() - pos - 5);
+      pos = rel.find_last_of(wxT("/"));
+      dirname = rel.substr(pos+1, rel.length() - pos - 1);
+      wxLogDebug(wxT(" +FILE %s, %s"), dirname.c_str(), m_pakfiles[i].c_str());
+      files->insert( std::make_pair(dirname, m_pakfiles[i]) );
+      fn = fs.FindNext();
+    }
+    if( gauge )
+      gauge->SetValue(++g);
+
+    sb->PopStatusText(SB_MSG);
+  }
+  dirs->sort();
+  dirs->unique();
 }
 
 

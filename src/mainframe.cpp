@@ -11,6 +11,7 @@
 #include "factorybase.h"
 #include "model.h"
 #include "setupwizard.h"
+#include "prefs.h"
 
 #include "cpma/elementsctrl.h"
 #include "cpma/propertiesnotebook.h"
@@ -85,7 +86,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
 
   wxMenu *help_menu = new wxMenu;
   help_menu->Append( ID_MENU_HELP_UPDATE, _("Check for updates...") );
-  help_menu->Append( wxID_ABOUT, _("&About") );
+  help_menu->Append( wxID_ABOUT, _("&About\tCtrl+A") );
   
   menu_bar->Append( help_menu, _("Help") );
 
@@ -146,21 +147,21 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   
 
   // update stuff
-  m_mgr.LoadPerspective( Prefs::get().perspective );
+  m_mgr.LoadPerspective( Prefs::get().var(wxT("perspective")) );
   //m_view_menu->Check( ID_MENU_VIEW_TOOLBAR_FILE, m_toolbar_file->IsShown() ); // done through UpdateUI event
   //m_view_menu->Check( ID_MENU_VIEW_CONFIGPREVIEW, m_configpreview->IsShown() ); // done through UpdateUI event
-  m_view_menu->Check( ID_MENU_VIEW_GRID, Prefs::get().grid );
+  m_view_menu->Check( ID_MENU_VIEW_GRID, Prefs::get().var(wxT("grid")) );
   
 
-  if( Prefs::get().game == wxT("q4max") )
+  if( Prefs::get().var(wxT("game")) == wxT("q4max") )
     SetIcon( wxArtProvider::GetIcon(ART_Q4MAX, wxART_FRAME_ICON, wxSize(16,16)) );
   else
     SetIcon( wxArtProvider::GetIcon(ART_CPMA, wxART_FRAME_ICON, wxSize(16,16)) );
 
-  if( Prefs::get().app_maximized )
+  if( Prefs::get().var(wxT("app_maximized")) )
     Maximize();
-  else if( Prefs::get().app_height != -1 && Prefs::get().app_width != -1 )
-    SetSize( Prefs::get().app_width, Prefs::get().app_height );
+  else if( Prefs::get().var(wxT("app_height")).intval() != -1 && Prefs::get().var(wxT("app_width")).intval() != -1 )
+    SetSize( Prefs::get().var(wxT("app_width")).intval(), Prefs::get().var(wxT("app_height")).intval() );
   
 #ifndef WIN32
   // default transparency hints on linux throw assertions all over the place 
@@ -176,7 +177,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
     if( wizard.RunWizard(wizard.GetFirstPage()) )
     {
       wxGetApp().factory()->set_dir_game(wizard.gamedir());
-      Prefs::get().set_aspectratio( wizard.aspectratio() );
+      Prefs::get().set(wxT("aspectratio"), wizard.aspectratio());
     }
   }
 }
@@ -203,7 +204,7 @@ void MainFrame::OnMenuToolsPreferences( wxCommandEvent& )
 
 void MainFrame::OnMenuToolsSwitchGame( wxCommandEvent& )
 {
-  Prefs::get().startup_gameselection = true;
+  Prefs::get().setb(wxT("startup_gameselection"), true);
   Prefs::get().save();
   wxMessageBox(_("The application will now restart"));
   restart_app();
@@ -213,12 +214,25 @@ void MainFrame::OnMenuExit( wxCommandEvent& )
 {
   Close(true);
 }
+#include <wx/aboutdlg.h>
+#include "pakfiledialog.h"
 #include "model.h"
 void MainFrame::OnMenuAbout( wxCommandEvent& )
 {
-  wxLogDebug(wxT("about"));
+  wxAboutDialogInfo info;
+  info.SetName(APP_NAME);
+  info.SetVersion(APP_VERSION);
+  info.SetDescription(APP_URL);
+  info.SetCopyright(wxT("(C) 2007 Roland Schilter <rolansch@ethz.ch>"));
+   //wxAboutBox(info);
+
+  PakFileDialog dlg(this, wxID_ANY, _("Pak files"));
+  dlg.ShowModal();
+  wxLogDebug(dlg.GetPakPath());
+  /*
   m_model = new Model();
   m_model->load_mde(wxT("model/dfegg.mde"), PM_SEARCH_APPFILE);
+  */
 }
 
 void MainFrame::OnMenuNew( wxCommandEvent& )
@@ -347,10 +361,10 @@ void MainFrame::OnClose( wxCloseEvent& ev )
     wxDELETE( m_model );
   
   // save view
-  Prefs::get().perspective = m_mgr.SavePerspective();
-  Prefs::get().app_width = GetSize().GetWidth();
-  Prefs::get().app_height = GetSize().GetHeight();
-  Prefs::get().app_maximized = IsMaximized();
+  Prefs::get().set(wxT("perspective"), m_mgr.SavePerspective());
+  Prefs::get().seti(wxT("app_width"), GetSize().GetWidth());
+  Prefs::get().seti(wxT("app_height"), GetSize().GetHeight());
+  Prefs::get().setb(wxT("app_maximized"), IsMaximized());
 
 
   // cleanup
@@ -380,7 +394,7 @@ void MainFrame::OnMenuViewToolbarFile( wxCommandEvent& )
 
 void MainFrame::OnMenuViewGrid( wxCommandEvent& ev )
 {
-  Prefs::get().grid = ev.IsChecked();
+  Prefs::get().setb(wxT("grid"), ev.IsChecked());
   m_displayctrl->Refresh(); // FIXME this flickers :/ y?
 }
 

@@ -16,12 +16,10 @@
 
 #include "superhudeditor.h"
 #include "factorybase.h"
-#include "pakmanager.h"
 #include "mainframe.h"
 #include "eventids.h"
 #include "artprovider.h"
 #include "exceptions.h"
-#include "prefs.h"
 #include "misc.h"
 
 

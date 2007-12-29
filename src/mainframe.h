@@ -6,6 +6,7 @@
 #include <wx/aui/aui.h>
 
 /// statusbar column
+const int SB_MSG = 0;
 const int SB_MOUSEPOS = 1;
 
 class wxTextCtrl;

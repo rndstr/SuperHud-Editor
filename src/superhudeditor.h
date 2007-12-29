@@ -3,10 +3,11 @@
 
 #include <wx/app.h>
 
-const wxString APP_NAME = wxT("superhudeditor");
+const wxString APP_NAME = wxT("SuperHud Editor");
+const wxString APP_NAME_UNIX = wxT("superhudeditor");
 const wxString APP_VERSION = wxT("0.3.0");
 const wxString APP_VENDOR = wxEmptyString;
-const wxString APP_CAPTION = wxT("SuperHud Editor v") + APP_VERSION;
+const wxString APP_CAPTION = APP_NAME + wxT(" v") + APP_VERSION;
 const wxString APP_CONFIG = wxT("superhudeditor.conf");
 const wxString APP_URL = wxT("http://plrf.org/superhudeditor");
 

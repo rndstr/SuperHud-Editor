@@ -41,7 +41,7 @@ ElementsCtrlBase* SHEApp::elementsctrl() { return m_mainframe->elementsctrl(); }
 
 bool SHEApp::OnInit()
 {
-  SetAppName(APP_NAME);
+  SetAppName(APP_NAME_UNIX);
 #ifndef WIN32
   #ifdef PACKAGE_PREFIX
     ((wxStandardPaths&)wxStandardPaths::Get()).SetInstallPrefix( wxT( PACKAGE_PREFIX ) );
@@ -56,20 +56,20 @@ bool SHEApp::OnInit()
   
   m_firststart = Prefs::get().init();
 
-  if( (!is_cpma() && !is_q4max()) || Prefs::get().startup_gameselection )
+  if( (!is_cpma() && !is_q4max()) || Prefs::get().var(wxT("startup_gameselection")) )
   {
     GameSelectionDialog dlg(0);
     int ret = dlg.ShowModal();
     if( ID_BTN_CPMA == ret )
-      Prefs::get().game = wxT("cpma");
+      Prefs::get().set(wxT("game"), wxT("cpma"));
     else if( ID_BTN_Q4MAX == ret )
-      Prefs::get().game = wxT("q4max");
-    Prefs::get().startup_gameselection = dlg.startup_gameselection();
+      Prefs::get().set(wxT("game"), wxT("q4max"));
+    Prefs::get().setb(wxT("startup_gameselection"), dlg.startup_gameselection());
 
     if( !is_cpma() && !is_q4max() )
     {
       wxLogFatalError(_("Invalid game in settings, loaded CPMA"));
-      Prefs::get().game = wxT("cpma");
+      Prefs::get().set(wxT("game"), wxT("cpma"));
     }
   }
 
@@ -142,10 +142,10 @@ int SHEApp::OnExit()
 
 bool SHEApp::is_cpma() const
 {
-  return (Prefs::get().game.CmpNoCase(wxT("cpma")) == 0);
+  return (Prefs::get().var(wxT("game")).stringval().CmpNoCase(wxT("cpma")) == 0);
 }
 
 bool SHEApp::is_q4max() const
 {
-  return (Prefs::get().game.CmpNoCase(wxT("q4max")) == 0);
+  return (Prefs::get().var(wxT("game")).stringval().CmpNoCase(wxT("q4max")) == 0);
 }

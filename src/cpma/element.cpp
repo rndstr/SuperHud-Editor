@@ -2,6 +2,7 @@
 #include "element.h"
 #include "../hudfilebase.h"
 #include "../displayctrlbase.h"
+#include "../prefs.h"
 
 #include <wx/tokenzr.h>
 
@@ -598,7 +599,7 @@ int CPMAElement::angle(int which) const
 }
 void CPMAElement::render() const
 {
-  wxLogDebug(wxT("RENDER ") + m_name);
+  //wxLogDebug(wxT("RENDER ") + m_name);
   if( m_flags & E_DRAWNEVER )
     return;
   bool hasownbg = true;
@@ -768,14 +769,14 @@ void CPMAElement::render() const
 
   glDisable(GL_TEXTURE_2D);
   // -- draw helper outline
-  if( Prefs::get().helper )
+  if( Prefs::get().var(wxT("helper")) )
   {
     if( false /*is_selected() && */ )
     {
-      Prefs::get().helper_fill_selected.glBind();
+      Prefs::get().var(wxT("helper_fill_selected")).colorval().glBind();
       draw_rect(m_rect);
 
-      Prefs::get().helper_border_selected.glBind();
+      Prefs::get().var(wxT("helper_border_selected")).colorval().glBind();
     glBegin( GL_LINE_LOOP );
       glVertex2i( m_rect.GetLeft(), m_rect.GetBottom()+1 );
       glVertex2i( m_rect.GetRight(), m_rect.GetBottom()+1 );
@@ -785,10 +786,10 @@ void CPMAElement::render() const
     }
     else
     {
-      Prefs::get().helper_fill.glBind();
+      Prefs::get().var(wxT("helper_fill")).colorval().glBind();
       draw_rect(m_rect);
 
-      Prefs::get().helper_border.glBind();
+      Prefs::get().var(wxT("helper_border")).colorval().glBind();
     glBegin( GL_LINE_LOOP );
       glVertex2i( m_rect.GetLeft(), m_rect.GetBottom()+1 );
       glVertex2i( m_rect.GetRight(), m_rect.GetBottom()+1 );

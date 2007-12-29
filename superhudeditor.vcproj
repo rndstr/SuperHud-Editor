@@ -365,6 +365,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\pakfiledialog.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\pakfiledialog.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\pakimageproperty.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\pakimageproperty.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\pakmanager.cpp"
 				>
 			</File>
@@ -406,14 +422,6 @@
 			</File>
 			<File
 				RelativePath=".\src\texture.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tgaloader.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tgaloader.h"
 				>
 			</File>
 			<Filter

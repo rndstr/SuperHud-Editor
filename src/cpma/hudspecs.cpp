@@ -3,6 +3,7 @@
 #include "element.h"
 #include "../prefs.h"
 #include "../common.h"
+#include "../pakmanager.h"
 
 #include <wx/arrstr.h>
 #include <wx/stdpaths.h>
@@ -15,9 +16,7 @@
 
 bool CPMAHudSpecs::load()
 {
-  wxString hudspecs = Prefs::get().hudspecs;
-  if( hudspecs.empty() )
-    hudspecs = wxT("cpma/hudspecs.dat");
+  wxString hudspecs = Prefs::get().var(wxT("q3_hudspecs")).stringval();
   
   m_items.clear();
 

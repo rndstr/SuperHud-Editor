@@ -2,6 +2,7 @@
 #include "mainframe.h"
 #include "elementsctrlbase.h"
 #include "displayctrlbase.h"
+#include "prefs.h"
 
 #include <wx/txtstrm.h>
 #include <wx/wfstream.h>
@@ -80,7 +81,7 @@ int HudFileBase::OnSave( )
   if( m_filename.empty() )
     return wxID_CANCEL; // this shouldn't reach here.. but make sure anyway
 
-  if( Prefs::get().save_backup && wxFile::Exists(m_filename)  )
+  if( Prefs::get().var(wxT("save_backup")) && wxFile::Exists(m_filename)  )
   {
     wxString target = m_filename + wxT(".bak");
     wxGetApp().mainframe()->statusbar()->PushStatusText(wxString::Format(_("Creating backup hud: %s"), target.c_str()));
@@ -176,7 +177,7 @@ void HudFileBase::write_element( wxTextOutputStream& stream, const ElementBase& 
 {
   if( !el.is_enabled() )
   {
-    if( Prefs::get().save_writedisabled )
+    if( Prefs::get().var(wxT("save_writedisabled")) )
       stream << wxT("# ") << el.name() << wxT(" { }\n");
     return;
   }

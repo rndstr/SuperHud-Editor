@@ -53,6 +53,9 @@ bool exists_in_zip( const wxString& filepath, const wxString& entrypath );
 bool load_from_zip( char **buf, const wxString& filepath, const wxString& entrypath, size_t *size=0 );
 
 wxString file_ext( const wxString& str );
+bool is_image_ext( const wxString& ext );
+
+long bitmap_type_by_ext( const wxString& ext );
 
 int common_start( const wxString& lhs, const wxString& rhs );
 

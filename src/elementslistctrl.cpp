@@ -4,8 +4,6 @@
 #include "elementsctrlbase.h"
 
 
-#include "xpm/icons/elements_collection_title.xpm"
-#include "xpm/icons/elements_collection_item.xpm"
 
 BEGIN_EVENT_TABLE(ElementsListCtrl, wxListCtrl)
   EVT_LIST_ITEM_SELECTED(ID_LISTCTRL_ELEMENTS, ElementsListCtrl::OnItemSelected)
@@ -20,8 +18,8 @@ ElementsListCtrl::ElementsListCtrl( wxWindow *parent ) :
   SetImageList( &m_imglist, wxIMAGE_LIST_SMALL );
   m_imglist.Add(wxArtProvider::GetBitmap(ART_ELEMENT_DISABLED, wxART_OTHER, wxSize(16,16)));
   m_imglist.Add(wxArtProvider::GetBitmap(ART_ELEMENT_ENABLED, wxART_OTHER, wxSize(16,16)));
-  m_imglist.Add(wxBitmap(elements_collection_title_xpm));
-  m_imglist.Add(wxBitmap(elements_collection_item_xpm));
+  m_imglist.Add(wxArtProvider::GetBitmap(ART_ELEMENTS_COLLECTION_TITLE, wxART_OTHER, wxSize(16,16)));
+  m_imglist.Add(wxArtProvider::GetBitmap(ART_ELEMENTS_COLLECTION_ITEM, wxART_OTHER, wxSize(16,16)));
 
   InsertColumn(0, wxEmptyString, wxLIST_FORMAT_LEFT, 20);
   InsertColumn(1, _("Name"), wxLIST_FORMAT_LEFT, 200);

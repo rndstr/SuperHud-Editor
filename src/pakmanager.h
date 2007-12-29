@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #include <wx/arrstr.h>
 #include <map>
+#include <list>
 
 typedef enum
 {
@@ -19,6 +20,11 @@ typedef enum
 
 const wxString PM_APPPAK_FILES = wxT("*.pke");
 
+/// when we want to browse a directory of the archives we also need to know in which
+/// pak the file can be found.
+/// so this maps the pakpath (/icons/rocket.tga) to the pakfile (c:\games\q3\baseq3\pak1.pk3)
+typedef std::map<wxString, wxString> pakbrowser_files_type;
+typedef std::list<wxString> pakbrowser_dirs_type;
 
 class PakManager
 {
@@ -51,12 +57,15 @@ class PakManager
     /// @arg psize Used to return the size the buffer had (if not interested submit 0)
     /// @arg search_type Where we look for the file (ePakManagerSearchWhere bitmask)
     /// @return True if file was found and successfully loaded, otherwise false
-    bool load( char **buf, const wxString& fpath, int search_where /*= PM_SEARCH_ALL*/, size_t *psize = 0 ); 
+    bool load( char **buf, const wxString& fpath, int search_where, size_t *psize = 0 ); 
 
     /// @arg buf Pointer to a buffer where the filecontents should be stored
     /// @arg location Is a valid filepath to be used with wxFileSystem::OpenFile
     /// @arg psize Used to return the size the buffer had (if not interested submit 0)
     static bool load_from_location( char **buf, const wxString& location, size_t *psize =0 );
+
+    /// we supply a path into the pakfiles (e.g. /icons/) and this enumerates all files/dirs in that path
+    void enumerate_pakdircontents( const wxString& pakpath, pakbrowser_dirs_type *dirs, pakbrowser_files_type *files, wxGauge *gauge = 0 ) const;
 
     /// Translates a filepath to an absolute location (that can be used within
     /// wxFileSystem). Checks absolute availability, mod dirs, base game data dir, 

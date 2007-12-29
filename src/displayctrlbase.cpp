@@ -1,5 +1,6 @@
 #include "displayctrlbase.h"
 #include "common.h"
+#include "prefs.h"
 
 BEGIN_EVENT_TABLE(DisplayCtrlBase, wxGLCanvas)
   EVT_IDLE(DisplayCtrlBase::OnIdle)
@@ -23,7 +24,7 @@ DisplayCtrlBase::~DisplayCtrlBase()
 
 void DisplayCtrlBase::OnPaint( wxPaintEvent& )
 {
-  wxLogDebug(wxT("DisplayCtrlBase::OnPaint"));
+  //wxLogDebug(wxT("DisplayCtrlBase::OnPaint"));
   // must always be here
   wxPaintDC dc(this);
 
@@ -92,7 +93,7 @@ void DisplayCtrlBase::prepare2d()
   double w = (double)GetSize().x;
   double h = (double)GetSize().y;
   GLdouble hudw = width(), hudh = height();
-  double aspectcorrect = (w/h)/Prefs::get().get_aspectratio();
+  double aspectcorrect = (w/h)/Prefs::get().var(wxT("aspectratio")).floatval();
   double empty; // how much space left/right or bottom/top has to be empty
 
   // topleft is 0,0

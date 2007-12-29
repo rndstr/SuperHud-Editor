@@ -5,7 +5,7 @@
 #include "elementbase.h"
 #include "misc.h"
 #include "mainframe.h"
-
+#include "prefs.h"
 
 
 #include <list>
@@ -104,53 +104,56 @@ void ElementsCtrlBase::list_refresh( const elements_type& elements )
   {
     append(*cit);
   }
-  // now insert collection items
-  
-  wxString collname;
-  int collcount = 0;
-  for( size_t i=1; i < elements.size(); ++i )
+
+
+  if( Prefs::get().var(wxT("elements_collections")) )
   {
-    if( elements[i]->name().Left(3) == elements[i-1]->name().Left(3) && elements[i]->name().Left(3) != collname)
-    { // we found at least two items, that's enough
-      collname = elements[i]->name().Left(3);
+    // now insert collection items
+    wxString collname;
+    int collcount = 0;
+    for( size_t i=1; i < elements.size(); ++i )
+    {
+      if( elements[i]->name().Left(3) == elements[i-1]->name().Left(3) && elements[i]->name().Left(3) != collname)
+      { // we found at least two items, that's enough
+        collname = elements[i]->name().Left(3);
 
-      // how many items belong to this collection?
-      size_t g;
-      for( g=i-1; g < elements.size(); ++g )
-      {
-        if( elements[g]->name().Left(3) != collname )
-          break;
-      }
-      // items [i-1,g-1] have same 3 starting characters
-      // maybe they share even more? figeur out
-      int minshare = 666;
-      m_listctrl->SetItem(i-1+collcount, 0, wxEmptyString, E_LIST_IMG_COLLITEM);
-      for( size_t h=i; h <= g-1; ++h )
-      {
-        m_listctrl->SetItem(h+collcount, 0, wxEmptyString, E_LIST_IMG_COLLITEM);
-        minshare = wxMin(common_start(elements[h]->name(), elements[h-1]->name()), minshare);
-      }
+        // how many items belong to this collection?
+        size_t g;
+        for( g=i-1; g < elements.size(); ++g )
+        {
+          if( elements[g]->name().Left(3) != collname )
+            break;
+        }
+        // items [i-1,g-1] have same 3 starting characters
+        // maybe they share even more? figeur out
+        int minshare = 666;
+        m_listctrl->SetItem(i-1+collcount, 0, wxEmptyString, E_LIST_IMG_COLLITEM);
+        for( size_t h=i; h <= g-1; ++h )
+        {
+          m_listctrl->SetItem(h+collcount, 0, wxEmptyString, E_LIST_IMG_COLLITEM);
+          minshare = wxMin(common_start(elements[h]->name(), elements[h-1]->name()), minshare);
+        }
 
-      // insert collection title
-      wxListItem li;
-      li.SetMask(wxLIST_MASK_TEXT);
-      li.SetId(i-1+collcount);
-      li.SetFont(*wxITALIC_FONT);
-      li.SetTextColour(wxColour(*wxWHITE));
-      li.SetBackgroundColour(wxColour(*wxBLACK));
-      
-      long idx = m_listctrl->InsertItem(li);
-      m_listctrl->SetItem(idx, 0, wxEmptyString, E_LIST_IMG_COLLTITLE);
-      collname = elements[i]->name().Left(minshare);
-      wxTrim(collname, wxT("_"));
-      m_listctrl->SetItem(idx, 1, collname, -1);
-      m_listctrl->SetItemData(idx, 0);
-      
-      ++collcount;
-      i = g-1; // skip over values we just put in a collection
+        // insert collection title
+        wxListItem li;
+        li.SetMask(wxLIST_MASK_TEXT);
+        li.SetId(i-1+collcount);
+        li.SetFont(*wxITALIC_FONT);
+        li.SetTextColour(wxColour(*wxWHITE));
+        li.SetBackgroundColour(wxColour(*wxBLACK));
+        
+        long idx = m_listctrl->InsertItem(li);
+        m_listctrl->SetItem(idx, 0, wxEmptyString, E_LIST_IMG_COLLTITLE);
+        collname = elements[i]->name().Left(minshare);
+        wxTrim(collname, wxT("_"));
+        m_listctrl->SetItem(idx, 1, collname, -1);
+        m_listctrl->SetItemData(idx, 0);
+        
+        ++collcount;
+        i = g-1; // skip over values we just put in a collection
+      }
     }
   }
-     
 }
 
 

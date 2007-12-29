@@ -4,6 +4,7 @@
 #include "../pakmanager.h"
 #include "../model.h"
 #include "../hudfilebase.h"
+#include "../prefs.h"
 
 #include <algorithm>
 
@@ -17,15 +18,12 @@ void CPMADisplayCtrl::load_background()
 {
   if( m_background )
     wxDELETE(m_background);
-  wxString bgfpath = Prefs::get().q3_background;
-  if( bgfpath.empty() )
-    bgfpath = wxT("cpma/imgs/background.jpg"); // FIXME what about path separator? :/
-  m_background = new Texture(bgfpath, PM_SEARCH_APPFILE, true);
+  m_background = new Texture(Prefs::get().var(wxT("q3_background")), PM_SEARCH_APPFILE, true);
 }
 
 void CPMADisplayCtrl::OnIdle( wxIdleEvent& )
 {
-  if( 0 == wxGetApp().mainframe()->model() )
+  if( !wxGetApp().mainframe() || !wxGetApp().mainframe()->model() )
     return;
 
   static wxLongLong last = 0;
@@ -58,7 +56,7 @@ void CPMADisplayCtrl::render()
 {
   static int count = 0;
   if(!IsShown()) return;
-  wxLogDebug(wxT("CPMADisplayCtrl::render"));
+  //wxLogDebug(wxT("CPMADisplayCtrl::render"));
 
   if( wxGetApp().mainframe()->model() )
   {
@@ -115,14 +113,14 @@ void CPMADisplayCtrl::render()
     glEnd();
     */
     
-    if( Prefs::get().grid )
+    if( Prefs::get().var(wxT("grid")) )
     {
       glDisable(GL_TEXTURE_2D);
       // grid
-      Prefs::get().grid_color.glBind();
+      Prefs::get().var(wxT("grid_color")).colorval().glBind();
       glBegin(GL_POINTS);
-      for( int x=0; x < WIDTH; x += Prefs::get().grid_x )
-        for( int y=0; y < HEIGHT; y += Prefs::get().grid_y )
+      for( int x=0; x < WIDTH; x += Prefs::get().var(wxT("grid_x")).intval() )
+        for( int y=0; y < HEIGHT; y += Prefs::get().var(wxT("grid_y")).intval() )
           glVertex2i(x, y);
       glEnd();
       glEnable(GL_TEXTURE_2D);

@@ -2,7 +2,6 @@
 #define __TEXTURE_H__
 
 #include "common.h"
-#include "tgaloader.h"
 
 class Texture
 {
@@ -17,7 +16,6 @@ class Texture
     virtual void glBind();
 
     static GLuint create_texture( wxImage& img, bool mipmap = false );
-    static GLuint create_texture( tgainfo_t *tga, bool mipmap =false );
     
 
   protected:
