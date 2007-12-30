@@ -135,16 +135,16 @@ void CPMADisplayCtrl::render()
     // draw nonselected
     for( cit_elements cit  = els.begin(); cit != els.end(); ++cit )
     {
-      if( !(*cit)->is_rendered() || wxGetApp().elementsctrl()->is_selected(*cit) )
+      if( !(*cit)->is_rendered() || (*cit)->is_selected() )
         continue;
-      render_helper( (*cit)->rect(), false );
+      render_helper( (*cit)->iget_rect(), false );
     }
     // draw selected
     for( cit_elements cit  = els.begin(); cit != els.end(); ++cit )
     {
-      if( !(*cit)->is_rendered() || !wxGetApp().elementsctrl()->is_selected(*cit) )
+      if( !(*cit)->is_rendered() || !(*cit)->is_selected() )
         continue;
-      render_helper( (*cit)->rect(), true );
+      render_helper( (*cit)->iget_rect(), true );
     }
 
   }

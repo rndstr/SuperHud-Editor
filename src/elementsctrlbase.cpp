@@ -7,6 +7,7 @@
 #include "mainframe.h"
 #include "prefs.h"
 
+#include <wx/dnd.h>
 
 #include <algorithm>
 
@@ -17,11 +18,130 @@
 BEGIN_EVENT_TABLE(ElementsCtrlBase, wxPanel)
   EVT_BUTTON(ID_BTN_COPY, ElementsCtrlBase::OnBtnCopy)
   EVT_BUTTON(ID_BTN_PASTE, ElementsCtrlBase::OnBtnPaste)
+
+  EVT_LIST_ITEM_SELECTED(ID_LISTCTRL_ELEMENTS, ElementsCtrlBase::OnItemSelected)
+  EVT_LIST_ITEM_DESELECTED(ID_LISTCTRL_ELEMENTS, ElementsCtrlBase::OnItemDeselected)
+  EVT_LIST_ITEM_ACTIVATED(ID_LISTCTRL_ELEMENTS, ElementsCtrlBase::OnItemActivated)
+  EVT_LIST_BEGIN_DRAG(ID_LISTCTRL_ELEMENTS, ElementsCtrlBase::OnBeginDrag)
 END_EVENT_TABLE()
 
 // begin wxGlade: ::extracode
 
 // end wxGlade
+
+// Note that this probably isn't the way it's supposed to be
+// we accept text although we are actually only accepting Elements.
+// but hey, ... we only need to know if there was a drop and then
+// move all selected elements to there. so if a user drops text here
+// from somewhere else it should be ok.
+class ListDrop : public wxTextDropTarget
+{
+  public:
+    ListDrop( ElementsListCtrl *list) : m_list(list) {}
+    virtual bool OnDropText(wxCoord x, wxCoord y, const wxString& data)
+    {
+      const elements_type& els = static_cast<ElementsCtrlBase*>(m_list->GetParent())->selected_elements();
+      if( 0 == els.size() )
+        return false; // no elements selected
+      int flags = wxLIST_HITTEST_BELOW;
+      long hit = hititem(x, y);
+      if( hit == wxNOT_FOUND )
+        return false; // the drop wasn't over an existing item
+
+      wxASSERT( m_list->GetItemData(hit) );
+
+      ElementBase *after = reinterpret_cast<ElementBase*>(m_list->GetItemData(hit));
+      // move all selected items after the one the cursor is over
+      for( size_t rev = els.size(); rev != 0; --rev )
+        wxGetApp().hudfile()->move_element_after( els[rev-1], after );
+
+      // TODO simple but expensive ;) hooray (doesn't flicker on MSW, checkcheck for GTK)
+      static_cast<ElementsCtrlBase*>(m_list->GetParent())->list_refresh(wxGetApp().hudfile()->elements());
+      // TODO reselect items :o
+      // TODO scroll to item
+
+      return true;
+    }
+
+    long hititem( wxCoord x, wxCoord y )
+    {
+      int flags = wxLIST_HITTEST_BELOW;
+      long hit = m_list->HitTest(wxPoint(x, y), flags);
+      if( hit == wxNOT_FOUND )
+        return wxNOT_FOUND;
+#if 1 // does not allow to drop on collection
+      if( !m_list->GetItemData(hit) )
+        return wxNOT_FOUND; // collection
+
+#else // we can drop onto collections (although it just picks the item before, maybe it just be the one after though anyway)
+      // skip collectiontitles backwards
+      while( hit >= 0 && !m_list->GetItemData(hit) )
+        --hit;
+      wxASSERT( m_list->GetItemData(hit) || hit < 0 );
+      if( hit < 0 )
+        return wxNOT_FOUND; // there are no more items
+#endif
+      return hit;
+    }
+    virtual wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def)
+    {
+      // if cursor is at top or bottom position while dragging we scroll
+      
+      wxRect rh;
+      m_list->GetItemRect(0, rh, wxLIST_RECT_BOUNDS); // just figure out what the boundaries are to snap/scroll
+      wxSize s = m_list->GetSize();
+      int scroll = rh.GetHeight();
+      int snap = rh.GetHeight()*2;
+      if( y < snap )
+        m_list->ScrollList(0, -scroll);
+      else if( y > s.y - snap )
+        m_list->ScrollList(0, scroll);
+
+      // write in statusbar as long as we don't have a visual indication where it's inserted :x
+      long hit = hititem(x, y);
+      
+      if( hit == wxNOT_FOUND )
+      {
+        wxGetApp().mainframe()->statusbar()->SetStatusText(_("Can't drop on collection"), (SB_MSG));
+        return wxDragNone;
+      }
+      else
+      {
+        wxListItem info;
+        info.m_mask = wxLIST_MASK_TEXT;
+        info.m_col = 1;
+        info.m_itemId = hit;
+        if( m_list->GetItem(info) )
+          wxGetApp().mainframe()->statusbar()->SetStatusText(_("Insert after: ") + info.m_text, (SB_MSG));
+      }
+
+      // draw a line where we are to insert the element(s)
+      // FIXME this does leave some lines drawn :/
+      /*
+      static wxRect bound;
+      static bool drawn = false;
+
+      wxClientDC dc(m_list);
+      dc.SetPen(*wxBLACK_PEN);
+      if( drawn )
+      { // only reset if it was drawn
+        dc.SetLogicalFunction( wxINVERT );
+        dc.DrawLine( bound.GetLeft(), bound.GetBottom(), bound.GetRight(), bound.GetBottom());
+        drawn = false;
+      }
+      if( hit != wxNOT_FOUND )
+      {
+        m_list->GetItemRect(hit, bound, wxLIST_RECT_BOUNDS);
+        dc.SetLogicalFunction( wxCLEAR);
+        dc.DrawLine( bound.GetLeft(), bound.GetBottom(), bound.GetRight(), bound.GetBottom());
+        drawn = true;
+      }
+      */
+      return wxTextDropTarget::OnDragOver(x, y, def);
+    }
+  private:
+    ElementsListCtrl *m_list;
+};
 
 
 
@@ -31,7 +151,7 @@ ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos,
     wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL)
 {
   /* FIXMEHERE
-    m_listctrl = new ElementsListCtrl(this);
+    m_list = new ElementsListCtrl(this);
     m_btn_copy = new wxBitmapButton( this, ID_BTN_COPY, wxArtProvider::GetBitmap(ART_ELEMENT_COPY, wxART_BUTTON, wxSize(16,16)) );
     m_btn_paste = new wxBitmapButton( this, ID_BTN_PASTE, wxArtProvider::GetBitmap(ART_ELEMENT_PASTE, wxART_BUTTON, wxSize(16,16)) );
   */
@@ -39,13 +159,15 @@ ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos,
     m_btn_insertdefault = new wxButton(this, ID_BTN_INSERTDEFAULT, wxT("+ !DEFAULT"));
     m_btn_insertpredecorate = new wxButton(this, ID_BTN_INSERTPREDECORATE, wxT("+ PreDecorate"));
     m_btn_insertpostdecorate = new wxButton(this, ID_BTN_INSERTPOSTDECORATE, wxT("+ PostDecorate"));
-    m_listctrl = new ElementsListCtrl(this);
+    m_list = new ElementsListCtrl(this);
     m_btn_copy = new wxBitmapButton( this, ID_BTN_COPY, wxArtProvider::GetBitmap(ART_ELEMENT_COPY, wxART_BUTTON, wxSize(16,16)) );
     m_btn_paste = new wxBitmapButton( this, ID_BTN_PASTE, wxArtProvider::GetBitmap(ART_ELEMENT_PASTE, wxART_BUTTON, wxSize(16,16)) );
 
     set_properties();
     do_layout();
     // end wxGlade
+    ListDrop *ld = new ListDrop(m_list);
+    m_list->SetDropTarget(ld);
 }
 
 void ElementsCtrlBase::set_properties()
@@ -73,7 +195,7 @@ void ElementsCtrlBase::do_layout()
     sizer_1->Add(m_btn_insertpredecorate, 0, 0, 0);
     sizer_1->Add(m_btn_insertpostdecorate, 0, 0, 0);
     sizer_3->Add(sizer_1, 0, wxEXPAND, 0);
-    sizer_3->Add(m_listctrl, 1, wxEXPAND, 0);
+    sizer_3->Add(m_list, 1, wxEXPAND, 0);
     sizer_4->Add(m_btn_copy, 0, 0, 0);
     sizer_4->Add(m_btn_paste, 0, 0, 0);
     sizer_3->Add(sizer_4, 0, wxEXPAND, 0);
@@ -86,14 +208,14 @@ void ElementsCtrlBase::do_layout()
 
 void ElementsCtrlBase::append( ElementBase *el )
 {
-  long idx = m_listctrl->InsertItem(m_listctrl->GetItemCount(), wxEmptyString, -1);
-  m_listctrl->SetItem( idx, 1, el->name(), (el->is_enabled() ? E_LIST_IMG_ENABLED : E_LIST_IMG_DISABLED));
-  m_listctrl->SetItemData( idx, (long)(el) );
+  long idx = m_list->InsertItem(m_list->GetItemCount(), wxEmptyString, -1);
+  m_list->SetItem( idx, 1, el->name(), (el->is_enabled() ? E_LIST_IMG_ENABLED : E_LIST_IMG_DISABLED));
+  m_list->SetItemData( idx, (long)(el) );
 }
 
 void ElementsCtrlBase::clear()
 {
-  m_listctrl->DeleteAllItems();
+  m_list->DeleteAllItems();
 }
 
 void ElementsCtrlBase::list_refresh( const elements_type& elements )
@@ -126,10 +248,10 @@ void ElementsCtrlBase::list_refresh( const elements_type& elements )
         // items [i-1,g-1] have same 3 starting characters
         // maybe they share even more? figeur out
         int minshare = 666;
-        m_listctrl->SetItem(i-1+collcount, 0, wxEmptyString, E_LIST_IMG_COLLITEM);
+        m_list->SetItem(i-1+collcount, 0, wxEmptyString, E_LIST_IMG_COLLITEM);
         for( size_t h=i; h <= g-1; ++h )
         {
-          m_listctrl->SetItem(h+collcount, 0, wxEmptyString, E_LIST_IMG_COLLITEM);
+          m_list->SetItem(h+collcount, 0, wxEmptyString, E_LIST_IMG_COLLITEM);
           minshare = wxMin(common_start(elements[h]->name(), elements[h-1]->name()), minshare);
         }
 
@@ -141,12 +263,12 @@ void ElementsCtrlBase::list_refresh( const elements_type& elements )
         li.SetTextColour(wxColour(*wxWHITE));
         li.SetBackgroundColour(wxColour(*wxBLACK));
         
-        long idx = m_listctrl->InsertItem(li);
-        m_listctrl->SetItem(idx, 0, wxEmptyString, E_LIST_IMG_COLLTITLE);
+        long idx = m_list->InsertItem(li);
+        m_list->SetItem(idx, 0, wxEmptyString, E_LIST_IMG_COLLTITLE);
         collname = elements[i]->name().Left(minshare);
         wxTrim(collname, wxT("_"));
-        m_listctrl->SetItem(idx, 1, collname, -1);
-        m_listctrl->SetItemData(idx, 0);
+        m_list->SetItem(idx, 1, collname, -1);
+        m_list->SetItemData(idx, 0);
         
         ++collcount;
         i = g-1; // skip over values we just put in a collection
@@ -166,6 +288,62 @@ void ElementsCtrlBase::OnBtnPaste( wxCommandEvent& )
   wxLogDebug(wxT("paste"));
 }
 
+void ElementsCtrlBase::OnItemDeselected( wxListEvent& ev )
+{
+  OnSelectionChanged();
+}
+
+void ElementsCtrlBase::OnItemSelected( wxListEvent& ev )
+{
+  OnSelectionChanged();
+}
+
+void ElementsCtrlBase::OnItemActivated( wxListEvent& ev )
+{
+  elements_type& els = selected_elements();
+  indecies_type& idx = selected_indecies();
+  ElementBase *pel = 0;
+  cit_indecies idxit = idx.begin();
+  for( it_elements it = els.begin(); it != els.end(); ++it, ++idxit )
+  {
+    (*it)->set_enabled( !(*it)->is_enabled() ); // toggle
+    update_item(*idxit, *it);
+  }
+  wxGetApp().hudfile()->set_modified();
+  // trigger update of other views relying on properties
+
+  // propagate
+  wxGetApp().mainframe()->OnPropertiesChanged();
+}
+
+void ElementsCtrlBase::OnBeginDrag( wxListEvent& ev )
+{
+  ev.Allow();
+  wxGetApp().mainframe()->statusbar()->PushStatusText(_("Drag&Drop"), SB_MSG);
+  wxTextDataObject my_data(wxT("ruelps"));
+  wxDropSource dragSource( this );
+	dragSource.SetData( my_data );
+	wxDragResult result = dragSource.DoDragDrop( TRUE );
+  /*
+  wxString pc;
+  switch ( result )
+        {
+            case wxDragError:   pc = _T("Error!");    break;
+            case wxDragNone:    pc = _T("Nothing");   break;
+            case wxDragCopy:    pc = _T("Copied");    break;
+            case wxDragMove:    pc = _T("Moved");     break;
+            case wxDragCancel:  pc = _T("Cancelled"); break;
+            default:            pc = _T("Huh?");      break;
+  }
+  wxLogDebug(pc);
+  */
+  wxGetApp().mainframe()->statusbar()->PopStatusText(SB_MSG);
+}
+
+
+
+
+
 void ElementsCtrlBase::update_selection()
 {
   m_selidx.clear();
@@ -175,7 +353,7 @@ void ElementsCtrlBase::update_selection()
   wxListItem info;
   for ( ;; )
   {
-    idx = m_listctrl->GetNextItem(idx, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+    idx = m_list->GetNextItem(idx, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     if ( idx == -1 )
         break;
     // this item is selected
@@ -184,9 +362,9 @@ void ElementsCtrlBase::update_selection()
     info.m_mask = wxLIST_MASK_TEXT;
     info.m_col = 1;
     info.m_itemId = idx;
-    if( m_listctrl->GetItem(info) )
+    if( m_list->GetItem(info) )
     {
-      if( m_listctrl->GetItemData(idx) )
+      if( m_list->GetItemData(idx) )
       { // a real element
         m_selidx.push_back(idx);
       }
@@ -194,12 +372,12 @@ void ElementsCtrlBase::update_selection()
       { // collection item, get all following items with same text
         wxString collname = info.GetText();
         int i = idx+1;
-        while( i < m_listctrl->GetItemCount() )
+        while( i < m_list->GetItemCount() )
         {
           info.m_mask = wxLIST_MASK_TEXT;
           info.m_col = 1;
           info.m_itemId = i;
-          if( !m_listctrl->GetItem(info) )
+          if( !m_list->GetItem(info) )
             break;
           if( info.GetText().StartsWith(collname) )
             m_selidx.push_back(i);
@@ -220,9 +398,9 @@ void ElementsCtrlBase::update_selection()
     info.m_mask = wxLIST_MASK_TEXT;
     info.m_col = 1;
     info.m_itemId = *cit;
-    if( m_listctrl->GetItem(info) && m_listctrl->GetItemData(*cit) )
+    if( m_list->GetItem(info) && m_list->GetItemData(*cit) )
     {
-      ElementBase *el = reinterpret_cast<ElementBase*>(m_listctrl->GetItemData(*cit));
+      ElementBase *el = reinterpret_cast<ElementBase*>(m_list->GetItemData(*cit));
       m_selels.push_back(el);
     }
   }  
@@ -259,3 +437,67 @@ void ElementsCtrlBase::OnSelectionChanged()
   wxGetApp().mainframe()->OnElementSelectionChanged();
 }
 
+
+long ElementsCtrlBase::index_by_pointer( const ElementBase* const el ) const
+{
+  long idx = wxNOT_FOUND;
+  wxListItem info;
+  for ( ;; )
+  {
+    idx = m_list->GetNextItem(idx, wxLIST_NEXT_ALL, wxLIST_STATE_DONTCARE);
+    if ( idx == -1 || m_list->GetItemData(idx) == reinterpret_cast<const wxUIntPtr>(el) )
+      break;
+  }
+  return idx;
+}
+
+
+bool ElementsCtrlBase::update_item( long idx, const ElementBase *pel )
+{
+  if( !pel )
+  { // no element pointer supplied, fetch from list itemdata
+    if( !m_list->GetItemData(idx) )
+      return false;
+    pel = reinterpret_cast<const ElementBase*>(m_list->GetItemData(idx));
+  }
+  wxASSERT(pel != 0);
+  wxListItem info;
+  info.m_mask = wxLIST_MASK_IMAGE;
+  info.m_col = 1;
+  info.m_itemId = idx;
+  info.m_image = (pel->is_enabled() ? E_LIST_IMG_ENABLED : E_LIST_IMG_DISABLED);
+  m_list->SetItem( info );
+  return true;
+}
+
+bool ElementsCtrlBase::update_item( const ElementBase* const pel )
+{
+  // look for item index
+  long idx = index_by_pointer(pel);
+  if( idx == wxNOT_FOUND )
+    return false;
+  return update_item(idx, pel);
+}
+
+
+void ElementsCtrlBase::select_item( const ElementBase* const pel, bool select /*=true*/ )
+{
+  long idx = index_by_pointer(pel);
+  if( idx == wxNOT_FOUND )
+    return;
+  m_list->SetItemState(idx, (select ? wxLIST_STATE_SELECTED : 0), wxLIST_STATE_SELECTED);
+}
+void ElementsCtrlBase::select_item( long idx, bool select /*=true*/ )
+{
+  if( idx == wxNOT_FOUND )
+    return;
+  m_list->SetItemState(idx, (select ? wxLIST_STATE_SELECTED : 0), wxLIST_STATE_SELECTED);
+}
+
+void ElementsCtrlBase::deselect_all()
+{
+  // TODO just ignore deselect events during this operation otherwise with each deselect we enumerate all rest selection oO
+  //for( it_indecies cit = m_selidx.begin(); cit != m_selidx.end(); ++cit )
+  for( int i=0; i < m_list->GetItemCount(); ++i )
+    m_list->SetItemState(i, 0, wxLIST_STATE_SELECTED);
+}

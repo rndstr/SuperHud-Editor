@@ -226,8 +226,6 @@ void MainFrame::OnMenuAbout( wxCommandEvent& )
   info.SetCopyright(wxT("(C) 2007 Roland Schilter <rolansch@ethz.ch>"));
    //wxAboutBox(info);
 
-  m_displayctrl->SetFocus();
-
   /*
   m_model = new Model();
   m_model->load_mde(wxT("model/dfegg.mde"), PM_SEARCH_APPFILE);

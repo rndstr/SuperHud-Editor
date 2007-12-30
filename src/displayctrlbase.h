@@ -3,6 +3,15 @@
 
 #include "glcanvasbase.h"
 #include "texture.h"
+#include <wx/gdicmn.h>
+
+typedef enum {
+  DRAG_NONE = 0,
+  DRAG_START = 1,
+  DRAG_DRAGGING = 2
+} eDragMode;
+
+class ElementBase;
 
 class DisplayCtrlBase : public wxGLCanvas
 {
@@ -18,13 +27,20 @@ class DisplayCtrlBase : public wxGLCanvas
 
     void render_helper( const wxRect& rect, bool selected = false ) const;
 
-    /// finds the item at that point
-    //ElementBase*    hititem( const wxPoint& pos );
+    /// finds the item(s) at that point
+    /// @arg p The point where we are looking for items
+    /// @arg toggle If true and we click on a point where several items underlay then we switch to next one, otherwise we keep it.
+    ElementBase*    element_hittest( const wxPoint& p, bool toggle = true );
 
   protected:
     bool      m_initialized;
     Texture   *m_background;
     wxRect    m_hudrect;
+
+    ElementBase *m_drag_el;
+    eDragMode m_drag_mode;
+    wxPoint   m_drag_start; ///< mouse position when we started dragging
+    wxPoint   m_drag_elpos; //?, element position when we started dragging
 
     virtual void OnIdle( wxIdleEvent& );
     void OnSize( wxSizeEvent& );

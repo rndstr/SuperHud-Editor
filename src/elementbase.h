@@ -99,6 +99,7 @@ class ElementBase
     void            remove_has( int has ) { m_has &= ~has; }
     bool            is_enabled() const { return (m_flags & E_ENABLEALWAYS ? true : m_enabled); }
     void            set_enabled(bool en = true) { m_enabled = en; }
+    bool            is_selected() const;
     wxRect          rect() const { return m_rect; }
     void            set_rect( const wxRect& r ) { m_rect = r; }
 

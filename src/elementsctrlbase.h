@@ -26,9 +26,6 @@ typedef indecies_type::const_iterator cit_indecies;
 class ElementsCtrlBase: public wxPanel
 {
   public:
-    
-
-  public:
     // begin wxGlade: ElementsCtrlBase::ids
     // end wxGlade
 
@@ -42,14 +39,24 @@ class ElementsCtrlBase: public wxPanel
     virtual void OnSelectionChanged();
     //virtual void OnMouseDClick( wxMouseEvent& ev );
 
-    ElementsListCtrl* elementslistctrl() { return m_listctrl; }
+    ElementsListCtrl* listctrl() { return m_list; }
 
     indecies_type&  selected_indecies() { return m_selidx; }
     elements_type&  selected_elements() { return m_selels; }
 
-    bool            is_selected( const ElementBase* const el) const;
+    /// Searches through the list for item with data pointing to the element pel
+    /// and updates it accordingly
+    bool          update_item( const ElementBase *pel );
+
+    void          select_item( const ElementBase* const pel, bool select = true );
+    void          select_item( long idx, bool select =true );
+    void          deselect_all();
+    bool          is_selected( const ElementBase* const el) const;
+
+    
 
   protected:
+    
     /// an ordered list (by idx) of selected indecies
     indecies_type   m_selidx;
     /// an ordered list (by idx) of selected elements
@@ -62,6 +69,16 @@ class ElementsCtrlBase: public wxPanel
   private:
     void OnBtnCopy( wxCommandEvent& );
     void OnBtnPaste( wxCommandEvent& );
+    void          OnItemSelected( wxListEvent& ev );
+    void          OnItemDeselected( wxListEvent& ev );
+    void          OnItemActivated( wxListEvent& ev );
+    void          OnBeginDrag( wxListEvent& );
+    long          index_by_pointer( const ElementBase* const el ) const;
+
+
+    /// @arg idx The item index in the list we want to update according to pel
+    /// @arg pel If this is 0 then we fetch the data ourselves (GetItemData of the idx-th item in list)
+    bool          update_item( long idx, const ElementBase* const pel );
 
 private:
     // begin wxGlade: ElementsCtrlBase::methods
@@ -74,12 +91,12 @@ protected:
     wxButton* m_btn_insertdefault;
     wxButton* m_btn_insertpredecorate;
     wxButton* m_btn_insertpostdecorate;
-    ElementsListCtrl* m_listctrl;
+    ElementsListCtrl* m_list;
     wxBitmapButton* m_btn_copy;
     wxBitmapButton* m_btn_paste;
     // end wxGlade
     /* FIXMEHERE
-    ElementsListCtrl* m_listctrl;
+    ElementsListCtrl* m_list;
     */
 
     DECLARE_EVENT_TABLE()

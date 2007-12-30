@@ -57,3 +57,9 @@ bool ElementBase::is_rendered() const
     return true;
   return is_enabled();
 }
+
+#include "elementsctrlbase.h"
+bool ElementBase::is_selected() const
+{
+  return wxGetApp().elementsctrl()->is_selected(this);
+}

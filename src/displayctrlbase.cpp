@@ -1,6 +1,8 @@
 #include "displayctrlbase.h"
 #include "common.h"
 #include "prefs.h"
+#include "hudfilebase.h"
+#include "elementsctrlbase.h"
 
 BEGIN_EVENT_TABLE(DisplayCtrlBase, wxGLCanvas)
   EVT_IDLE(DisplayCtrlBase::OnIdle)
@@ -24,8 +26,6 @@ DisplayCtrlBase::~DisplayCtrlBase()
 
 void DisplayCtrlBase::OnPaint( wxPaintEvent& )
 {
-  //wxLogDebug(wxT("DisplayCtrlBase::OnPaint"));
-  // must always be here
   wxPaintDC dc(this);
 
 #ifndef __WXMOTIF__
@@ -63,13 +63,159 @@ void DisplayCtrlBase::OnIdle( wxIdleEvent& )
 
 }
 
+ElementBase* DisplayCtrlBase::element_hittest( const wxPoint& p, bool toggle /*=true*/ )
+{
+  const elements_type els = wxGetApp().hudfile()->elements();
+  elements_type inside;
+  for( cit_elements cit = els.begin(); cit != els.end(); ++cit )
+  {
+#if wxCHECK_VERSION(2,8,0)
+    if( (*cit)->is_rendered() && (*cit)->rect().Contains( p.x, p.y ) )
+#else // 2.7 2.6
+    if( (*cit)->is_rendered() && (*cit)->rect().Inside( p.x, p.y ) )
+#endif
+      inside.push_back( *cit );
+  }
+
+  if( !inside.size() )
+    return 0;
+  if( inside.size() == 1)
+    return inside[0]; // there is only one hence no toggling anyway
+
+  // check if one of them is already selected.
+  ElementBase *selected = 0;
+  for( cit_elements it = inside.begin(); it != inside.end(); ++it )
+  {
+    if( (*it)->is_selected() )
+    {
+      selected = *it;
+      if( !toggle )
+        return selected;
+    }
+    else
+    {
+      if( selected != 0 )
+      { // there was one previously selected, next (=current) is an der reihe
+        return *it;
+      }
+    }
+  }
+  return inside[0];
+}
+
 void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
 {
+  // upon LeftDown, whether the element was already selected previously!
+  // important for LeftUp to know if we have to toggle or not (otherwise 
+  // LeftDown selects one and LeftUp toggles even if there wasn't a selection before)
+  static bool selected_on_ldown = false; 
+
   wxPoint clientpos = DisplayCtrlBase::panel_to_hud(ev.GetPosition());
   wxGetApp().mainframe()->statusbar()->SetStatusText(wxString::Format(wxT("(%i,%i)"), clientpos.x, clientpos.y), SB_MOUSEPOS);
+
+  // capture focus (to enable moving with keys)
   if( ev.ButtonDown() )
     SetFocus();
 
+  if( ev.ControlDown() )
+  {
+    ElementBase *el = element_hittest(clientpos, false);
+    if( el ) // toggle selection
+      wxGetApp().elementsctrl()->select_item(el, !el->is_selected());
+  }
+  else // !ControlDown
+  {
+    if( ev.LeftDown() )
+    {
+      // if user clicks on an element he already has selected:
+      //  - if there are several items on this point, hi == selected item.
+      //  - 
+      // if not 0 this will be:
+      //  a) if no item at clientpos which has already been selected: the first item (from the item vector in Hud) will be returned
+      //  b) if an item has already been selected: exactly that one.
+      ElementBase *el = element_hittest(clientpos, false);
+      if( el )
+      {
+        
+        selected_on_ldown = el->is_selected();
+        // only change anything if not yet selected
+        if( !selected_on_ldown )
+        {
+          wxGetApp().elementsctrl()->deselect_all();
+          wxGetApp().elementsctrl()->select_item(el);
+        }
+        // prepare for dragging
+        m_drag_el = el; // note that there might be other elements.. we just only store this one as we do the snapping with it
+        m_drag_start = clientpos;
+        m_drag_elpos = el->iget_rect().GetPosition();
+        m_drag_mode = DRAG_START;
+        
+        /*
+        m_drag_itempt = hi->get_rect().GetPosition();
+        */
+      }
+      else
+      {
+        wxGetApp().elementsctrl()->deselect_all();
+        m_drag_el = 0;
+        m_drag_mode = DRAG_NONE;
+      }
+    }
+    else if( ev.Dragging() && ev.LeftIsDown() && m_drag_el != 0 )
+    {
+      if( m_drag_mode == DRAG_START )
+      { // initialize
+        m_drag_mode = DRAG_DRAGGING;
+        // fix m_drag_start to point lefttop
+        if( ~m_drag_el->has() & E_HAS_RECT )
+        {
+          // if we drag it around then we modify the inherited value...
+          // hence we copy the inherited rect and set it as overwriting.
+          m_drag_el->set_rect(m_drag_el->iget_rect());
+          m_drag_el->add_has(E_HAS_RECT);
+          // update properties
+          // FIXME that isn't entirely true.. it's rather OnElementPropertiesChanged but it does the trick for now :x
+          wxGetApp().mainframe()->OnElementSelectionChanged();
+        }
+      }
+      else if( m_drag_mode = DRAG_DRAGGING )
+      {
+        wxRect r = m_drag_el->rect(); // wxASSERT(same as iget_rect())
+        r.SetPosition(clientpos - (m_drag_start - m_drag_elpos));
+        m_drag_el->set_rect(r);
+        wxGetApp().mainframe()->OnElementSelectionChanged();
+      }
+    }
+    else if( ev.LeftUp() )
+    {
+      int i=2;
+      if( m_drag_mode != DRAG_DRAGGING )
+      {
+        // only toggle if it was already selected previously
+        ElementBase *el = element_hittest( clientpos, selected_on_ldown );
+        if( el != 0 && !el->is_selected() )
+        {
+          wxGetApp().elementsctrl()->deselect_all();
+          wxGetApp().elementsctrl()->select_item(el);
+        }
+      }
+      else if( m_drag_mode == DRAG_DRAGGING )
+      {
+        // move it back to starting position and then issue the whole operation.
+        /*
+        m_drag_el->m_rect.SetPosition( m_drag_itempt );
+        wxGetApp().cmds()->Submit( new MoveToCommand( m_drag_hi, m_drag_realpt ) );
+
+        wxRect r = m_drag_hi->get_client_rect();
+        wxGetApp().get_frame()->get_statusbar()->SetStatusText( 
+          m_drag_hi->get_name() + wxString::Format(wxT(" @ (%i,%i)-(%i,%i)"), r.GetLeft(), r.GetTop(), r.GetRight(), r.GetBottom()),
+          SB_DRAGDROP);
+          */
+      }
+      m_drag_mode = DRAG_NONE;
+      m_drag_el = 0;
+    }
+  } // if ControlDown
 }
 
 void DisplayCtrlBase::reset_projection_mode()

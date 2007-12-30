@@ -95,7 +95,7 @@ void VisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
     if( !(el->m_has & E_HAS_RECT) )
     { // user was starting to edit while seeing the inherited values, copy them over
       el->m_rect = el->iget_rect();
-      SetPropertyValue( wxT("overwrite-rect"), true );
+      //SetPropertyValue( wxT("overwrite-rect"), true );
       el->m_has |= E_HAS_RECT;
     }
     if( name == wxT("X") )
@@ -142,32 +142,11 @@ void VisibilityPropertiesCtrl::update_layout()
     return;
   }
   ElementBase *el = p->curel();
-/*
-  
-  if( el->has() & E_HAS_RECT )
-  {
-    SetPropertyTextColour( wxT("X"), PROPS_COLOR_NORMAL );
-    SetPropertyBackgroundColour( wxT("X"), PROPS_BGCOLOR_NORMAL );
-    SetPropertyTextColour( wxT("Y"), PROPS_COLOR_NORMAL );
-    SetPropertyBackgroundColour( wxT("Y"), PROPS_BGCOLOR_NORMAL );
-    SetPropertyTextColour( wxT("width"), PROPS_COLOR_NORMAL );
-    SetPropertyBackgroundColour( wxT("width"), PROPS_BGCOLOR_NORMAL );
-    SetPropertyTextColour( wxT("height"), PROPS_COLOR_NORMAL );
-    SetPropertyBackgroundColour( wxT("height"), PROPS_BGCOLOR_NORMAL );
-  }
-  else
-  {
-    SetPropertyTextColour( wxT("X"), PROPS_COLOR_INHERITED );
-    SetPropertyBackgroundColour( wxT("X"), PROPS_BGCOLOR_INHERITED );
-    SetPropertyTextColour( wxT("Y"), PROPS_COLOR_INHERITED );
-    SetPropertyBackgroundColour( wxT("Y"), PROPS_BGCOLOR_INHERITED );
-    SetPropertyTextColour( wxT("width"), PROPS_COLOR_INHERITED );
-    SetPropertyBackgroundColour( wxT("width"), PROPS_BGCOLOR_INHERITED );
-    SetPropertyTextColour( wxT("height"), PROPS_COLOR_INHERITED );
-    SetPropertyBackgroundColour( wxT("height"), PROPS_BGCOLOR_INHERITED );
-  }
-  */
-  
+
+  property_defines( wxT("X"), (el->has() & E_HAS_RECT)!=0 );
+  property_defines( wxT("Y"), (el->has() & E_HAS_RECT)!=0 );
+  property_defines( wxT("width"), (el->has() & E_HAS_RECT)!=0 );
+  property_defines( wxT("height"), (el->has() & E_HAS_RECT)!=0 );
 }
 
 void VisibilityPropertiesCtrl::OnElementVisibility( wxCommandEvent& ev )
@@ -182,7 +161,7 @@ void VisibilityPropertiesCtrl::OnElementVisibility( wxCommandEvent& ev )
   el->set_enabled( ev.GetId() == ID_BTN_ELEMENT_ENABLE );
 
   // -- update elementicon in list
-  wxGetApp().mainframe()->elementsctrl()->elementslistctrl()->update_item(el);
+  wxGetApp().mainframe()->elementsctrl()->update_item(el);
 
   wxGetApp().mainframe()->OnPropertiesChanged();
 }

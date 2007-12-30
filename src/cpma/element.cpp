@@ -300,37 +300,7 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
   }
   else if( m_has & E_HAS_IMAGE )
     lines.push_back(wxT("image \"") + m_image + wxT("\""));
-  /*
-  if( m_ismodel )
-  {
-    if( m_has & E_HAS_MODEL )
-      lines.push_back(wxT("model \"") + m_model + wxT("\""));
-    if( m_has & E_HAS_SKIN )
-      lines.push_back(wxT("image \"") + m_skin + wxT("\""));
-    if( m_has & E_HAS_OFFSET )
-    {
-      wxString offset = wxT("offset ") + pretty_print_float(m_offset_x) + wxT(" ") + 
-        pretty_print_float(m_offset_y) + wxT(" ") +
-        pretty_print_float(m_offset_z);
-      lines.push_back( offset );
-    }
-    if( m_has & E_HAS_ANGLES )
-    {
-      wxString angles = wxT("angles ") + pretty_print_float(m_angles_pitch) + wxT(" ") + 
-        pretty_print_float(m_angles_yaw) + wxT(" ") +
-        pretty_print_float(m_angles_roll);
-      if( m_angles_pan != 0.f )
-        angles += wxT(" ") + pretty_print_float(m_angles_pan);
-      lines.push_back( angles );
-    }
-    
-  }
-  else
-  {
-    if( m_has & E_HAS_IMAGE )
-      lines.push_back(wxT("image \"") + m_image + wxT("\""));
-  }
-  */
+
 
   if( m_flags & E_SHORT )
   {
@@ -599,8 +569,9 @@ int CPMAElement::angle(int which) const
 }
 void CPMAElement::render() const
 {
-  wxLogDebug(wxT("RENDER ") + m_name);
+//  wxLogDebug(wxT("RENDER ") + m_name);
   bool hasownbg = true;
+  wxRect r = iget_rect();
 
   switch( m_type )
   {
@@ -610,7 +581,7 @@ void CPMAElement::render() const
       color.glBind();
       if( iget_doublebar() )
       {
-        wxRect top(m_rect), bottom(m_rect);
+        wxRect top(r), bottom(r);
         top.height = top.height/2-2;
         bottom.height = top.height;
         bottom.y += bottom.height+4;
@@ -618,7 +589,7 @@ void CPMAElement::render() const
         draw_rect(top);(bottom);
       }
       else
-        draw_rect(m_rect);
+        draw_rect(r);
     }
     break;
 
