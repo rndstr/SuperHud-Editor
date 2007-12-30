@@ -67,6 +67,8 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
 {
   wxPoint clientpos = DisplayCtrlBase::panel_to_hud(ev.GetPosition());
   wxGetApp().mainframe()->statusbar()->SetStatusText(wxString::Format(wxT("(%i,%i)"), clientpos.x, clientpos.y), SB_MOUSEPOS);
+  if( ev.ButtonDown() )
+    SetFocus();
 
 }
 
