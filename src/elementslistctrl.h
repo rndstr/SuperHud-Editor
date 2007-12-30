@@ -14,6 +14,13 @@ enum
   E_LIST_IMG_COLLITEM = 3
 };
 
+
+
+
+
+
+
+
 /// adapted wxListCtrl that adds behaviour 
 /// for use on hud elements list
 class ElementsListCtrl : public wxListCtrl
@@ -22,6 +29,8 @@ class ElementsListCtrl : public wxListCtrl
     ElementsListCtrl( wxWindow *parent );
     virtual ~ElementsListCtrl() {}
 
+    /// Searches through the list for item with data pointing to the element pel
+    /// and updates it accordingly
     bool          update_item( const ElementBase *pel );
 
 
@@ -29,6 +38,9 @@ class ElementsListCtrl : public wxListCtrl
     void          OnItemSelected( wxListEvent& ev );
     void          OnItemDeselected( wxListEvent& ev );
     void          OnItemActivated( wxListEvent& ev );
+    void          OnBeginDrag( wxListEvent& );
+    /// @arg idx The item index in the list we want to update according to pel
+    /// @arg pel If this is 0 then we fetch the data ourselves (GetItemData of the idx-th item in list)
     bool          update_item( long idx, const ElementBase *pel );
       
     

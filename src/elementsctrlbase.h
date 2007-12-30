@@ -48,7 +48,9 @@ class ElementsCtrlBase: public wxPanel
     elements_type&  selected_elements() { return m_selels; }
 
   protected:
+    /// an ordered list (by idx) of selected indecies
     indecies_type   m_selidx;
+    /// an ordered list (by idx) of selected elements
     elements_type   m_selels;
 
     /// update m_selidx and m_selels according to current selection

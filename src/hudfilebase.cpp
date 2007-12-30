@@ -133,6 +133,8 @@ ElementBase* HudFileBase::find_element( const wxString& name )
 
 bool HudFileBase::move_element_after( ElementBase *el, ElementBase *after )
 {
+  if( el == after )
+    return true;
   it_elements el_it = find( m_els.begin(), m_els.end(), el );
   if( el_it == m_els.end() )
     return false; // element to move not found

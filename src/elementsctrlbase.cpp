@@ -187,7 +187,6 @@ void ElementsCtrlBase::update_selection()
     info.m_itemId = idx;
     if( m_listctrl->GetItem(info) )
     {
-      //if( info.GetData() )
       if( m_listctrl->GetItemData(idx) )
       { // a real element
         m_selidx.push_back(idx);

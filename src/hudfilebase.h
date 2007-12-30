@@ -12,6 +12,7 @@ typedef elements_type::const_iterator       cit_elements;
 /// represents a hudfile (document)
 class HudFileBase
 {
+  friend class ListDrop;
   public:
     
   public:
