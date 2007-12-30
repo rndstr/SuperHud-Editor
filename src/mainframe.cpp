@@ -147,10 +147,10 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   
 
   // update stuff
-  m_mgr.LoadPerspective( Prefs::get().var(wxT("perspective")) );
+  m_mgr.LoadPerspective( Prefs::get().var(wxT("app_perspective")) );
   //m_view_menu->Check( ID_MENU_VIEW_TOOLBAR_FILE, m_toolbar_file->IsShown() ); // done through UpdateUI event
   //m_view_menu->Check( ID_MENU_VIEW_CONFIGPREVIEW, m_configpreview->IsShown() ); // done through UpdateUI event
-  m_view_menu->Check( ID_MENU_VIEW_GRID, Prefs::get().var(wxT("grid")) );
+  m_view_menu->Check( ID_MENU_VIEW_GRID, Prefs::get().var(wxT("view_grid")) );
   
 
   if( Prefs::get().var(wxT("game")) == wxT("q4max") )
@@ -177,7 +177,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
     if( wizard.RunWizard(wizard.GetFirstPage()) )
     {
       wxGetApp().factory()->set_dir_game(wizard.gamedir());
-      Prefs::get().set(wxT("aspectratio"), wizard.aspectratio());
+      Prefs::get().set(wxT("view_aspectratio"), wizard.aspectratio());
     }
   }
 }
@@ -361,7 +361,7 @@ void MainFrame::OnClose( wxCloseEvent& ev )
     wxDELETE( m_model );
   
   // save view
-  Prefs::get().set(wxT("perspective"), m_mgr.SavePerspective());
+  Prefs::get().set(wxT("app_perspective"), m_mgr.SavePerspective());
   Prefs::get().seti(wxT("app_width"), GetSize().GetWidth());
   Prefs::get().seti(wxT("app_height"), GetSize().GetHeight());
   Prefs::get().setb(wxT("app_maximized"), IsMaximized());
@@ -394,8 +394,8 @@ void MainFrame::OnMenuViewToolbarFile( wxCommandEvent& )
 
 void MainFrame::OnMenuViewGrid( wxCommandEvent& ev )
 {
-  Prefs::get().setb(wxT("grid"), ev.IsChecked());
-  m_displayctrl->Refresh(); // FIXME this flickers :/ y?
+  Prefs::get().setb(wxT("view_grid"), ev.IsChecked());
+  m_displayctrl->Refresh();
 }
 
 void MainFrame::OnUpdateViewPanes( wxUpdateUIEvent& ev )

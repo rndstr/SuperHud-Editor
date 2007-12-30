@@ -71,8 +71,8 @@ const wxString HF_PROPERTY_ARG_DELIM = wxT(" ");
 
 class ElementBase
 {
-   friend class CPMAPropertiesCtrl;
-   friend class VisibilityPropertiesCtrl;
+   friend class CPMAPropertiesCtrl; // TODO still needed?
+   friend class VisibilityPropertiesCtrl; // TODO still needed?
   public:
     ElementBase( const wxString& name, const wxString& desc = wxT(""), int flags = E_NONE, int has = E_HAS_NONE, bool enabled = false, 
       const wxRect& rect = E_RECT_DEFAULT ) :
@@ -104,6 +104,7 @@ class ElementBase
 
     // get&set properties (with regard to `i'nheritance)
     wxRect          iget_rect() const;
+    bool            is_rendered() const;
 
   protected:
     wxString  m_name; ///< is not unique
@@ -115,8 +116,6 @@ class ElementBase
     // global props
     bool     m_enabled;
     wxRect   m_rect;
-
-
 };
 
 #endif // __ELEMENTBASE_H__

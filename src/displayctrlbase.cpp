@@ -66,8 +66,8 @@ void DisplayCtrlBase::OnIdle( wxIdleEvent& )
 void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
 {
   wxPoint clientpos = DisplayCtrlBase::panel_to_hud(ev.GetPosition());
-  //wxPoint clientpos = ev.GetPosition();
   wxGetApp().mainframe()->statusbar()->SetStatusText(wxString::Format(wxT("(%i,%i)"), clientpos.x, clientpos.y), SB_MOUSEPOS);
+
 }
 
 void DisplayCtrlBase::reset_projection_mode()
@@ -93,7 +93,7 @@ void DisplayCtrlBase::prepare2d()
   double w = (double)GetSize().x;
   double h = (double)GetSize().y;
   GLdouble hudw = width(), hudh = height();
-  double aspectcorrect = (w/h)/Prefs::get().var(wxT("aspectratio")).floatval();
+  double aspectcorrect = (w/h)/Prefs::get().var(wxT("view_aspectratio")).floatval();
   double empty; // how much space left/right or bottom/top has to be empty
 
   // topleft is 0,0
@@ -177,6 +177,39 @@ wxPoint DisplayCtrlBase::panel_to_hud( const wxPoint& p ) const
   hud.x = static_cast<int>( m_hudrect.GetLeft() + p.x/(double)s.x * m_hudrect.GetWidth() );
   hud.y = static_cast<int>( m_hudrect.GetTop() + p.y/(double)s.y * m_hudrect.GetHeight() );
   return hud;
+}
 
+void DisplayCtrlBase::render_helper( const wxRect& rect, bool selected /*= false*/ ) const
+{
+  if( !Prefs::get().var(wxT("view_helper")) )
+    return;
+  glDisable(GL_TEXTURE_2D);
+  // -- draw helper outline
+  if( selected )
+  {
+    Prefs::get().var(wxT("view_helper_fill_selected")).colorval().glBind();
+    draw_rect(rect);
 
+    Prefs::get().var(wxT("view_helper_border_selected")).colorval().glBind();
+  glBegin( GL_LINE_LOOP );
+    glVertex2i( rect.GetLeft(), rect.GetBottom()+1 );
+    glVertex2i( rect.GetRight(), rect.GetBottom()+1 );
+    glVertex2i( rect.GetRight(), rect.GetTop()+1 );
+    glVertex2i( rect.GetLeft(), rect.GetTop()+1 );
+  glEnd();
+  }
+  else
+  {
+    Prefs::get().var(wxT("view_helper_fill")).colorval().glBind();
+    draw_rect(rect);
+
+    Prefs::get().var(wxT("view_helper_border")).colorval().glBind();
+  glBegin( GL_LINE_LOOP );
+    glVertex2i( rect.GetLeft(), rect.GetBottom()+1 );
+    glVertex2i( rect.GetRight(), rect.GetBottom()+1 );
+    glVertex2i( rect.GetRight(), rect.GetTop()+1 );
+    glVertex2i( rect.GetLeft(), rect.GetTop()+1 );
+  glEnd();
+  }
+  glEnable(GL_TEXTURE_2D);
 }

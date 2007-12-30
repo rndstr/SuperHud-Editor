@@ -5,6 +5,7 @@
 #include "../model.h"
 #include "../hudfilebase.h"
 #include "../prefs.h"
+#include "../elementsctrlbase.h"
 
 #include <algorithm>
 
@@ -34,29 +35,25 @@ void CPMADisplayCtrl::OnIdle( wxIdleEvent& )
   }
 }
 
-int render_sort( ElementBase *a, ElementBase *b )
-{
-  if( a->flags() & E_DRAWFRONT )
-  {
-    if( b->flags() & E_DRAWFRONT )
-      return 0;
-    return 1;
-  }
-  if( b->flags() & E_DRAWBACK )
-  {
-    if( a->flags() & E_DRAWBACK )
-      return 0;
-    return -1;
-  }
-  return 0;
 
+
+// return true if left should be higher than right (ASC)
+bool render_sort( ElementBase *a, ElementBase *b )
+{ // ROFL
+  if( (a->flags() & E_DRAWFRONT) && !(b->flags() & E_DRAWFRONT) )
+    return true;
+  if( !(a->flags() & E_DRAWBACK) && (b->flags() & E_DRAWBACK) )
+    return true;
+  //if( wxGetApp().elementsctrl()->is_selected(a) && !wxGetApp().elementsctrl()->is_selected(b) )
+  //  return true;
+  return false;
 }
 
 void CPMADisplayCtrl::render()
 {
   static int count = 0;
   if(!IsShown()) return;
-  //wxLogDebug(wxT("CPMADisplayCtrl::render"));
+  wxLogDebug(wxT("CPMADisplayCtrl::render"));
 
   if( wxGetApp().mainframe()->model() )
   {
@@ -113,14 +110,14 @@ void CPMADisplayCtrl::render()
     glEnd();
     */
     
-    if( Prefs::get().var(wxT("grid")) )
+    if( Prefs::get().var(wxT("view_grid")) )
     {
       glDisable(GL_TEXTURE_2D);
       // grid
       Prefs::get().var(wxT("grid_color")).colorval().glBind();
       glBegin(GL_POINTS);
-      for( int x=0; x < WIDTH; x += Prefs::get().var(wxT("grid_x")).intval() )
-        for( int y=0; y < HEIGHT; y += Prefs::get().var(wxT("grid_y")).intval() )
+      for( int x=0; x < WIDTH; x += Prefs::get().var(wxT("view_gridX")).intval() )
+        for( int y=0; y < HEIGHT; y += Prefs::get().var(wxT("view_gridY")).intval() )
           glVertex2i(x, y);
       glEnd();
       glEnable(GL_TEXTURE_2D);
@@ -131,8 +128,25 @@ void CPMADisplayCtrl::render()
     std::sort(els.begin(), els.end(), render_sort);
     for( cit_elements cit  = els.begin(); cit != els.end(); ++cit )
     {
+      if( !(*cit)->is_rendered() )
+        continue;
       (*cit)->render();
     }
+    // draw nonselected
+    for( cit_elements cit  = els.begin(); cit != els.end(); ++cit )
+    {
+      if( !(*cit)->is_rendered() || wxGetApp().elementsctrl()->is_selected(*cit) )
+        continue;
+      render_helper( (*cit)->rect(), false );
+    }
+    // draw selected
+    for( cit_elements cit  = els.begin(); cit != els.end(); ++cit )
+    {
+      if( !(*cit)->is_rendered() || !wxGetApp().elementsctrl()->is_selected(*cit) )
+        continue;
+      render_helper( (*cit)->rect(), true );
+    }
+
   }
 }
 

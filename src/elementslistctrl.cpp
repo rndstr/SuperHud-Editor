@@ -6,10 +6,11 @@
 #include <wx/dnd.h>
 
 
-// NOTE that this probably isn't the way it's supposed to be
+// Note that this probably isn't the way it's supposed to be
 // we accept text although we are actually only accepting Elements.
 // but hey, ... we only need to know if there was a drop and then
-// move all selected elements to there.
+// move all selected elements to there. so if a user drops text here
+// from somewhere else it should be ok.
 class ListDrop : public wxTextDropTarget
 {
   public:
@@ -17,28 +18,28 @@ class ListDrop : public wxTextDropTarget
     virtual bool OnDropText(wxCoord x, wxCoord y, const wxString& data)
     {
       const elements_type& els = static_cast<ElementsCtrlBase*>(m_list->GetParent())->selected_elements();
-      const indecies_type& idx = static_cast<ElementsCtrlBase*>(m_list->GetParent())->selected_indecies();
       if( 0 == els.size() )
-        return false;
-      wxLogDebug(wxT("DROP ") + data);
+        return false; // no elements selected
       int flags = wxLIST_HITTEST_BELOW;
       long hit = hititem(x, y);
       if( hit == wxNOT_FOUND )
-        return false;
-       wxASSERT( m_list->GetItemData(hit) );
+        return false; // the drop wasn't over an existing item
+
+      wxASSERT( m_list->GetItemData(hit) );
 
       ElementBase *after = reinterpret_cast<ElementBase*>(m_list->GetItemData(hit));
-      // move all items
+      // move all selected items after the one the cursor is over
       for( size_t rev = els.size(); rev != 0; --rev )
         wxGetApp().hudfile()->move_element_after( els[rev-1], after );
 
-      // TODO simple but expensive ;) hooray
+      // TODO simple but expensive ;) hooray (doesn't flicker on MSW, checkcheck for GTK)
       static_cast<ElementsCtrlBase*>(m_list->GetParent())->list_refresh(wxGetApp().hudfile()->elements());
       // TODO reselect items :o
       // TODO scroll to item
 
       return true;
     }
+
     long hititem( wxCoord x, wxCoord y )
     {
       int flags = wxLIST_HITTEST_BELOW;
@@ -61,16 +62,11 @@ class ListDrop : public wxTextDropTarget
     }
     virtual wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def)
     {
-      static wxRect bound;
-      static bool drawn = false;
-      long hit = hititem(x, y);
-      wxSize s = m_list->GetSize();
-      wxLogDebug(wxT("%d # %d %d / %d %d"), hit, x, y, s.x, s.y);
+      // if cursor is at top or bottom position while dragging we scroll
       
-
-      // scroll?
       wxRect rh;
-      m_list->GetItemRect(0, rh, wxLIST_RECT_BOUNDS);
+      m_list->GetItemRect(0, rh, wxLIST_RECT_BOUNDS); // just figure out what the boundaries are to snap/scroll
+      wxSize s = m_list->GetSize();
       int scroll = rh.GetHeight();
       int snap = rh.GetHeight()*2;
       if( y < snap )
@@ -78,8 +74,9 @@ class ListDrop : public wxTextDropTarget
       else if( y > s.y - snap )
         m_list->ScrollList(0, scroll);
 
-
       // write in statusbar as long as we don't have a visual indication where it's inserted :x
+      long hit = hititem(x, y);
+      
       if( hit == wxNOT_FOUND )
       {
         wxGetApp().mainframe()->statusbar()->SetStatusText(_("Can't drop on collection"), (SB_MSG));
@@ -95,10 +92,12 @@ class ListDrop : public wxTextDropTarget
           wxGetApp().mainframe()->statusbar()->SetStatusText(_("Insert after: ") + info.m_text, (SB_MSG));
       }
 
-      // draw a line below
-
-      // FIXME while moving upwards this does leave some lines there :|
+      // draw a line where we are to insert the element(s)
+      // FIXME this does leave some lines drawn :/
       /*
+      static wxRect bound;
+      static bool drawn = false;
+
       wxClientDC dc(m_list);
       dc.SetPen(*wxBLACK_PEN);
       if( drawn )
@@ -177,10 +176,11 @@ void ElementsListCtrl::OnBeginDrag( wxListEvent& ev )
 {
   ev.Allow();
   wxGetApp().mainframe()->statusbar()->PushStatusText(_("Drag&Drop"), SB_MSG);
-  wxTextDataObject my_data(wxT("This text will be dragged."));
+  wxTextDataObject my_data(wxT("ruelps"));
   wxDropSource dragSource( this );
 	dragSource.SetData( my_data );
 	wxDragResult result = dragSource.DoDragDrop( TRUE );
+  /*
   wxString pc;
   switch ( result )
         {
@@ -192,19 +192,15 @@ void ElementsListCtrl::OnBeginDrag( wxListEvent& ev )
             default:            pc = _T("Huh?");      break;
   }
   wxLogDebug(pc);
+  */
   wxGetApp().mainframe()->statusbar()->PopStatusText(SB_MSG);
-  
-  
-  //elements_type& els = static_cast<ElementsCtrlBase*>(GetParent())->selected_elements();
-  //ev.Get
-
 }
 
 
 bool ElementsListCtrl::update_item( long idx, const ElementBase *pel )
 {
   if( !pel )
-  { // fetch
+  { // no element pointer supplied, fetch from list itemdata
     if( !GetItemData(idx) )
       return false;
     pel = reinterpret_cast<const ElementBase*>(GetItemData(idx));

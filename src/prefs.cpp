@@ -33,11 +33,19 @@ void Variable::read()
 
 void Variable::write()
 {
+  wxConfigBase *c = wxConfigBase::Get();
   if( m_flags & PVF_NOARCHIVE ) 
     return;
-  if( !(m_flags & PVF_ARCHIVEALWAYS) && (!m_isset || m_value == m_def) )
-    return;
-  wxConfigBase *c = wxConfigBase::Get();
+  if( !(m_flags & PVF_ARCHIVEALWAYS) )
+  {
+    if( !m_isset ) 
+      return;
+    if( m_value == m_def )
+    {
+      c->DeleteEntry(m_name);
+      return;
+    }
+  }
   c->Write(m_name, m_value);
 }
 
@@ -140,18 +148,18 @@ void Prefs::load()
   addvar(wxT("app_maximized"), wxT("false"), PVT_BOOL);
   addvar(wxT("app_width"), wxT("-1"), PVT_INT);
   addvar(wxT("app_height"), wxT("-1"), PVT_INT);
-  addvar(wxT("aspectratio"), wxT("4:3"), PVT_FLOAT);
-  addvar(wxT("grid"), wxT("true"), PVT_BOOL);
-  addvar(wxT("grid_x"), wxT("16"), PVT_INT);
-  addvar(wxT("grid_y"), wxT("16"), PVT_INT);
+  addvar(wxT("view_aspectratio"), wxT("4:3"), PVT_FLOAT);
+  addvar(wxT("view_grid"), wxT("true"), PVT_BOOL);
+  addvar(wxT("view_gridX"), wxT("16"), PVT_INT);
+  addvar(wxT("view_gridY"), wxT("16"), PVT_INT);
   addvar(wxT("grid_color"), wxT("1 1 1 0.3"), PVT_COLOR);
-  addvar(wxT("helper"), wxT("true"), PVT_BOOL);
-  addvar(wxT("helper_border"), wxT("1 1 1 0.8"), PVT_COLOR);
-  addvar(wxT("helper_fill"), wxT("1 1 1 0.1"), PVT_COLOR);
-  addvar(wxT("helper_border_selected"), wxT("1 0 0 0.8"), PVT_COLOR);
-  addvar(wxT("helper_fill_selected"), wxT("1 0 0 0.1"), PVT_COLOR);
+  addvar(wxT("view_helper"), wxT("true"), PVT_BOOL);
+  addvar(wxT("view_helper_border"), wxT("1 1 1 0.8"), PVT_COLOR);
+  addvar(wxT("view_helper_fill"), wxT("1 1 1 0.1"), PVT_COLOR);
+  addvar(wxT("view_helper_border_selected"), wxT("1 0 0 0.8"), PVT_COLOR);
+  addvar(wxT("view_helper_fill_selected"), wxT("1 0 0 0.1"), PVT_COLOR);
   addvar(wxT("elements_collections"), wxT("true"), PVT_BOOL);
-  addvar(wxT("perspective"), wxT(""), PVT_STRING);
+  addvar(wxT("app_perspective"), wxT(""), PVT_STRING);
 
 
     // -- game specific
@@ -185,43 +193,7 @@ void Prefs::load()
 void Prefs::save( bool from_prefs_dialog /*= false*/ )
 {
   for( variables_type::iterator it = m_vars.begin(); it != m_vars.end(); ++it )
-  {
     it->second.write();
-  }
-  /*
-
-  wxConfigBase *c = wxConfigBase::Get();
-  // -- display
-  c->Write(wxT("game"), game);
-  c->Write(wxT("app_maximized"), app_maximized);
-  c->Write(wxT("app_width"), app_width);
-  c->Write(wxT("app_height"), app_height);
-  c->Write(wxT("grid"), grid);
-  c->Write(wxT("grid_x"), grid_x);
-  c->Write(wxT("grid_y"), grid_y);
-  c->Write(wxT("grid_color"), grid_color.to_string());
-
-  c->Write(wxT("aspectratio"), aspectratio);
-  c->Write(wxT("perspective"), perspective);
-
-  c->Write(wxT("elements_collections"), elements_collections);
-  
-
-  // -- game specific
-  // cpma
-  c->Write(wxT("q3_gamedir"), q3_gamedir);
-  //c->Write(wxT("q3_pakfiles"), q3_pakfiles);
-
-  // q4max
-  c->Write(wxT("q4_gamedir"), q4_gamedir);
-
-  // -- startup
-  c->Write(wxT("startup_gameselection"), startup_gameselection);
-
-  // -- saving
-  c->Write(wxT("save_writedisabled"), save_writedisabled);
-  c->Write(wxT("save_backup"), save_backup);
-  */
 
   wxConfigBase::Get()->Flush();
 }

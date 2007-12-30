@@ -48,3 +48,12 @@ wxRect ElementBase::iget_rect() const
   return r; 
 }
 
+
+bool ElementBase::is_rendered() const
+{
+  if( m_flags & E_DRAWNEVER )
+    return false;
+  if( m_flags & E_DRAWALWAYS )
+    return true;
+  return is_enabled();
+}

@@ -8,8 +8,7 @@
 #include "prefs.h"
 
 
-#include <list>
-using namespace std;
+#include <algorithm>
 
 #include "xpm/icons/predecorate_insert.xpm"
 #include "xpm/icons/postdecorate_insert.xpm"
@@ -227,6 +226,11 @@ void ElementsCtrlBase::update_selection()
       m_selels.push_back(el);
     }
   }  
+}
+
+bool ElementsCtrlBase::is_selected( const ElementBase* const el) const
+{
+  return (std::find(m_selels.begin(), m_selels.end(), el) != m_selels.end() );
 }
 
 void ElementsCtrlBase::OnSelectionChanged()

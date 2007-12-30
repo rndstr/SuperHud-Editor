@@ -1,8 +1,10 @@
-% move the enable/disable element buttons to the ElementsCtrlBase panel
+% move the enable/disable element buttons to the ElementsCtrlBase panel (orly?)
 ? if hud is modified, SwitchGame behaves wrongly.. launches 2 instances
 + add second background image for 16:10
 ! toolbar file view is not properly updated with menu item
 % encapsulate own functions (misc.h/cpp) into namespace she {}
++ defaultdir for opening hudfiles
++ startup_reloadprevioushudfile
 
 [UNIX] the logfile is written as relative path, this will go into wrong place definitely
 [UNIX] disable the webupdater to actually update something.. just tell that there is a new version

@@ -2,16 +2,17 @@
 #define __PROPERTIESNOTEBOOKBASE_H__
 
 #include "superhudeditor.h"
-#include "elementbase.h"
 #include "hudfilebase.h"
 #include <wx/aui/auibook.h>
+
+class ElementBase;
 
 class PropertiesNotebookBase : public wxAuiNotebook
 {
   public:
     PropertiesNotebookBase( wxWindow* parent ) :
       wxAuiNotebook( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, wxDefaultSize, 
-        wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_TAB_EXTERNAL_MOVE | wxAUI_NB_TOP ),
+        wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_TAB_EXTERNAL_MOVE | wxAUI_NB_TOP | wxAUI_NB_SCROLL_BUTTONS ),
         m_curel(0)
     {
     }

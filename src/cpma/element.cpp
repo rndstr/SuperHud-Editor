@@ -599,9 +599,7 @@ int CPMAElement::angle(int which) const
 }
 void CPMAElement::render() const
 {
-  //wxLogDebug(wxT("RENDER ") + m_name);
-  if( m_flags & E_DRAWNEVER )
-    return;
+  wxLogDebug(wxT("RENDER ") + m_name);
   bool hasownbg = true;
 
   switch( m_type )
@@ -766,37 +764,4 @@ void CPMAElement::render() const
     }
     break;
   }
-
-  glDisable(GL_TEXTURE_2D);
-  // -- draw helper outline
-  if( Prefs::get().var(wxT("helper")) )
-  {
-    if( false /*is_selected() && */ )
-    {
-      Prefs::get().var(wxT("helper_fill_selected")).colorval().glBind();
-      draw_rect(m_rect);
-
-      Prefs::get().var(wxT("helper_border_selected")).colorval().glBind();
-    glBegin( GL_LINE_LOOP );
-      glVertex2i( m_rect.GetLeft(), m_rect.GetBottom()+1 );
-      glVertex2i( m_rect.GetRight(), m_rect.GetBottom()+1 );
-      glVertex2i( m_rect.GetRight(), m_rect.GetTop()+1 );
-      glVertex2i( m_rect.GetLeft(), m_rect.GetTop()+1 );
-    glEnd();
-    }
-    else
-    {
-      Prefs::get().var(wxT("helper_fill")).colorval().glBind();
-      draw_rect(m_rect);
-
-      Prefs::get().var(wxT("helper_border")).colorval().glBind();
-    glBegin( GL_LINE_LOOP );
-      glVertex2i( m_rect.GetLeft(), m_rect.GetBottom()+1 );
-      glVertex2i( m_rect.GetRight(), m_rect.GetBottom()+1 );
-      glVertex2i( m_rect.GetRight(), m_rect.GetTop()+1 );
-      glVertex2i( m_rect.GetLeft(), m_rect.GetTop()+1 );
-    glEnd();
-    }
-  }
-  glEnable(GL_TEXTURE_2D);
 }

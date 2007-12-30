@@ -16,6 +16,11 @@ class DisplayCtrlBase : public wxGLCanvas
     virtual void init() {}
     virtual void cleanup() {}
 
+    void render_helper( const wxRect& rect, bool selected = false ) const;
+
+    /// finds the item at that point
+    //ElementBase*    hititem( const wxPoint& pos );
+
   protected:
     bool      m_initialized;
     Texture   *m_background;

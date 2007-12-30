@@ -26,6 +26,8 @@ CPMAPropertiesNotebook::CPMAPropertiesNotebook( wxWindow *parent ) :
   AddPage( m_color, _("Color") );
   AddPage( m_image, _("Image") );
   AddPage( m_misc, _("Misc") );
+  // some initial size so it isn't smashed without an existing perspective
+  SetSize(300, -1);
 }
 
 void CPMAPropertiesNotebook::update_from_element( const elements_type& els )

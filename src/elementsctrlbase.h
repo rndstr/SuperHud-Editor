@@ -47,6 +47,8 @@ class ElementsCtrlBase: public wxPanel
     indecies_type&  selected_indecies() { return m_selidx; }
     elements_type&  selected_elements() { return m_selels; }
 
+    bool            is_selected( const ElementBase* const el) const;
+
   protected:
     /// an ordered list (by idx) of selected indecies
     indecies_type   m_selidx;
