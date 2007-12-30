@@ -45,12 +45,18 @@ class ListDrop : public wxTextDropTarget
       long hit = m_list->HitTest(wxPoint(x, y), flags);
       if( hit == wxNOT_FOUND )
         return wxNOT_FOUND;
+#if 1 // does not allow to drop on collection
+      if( !m_list->GetItemData(hit) )
+        return wxNOT_FOUND; // collection
+
+#else // we can drop onto collections (although it just picks the item before, maybe it just be the one after though anyway)
       // skip collectiontitles backwards
       while( hit >= 0 && !m_list->GetItemData(hit) )
         --hit;
       wxASSERT( m_list->GetItemData(hit) || hit < 0 );
       if( hit < 0 )
         return wxNOT_FOUND; // there are no more items
+#endif
       return hit;
     }
     virtual wxDragResult OnDragOver(wxCoord x, wxCoord y, wxDragResult def)
@@ -60,6 +66,7 @@ class ListDrop : public wxTextDropTarget
       long hit = hititem(x, y);
       wxSize s = m_list->GetSize();
       wxLogDebug(wxT("%d # %d %d / %d %d"), hit, x, y, s.x, s.y);
+      
 
       // scroll?
       wxRect rh;
@@ -71,8 +78,14 @@ class ListDrop : public wxTextDropTarget
       else if( y > s.y - snap )
         m_list->ScrollList(0, scroll);
 
+
       // write in statusbar as long as we don't have a visual indication where it's inserted :x
-      if( hit != wxNOT_FOUND )
+      if( hit == wxNOT_FOUND )
+      {
+        wxGetApp().mainframe()->statusbar()->SetStatusText(_("Can't drop on collection"), (SB_MSG));
+        return wxDragNone;
+      }
+      else
       {
         wxListItem info;
         info.m_mask = wxLIST_MASK_TEXT;
