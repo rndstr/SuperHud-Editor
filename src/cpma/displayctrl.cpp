@@ -6,13 +6,23 @@
 #include "../hudfilebase.h"
 #include "../prefs.h"
 #include "../elementsctrlbase.h"
+#include "../font.h"
 
 #include <algorithm>
 
 void CPMADisplayCtrl::init()
 {
-  
-  
+  DisplayCtrlBase::init();
+  // load fonts : D
+  m_fonts[wxT("cpma")] = new CPMAFont(wxT("cpma"));
+  m_fonts[wxT("id")] = new CPMAFont(wxT("id"));
+  m_fonts[wxT("threewave")] = new CPMAFont(wxT("threewave"));
+  m_fonts[wxT("idblock")] = new CPMAFont(wxT("idblock"));
+
+  // load fonts
+  for( fonts_type::iterator it = m_fonts.begin(); it != m_fonts.end(); ++it )
+    if( !it->second->load() )
+      wxLogError( wxT("Failed loading font ") + it->first );
 }
 
 void CPMADisplayCtrl::load_background()
@@ -55,6 +65,7 @@ void CPMADisplayCtrl::render()
   if(!IsShown()) return;
   wxLogDebug(wxT("CPMADisplayCtrl::render"));
 
+ 
   if( wxGetApp().mainframe()->model() )
   {
     count += 10;
@@ -89,8 +100,8 @@ void CPMADisplayCtrl::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // FIXME what if load_background fails... will it attempt to load every frame? ;) amg
-    if( !m_background )
-      load_background();
+    //if( !m_background )
+//      load_background();
 
     m_background->glBind();
     // background

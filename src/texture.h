@@ -16,6 +16,8 @@ class Texture
     virtual void glBind();
 
     static GLuint create_texture( wxImage& img, bool mipmap = false );
+
+    bool is_ok() const { return m_texid != 0; }
     
 
   protected:

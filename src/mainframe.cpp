@@ -169,7 +169,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
 #endif
   m_mgr.Update();
 
-  m_displayctrl->init();
+  //m_displayctrl->init();
 
   if( wxGetApp().is_firststart() )
   {

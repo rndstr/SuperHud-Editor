@@ -22,8 +22,11 @@ class DisplayCtrlBase : public wxGLCanvas
         const wxSize& size = wxDefaultSize, long style = 0);
     virtual ~DisplayCtrlBase();
         
-    virtual void init() {}
+    /// this shouldn't be called too early. preferrably in the OnPaint() function
+    /// at first call
+    virtual void init();
     virtual void cleanup() {}
+    
 
     void render_helper( const wxRect& rect, bool selected = false ) const;
 
@@ -40,8 +43,8 @@ class DisplayCtrlBase : public wxGLCanvas
     ElementBase *m_drag_el;
     eDragMode m_drag_mode;
     wxPoint   m_drag_start; ///< mouse position when we started dragging
-    wxPoint   m_drag_elpos; //?, element position when we started dragging
 
+    virtual void load_background() = 0;
     virtual void OnIdle( wxIdleEvent& );
     void OnSize( wxSizeEvent& );
     void OnEraseBackground( wxEraseEvent& );

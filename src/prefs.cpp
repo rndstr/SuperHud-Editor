@@ -173,7 +173,7 @@ void Prefs::load()
   prefs_q3_pakfiles_default.Replace(wxT("/"), PATH_SEP);
   addvar(wxT("q3_pakfiles"), prefs_q3_pakfiles_default, PVT_STRING);
   addvar(wxT("q3_hudspecs"), wxT("cpma/hudspecs.dat"), PVT_STRING);
-  addvar(wxT("q3_background"), wxT("cpma/imgs/background.jpg"), PVT_STRING);
+  addvar(wxT("q3_background"), wxT("cpma/texture/background.jpg"), PVT_STRING);
 
   // q4max
   addvar(wxT("q4_gamedir"), wxT(""), PVT_STRING);

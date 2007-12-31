@@ -14,7 +14,7 @@ typedef enum
   PM_SEARCH_GAMEPAK = 1<<2, ///< in archives (pk3/pk4)
   PM_SEARCH_APPRELATIVE = 1<<3, ///< relative to our application data
   PM_SEARCH_APPPAK = 1<<4, ///< in application archive NOTYETIMPLEMENTED
-  PM_SEARCH_HUDFILE = PM_SEARCH_GAMERELATIVE | PM_SEARCH_GAMEPAK,
+  PM_SEARCH_HUDFILE = PM_SEARCH_GAMEPAK,
   PM_SEARCH_APPFILE = PM_SEARCH_ABSOLUTE | PM_SEARCH_APPRELATIVE | PM_SEARCH_APPPAK,
 } ePakManagerSearchWhere;
 

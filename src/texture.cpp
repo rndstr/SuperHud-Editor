@@ -31,32 +31,16 @@ void Texture::load( const wxString& fpath, int search_where, bool mipmap /*=fals
     wxLogError(_("Couldn't find/load file: %s"), fpath.c_str());
     return;
   }
-  /*
-  WRONG
-  if( file_ext( fpath ) == wxT("tga") )
-  { // wx does not support loading tga *sigh*
-    tgainfo_t tga;
-    if( !load_tga( (unsigned char*)buf, &tga, size ) )
-    {
-      wxLogError(_("Failed loading tga image: %s"), fpath.c_str());
-      return;
-    }
-
-    m_texid = Texture::create_texture( &tga, mipmap );
-    delete [] tga.data;
-  }
-  else
-  */
+  
+  
+  wxMemoryInputStream mis( buf, size );
+  wxImage img;
+  if( !img.LoadFile(mis, bitmap_type_by_ext(file_ext(fpath))) )
   {
-    wxMemoryInputStream mis( buf, size );
-    wxImage img;
-    if( !img.LoadFile(mis, bitmap_type_by_ext(file_ext(fpath))) )
-    {
-      wxLogWarning(wxT("Failed loading image: %s"), fpath.c_str());
-      return;
-    }
-    m_texid = Texture::create_texture( img, mipmap );
+    wxLogWarning(wxT("Failed loading image: %s"), fpath.c_str());
+    return;
   }
+  m_texid = Texture::create_texture( img, mipmap );
   // we no longer need the buffer
   PakManager::get().cleanup_lastloaded();
 }

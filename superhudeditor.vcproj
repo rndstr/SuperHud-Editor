@@ -325,6 +325,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\font.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\font.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\glcanvasbase.cpp"
 				>
 			</File>

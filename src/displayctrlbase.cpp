@@ -20,6 +20,7 @@ DisplayCtrlBase::DisplayCtrlBase( wxWindow *parent, wxWindowID id, const wxPoint
 {
 }
 
+
 DisplayCtrlBase::~DisplayCtrlBase()
 {
 }
@@ -35,14 +36,21 @@ void DisplayCtrlBase::OnPaint( wxPaintEvent& )
   SetCurrent();
   if( !m_initialized )
   {
-    reset_projection_mode();
-    m_initialized = true;
+    init();
+    
   }
 
   render();
 
   glFlush();
   SwapBuffers();
+}
+
+void DisplayCtrlBase::init()
+{
+  reset_projection_mode();
+  load_background();
+  m_initialized = true;
 }
 
 void DisplayCtrlBase::OnEraseBackground( wxEraseEvent& )
@@ -70,9 +78,9 @@ ElementBase* DisplayCtrlBase::element_hittest( const wxPoint& p, bool toggle /*=
   for( cit_elements cit = els.begin(); cit != els.end(); ++cit )
   {
 #if wxCHECK_VERSION(2,8,0)
-    if( (*cit)->is_rendered() && (*cit)->rect().Contains( p.x, p.y ) )
+    if( (*cit)->is_rendered() && (*cit)->iget_rect().Contains( p.x, p.y ) )
 #else // 2.7 2.6
-    if( (*cit)->is_rendered() && (*cit)->rect().Inside( p.x, p.y ) )
+    if( (*cit)->is_rendered() && (*cit)->iget_rect().Inside( p.x, p.y ) )
 #endif
       inside.push_back( *cit );
   }
@@ -150,7 +158,6 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
         // prepare for dragging
         m_drag_el = el; // note that there might be other elements.. we just only store this one as we do the snapping with it
         m_drag_start = clientpos;
-        m_drag_elpos = el->iget_rect().GetPosition();
         m_drag_mode = DRAG_START;
         
         /*
@@ -219,6 +226,16 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
       else if( m_drag_mode == DRAG_DRAGGING )
       {
         // move it back to starting position and then issue the whole operation.
+        elements_type& els = wxGetApp().elementsctrl()->selected_elements();
+        wxPoint move(clientpos - m_drag_start);
+        for( it_elements it = els.begin(); it != els.end(); ++it )
+        {
+          // first move back to initial
+          (*it)->move(-moved);
+          // move to new position
+          (*it)->move(move);
+        }
+        wxGetApp().mainframe()->OnElementSelectionChanged();
         /*
         m_drag_el->m_rect.SetPosition( m_drag_itempt );
         wxGetApp().cmds()->Submit( new MoveToCommand( m_drag_hi, m_drag_realpt ) );

@@ -296,6 +296,7 @@ void ElementsCtrlBase::OnItemDeselected( wxListEvent& ev )
 void ElementsCtrlBase::OnItemSelected( wxListEvent& ev )
 {
   OnSelectionChanged();
+  m_list->EnsureVisible( ev.GetIndex() );
 }
 
 void ElementsCtrlBase::OnItemActivated( wxListEvent& ev )
