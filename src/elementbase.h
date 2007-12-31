@@ -88,6 +88,10 @@ class ElementBase
     virtual void    write_properties( wxTextOutputStream& stream ) const;
 
     virtual void render() const {};
+ 
+    void            move_to( const wxPoint& p ) { m_rect.SetPosition(p); }
+    /// moving by offset
+    void            move( const wxPoint& p ) { m_rect.x += p.x; m_rect.y += p.y; }
 
     // get&set
     const wxString& name() const { return m_name; }
@@ -106,6 +110,9 @@ class ElementBase
     // get&set properties (with regard to `i'nheritance)
     wxRect          iget_rect() const;
     bool            is_rendered() const;
+
+
+    
 
   protected:
     wxString  m_name; ///< is not unique

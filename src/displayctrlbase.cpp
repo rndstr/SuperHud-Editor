@@ -109,6 +109,9 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
   // important for LeftUp to know if we have to toggle or not (otherwise 
   // LeftDown selects one and LeftUp toggles even if there wasn't a selection before)
   static bool selected_on_ldown = false; 
+  /// how far we moved the elements so far
+  static wxPoint moved(0,0);
+  static wxPoint posatmoved(0,0);
 
   wxPoint clientpos = DisplayCtrlBase::panel_to_hud(ev.GetPosition());
   wxGetApp().mainframe()->statusbar()->SetStatusText(wxString::Format(wxT("(%i,%i)"), clientpos.x, clientpos.y), SB_MOUSEPOS);
@@ -117,7 +120,7 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
   if( ev.ButtonDown() )
     SetFocus();
 
-  if( ev.ControlDown() )
+  if( ev.ControlDown() && ev.LeftDown() )
   {
     ElementBase *el = element_hittest(clientpos, false);
     if( el ) // toggle selection
@@ -171,8 +174,14 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
         {
           // if we drag it around then we modify the inherited value...
           // hence we copy the inherited rect and set it as overwriting.
-          m_drag_el->set_rect(m_drag_el->iget_rect());
-          m_drag_el->add_has(E_HAS_RECT);
+          elements_type& els = wxGetApp().elementsctrl()->selected_elements();
+          for( it_elements it = els.begin(); it != els.end(); ++it )
+          {
+            (*it)->set_rect((*it)->iget_rect());
+            (*it)->add_has(E_HAS_RECT);
+          }
+          //m_drag_el->set_rect(m_drag_el->iget_rect());
+          //m_drag_el->add_has(E_HAS_RECT);
           // update properties
           // FIXME that isn't entirely true.. it's rather OnElementPropertiesChanged but it does the trick for now :x
           wxGetApp().mainframe()->OnElementSelectionChanged();
@@ -180,15 +189,23 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
       }
       else if( m_drag_mode = DRAG_DRAGGING )
       {
-        wxRect r = m_drag_el->rect(); // wxASSERT(same as iget_rect())
-        r.SetPosition(clientpos - (m_drag_start - m_drag_elpos));
-        m_drag_el->set_rect(r);
+        //m_drag_el->move_to( m_dragelpos + (clientpos - m_drag_start) );
+        // how much moved so far = clientpos - m_drag_start;
+        elements_type& els = wxGetApp().elementsctrl()->selected_elements();
+        wxPoint move(clientpos - m_drag_start);
+        for( it_elements it = els.begin(); it != els.end(); ++it )
+        {
+          // first move back to initial
+          (*it)->move(-moved);
+          // move to new position
+          (*it)->move(move);
+        }
+        moved = move;
         wxGetApp().mainframe()->OnElementSelectionChanged();
       }
     }
     else if( ev.LeftUp() )
     {
-      int i=2;
       if( m_drag_mode != DRAG_DRAGGING )
       {
         // only toggle if it was already selected previously
@@ -214,6 +231,7 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
       }
       m_drag_mode = DRAG_NONE;
       m_drag_el = 0;
+      moved = wxPoint(0,0);
     }
   } // if ControlDown
 }

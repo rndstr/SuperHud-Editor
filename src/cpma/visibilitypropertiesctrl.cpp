@@ -122,7 +122,8 @@ void VisibilityPropertiesCtrl::from_element( ElementBase *el )
 
   wxToolBar *tb = GetToolBar();
   tb->ToggleTool( (el->is_enabled() ? ID_BTN_ELEMENT_ENABLE : ID_BTN_ELEMENT_DISABLE), true );
-  //tb->Enable( !(el->flags() & E_ENABLEALWAYS) );
+  tb->EnableTool( ID_BTN_ELEMENT_ENABLE,  (el->flags() & E_ENABLEALWAYS)==0 );
+  tb->EnableTool( ID_BTN_ELEMENT_DISABLE,  (el->flags() & E_ENABLEALWAYS)==0 );
     
   wxRect r = el->iget_rect();
   SetPropertyValue( wxT("X"), r.GetX() );
