@@ -10,7 +10,6 @@
 
 #include "factorybase.h"
 #include "model.h"
-#include "setupwizard.h"
 #include "prefs.h"
 
 #include "cpma/elementsctrl.h"
@@ -169,17 +168,6 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
 #endif
   m_mgr.Update();
 
-  //m_displayctrl->init();
-
-  if( wxGetApp().is_firststart() )
-  {
-    SetupWizard wizard(this);
-    if( wizard.RunWizard(wizard.GetFirstPage()) )
-    {
-      wxGetApp().factory()->set_dir_game(wizard.gamedir());
-      Prefs::get().set(wxT("view_aspectratio"), wizard.aspectratio());
-    }
-  }
 }
 
 

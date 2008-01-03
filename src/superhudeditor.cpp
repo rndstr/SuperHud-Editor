@@ -12,8 +12,7 @@
 #include "common.h"
 #include "elementsctrlbase.h"
 #include "displayctrlbase.h"
-
-
+#include "setupwizard.h"
 
 #include <wx/stdpaths.h>
 #include <wx/fs_arc.h>
@@ -94,12 +93,22 @@ bool SHEApp::OnInit()
   }
 
 
+  if( wxGetApp().is_firststart() )
+  {
+    SetupWizard wizard(0);
+    if( wizard.RunWizard(wizard.GetFirstPage()) )
+    {
+      wxGetApp().factory()->set_dir_game(wizard.gamedir());
+      Prefs::get().set(wxT("view_aspectratio"), wizard.aspectratio());
+    }
+  }
+  PakManager::get().init();
+
   m_mainframe = new MainFrame(0, wxID_ANY, APP_NAME, wxDefaultPosition, wxSize(800,600));
   SetTopWindow(m_mainframe);
   m_mainframe->Show();
 
   m_hudfile = m_factory->create_hudfile();
-  PakManager::get().init();
   m_mainframe->elementsctrl()->OnSelectionChanged();
 
   return true;
