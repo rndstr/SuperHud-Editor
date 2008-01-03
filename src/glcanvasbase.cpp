@@ -14,8 +14,12 @@ GLCanvasBase::GLCanvasBase(wxWindow *parent) :
 }
  
  
-void GLCanvasBase::OnPaint(wxPaintEvent& WXUNUSED(event)){
-    render();
+void GLCanvasBase::OnPaint( wxPaintEvent& )
+{
+  if( !wxGetApp().is_ready() )
+    return;
+
+  render();
 }
 
 

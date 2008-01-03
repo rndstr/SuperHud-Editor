@@ -35,7 +35,8 @@ SHEApp::SHEApp() :
   m_firststart(false),
   m_mainframe(0),
   m_factory(0),
-  m_hudfile(0)
+  m_hudfile(0),
+  m_ready(false)
 {
 
 }
@@ -114,6 +115,7 @@ int SHEApp::OnRun()
     m_hudfile->OnOpen( Prefs::get().var(wxT("startup_loadfile")) );
 
   PakManager::get().debug();
+  m_ready = true;
   /*
   if( m_firststart )
   {
@@ -132,6 +134,7 @@ int SHEApp::OnRun()
 
 int SHEApp::OnExit()
 {
+  m_ready = false;
   wxLogDebug(wxT("SHEApp::OnExit"));
   Prefs::get().save();
   Prefs::get().shutdown();

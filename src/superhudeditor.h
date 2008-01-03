@@ -40,6 +40,8 @@ class SHEApp : public wxApp
     HudFileBase* hudfile() { return m_hudfile; }
     ElementsCtrlBase* elementsctrl();
 
+    bool is_ready() const { return m_ready; }
+
   protected:
     void load_config();
 
@@ -48,6 +50,8 @@ class SHEApp : public wxApp
     MainFrame   *m_mainframe;
     FactoryBase *m_factory;
     HudFileBase *m_hudfile;
+
+    bool          m_ready;
 };
 
 DECLARE_APP(SHEApp)
