@@ -333,14 +333,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\glcanvasbase.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\src\glcanvasbase.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\hudfilebase.cpp"
 				>
 			</File>

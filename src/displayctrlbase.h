@@ -1,11 +1,8 @@
 #ifndef __DISPLAYCTRLBASE_H__
 #define __DISPLAYCTRLBASE_H__
 
-#include "glcanvasbase.h"
 #include "font.h"
-
 #include <wx/gdicmn.h>
-
 #include <map>
 
 typedef enum {
