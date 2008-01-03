@@ -3,13 +3,11 @@
 
 #include "../displayctrlbase.h"
 
-#include <map>
-
 class CPMAFont;
 
 class CPMADisplayCtrl : public DisplayCtrlBase
 {
-    typedef std::map<wxString, CPMAFont*> fonts_type;
+    
 
     static const int WIDTH = 640;
     static const int HEIGHT = 480;
@@ -31,8 +29,6 @@ class CPMADisplayCtrl : public DisplayCtrlBase
     void load_background();
     int width() const { return CPMADisplayCtrl::WIDTH; }
     int height() const { return CPMADisplayCtrl::HEIGHT; }
-  private:
-    fonts_type   m_fonts;
 
 };
 

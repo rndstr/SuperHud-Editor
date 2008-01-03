@@ -87,7 +87,11 @@ class ElementBase
     virtual bool    parse_property( const wxString& cmd, wxString args );
     virtual void    write_properties( wxTextOutputStream& stream ) const;
 
-    virtual void render() const {};
+    // some post/preprocessing functions
+    virtual void prerender() {}
+
+
+    virtual void render() const {}
  
     void            move_to( const wxPoint& p ) { m_rect.SetPosition(p); }
     /// moving by offset

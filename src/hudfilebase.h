@@ -23,8 +23,8 @@ class HudFileBase
     bool is_modified() const { return m_modified; }
     const wxString& filename() const { return m_filename; }
 
-    /// displays open filedialog
-    int OnOpen();
+    /// displays open filedialog but only if supplied filename is empty, otherwise directly loads
+    int OnOpen( const wxString& filename = wxT("") );
 
 
     /// sets up the document after user clicked File->New

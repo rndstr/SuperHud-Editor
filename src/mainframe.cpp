@@ -362,7 +362,7 @@ void MainFrame::OnClose( wxCloseEvent& ev )
   Prefs::get().seti(wxT("app_width"), GetSize().GetWidth());
   Prefs::get().seti(wxT("app_height"), GetSize().GetHeight());
   Prefs::get().setb(wxT("app_maximized"), IsMaximized());
-
+  Prefs::get().set(wxT("startup_loadfile"), wxGetApp().hudfile()->filename());
 
   // cleanup
   m_displayctrl->cleanup();

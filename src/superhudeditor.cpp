@@ -106,9 +106,8 @@ int SHEApp::OnRun()
 {
   m_hudfile->OnNew();
   m_mainframe->update_title();
-  if( m_firststart )
-  {
-  }
+  if( Prefs::get().var(wxT("startup_load")) && !Prefs::get().var(wxT("startup_loadfile")).stringval().empty() )
+    m_hudfile->OnOpen( Prefs::get().var(wxT("startup_loadfile")) );
   /*
   if( m_firststart )
   {

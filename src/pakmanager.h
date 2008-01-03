@@ -92,7 +92,7 @@ class PakManager
     /// contains all available app pakfiles
     wxArrayString m_apppakfiles;
 
-    /// has internal pk3 paths to actual content of the 
+    /// has internal pak paths to actual content of the 
     /// file referenced by this path.
     /// char* is default 0 and only set if a user request it.
     pakcontent_t m_pakcontent;

@@ -7,6 +7,7 @@
 #include "../prefs.h"
 #include "../elementsctrlbase.h"
 #include "../font.h"
+#include "../texture.h"
 
 #include <algorithm>
 
@@ -14,10 +15,13 @@ void CPMADisplayCtrl::init()
 {
   DisplayCtrlBase::init();
   // load fonts : D
+  /*
   m_fonts[wxT("cpma")] = new CPMAFont(wxT("cpma"));
   m_fonts[wxT("id")] = new CPMAFont(wxT("id"));
   m_fonts[wxT("threewave")] = new CPMAFont(wxT("threewave"));
+  m_fonts[wxT("sansman")] = new CPMAFont(wxT("sansman"));
   m_fonts[wxT("idblock")] = new CPMAFont(wxT("idblock"));
+  */
 
   // load fonts
   for( fonts_type::iterator it = m_fonts.begin(); it != m_fonts.end(); ++it )
@@ -49,7 +53,7 @@ void CPMADisplayCtrl::OnIdle( wxIdleEvent& )
 
 // return true if left should be higher than right (ASC)
 bool render_sort( ElementBase *a, ElementBase *b )
-{ // ROFL
+{
   if( (a->flags() & E_DRAWFRONT) && !(b->flags() & E_DRAWFRONT) )
     return true;
   if( !(a->flags() & E_DRAWBACK) && (b->flags() & E_DRAWBACK) )
@@ -141,6 +145,7 @@ void CPMADisplayCtrl::render()
     {
       if( !(*cit)->is_rendered() )
         continue;
+      (*cit)->prerender();
       (*cit)->render();
     }
     // draw nonselected
@@ -163,5 +168,11 @@ void CPMADisplayCtrl::render()
 
 void CPMADisplayCtrl::cleanup()
 {
-  wxDELETE(m_background);
+  DisplayCtrlBase::cleanup();
+
+  if( m_background )
+    wxDELETE(m_background);
+  for( fonts_type::iterator it = m_fonts.begin(); it != m_fonts.end(); ++it )
+    delete it->second;
+  m_fonts.clear();
 }

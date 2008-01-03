@@ -30,29 +30,39 @@ void HudFileBase::set_modified( bool modified /*= true*/ )
     if( modified ) wxGetApp().mainframe()->displayctrl()->Refresh();
   }
 }
-int HudFileBase::OnOpen()
+int HudFileBase::OnOpen( const wxString& filename /*=wxT("")*/ )
 {
+  wxString f = filename;
   int ret = wxID_OK;
-  wxFileDialog dlg(
-      wxGetApp().mainframe(),
-      _("Open..."),
-      wxT(""),
-      wxT(""),
-      wxT("Hud Files (*.cfg)|*.cfg|All Files (*.*)|*.*"),
-#if wxCHECK_VERSION(2,7,0)
-      wxFD_OPEN | wxFD_FILE_MUST_EXIST
-#else
-      wxOPEN | wxFILE_MUST_EXIST
-#endif
-      );
-  if( wxID_OK == (ret = dlg.ShowModal()) )
+  if( f.empty() )
   {
-    wxGetApp().mainframe()->statusbar()->PushStatusText(wxString::Format(_("Loading hud: %s"), dlg.GetPath().c_str()));
-    wxBusyCursor wait0r;
-    if( !load( dlg.GetPath() ) )
-      wxLogError( _("Failed reading Hud from file `%s'"), dlg.GetPath().c_str() );
+    wxFileDialog dlg(
+        wxGetApp().mainframe(),
+        _("Open..."),
+        wxT(""),
+        wxT(""),
+        wxT("Hud Files (*.cfg)|*.cfg|All Files (*.*)|*.*"),
+  #if wxCHECK_VERSION(2,7,0)
+        wxFD_OPEN | wxFD_FILE_MUST_EXIST
+  #else
+        wxOPEN | wxFILE_MUST_EXIST
+  #endif
+        );
+    if( wxID_OK != (ret = dlg.ShowModal()) )
+      return ret;
+    f = dlg.GetPath();
+  }
+
+  wxASSERT( !f.empty() );
+
+  wxGetApp().mainframe()->statusbar()->PushStatusText(wxString::Format(_("Loading hud: %s"), f.c_str()));
+  wxBusyCursor wait0r;
+  if( !load( f ) )
+  {
+    wxLogError( _("Failed reading Hud from file `%s'"), f.c_str() );
     wxGetApp().mainframe()->statusbar()->PopStatusText();
   }
+  wxGetApp().mainframe()->statusbar()->PopStatusText();
   return ret;
 }
 

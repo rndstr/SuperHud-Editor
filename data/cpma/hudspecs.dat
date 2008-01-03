@@ -30,7 +30,7 @@ _desc=Bar health level
 StatusBar_HealthBar=type=bar
 _desc=Defaults to mynx icon but can be any model, image or shader found in pk3s (provided that the pk3 is on the pure server you join)
 # FIXME add mynx icon path
-StatusBar_HealthIcon=type=usericon:icon=...
+StatusBar_HealthIcon=type=usericon:icon=models/players/mynx/icon_pm.tga
 
 
 _desc=Numeric armor level.

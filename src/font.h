@@ -37,9 +37,12 @@ class IFont
 
     /// loads the chardwidths.
     virtual bool load();
-    virtual void print( wxDC& dc, const wxRect& r, int sizept, const wxString& msg, bool monospace = false, char textalign = 'L' ) const = 0;
-    virtual void print( wxDC& dc, const wxRect& r, int sizex, int sizey, const wxString& msg, bool monospace = false, char textalign = 'L' ) const = 0;
+    virtual void print( const wxRect& r, int sizept, const wxString& msg, bool monospace = false, char textalign = 'L' ) const = 0;
+    virtual void print( const wxRect& r, int sizex, int sizey, const wxString& msg, bool monospace = false, char textalign = 'L' ) const = 0;
     virtual void cleanup() = 0;
+
+    /// calculates the width in coordinate space.
+    virtual int get_width( int sizex, const wxString& msg, bool monospace ) const = 0;
 
   protected:
     wxString    m_name;
@@ -56,11 +59,11 @@ class CPMAFont : public IFont
     virtual ~CPMAFont() { cleanup(); }
 
     virtual bool load();
-    virtual void print( wxDC& dc, const wxRect& r, int sizept, const wxString& msg, bool monospace = false, char textalign = 'L' ) const;
-    virtual void print( wxDC& dc, const wxRect& r, int sizex, int sizey, const wxString& msg, bool monospace = false, char textalign = 'L' ) const;
+    virtual void print( const wxRect& r, int sizept, const wxString& msg, bool monospace = false, char textalign = 'L' ) const;
+    virtual void print( const wxRect& r, int sizex, int sizey, const wxString& msg, bool monospace = false, char textalign = 'L' ) const;
     virtual void cleanup();
 
-    /// calculates the width in coordinate space.
+    
     int       get_width( int sizex, const wxString& msg, bool monospace ) const;
   protected:
     Texture   *m_tex;

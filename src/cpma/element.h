@@ -69,6 +69,8 @@ const int E_TIME_DEFAULT = 0;
 /// @}
 
 
+class Texture;
+
 class CPMAElement : public ElementBase
 {
   public:
@@ -77,9 +79,11 @@ class CPMAElement : public ElementBase
     CPMAElement( const wxString& name, const wxString& desc =wxT(""), int type =E_T_UNKNOWN, 
       bool enable =false, int flags =E_NONE, int has =E_HAS_NONE, const wxString& text =wxT(""), 
       const wxString& icon =wxT(""), const wxRect& rect = E_RECT_DEFAULT);
+    virtual ~CPMAElement();
 
     virtual void  write_properties( wxTextOutputStream& stream ) const;
     virtual bool  parse_property( const wxString& cmd, wxString args );
+    virtual void prerender();
     virtual void render() const;
 
     bool        iget_has(int what) const;
@@ -210,8 +214,13 @@ class CPMAElement : public ElementBase
     wxString    m_text; ///< text for preview
     wxString    m_icon;
 
-    bool        m_modelfound;
-    bool        m_skinfound;
+    // the picture to display; can be either the fixed one supplied by
+    // the game or a dynamic entered by the user but never at the same time both.
+    // so we use this for all the images
+    Texture     *m_ptex;
+
+    //bool        m_modelfound;
+    //bool        m_skinfound;
 };
 
 #endif // __CPMA_ELEMENT_H__

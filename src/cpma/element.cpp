@@ -3,6 +3,8 @@
 #include "../hudfilebase.h"
 #include "../displayctrlbase.h"
 #include "../prefs.h"
+#include "../texture.h"
+#include "../pakmanager.h"
 
 #include <wx/tokenzr.h>
 
@@ -33,9 +35,7 @@ ElementBase(name, desc, flags, has, enable),
     m_angle_pitch(0), m_angle_yaw(0), m_angle_roll(0), m_angle_pan(0),
     m_text(text),
     m_icon(icon),
-    //m_texid(HI_IMG_NOTLOADED),
-    m_modelfound(false),
-    m_skinfound(false)
+    m_ptex(0)
 {
   m_offset[0] = 0.f; m_offset[1] = 0.f; m_offset[2] = 0.f;
 }
@@ -59,11 +59,15 @@ CPMAElement::CPMAElement( const hsitem_s& def ) :
     m_angle_pitch(0), m_angle_yaw(0), m_angle_roll(0), m_angle_pan(0),
     m_text(def.text),
     m_icon(def.icon),
-    //m_texid(HI_IMG_NOTLOADED),
-    m_modelfound(false),
-    m_skinfound(false)
+    m_ptex(0)
 {
   m_offset[0] = 0.f; m_offset[1] = 0.f; m_offset[2] = 0.f;
+}
+
+CPMAElement::~CPMAElement()
+{
+  if( m_ptex )
+    wxDELETE(m_ptex);
 }
 
 
@@ -595,109 +599,101 @@ void CPMAElement::render() const
 
   case E_T_USERICON:
     { // COLOR_T && FILL = border around ...
-      /*
-      int texid = hi->get_image_texid();
-      bool fill = hi->get_fill();
-      bool hasimage = (!hi->get_image().empty() && !hi->m_ismodel);
-      Color4 bgcolor = hi->get_bgcolor();
-      Color4 color = hi->get_color();
+      bool fill = iget_fill();
+      bool hasimage = (!iget_image().empty() && !m_usemodel);
+      Color4 bgcolor = iget_bgcolor();
+      Color4 color = iget_color();
       if( color.is_special() )
       {
         bgcolor.set_type( color.get_type() );
         color.set_a1( bgcolor.a1() );
-
-
       }
 
       if( fill && bgcolor.a1() != 0.f )
       {
         bgcolor.glBind();
-        render_rect(r);
+        draw_rect(r);
       }
-      if( (!fill || bgcolor.a1() == 0.f) &&
-          (!hasimage || color.a1() == 0.f) )
+      if( !usemodel() )
       {
-        render_helper_bg( hi, r );
-      }
-      if( hasimage )
-      {
-        glEnable( GL_TEXTURE_2D );
         color.glBind();
-        glBindTexture( GL_TEXTURE_2D, (texid > 0 ? texid : m_default_texid) );
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-        render_rect( r, true );
-        glDisable( GL_TEXTURE_2D );
+        if( m_ptex && m_ptex->is_ok() )
+          m_ptex->glBind();
+        else
+          wxGetApp().mainframe()->displayctrl()->texture_default()->glBind();
+        draw_rect( r, true );
       }
-      else if( hi->m_ismodel && m_model_texid > 0)
+      else // usemodel
       {
-        glEnable( GL_TEXTURE_2D );
         color.glBind();
-        glBindTexture( GL_TEXTURE_2D, m_model_texid );
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-        render_rect( r, true );
-        glDisable( GL_TEXTURE_2D );
+        wxGetApp().mainframe()->displayctrl()->texture_model()->glBind();
+        draw_rect( r, true );
       }
-      */
     }
     break;
 
   case E_T_ICON:
     {
-      /*
-      Color4 bgcolor = hi->get_bgcolor();
-      Color4 color = hi->get_color();
+      Color4 bgcolor = iget_bgcolor();
+      Color4 color = iget_color();
       if( color.is_special() )
       {
         bgcolor.set_type( color.get_type() );
-        color = HI_DEFAULTCOLOR;
+        color = E_COLOR_DEFAULT;
       }
       color.set_a1(1.f); // NB for eg StatusBar_ArmorIcon the color would be completely discarded.
 
-      if( hi->get_fill() )
+      if( iget_fill() )
       {
         bgcolor.glBind();
-        render_rect(r);
+        draw_rect(r);
       }
-      else
-        render_helper_bg( hi, r );
- 
-      if( !hi->m_icon.empty() && hi->m_texid > 0 )
+      if( m_ptex && m_ptex->is_ok() )
       {
-        glEnable( GL_TEXTURE_2D );
         color.glBind();
-        glBindTexture( GL_TEXTURE_2D, hi->m_texid );
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-        render_rect( r, true );
-        glDisable( GL_TEXTURE_2D );
+        m_ptex->glBind();
+        draw_rect( r, true );
       }
-      */
     }
     break;
 
 
   case E_T_TEXT:
-    { // COLOR_T && FILL = border around ...
-      /*
+    { // COLOR_T && FILE = border around ...
       int sx, sy;
       wxString text = m_text;
       bool monospace = iget_monospace();
-      fonts_t::const_iterator fit = m_fonts.find( hi->get_font() );
+      IFont *font = wxGetApp().mainframe()->displayctrl()->font( iget_font() );
+      if( !font )
+        wxLogDebug(wxT("Font not found: ") + iget_font());
       wxRect rr(r);
-      Color4 bgcolor = hi->get_bgcolor();
-      Color4 color = hi->get_color();
+      Color4 bgcolor = iget_bgcolor();
+      Color4 color = iget_color();
       if( color.is_special() )
       {
         bgcolor.set_type( color.get_type() );
-        color = HI_DEFAULTCOLOR;
+        color = E_COLOR_DEFAULT;
       }
 
-      hi->get_fontsize( &sx, &sy );
-      
-      if( !hi->get_fill() )
+      switch( iget_fontsizetype() )
+      {
+      case E_FST_POINT:
+        sx = iget_fontsizept();
+        
+        break;
+      case E_FST_COORD:
+        sx = iget_fontsizept();
+        sy = iget_fontsizey();
+        break;
+      }
+
+      if( !iget_fill() )
       {
         
-        int w = (fit == m_fonts.end() ? 0 : fit->second->get_width(sx, text, monospace));
-        switch( hi->get_textalign() )
+        int w = (font ? font->get_width(sx, text, monospace) : 0);
+        switch( iget_textalign() )
         {
           case 'C':
             rr.x = rr.x + (rr.width - w)/2 ;
@@ -712,27 +708,46 @@ void CPMAElement::render() const
       if( rr.width && rr.height && bgcolor.a1() != 0.f )
       {
         bgcolor.glBind();
-        render_rect(rr);
+        draw_rect(rr);
       }
-      else
-        render_helper_bg( hi, r );
 
-      if( fit != m_fonts.end() && !text.empty())
+      if( font && !text.empty())
       {
         color.glBind();
-        switch( hi->get_fontsizetype() )
+        switch( iget_fontsizetype() )
         {
-        case HIFST_POINT:
-          fit->second->print( dc, r, sx, text, monospace, hi->get_textalign() );
+        case E_FST_POINT:
+          font->print( r, sx, text, monospace, iget_textalign() );
           break;
 
-        case HIFST_COORD:
-          fit->second->print( dc, r, sx, sy, text, monospace, hi->get_textalign() );
+        case E_FST_COORD:
+          font->print( r, sx, sy, text, monospace, iget_textalign() );
           break;
         }
       }
-      */
     }
     break;
   }
+}
+
+
+void CPMAElement::prerender()
+{
+  switch(m_type)
+  {
+  case E_T_ICON:
+    if( !m_ptex && !m_icon.empty() )
+      m_ptex = new Texture(m_icon, PM_SEARCH_HUDFILE);
+    break;
+  case E_T_USERICON:
+    if( !m_image.empty() )
+    {
+      if( !m_ptex )
+        m_ptex = new Texture( m_image, PM_SEARCH_HUDFILE );
+      else if( m_image.Cmp(m_ptex->name()) != 0 )
+        m_ptex->load( m_image, PM_SEARCH_HUDFILE );
+    }
+    break;
+  }
+
 }

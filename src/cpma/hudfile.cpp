@@ -240,8 +240,6 @@ bool CPMAHudFile::read_properties( ElementBase *hi, const wxString& props )
       //throw hudfilereader_parse_error( e.c_str() );
     }
   }
-  // postprocessing! maybe this is missing somewhere else? where do we parse items else? presets? bah
-  //hi->after_parse();
 
   return true;
 }

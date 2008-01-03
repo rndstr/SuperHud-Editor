@@ -183,6 +183,8 @@ void Prefs::load()
 
   // -- startup
   addvar(wxT("startup_gameselection"), wxT("true"), PVT_BOOL);
+  addvar(wxT("startup_load"), wxT("true"), PVT_BOOL);
+  addvar(wxT("startup_loadfile"), wxT(""), PVT_STRING);
 
   // -- saving
   addvar(wxT("save_writedisabled"), wxT("true"), PVT_BOOL);

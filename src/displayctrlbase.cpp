@@ -3,6 +3,8 @@
 #include "prefs.h"
 #include "hudfilebase.h"
 #include "elementsctrlbase.h"
+#include "texture.h"
+#include "pakmanager.h"
 
 BEGIN_EVENT_TABLE(DisplayCtrlBase, wxGLCanvas)
   EVT_IDLE(DisplayCtrlBase::OnIdle)
@@ -16,14 +18,21 @@ END_EVENT_TABLE()
 DisplayCtrlBase::DisplayCtrlBase( wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) :
     wxGLCanvas(parent, id, pos, size, style|wxFULL_REPAINT_ON_RESIZE),
     m_background(0),
-    m_initialized(false)
+    m_initialized(false),
+    m_texdefault(0),
+    m_texmodel(0)
 {
 }
 
 
-DisplayCtrlBase::~DisplayCtrlBase()
+void DisplayCtrlBase::cleanup()
 {
+  if( m_texdefault )
+    wxDELETE(m_texdefault);
+  if( m_texmodel )
+    wxDELETE(m_texmodel);
 }
+
 
 void DisplayCtrlBase::OnPaint( wxPaintEvent& )
 {
@@ -35,11 +44,8 @@ void DisplayCtrlBase::OnPaint( wxPaintEvent& )
 
   SetCurrent();
   if( !m_initialized )
-  {
     init();
     
-  }
-
   render();
 
   glFlush();
@@ -50,7 +56,20 @@ void DisplayCtrlBase::init()
 {
   reset_projection_mode();
   load_background();
+
+  // load default texture
+  m_texdefault = new Texture( wxT("texture/default.tga"), PM_SEARCH_APPFILE );
+  m_texmodel = new Texture( wxT("texture/model.tga"), PM_SEARCH_APPFILE );
+
   m_initialized = true;
+}
+
+IFont* DisplayCtrlBase::font( const wxString& name )
+{
+  it_fonts f = m_fonts.find(name);
+  if( f == m_fonts.end() )
+    return 0;
+  return f->second;
 }
 
 void DisplayCtrlBase::OnEraseBackground( wxEraseEvent& )
@@ -271,6 +290,7 @@ void DisplayCtrlBase::prepare2d()
   glDisable(GL_DEPTH_TEST);
   glDisable( GL_CULL_FACE );
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
 
   //
   double w = (double)GetSize().x;

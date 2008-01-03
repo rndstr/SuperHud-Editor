@@ -22,7 +22,7 @@ FontPropertiesCtrl::FontPropertiesCtrl( wxWindow *parent ) :
 
   Append( new wxPropertyCategory( _("Font")) );
   
-  static const wxChar* font_type[] = {wxEmptyString, wxT("cpma"), wxT("id"), wxT("idblock"), wxT("threewave"), (const wxChar*)0};
+  static const wxChar* font_type[] = {wxEmptyString, wxT("cpma"), wxT("id"), wxT("sansman"), wxT("idblock"), wxT("threewave"), (const wxChar*)0};
   Append( new wxEnumProperty(_("Type"), wxT("font"), font_type) );
   //SetPropertyEditor(wxT("font"), wxPG_EDITOR(Choice));
 
@@ -151,7 +151,7 @@ void FontPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   }
   else if( name == wxT("fontsize_pt") || name == wxT("fontsize_x") || name == wxT("fontsize_y") )
   {
-    if( !(el->has() && E_HAS_FONTSIZE) )
+    if( !(el->has() & E_HAS_FONTSIZE) )
     { // copy it over
       el->set_fontsizetype( el->iget_fontsizetype() );
       el->set_fontsizept( el->iget_fontsizept() );
@@ -167,7 +167,6 @@ void FontPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
       el->set_fontsizey( ev.GetPropertyValueAsInt() );
 
   }
-  
   else
     return; // nothing changed
 

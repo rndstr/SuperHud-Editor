@@ -71,13 +71,14 @@ CPMAFont::CPMAFont( const wxString& name ) :
 
 void CPMAFont::cleanup()
 {
-  wxLogDebug(wxT("font cleanup ") + m_name);
   if( m_tex )
-    delete m_tex;
+    wxDELETE(m_tex);
 }
 
 bool CPMAFont::load()
 {
+  wxLogDebug(wxT("Loading font: ") + m_name);
+
   cleanup();
   if( !IFont::load() )
     return false;
@@ -85,33 +86,12 @@ bool CPMAFont::load()
   m_tex = new Texture( wxT("fonts/") + m_name + wxT(".tga"), PM_SEARCH_HUDFILE );
   if( !m_tex->is_ok() )
     return false;
-
-  /*
-  wxImage img;
-  wxMemoryInputStream mis( imgbuf, imgsize );
-
-  if( !img.LoadFile( mis ) )
-  {
-    wxLogError( wxT("Failed
-  m_texid = OpenGLRenderer::create_texture( img, true );
-  int x, y;
-  int cwidth = img.GetWidth()/F_COUNT_X; // px
-  int cheight= img.GetHeight()/F_COUNT_Y; // px
-  for( int i=0; i < F_COUNT_X*F_COUNT_Y; ++i )
-  {
-    x = i%F_COUNT_Y;
-    y = static_cast<int>( std::floor(i/F_COUNT_X) );
-    x *= cwidth;
-    y *= cheight;
-    m_bitmap[i] = bmp.GetSubBitmap( wxRect( x, y, cwidth, cheight ) );
-  }
-  */
   return true;
 }
 
-void CPMAFont::print( wxDC& dc, const wxRect& r, int sizept, const wxString& msg, bool monospace /*=false*/, char textalign /*='L'*/ ) const
+void CPMAFont::print( const wxRect& r, int sizept, const wxString& msg, bool monospace /*=false*/, char textalign /*='L'*/ ) const
 {
-  print( dc, r, sizept, sizept, msg, monospace, textalign );
+  print( r, sizept, sizept, msg, monospace, textalign );
 }
 
 int CPMAFont::get_width( int sizex, const wxString& msg, bool monospace ) const
@@ -126,7 +106,7 @@ int CPMAFont::get_width( int sizex, const wxString& msg, bool monospace ) const
   return static_cast<int>(width * sizex/(float)F_CHAR_WIDTH);
 }
 
-void CPMAFont::print( wxDC& dc, const wxRect& r, int sizex, int sizey, const wxString& msg, bool monospace /*=false*/, char textalign /*='L'*/ ) const
+void CPMAFont::print( const wxRect& r, int sizex, int sizey, const wxString& msg, bool monospace /*=false*/, char textalign /*='L'*/ ) const
 {
   if( !m_tex || !m_tex->is_ok() )
   {
@@ -150,8 +130,6 @@ void CPMAFont::print( wxDC& dc, const wxRect& r, int sizex, int sizey, const wxS
     break;
   }
   
-
-  glEnable( GL_TEXTURE_2D );
   m_tex->glBind();
   
   
@@ -160,7 +138,7 @@ void CPMAFont::print( wxDC& dc, const wxRect& r, int sizex, int sizey, const wxS
   
 
   //glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-  // looks much better
+  // looks much better, needs alpha channel
   glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   
   float one_div_x = 1/(float)F_COUNT_X;
@@ -228,10 +206,10 @@ void CPMAFont::print( wxDC& dc, const wxRect& r, int sizex, int sizey, const wxS
     glTranslated( width, 0, 0 );  
   }
 
-  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
   
-  glDisable( GL_TEXTURE_2D );
+  //glDisable( GL_TEXTURE_2D );
   glPopMatrix();
 }
 

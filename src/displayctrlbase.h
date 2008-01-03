@@ -2,8 +2,11 @@
 #define __DISPLAYCTRLBASE_H__
 
 #include "glcanvasbase.h"
-#include "texture.h"
+#include "font.h"
+
 #include <wx/gdicmn.h>
+
+#include <map>
 
 typedef enum {
   DRAG_NONE = 0,
@@ -11,6 +14,11 @@ typedef enum {
   DRAG_DRAGGING = 2
 } eDragMode;
 
+typedef std::map<wxString, IFont*> fonts_type;
+typedef fonts_type::iterator it_fonts;
+typedef fonts_type::const_iterator cit_fonts;
+
+class Texture;
 class ElementBase;
 
 class DisplayCtrlBase : public wxGLCanvas
@@ -20,13 +28,18 @@ class DisplayCtrlBase : public wxGLCanvas
     DisplayCtrlBase( wxWindow *parent, wxWindowID id = wxID_ANY,
         const wxPoint& pos = wxDefaultPosition,
         const wxSize& size = wxDefaultSize, long style = 0);
-    virtual ~DisplayCtrlBase();
+    virtual ~DisplayCtrlBase() {}
         
     /// this shouldn't be called too early. preferrably in the OnPaint() function
     /// at first call
     virtual void init();
-    virtual void cleanup() {}
-    
+    virtual void cleanup();
+
+
+    IFont*    font( const wxString& name );
+    const Texture* const texture_default() const { return m_texdefault; }
+    const Texture* const texture_model() const { return m_texmodel; }
+
 
     void render_helper( const wxRect& rect, bool selected = false ) const;
 
@@ -36,13 +49,18 @@ class DisplayCtrlBase : public wxGLCanvas
     ElementBase*    element_hittest( const wxPoint& p, bool toggle = true );
 
   protected:
-    bool      m_initialized;
-    Texture   *m_background;
-    wxRect    m_hudrect;
+    bool          m_initialized;
+    Texture       *m_background;
+    wxRect        m_hudrect;
 
-    ElementBase *m_drag_el;
-    eDragMode m_drag_mode;
-    wxPoint   m_drag_start; ///< mouse position when we started dragging
+    ElementBase   *m_drag_el;
+    eDragMode     m_drag_mode;
+    wxPoint       m_drag_start; ///< mouse position when we started dragging
+
+    fonts_type    m_fonts;
+
+    Texture       *m_texdefault;
+    Texture       *m_texmodel; ///< what we display if user selected model (we can't render it (yet) ourselves : ((( 
 
     virtual void load_background() = 0;
     virtual void OnIdle( wxIdleEvent& );

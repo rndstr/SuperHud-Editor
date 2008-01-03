@@ -15,13 +15,14 @@ void Texture::cleanup()
 {
   if( m_texid )
     glDeleteTextures(1, &m_texid);
+  m_texid = 0;
+  m_name = wxEmptyString;
 }
 
 void Texture::load( const wxString& fpath, int search_where, bool mipmap /*=false*/ )
 {
+  wxGetApp().mainframe()->statusbar()->PushStatusText(_("Loading texture ") + fpath);
   cleanup();
-  m_texid = 0;
-
   wxLogDebug(wxT("Loading texture: ") + fpath);
 
   char *buf;
@@ -29,6 +30,7 @@ void Texture::load( const wxString& fpath, int search_where, bool mipmap /*=fals
   if( !PakManager::get().load( &buf, fpath, search_where, &size ) )
   {
     wxLogError(_("Couldn't find/load file: %s"), fpath.c_str());
+    wxGetApp().mainframe()->statusbar()->PopStatusText();
     return;
   }
   
@@ -38,14 +40,17 @@ void Texture::load( const wxString& fpath, int search_where, bool mipmap /*=fals
   if( !img.LoadFile(mis, bitmap_type_by_ext(file_ext(fpath))) )
   {
     wxLogWarning(wxT("Failed loading image: %s"), fpath.c_str());
+    wxGetApp().mainframe()->statusbar()->PopStatusText();
     return;
   }
+  m_name = fpath;
   m_texid = Texture::create_texture( img, mipmap );
-  // we no longer need the buffer
+  // we no longer need teh buffa
   PakManager::get().cleanup_lastloaded();
+  wxGetApp().mainframe()->statusbar()->PopStatusText();
 }
 
-void Texture::glBind()
+void Texture::glBind() const
 {
   if( m_texid )
     glBindTexture(GL_TEXTURE_2D, m_texid);
@@ -65,12 +70,15 @@ GLuint Texture::create_texture( wxImage& img, bool mipmap /*=false */ )
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (mipmap ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR) );
 
+  glPixelStorei(GL_UNPACK_ALIGNMENT,   1   );
+  /*
   glPixelStorei(GL_PACK_ALIGNMENT, 1);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
   glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
   glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
   glPixelStorei(GL_UNPACK_SWAP_BYTES, GL_FALSE);
+  */
 
   
   //make the image GL compliant (on 2^ size boundaries)
@@ -78,12 +86,25 @@ GLuint Texture::create_texture( wxImage& img, bool mipmap /*=false */ )
     img = image_makecompliantsize(img);
 
   
+  wxLogDebug(wxT("hasalpha  %d"), img.HasAlpha());
   if( mipmap )
     gluBuild2DMipmaps(GL_TEXTURE_2D, (img.HasAlpha() ?  4 : 3), img.GetWidth(), 
     img.GetHeight(), (img.HasAlpha() ?  GL_RGBA : GL_RGB), GL_UNSIGNED_BYTE, img.GetData());
   else
-    glTexImage2D(GL_TEXTURE_2D, 0, (img.HasAlpha() ?  4 : 3), img.GetWidth(),
-    img.GetHeight(), 0, (img.HasAlpha() ?  GL_RGBA : GL_RGB), GL_UNSIGNED_BYTE, img.GetData());
+    glTexImage2D(GL_TEXTURE_2D,
+					 0,
+					 GL_RGB, 
+					 img.GetWidth(),
+					 img.GetHeight(),
+					 0, 
+					 GL_RGB,
+					 GL_UNSIGNED_BYTE,
+					 img.GetData());
+  
+  //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB/*(img.HasAlpha() ?  GL_RGBA : GL_RGB)*/, img.GetWidth(),
+    //img.GetHeight(), 0, GL_RGB /*(img.HasAlpha() ?  GL_RGBA : GL_RGB)*/, GL_UNSIGNED_BYTE, img.GetData());
+    //glTexImage2D(GL_TEXTURE_2D, 0, (img.HasAlpha() ?  4 : 3), img.GetWidth(),
+    //img.GetHeight(), 0, (img.HasAlpha() ?  GL_RGBA : GL_RGB), GL_UNSIGNED_BYTE, img.GetData());
 
   return texid;
 }
