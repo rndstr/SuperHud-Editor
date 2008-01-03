@@ -258,7 +258,7 @@
 // -----------------------------------------------------------------------
 
 #ifndef wxPG_COMPATIBILITY_1_2_0
-    #define wxPG_COMPATIBILITY_1_2_0    1
+    #define wxPG_COMPATIBILITY_1_2_0    0
 #endif
 
 

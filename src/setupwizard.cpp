@@ -101,7 +101,7 @@ GameDirPage::GameDirPage(wxWizard *parent) : wxWizardPageSimple(parent)
 
 void GameDirPage::OnBtnSelectGameDir( wxCommandEvent& )
 {
-  wxString dir = wxDirSelector( wxString::Format(_("Select your %s directory:"), wxGetApp().factory()->gamename()), m_gamedir->GetValue() );
+  wxString dir = wxDirSelector( wxString::Format(_("Select your %s directory:"), wxGetApp().factory()->gamename().c_str()), m_gamedir->GetValue() );
   m_gamedir->SetValue(dir);
 }
 

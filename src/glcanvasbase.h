@@ -22,3 +22,4 @@ class GLCanvasBase : public wxGLCanvas
 };
 
 #endif
+

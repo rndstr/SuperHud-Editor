@@ -3,6 +3,11 @@
 #include "common.h"
 #include "pakmanager.h"
 
+#include <wx/sstream.h>
+#include <wx/mstream.h>
+#include <wx/txtstrm.h>
+#include <wx/regex.h>
+
 Model::Model()
 {
 
@@ -77,10 +82,6 @@ void Model::render()
 #endif
 }
 
-#include <wx/sstream.h>
-#include <wx/mstream.h>
-#include <wx/txtstrm.h>
-#include <wx/regex.h>
 // NOTE that we make a few assumptions here
 // (e.g. no triangle has different normals for different faces etc.)
 bool Model::load_mde( const wxString& fpath, int search_where )
@@ -101,7 +102,7 @@ bool Model::load_mde( const wxString& fpath, int search_where )
   wxTextInputStream contents( mis );
 
 
-  wxRegEx face_re = wxT("f ([[:digit:]]*)/([[:digit:]]*)/([[:digit:]]*) ([[:digit:]]*)/([[:digit:]]*)/([[:digit:]]*) ([[:digit:]]*)/([[:digit:]]*)/([[:digit:]]*)");
+  wxRegEx face_re(wxT("f ([[:digit:]]*)/([[:digit:]]*)/([[:digit:]]*) ([[:digit:]]*)/([[:digit:]]*)/([[:digit:]]*) ([[:digit:]]*)/([[:digit:]]*)/([[:digit:]]*)"));
   wxString line;
   wxString cmd;
   wxString arg;

@@ -141,8 +141,7 @@ void ImagePropertiesCtrl::append_picture_properties( CPMAElement *el /*=0*/ )
 {
   Append( new wxPropertyCategory(_("Picture"), wxT("cat-picture")) );
 
-  //Append( new wxStringProperty(_("File"), wxT("image"), el ? el->iget_image() : wxEmptyString) );
-  Append( new PakImageProperty(_("File"), wxT("image"), el ? el->iget_image() : wxEmptyString) );
+  Append( new wxStringProperty(_("File"), wxT("image"), el != 0 ? el->iget_image() : wxT("")) );
 }
 
 void ImagePropertiesCtrl::append_model_properties( CPMAElement *el /*=0*/ )
@@ -151,8 +150,8 @@ void ImagePropertiesCtrl::append_model_properties( CPMAElement *el /*=0*/ )
 
   Append( new wxPropertyCategory(_("Model"), wxT("cat-model")) );
   // if E_T_ICON then model is fix! why not write it readonly? :)
-  Append( new wxStringProperty(_("File"), wxT("model"), el ? el->iget_model() : wxEmptyString) );
-  Append( new wxStringProperty(_("Skin"), wxT("skin"), el ? el->iget_skin() : wxEmptyString) );
+  Append( new wxStringProperty(_("File"), wxT("model"), el ? el->iget_model() : wxT("")) );
+  Append( new wxStringProperty(_("Skin"), wxT("skin"), el ? el->iget_skin() : wxT("")) );
 
   Append( new wxPropertyCategory(_("Rotation"), wxT("cat-angles")) );
   SetPropertyHelpString( wxT("cat-angles"), _("Alters the display of MODEL. Note that most Q3 models do not work properly if r_vertexlight is on.") );

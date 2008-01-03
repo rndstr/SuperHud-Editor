@@ -24,7 +24,6 @@
 
 
 
-
 // some general messages
 const wxString BUG_MSG = _("Bug detected, please contact the author and tell him the error message.\n\nError:\n");
 const wxString CANTDISABLEPROPERTY_MSG = _("There is no way to disable this property on that element as a parent element specifies it.\nYou should remove the property on the parent `!DEFAULT' element.");
