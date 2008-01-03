@@ -34,7 +34,7 @@ void PakManager::cleanup()
   {
     if( it->second.buffer != 0 )
     {
-      wxLogDebug(wxT("Deleting cache data: %s"), it->first.c_str());
+      wxLogDebug(wxT("PakManager::cleanup - Deleting cache data: %s"), it->first.c_str());
       delete [] it->second.buffer;
       it->second.buffer = 0;
       it->second.bufsize = 0;
@@ -130,7 +130,7 @@ bool PakManager::load_from_location( char **buf, const wxString& location, size_
   }
   if( 0 == file )
   {
-    wxLogDebug(wxT("Failed opening file"));
+    wxLogDebug(wxT("PakManager::load_from_location - Failed opening file: ") + location );
     return false;
   }
   
@@ -183,7 +183,8 @@ bool PakManager::load( char **buf, const wxString& fpath, int search_where, size
     wxLogDebug(wxT("PakManager::load - Cannot find file: %s)"), fpath.c_str());
     return false;
   }
-  wxLogDebug(wxT("PakManager::load - Found file `%s' at %s (%s)"), fpath.c_str(), location.c_str(), PakManager::searchwhere2string(found).c_str());
+  wxLogDebug(wxT("PakManager::load - Found file: %s [%s]"), fpath.c_str(), PakManager::searchwhere2string(found).c_str());
+  wxLogDebug(wxT("PakManager::load -  > ") + location);
 
   pakcontent_t::iterator cont = m_pakcontent.find( fpath );
   if( cont == m_pakcontent.end() || cont->second.buffer == 0 )
@@ -195,13 +196,13 @@ bool PakManager::load( char **buf, const wxString& fpath, int search_where, size
       return false;
     if( cont == m_pakcontent.end() )
     { // no entry, add it but only if 
-      wxLogDebug(wxT("PakManager::load -  insert item: %s"), location.c_str());
+      wxLogDebug(wxT("PakManager::load -  insert item [%d Bytes]: %s"), size, location.c_str());
       std::pair<pakcontent_t::iterator, bool> mofo = m_pakcontent.insert( std::make_pair(location, pakcontentnode_t( *buf, size)) );
       cont = mofo.first;
     }
     else
     { // we only refreshed cache
-      wxLogDebug(wxT("PakManager::load -  update item: %s"), location.c_str());
+      wxLogDebug(wxT("PakManager::load -  update ite [%d Bytes]: %s"), size, location.c_str());
       cont->second.buffer = *buf;
       cont->second.bufsize = size;
     }
@@ -211,7 +212,7 @@ bool PakManager::load( char **buf, const wxString& fpath, int search_where, size
   }
   else
   { // cached and found!
-    wxLogDebug(wxT("PakManager::load - Cached entry found: %s"), location.c_str());
+    wxLogDebug(wxT("PakManager::load - Cached entry found [%d Bytes]: %s"), cont->second.bufsize, location.c_str());
     *buf = cont->second.buffer;
     if( psize )
       *psize = cont->second.bufsize;
@@ -241,14 +242,14 @@ size_t PakManager::enumerate_game_pakfiles( wxArrayString *files )
     pos = token.find_last_of( wxT("\\/") );
     if( pos != wxString::npos )
     { // there is a subdir
-      wxLogDebug( wxT(" > ") + wxGetApp().factory()->dir_game() + PATH_SEP + token.substr(0, pos+1) + wxT("#") + token.substr(pos+1, token.length()-pos-1) );
+      wxLogDebug( wxT(" > in ") + wxGetApp().factory()->dir_game() + PATH_SEP + token.substr(0, pos+1) + wxT(" for ") + token.substr(pos+1, token.length()-pos-1) );
       count += wxDir::GetAllFiles( wxGetApp().factory()->dir_game() + PATH_SEP + token.substr(0, pos+1), files, token.substr(pos+1, token.length()-pos-1), GETALLFILES_FLAGS);
 
 #ifndef WIN32
       // NB this is not entirely correct.. we need to figure out how to get $HOME the correct way 
       // for e.g. Mac builds, i don't know where they store the userfiles.
-      wxLogDebug( wxT(" > ") + homedir + PATH_SEP + wxGetApp().factory()->unixdirname_userdata() + token.substr(0, pos+1) + wxT("#") + token.substr(pos+1, token.length()-pos-1) );
-      count += wxDir::GetAllFiles( homedir + PATH_SEP + wxGetApp().factory()->unixdirname_userdata() + token.substr(0, pos+1), &homefiles, token.substr(pos+1, token.length()-pos-1), GETALLFILES_FLAGS);
+      wxLogDebug( wxT(" > in ") + homedir + PATH_SEP + wxGetApp().factory()->unixdirname_userdata() + PATH_SEP + token.substr(0, pos+1) + wxT(" for ") + token.substr(pos+1, token.length()-pos-1) );
+      count += wxDir::GetAllFiles( homedir + PATH_SEP + wxGetApp().factory()->unixdirname_userdata() + + PATH_SEP + token.substr(0, pos+1), &homefiles, token.substr(pos+1, token.length()-pos-1), GETALLFILES_FLAGS);
 #endif
     }
     else
@@ -273,6 +274,7 @@ size_t PakManager::enumerate_game_pakfiles( wxArrayString *files )
 
 void PakManager::enumerate_pakdircontents( const wxString& pakpath, pakbrowser_dirs_type *dirs, pakbrowser_files_type *files, wxGauge *gauge /*=0*/) const
 {
+  wxLogDebug( wxT("PakManager::enumerate_pakdircontents") );
 #ifdef NDEBUG
   wxLogNull unfortunately_this_gives_us_invalidzipfile_without_any_information_which_one_so_just_shut_the_fuck_up;
 #endif
@@ -302,7 +304,7 @@ void PakManager::enumerate_pakdircontents( const wxString& pakpath, pakbrowser_d
       rel = fn.substr(pos+5, fn.length() - pos - 5);
       pos = rel.find_last_of(wxT("/"));
       dirname = rel.substr(pos+1, rel.length() - pos - 1);
-      wxLogDebug(wxT(" +DIR %s"), dirname.c_str());
+      wxLogDebug(wxT(" DIR > %s"), dirname.c_str());
       dirs->push_back(dirname);
       fn = fs.FindNext();
     }
@@ -315,7 +317,7 @@ void PakManager::enumerate_pakdircontents( const wxString& pakpath, pakbrowser_d
       rel = fn.substr(pos+5, fn.length() - pos - 5);
       pos = rel.find_last_of(wxT("/"));
       dirname = rel.substr(pos+1, rel.length() - pos - 1);
-      wxLogDebug(wxT(" +FILE %s, %s"), dirname.c_str(), m_pakfiles[i].c_str());
+      wxLogDebug(wxT(" FIL > %s, %s"), dirname.c_str(), m_pakfiles[i].c_str());
       files->insert( std::make_pair(dirname, m_pakfiles[i]) );
       fn = fs.FindNext();
     }
@@ -331,16 +333,14 @@ void PakManager::enumerate_pakdircontents( const wxString& pakpath, pakbrowser_d
 
 void PakManager::debug() const
 {
-  wxLogDebug(wxT(" PAKFILES"));
+  wxLogDebug(wxT("PakManager::debug - Game pak files (most important first)"));
   for( int i=m_pakfiles.Count()-1; i >= 0; --i )
-  {
-    wxLogDebug(m_pakfiles[i]);
-  }
-  wxLogDebug(wxT(" PAKCONTENTS"));
+    wxLogDebug( wxT(" > ") + m_pakfiles[i]);
+  wxLogDebug(wxT("PakManager::debug - Application pak files"));
+  for( int i=m_apppakfiles.Count()-1; i >= 0; --i )
+    wxLogDebug( wxT(" > ") + m_apppakfiles[i]);
+  wxLogDebug(wxT("PakManager::debug - Pak contents"));
   for( pakcontent_t::const_iterator cit = m_pakcontent.begin(); cit != m_pakcontent.end(); ++cit )
-  {
-    wxLogDebug(cit->first);
-    wxLogDebug(wxT("buf: 0x%x bufsize: %d"), cit->second.buffer, cit->second.bufsize);
-  }
-
+    wxLogDebug( wxT(" > 0x%x [%d Bytes] %s"), cit->second.buffer, cit->second.bufsize, cit->first.c_str());
 }
+

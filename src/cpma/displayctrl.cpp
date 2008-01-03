@@ -66,11 +66,13 @@ bool render_sort( ElementBase *a, ElementBase *b )
 void CPMADisplayCtrl::render()
 {
   static int count = 0;
-  if(!IsShown()) return;
+  if( !IsShown() ) return;
+  // that this is not yet ready only happens on wxGTK
+  if( !wxGetApp().hudfile() ) return; 
   wxLogDebug(wxT("CPMADisplayCtrl::render"));
 
  
-  if( wxGetApp().mainframe()->model() )
+  if( wxGetApp().mainframe() && wxGetApp().mainframe()->model() )
   {
     count += 10;
     glLoadIdentity();

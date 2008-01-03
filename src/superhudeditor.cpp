@@ -33,7 +33,9 @@ IMPLEMENT_APP(SHEApp)
 
 SHEApp::SHEApp() :
   m_firststart(false),
-  m_mainframe(0)
+  m_mainframe(0),
+  m_factory(0),
+  m_hudfile(0)
 {
 
 }
@@ -108,6 +110,8 @@ int SHEApp::OnRun()
   m_mainframe->update_title();
   if( Prefs::get().var(wxT("startup_load")) && !Prefs::get().var(wxT("startup_loadfile")).stringval().empty() )
     m_hudfile->OnOpen( Prefs::get().var(wxT("startup_loadfile")) );
+
+  PakManager::get().debug();
   /*
   if( m_firststart )
   {
