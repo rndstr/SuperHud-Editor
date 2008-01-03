@@ -43,6 +43,7 @@ ElementsCtrlBase* SHEApp::elementsctrl() { return m_mainframe->elementsctrl(); }
 
 bool SHEApp::OnInit()
 {
+  wxLogDebug(wxT("SHEApp::OnInit"));
   SetAppName(APP_NAME_UNIX);
 #ifndef WIN32
   #ifdef PACKAGE_PREFIX
@@ -106,6 +107,7 @@ bool SHEApp::OnInit()
 
 int SHEApp::OnRun()
 {
+  wxLogDebug(wxT("SHEApp::OnRun"));
   m_hudfile->OnNew();
   m_mainframe->update_title();
   if( Prefs::get().var(wxT("startup_load")) && !Prefs::get().var(wxT("startup_loadfile")).stringval().empty() )
