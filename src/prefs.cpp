@@ -121,6 +121,8 @@ bool Prefs::init()
 {
   if( !wxDir::Exists( wxStandardPaths::Get().GetUserDataDir() ) )
     wxMkdir( wxStandardPaths::Get().GetUserDataDir() );
+  wxLogDebug(wxT("Prefs::init - Loading config file: ") + wxStandardPaths::Get().GetUserDataDir() + wxT("/") + APP_CONFIG );
+
   bool confexists = wxFile::Exists( wxStandardPaths::Get().GetUserDataDir() + wxT("/") + APP_CONFIG );
   wxConfigBase::Set( new wxFileConfig( APP_NAME_UNIX, APP_VENDOR, wxStandardPaths::Get().GetUserDataDir() + wxT("/") + APP_CONFIG) );
   //wxConfigBase::Get()->SetRecordDefaults();

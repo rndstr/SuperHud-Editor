@@ -127,6 +127,7 @@ int SHEApp::OnRun()
 
 int SHEApp::OnExit()
 {
+  wxLogDebug(wxT("SHEApp::OnExit"));
   Prefs::get().save();
   Prefs::get().shutdown();
 

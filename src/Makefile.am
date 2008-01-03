@@ -25,7 +25,6 @@ superhudeditor_SOURCES = \
                          setupwizard.cpp setupwizard.h \
                          superhudeditor.cpp superhudeditor.h \
                          texture.cpp texture.h \
-                         tgaloader.cpp tgaloader.h \
                          cpma/colorpropertiesctrl.cpp cpma/colorpropertiesctrl.h \
                          cpma/displayctrl.cpp cpma/displayctrl.h \
                          cpma/element.cpp cpma/element.h \

@@ -170,31 +170,38 @@ wxString PakManager::searchwhere2string( ePakManagerSearchWhere wher )
 bool PakManager::load( char **buf, const wxString& fpath, int search_where, size_t *psize /*= 0*/)
 {
   wxASSERT(buf != 0);
+
   // FIXME if the file doesn't belong to a valid game data file we shouldn't add it to cache! (pakcontent)
   wxFSFile *file = 0;
   // maybe we don't even need pak access?
 
   ePakManagerSearchWhere found;
   wxString location = get_location(fpath, search_where, &found); // final location uri to be used with wxFileSystem
-  wxLogDebug(wxT("Found file `%s' at %s (%s)"), fpath.c_str(), location.c_str(), PakManager::searchwhere2string(found).c_str());
+
+  if( found == PM_SEARCH_NOWHERE )
+  {
+    wxLogDebug(wxT("PakManager::load - Cannot find file: %s)"), fpath.c_str());
+    return false;
+  }
+  wxLogDebug(wxT("PakManager::load - Found file `%s' at %s (%s)"), fpath.c_str(), location.c_str(), PakManager::searchwhere2string(found).c_str());
 
   pakcontent_t::iterator cont = m_pakcontent.find( fpath );
   if( cont == m_pakcontent.end() || cont->second.buffer == 0 )
   { // not found or cache not available
     // load
-    wxLogDebug(wxT("Outdated or non-existant cache entry: %s"), location.c_str());
+    wxLogDebug(wxT("PakManager::load - Outdated or non-existant cache entry: %s"), location.c_str());
     size_t size;
     if( !PakManager::load_from_location(buf, location, &size) )
       return false;
     if( cont == m_pakcontent.end() )
     { // no entry, add it but only if 
-      wxLogDebug(wxT(" insert item: %s"), location.c_str());
+      wxLogDebug(wxT("PakManager::load -  insert item: %s"), location.c_str());
       std::pair<pakcontent_t::iterator, bool> mofo = m_pakcontent.insert( std::make_pair(location, pakcontentnode_t( *buf, size)) );
       cont = mofo.first;
     }
     else
     { // we only refreshed cache
-      wxLogDebug(wxT(" update item: %s"), location.c_str());
+      wxLogDebug(wxT("PakManager::load -  update item: %s"), location.c_str());
       cont->second.buffer = *buf;
       cont->second.bufsize = size;
     }
@@ -204,7 +211,7 @@ bool PakManager::load( char **buf, const wxString& fpath, int search_where, size
   }
   else
   { // cached and found!
-    wxLogDebug(wxT("Cached entry found: %s"), location.c_str());
+    wxLogDebug(wxT("PakManager::load - Cached entry found: %s"), location.c_str());
     *buf = cont->second.buffer;
     if( psize )
       *psize = cont->second.bufsize;
@@ -234,22 +241,22 @@ size_t PakManager::enumerate_game_pakfiles( wxArrayString *files )
     pos = token.find_last_of( wxT("\\/") );
     if( pos != wxString::npos )
     { // there is a subdir
-      wxLogDebug( wxT(" >") + wxGetApp().factory()->dir_game() + PATH_SEP + token.substr(0, pos+1) + wxT("#") + token.substr(pos+1, token.length()-pos-1) );
+      wxLogDebug( wxT(" > ") + wxGetApp().factory()->dir_game() + PATH_SEP + token.substr(0, pos+1) + wxT("#") + token.substr(pos+1, token.length()-pos-1) );
       count += wxDir::GetAllFiles( wxGetApp().factory()->dir_game() + PATH_SEP + token.substr(0, pos+1), files, token.substr(pos+1, token.length()-pos-1), GETALLFILES_FLAGS);
 
 #ifndef WIN32
       // NB this is not entirely correct.. we need to figure out how to get $HOME the correct way 
       // for e.g. Mac builds, i don't know where they store the userfiles.
-      wxLogDebug( wxT(" >") + homedir + PATH_SEP + wxGetApp().factory()->unixdirname_userdata() + token.substr(0, pos+1) + wxT("#") + token.substr(pos+1, token.length()-pos-1) );
+      wxLogDebug( wxT(" > ") + homedir + PATH_SEP + wxGetApp().factory()->unixdirname_userdata() + token.substr(0, pos+1) + wxT("#") + token.substr(pos+1, token.length()-pos-1) );
       count += wxDir::GetAllFiles( homedir + PATH_SEP + wxGetApp().factory()->unixdirname_userdata() + token.substr(0, pos+1), &homefiles, token.substr(pos+1, token.length()-pos-1), GETALLFILES_FLAGS);
 #endif
     }
     else
     { // no subdir, NOTE that this doesn't occur normally... as all gamepakfiles are in subdirs
-      wxLogDebug( wxT(" >") + wxGetApp().factory()->dir_game() + wxT("#") + token );
+      wxLogDebug( wxT(" > ") + wxGetApp().factory()->dir_game() + wxT("#") + token );
       count += wxDir::GetAllFiles( wxGetApp().factory()->dir_game(), files, token, GETALLFILES_FLAGS);
 #ifndef WIN32
-      wxLogDebug( wxT(" >") + homedir + PATH_SEP + wxGetApp().factory()->unixdirname_userdata() + wxT("#") + token );
+      wxLogDebug( wxT(" > ") + homedir + PATH_SEP + wxGetApp().factory()->unixdirname_userdata() + wxT("#") + token );
       count += wxDir::GetAllFiles( homedir + PATH_SEP + wxGetApp().factory()->unixdirname_userdata(), &homefiles, token, GETALLFILES_FLAGS);
 #endif
     }

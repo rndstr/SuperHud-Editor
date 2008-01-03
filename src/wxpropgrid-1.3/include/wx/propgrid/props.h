@@ -13,7 +13,7 @@
 #define _WX_PROPGRID_PROPS_H_
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "props.cpp"
+//    #pragma interface "props.cpp"
 #endif
 
 // -----------------------------------------------------------------------

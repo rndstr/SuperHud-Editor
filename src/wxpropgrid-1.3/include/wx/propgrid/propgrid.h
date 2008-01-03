@@ -13,7 +13,7 @@
 #define __WX_PROPGRID_PROPGRID_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "propgrid.cpp"
+//    #pragma interface "propgrid.cpp"
 #endif
 
 #include <wx/dynarray.h>

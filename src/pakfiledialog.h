@@ -2,6 +2,7 @@
 
 #include <wx/wx.h>
 #include <wx/image.h>
+#include <wx/imaglist.h>
 // begin wxGlade: ::dependencies
 #include <wx/listctrl.h>
 #include <wx/statline.h>

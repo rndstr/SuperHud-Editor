@@ -13,7 +13,7 @@
 #define _WX_PROPGRID_ADVPROPS_H_
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "advprops.cpp"
+//    #pragma interface "advprops.cpp"
 #endif
 
 #ifndef wxPG_INCLUDE_ADVPROPS

@@ -21,7 +21,7 @@ class CPMAFactory : public FactoryBase
     virtual void set_dir_game( const wxString& dir ) const { Prefs::get().set(wxT("q3_gamedir"), dir); }
     wxString            pakfiles() const { return Prefs::get().var(wxT("q3_pakfiles")); }
 #ifndef WIN32
-    wxString            unixdirname_userdata() const { return { Prefs::get().var(wxT("q3_homedirname")); }
+    wxString            unixdirname_userdata() const { return Prefs::get().var(wxT("q3_homedirname")); }
 #endif
 
 #ifdef WIN32

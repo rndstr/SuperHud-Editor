@@ -13,7 +13,7 @@
 #define _WX_PROPGRID_ODCOMBO_H_
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "odcombo.h"
+//    #pragma interface "odcombo.h"
 #endif
 
 
