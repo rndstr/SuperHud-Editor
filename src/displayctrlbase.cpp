@@ -36,6 +36,9 @@ void DisplayCtrlBase::cleanup()
 
 void DisplayCtrlBase::OnPaint( wxPaintEvent& )
 {
+  if( !wxGetApp().is_ready() )
+    return;
+
   wxPaintDC dc(this);
 
 #ifndef __WXMOTIF__
@@ -54,6 +57,8 @@ void DisplayCtrlBase::OnPaint( wxPaintEvent& )
 
 void DisplayCtrlBase::init()
 {
+  wxLogDebug(wxT("DisplayCtrlBase::init"));
+
   reset_projection_mode();
   load_background();
 
