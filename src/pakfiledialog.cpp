@@ -97,7 +97,7 @@ bool PakFileDialog::Validate()
 
   if( m_files.find(m_selected) != m_files.end() )
   { // it's a file woohooh
-    for( int i=0; i < m_exts.Count(); ++i )
+    for( size_t i=0; i < m_exts.Count(); ++i )
     {
       if( m_selected.Matches(wxT("*.") + m_exts[i]) )
         return true;
@@ -141,7 +141,7 @@ void PakFileDialog::update_nolabel()
   {
     wxString l = _("Select a file");
     l += wxT(" (");
-    for( int i=0; i < m_exts.Count(); ++i )
+    for( size_t i=0; i < m_exts.Count(); ++i )
     {
       if( i != 0 ) l += wxT(" ");
       l += m_exts[i];

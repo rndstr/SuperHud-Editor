@@ -137,9 +137,9 @@ void CPMAFont::print( const wxRect& r, int sizex, int sizey, const wxString& msg
   float cx, cy;
   
 
-  //glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+  glBlendFunc(GL_SRC_ALPHA,GL_ONE);
   // looks much better, needs alpha channel
-  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   
   float one_div_x = 1/(float)F_COUNT_X;
   float one_div_y = 1/(float)F_COUNT_Y;

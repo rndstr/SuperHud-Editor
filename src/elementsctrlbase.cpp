@@ -14,6 +14,7 @@
 #include "xpm/icons/predecorate_insert.xpm"
 #include "xpm/icons/postdecorate_insert.xpm"
 
+//#define COLLECTION_INCLUDES_PARENT 1
 
 BEGIN_EVENT_TABLE(ElementsCtrlBase, wxPanel)
   EVT_BUTTON(ID_BTN_COPY, ElementsCtrlBase::OnBtnCopy)
@@ -211,6 +212,8 @@ void ElementsCtrlBase::append( ElementBase *el )
   long idx = m_list->InsertItem(m_list->GetItemCount(), wxEmptyString, -1);
   m_list->SetItem( idx, 1, el->name(), (el->is_enabled() ? E_LIST_IMG_ENABLED : E_LIST_IMG_DISABLED));
   m_list->SetItemData( idx, (long)(el) );
+  if( el->flags() & E_PARENT )
+    m_list->SetItemFont(idx, *wxITALIC_FONT);
 }
 
 void ElementsCtrlBase::clear()
@@ -254,14 +257,20 @@ void ElementsCtrlBase::list_refresh( const elements_type& elements )
           m_list->SetItem(h+collcount, 0, wxEmptyString, E_LIST_IMG_COLLITEM);
           minshare = wxMin(common_start(elements[h]->name(), elements[h-1]->name()), minshare);
         }
-        // also include the previous E_PARENT items
+        
         size_t realinsert = i;
-        for( size_t k=i-1; k>0; --k )
+        /*
+        // also include the previous E_PARENT items
+#if COLLECTION_INCLUDES_PARENT
+        for( size_t k=i-2; k>0; --k )
         {
           if( elements[k]->flags() & E_PARENT )
             --realinsert;
+          else
+            break;
         }
-
+#endif
+        */
 
         // insert collection title
         wxListItem li;
