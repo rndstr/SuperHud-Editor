@@ -161,6 +161,7 @@ void Prefs::load()
   addvar(wxT("view_helper_border_selected"), wxT("1 0 0 0.8"), PVT_COLOR);
   addvar(wxT("view_helper_fill_selected"), wxT("1 0 0 0.1"), PVT_COLOR);
   addvar(wxT("elements_collections"), wxT("true"), PVT_BOOL);
+  addvar(wxT("elements_collnamecount"), wxT("3"), PVT_INT); ///< minimum matching starting chars for a collection to be created
   addvar(wxT("app_perspective"), wxT(""), PVT_STRING);
 
 

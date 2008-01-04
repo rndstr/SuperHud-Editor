@@ -59,7 +59,7 @@ class ListDrop : public wxTextDropTarget
       // TODO simple but expensive ;) hooray (doesn't flicker on MSW, checkcheck for GTK)
       static_cast<ElementsCtrlBase*>(m_list->GetParent())->list_refresh(wxGetApp().hudfile()->elements());
       // TODO reselect items :o
-      // TODO scroll to item
+      // TODO scroll to item D:
 
       return true;
     }
@@ -230,6 +230,7 @@ void ElementsCtrlBase::list_refresh( const elements_type& elements )
   }
 
 
+  int collnamecount = Prefs::get().var(wxT("elements_collnamecount")).intval();
   if( Prefs::get().var(wxT("elements_collections")) )
   {
     // now insert collection items
@@ -237,15 +238,15 @@ void ElementsCtrlBase::list_refresh( const elements_type& elements )
     int collcount = 0; // how many collection titles we already inserted
     for( size_t i=1; i < elements.size(); ++i )
     {
-      if( elements[i]->name().Left(3) == elements[i-1]->name().Left(3) && elements[i]->name().Left(3) != collname)
+      if( elements[i]->name().Left(collnamecount) == elements[i-1]->name().Left(collnamecount) && elements[i]->name().Left(collnamecount) != collname)
       { // we found at least two items, that's enough
-        collname = elements[i]->name().Left(3);
+        collname = elements[i]->name().Left(collnamecount);
 
         // how many items belong to this collection?
         size_t g;
         for( g=i-1; g < elements.size(); ++g )
         {
-          if( elements[g]->name().Left(3) != collname )
+          if( elements[g]->name().Left(collnamecount) != collname )
             break;
         }
         // items [i-1,g-1] have same 3 starting characters
