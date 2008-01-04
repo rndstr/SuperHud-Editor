@@ -79,7 +79,7 @@ bool CPMAHudFile::load( const wxString& filename )
   }
   catch( hudfile_parse_error& err )
   {
-    wxString str = wxT("ERROR while parsing `") + filename + wxT("':\n ");
+    wxString str = wxString::Format(_("ERROR while parsing `%s'"), filename.c_str());
     str += wxString(err.what(), wxConvUTF8);
     wxLogError( str );
     load_default_elements();
@@ -151,7 +151,7 @@ bool CPMAHudFile::parse_item( wxString s )
   if (defit == 0)
   { // warning, unknown item!
     //m_had_unknown_items = true;
-    wxLogWarning( wxT("Unknown elementname `") + name + wxT("', adding it anyway."));
+    wxLogWarning( _("Unknown elementname `%s', adding it anyway."), name.c_str() );
     el = new CPMAElement(name);
     append(el);
   }
@@ -173,7 +173,7 @@ bool CPMAHudFile::parse_item( wxString s )
       { // it's an unique item. so if it's already enabled (=already been read), issue a warning
         el = exel;
         if( exel->m_enabled )//() && ~exel->flags() & E_ENABLEALWAYS )
-          wxLogWarning( _("You have more than one instance of `%s'' in your hudfile\nwhich might doesn't have the effect you desire."), name.c_str() );
+          wxLogWarning( _("You have more than one instance of `%s' in your hudfile\nwhich might doesn't have the effect you desire."), name.c_str() );
       }
     }
     else
@@ -188,7 +188,7 @@ bool CPMAHudFile::parse_item( wxString s )
   el->set_enabled( true );
   // make sure the order is the same as in hudfile.
   if( el != m_load_prevel && !move_element_after( el, m_load_prevel ) )
-      wxLogError( BUG_MSG + wxT("Failed moving item `") + el->name() + wxT("'."));
+      wxLogError( BUG_MSG + _("Failed moving item `%s'."), el->name().c_str());
   m_load_prevel = el;
   
   // read properties
@@ -218,7 +218,7 @@ bool CPMAHudFile::read_properties( ElementBase *hi, const wxString& props )
     
     if (cmd.empty())
     { // FIXME who cares?
-      wxLogWarning( wxT("Found empty element command.") );
+      wxLogWarning( _("Found empty element command.") );
       continue;
     }
     
@@ -265,7 +265,7 @@ bool CPMAHudFile::save( const wxString& filename )
   }
 
   if( decoratecount > HF_MAX_PREPOSTDECORATE )
-    wxLogWarning( _T("You have more than %d combined PreDecorate/PostDecorate elements which CPMA does not support"), HF_MAX_PREPOSTDECORATE );
+    wxLogWarning( _("You have more than %d combined PreDecorate/PostDecorate elements which CPMA does not support"), HF_MAX_PREPOSTDECORATE );
 
   m_filename = filename;
   m_modified = false;
