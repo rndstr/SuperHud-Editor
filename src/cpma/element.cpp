@@ -573,7 +573,7 @@ int CPMAElement::angle(int which) const
 }
 void CPMAElement::render() const
 {
-  wxLogDebug(wxT("RENDER ") + m_name);
+//  wxLogDebug(wxT("RENDER ") + m_name);
   bool hasownbg = true;
   wxRect r = iget_rect();
 

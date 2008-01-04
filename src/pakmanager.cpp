@@ -88,17 +88,17 @@ wxString PakManager::get_location( const wxString& fpath, int search_where /*=PM
   }
   if( !found && search_where & PM_SEARCH_GAMEPAK )
   { // search pak files
+    wxLogDebug(fpath);
     for( int i=m_pakfiles.Count()-1; i >= 0; --i )
     {
-      // NOTE that if the archive is no valid zipfile this returns somehow true on wxGTK?! what.the.fuck
-      if( fs.FindFileInPath(&loc, m_pakfiles[i] + wxT("#zip:"), fpath) )
+      fs.ChangePathTo(m_pakfiles[i] + wxT("#zip:"));
+      if( !fs.FindFirst(fpath, wxFILE).empty() )
       {
-        // NOTE on wxGTK loc gets a location like `/mah/zip.pk3#zip/fpath' (note the missing `:')
-        // this fucks up further reading somewhere... blah
         loc = m_pakfiles[i] + wxT("#zip:") + fpath;
         found = PM_SEARCH_GAMEPAK;
         break;
       }
+        wxLogDebug(wxT("FALSE"));
     }
   }
   if( !found && search_where & PM_SEARCH_APPRELATIVE )
@@ -110,7 +110,8 @@ wxString PakManager::get_location( const wxString& fpath, int search_where /*=PM
   { // find all files in datadir *.pke
     for( int i=m_apppakfiles.Count()-1; i >= 0; --i )
     {
-      if( fs.FindFileInPath(&loc, m_apppakfiles[i] + wxT("#zip:"), fpath) )
+      fs.ChangePathTo(m_apppakfiles[i] + wxT("#zip:"));
+      if( !fs.FindFirst(fpath, wxFILE).empty() )
       {
         loc = m_apppakfiles[i] + wxT("#zip:") + fpath;
         found = PM_SEARCH_APPPAK;

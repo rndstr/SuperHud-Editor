@@ -94,9 +94,9 @@ GLuint Texture::create_texture( wxImage& img, bool mipmap /*=false */ )
     unsigned char *dst = data;
     for( unsigned int i=0; i < imgsize; i+=4, dst+=4, src+=3, ++alpha )
     {
-      dst[0] = *data;
-      dst[1] = *(data+1);
-      dst[1] = *(data+2);
+      dst[0] = *(src+0);
+      dst[1] = *(src+1);
+      dst[2] = *(src+2);
       dst[3] = *alpha;
     }
     if( mipmap )

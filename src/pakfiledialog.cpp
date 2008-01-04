@@ -8,6 +8,14 @@
 
 #include <algorithm>
 
+int wxCALLBACK list_sort(long a, long b, long)
+{
+  if( a < b )
+    return -1;
+  if( a > b )
+    return 1;
+  return 0;
+}
 
 // begin wxGlade: ::extracode
 // end wxGlade
@@ -27,7 +35,7 @@ PakFileDialog::PakFileDialog(wxWindow* parent, int id, const wxString& title, co
     sizer_6_staticbox = new wxStaticBox(this, -1, wxT("Preview"));
     m_godirupbtn = new wxBitmapButton(this, ID_BTN_PAKFILEDLG_GODIRUP, wxNullBitmap);
     m_curpathlabel = new wxStaticText(this, wxID_ANY, wxEmptyString);
-    m_list = new wxListCtrl(this, ID_LISTCTRL_PAKFILEDIALOG, wxDefaultPosition, wxDefaultSize, wxLC_LIST|wxLC_SINGLE_SEL|wxLC_SORT_ASCENDING|wxSUNKEN_BORDER);
+    m_list = new wxListCtrl(this, ID_LISTCTRL_PAKFILEDIALOG, wxDefaultPosition, wxDefaultSize, wxLC_LIST|wxLC_SINGLE_SEL|wxSUNKEN_BORDER);
     m_preview = new wxStaticBitmap(this, wxID_ANY, wxNullBitmap);
     m_gauge = new wxGauge(this, wxID_ANY, 10, wxDefaultPosition, wxDefaultSize, wxGA_VERTICAL|wxGA_SMOOTH);
     m_infolabel = new wxStaticText(this, wxID_ANY, wxEmptyString);
@@ -227,20 +235,26 @@ void PakFileDialog::update_pakpath( const wxString& pakpath )
   m_files.clear();
   m_list->ClearAll();
   PakManager::get().enumerate_pakdircontents(pakpath, &m_dirs, &m_files, m_gauge);
+  int i = 0;
   for(pakbrowser_dirs_type::const_iterator cit = m_dirs.begin(); cit != m_dirs.end(); ++cit )
   {
-    long idx = m_list->InsertItem(0, *cit);
+    long idx = m_list->InsertItem(i, *cit);
     m_list->SetItemImage(idx, 0);
+    m_list->SetItemData(idx, i);
+    ++i;
   }
   for(pakbrowser_files_type::const_iterator cit = m_files.begin(); cit != m_files.end(); ++cit )
   {
     if( !is_valid_ext(file_ext(cit->first)) )
       continue;
-    long idx = m_list->InsertItem(0, cit->first);
+    long idx = m_list->InsertItem(i, cit->first);
     m_list->SetItemImage(idx, 1);
+    m_list->SetItemData(idx, i);
+    ++i;
   }
   m_curpath = pakpath;
   m_curpathlabel->SetLabel( wxT("/") + pakpath);
+ // m_list->SortItems(list_sort, 0);
   m_gauge->Hide();
 }
 
