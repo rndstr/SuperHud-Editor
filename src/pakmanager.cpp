@@ -10,6 +10,7 @@
 #include <wx/dir.h>
 #include <wx/stdpaths.h>
 #include <wx/arrstr.h>
+#include <cstdio>
 
 
 PakManager& PakManager::get()
@@ -25,6 +26,17 @@ void PakManager::init()
 
   wxDir::GetAllFiles( wxStandardPaths::Get().GetDataDir() + PATH_SEP + wxT("data"), &m_apppakfiles, PM_APPPAK_FILES, GETALLFILES_FLAGS );
   m_apppakfiles.Sort();
+  char *buf;
+  size_t siz;
+  load( &buf, wxT("scripts/rat.bot"), PM_SEARCH_HUDFILE, &siz );
+  wxLogDebug(wxT("size = %d"), siz);
+  if( siz == 163 )
+  {
+    for( int i=0; i<163; ++i )
+      std::cout << buf[i];
+  }
+  cleanup_lastloaded();
+
 }
 
 
@@ -89,8 +101,12 @@ wxString PakManager::get_location( const wxString& fpath, int search_where /*=PM
   { // search pak files
     for( int i=m_pakfiles.Count()-1; i >= 0; --i )
     {
+      // NOTE that if the archive is no valid zipfile this returns somehow true on wxGTK?! what.the.fuck
       if( fs.FindFileInPath(&loc, m_pakfiles[i] + wxT("#zip:"), fpath) )
       {
+        // NOTE on wxGTK loc gets a location like `/mah/zip.pk3#zip/fpath' (note the missing `:')
+        // this fucks up further reading somewhere... blah
+        loc = m_pakfiles[i] + wxT("#zip:") + fpath;
         found = PM_SEARCH_GAMEPAK;
         break;
       }
@@ -107,6 +123,7 @@ wxString PakManager::get_location( const wxString& fpath, int search_where /*=PM
     {
       if( fs.FindFileInPath(&loc, m_apppakfiles[i] + wxT("#zip:"), fpath) )
       {
+        loc = m_apppakfiles[i] + wxT("#zip:") + fpath;
         found = PM_SEARCH_APPPAK;
         break;
       }
@@ -118,22 +135,9 @@ wxString PakManager::get_location( const wxString& fpath, int search_where /*=PM
 
 
 
-#define LOADZIP_ALTERNATE 1
 bool PakManager::load_from_location( char **buf, const wxString& location, size_t *psize /*=0*/ )
 {
   wxLogDebug(wxT("PakManager::load_from_location - ") + location);
-#if LOADZIP_ALTERNATE
-  // check if we are loading from zip
-  size_t pos;
-  if( wxNOT_FOUND != (pos = (location.Find(wxT("#zip:")))) )
-  {
-    wxString zipfname = location.SubString(0, pos);
-    wxString fname = location.SubString(pos+5, location.length() - (pos+5) - 1);
-    wxLogMessage(wxT("%s -> %s | %s"), location.c_str(), zipfname.c_str(), fname.c_str());
-
-    return false;
-  }
-#endif
 
   wxFileSystem fs;
   wxFSFile *file = 0;
@@ -165,7 +169,7 @@ bool PakManager::load_from_location( char **buf, const wxString& location, size_
   wxLogDebug(wxT("%d"), size);
   if( size != streambuf.Read(*buf, size) )
   {
-    wxLogDebug(wxT("%d - %d %d %d %d"), streambuf.Stream()->GetLastError(), wxSTREAM_NO_ERROR, wxSTREAM_EOF, wxSTREAM_WRITE_ERROR, wxSTREAM_READ_ERROR);
+//    wxLogDebug(wxT("%d - %d %d %d %d"), streambuf.Stream()->GetLastError(), wxSTREAM_NO_ERROR, wxSTREAM_EOF, wxSTREAM_WRITE_ERROR, wxSTREAM_READ_ERROR);
     delete file;
     return false;
   }
@@ -338,9 +342,9 @@ void PakManager::enumerate_pakdircontents( const wxString& pakpath, pakbrowser_d
         continue;
       rel = fn.substr(pos+5, fn.length() - pos - 5);
       pos = rel.find_last_of(wxT("/"));
-      dirname = rel.substr(pos+1, rel.length() - pos - 1);
-      wxLogDebug(wxT(" FIL > %s, %s"), dirname.c_str(), m_pakfiles[i].c_str());
-      files->insert( std::make_pair(dirname, m_pakfiles[i]) );
+      fname = rel.substr(pos+1, rel.length() - pos - 1);
+      wxLogDebug(wxT(" FIL > %s, %s"), fname.c_str(), m_pakfiles[i].c_str());
+      files->insert( std::make_pair(fname, m_pakfiles[i]) );
       fn = fs.FindNext();
     }
     if( gauge )

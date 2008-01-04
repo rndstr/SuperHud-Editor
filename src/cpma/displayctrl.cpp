@@ -18,8 +18,23 @@ void CPMADisplayCtrl::init()
   m_fonts[wxT("cpma")] = new CPMAFont(wxT("cpma"));
   m_fonts[wxT("id")] = new CPMAFont(wxT("id"));
   m_fonts[wxT("threewave")] = new CPMAFont(wxT("threewave"));
-  m_fonts[wxT("sansman")] = new CPMAFont(wxT("sansman"));
   m_fonts[wxT("idblock")] = new CPMAFont(wxT("idblock"));
+  // are there more available? (sansman came for 1.44)
+
+
+  pakbrowser_dirs_type dirs;
+  pakbrowser_files_type files;
+  PakManager::get().enumerate_pakdircontents(wxT("/fonts/"), &dirs, &files);
+  for( pakbrowser_files_type::const_iterator it = files.begin(); it != files.end(); ++it )
+  {
+    if( it->Matches(wxT("*.tga")) )
+    {
+      wxString name = it->SubString(0, it->length()-4);
+      if( m_fonts.find(name) == m_fonts.end() )
+        m_fonts[name] = new CPMAFont(name);
+    }
+  }
+
 
   // load fonts
   for( fonts_type::iterator it = m_fonts.begin(); it != m_fonts.end(); ++it )

@@ -207,6 +207,8 @@ void MainFrame::OnMenuExit( wxCommandEvent& )
 #include "model.h"
 void MainFrame::OnMenuAbout( wxCommandEvent& )
 {
+  PakFileDialog dlg(this, wxID_ANY, wxT(""));
+  dlg.ShowModal();
   wxAboutDialogInfo info;
   info.SetName(APP_NAME);
   info.SetVersion(APP_VERSION);

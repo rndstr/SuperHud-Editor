@@ -65,6 +65,8 @@ class PakManager
     static bool load_from_location( char **buf, const wxString& location, size_t *psize =0 );
 
     /// we supply a path into the pakfiles (e.g. /icons/) and this enumerates all files/dirs in that path
+    /// @arg dirs
+    /// @arg files
     void enumerate_pakdircontents( const wxString& pakpath, pakbrowser_dirs_type *dirs, pakbrowser_files_type *files, wxGauge *gauge = 0 ) const;
 
     /// Translates a filepath to an absolute location (that can be used within
