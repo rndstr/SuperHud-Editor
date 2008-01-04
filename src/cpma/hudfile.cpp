@@ -172,7 +172,7 @@ bool CPMAHudFile::parse_item( wxString s )
       else
       { // it's an unique item. so if it's already enabled (=already been read), issue a warning
         el = exel;
-        if( exel->is_enabled() )
+        if( exel->m_enabled )//() && ~exel->flags() & E_ENABLEALWAYS )
           wxLogWarning( _("You have more than one instance of `%s'' in your hudfile\nwhich might doesn't have the effect you desire."), name.c_str() );
       }
     }

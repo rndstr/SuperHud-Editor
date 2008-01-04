@@ -71,6 +71,7 @@ const wxString HF_PROPERTY_ARG_DELIM = wxT(" ");
 
 class ElementBase
 {
+   friend class CPMAHudFile; // for proper detection if item has already been read (through m_enabled as is_enabled() is lying)
    friend class CPMAPropertiesCtrl; // TODO still needed?
    friend class VisibilityPropertiesCtrl; // TODO still needed?
   public:

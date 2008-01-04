@@ -79,22 +79,25 @@ GameDirPage::GameDirPage(wxWizard *parent) : wxWizardPageSimple(parent)
 {
   // create items
   wxBoxSizer *mainsizer = new wxBoxSizer(wxVERTICAL);
+  wxBoxSizer *dirsizer = new wxBoxSizer(wxHORIZONTAL);
+
   wxStaticText *title = new wxStaticText(this, wxID_ANY, _("Directory"));
+  wxButton *button = new wxButton(this, ID_BTN_SELECTGAMEDIR, _("Choose"));
   m_gamedir = new wxTextCtrl(this, wxID_ANY);
 
 
   
   // layout
+  dirsizer->Add( m_gamedir, 1, wxALL, 5 );
+  dirsizer->Add( button, 0, wxALL, 5 );
+
   mainsizer->Add(title, 0, wxALL, 5);
   mainsizer->Add(
     new wxStaticText(this, wxID_ANY,
     wxString::Format(_("Select your %s directory\n"), wxGetApp().factory()->gamename().c_str())), 
     0, wxALL, 5
     );
-  wxBoxSizer *dirsizer = new wxBoxSizer(wxHORIZONTAL);
-  dirsizer->Add( m_gamedir, 3, wxEXPAND|wxALL, 5 );
-  dirsizer->Add( new wxButton(this, ID_BTN_SELECTGAMEDIR, _("Choose")), 0, wxALL, 5 );
-  mainsizer->Add(dirsizer);
+  mainsizer->Add(dirsizer, 1, wxEXPAND);
 
   // design
   wxFont ftitle( 18, wxDEFAULT, wxFONTSTYLE_NORMAL, wxBOLD );
@@ -104,6 +107,7 @@ GameDirPage::GameDirPage(wxWizard *parent) : wxWizardPageSimple(parent)
 
   SetSizer(mainsizer);
   mainsizer->Fit(this);
+  Layout();
 }
 
 void GameDirPage::OnBtnSelectGameDir( wxCommandEvent& )
