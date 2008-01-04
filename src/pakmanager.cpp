@@ -10,7 +10,7 @@
 #include <wx/dir.h>
 #include <wx/stdpaths.h>
 #include <wx/arrstr.h>
-#include <cstdio>
+#include <iostream>
 
 
 PakManager& PakManager::get()
@@ -26,17 +26,6 @@ void PakManager::init()
 
   wxDir::GetAllFiles( wxStandardPaths::Get().GetDataDir() + PATH_SEP + wxT("data"), &m_apppakfiles, PM_APPPAK_FILES, GETALLFILES_FLAGS );
   m_apppakfiles.Sort();
-  char *buf;
-  size_t siz;
-  load( &buf, wxT("scripts/rat.bot"), PM_SEARCH_HUDFILE, &siz );
-  wxLogDebug(wxT("size = %d"), siz);
-  if( siz == 163 )
-  {
-    for( int i=0; i<163; ++i )
-      std::cout << buf[i];
-  }
-  cleanup_lastloaded();
-
 }
 
 
@@ -309,7 +298,7 @@ void PakManager::enumerate_pakdircontents( const wxString& pakpath, pakbrowser_d
   wxString rel; // relative to pak
   wxString name; // last part of path only
   size_t pos;
-  wxStatusBar *sb = wxGetApp().mainframe()->statusbar();
+  wxStatusBar *sb = (wxGetApp().mainframe() ? wxGetApp().mainframe()->statusbar() : 0);
 
   int g = 0;
   if( gauge )
@@ -319,7 +308,7 @@ void PakManager::enumerate_pakdircontents( const wxString& pakpath, pakbrowser_d
   }
   for( int i=m_pakfiles.Count()-1; i >= 0; --i )
   {
-    sb->PushStatusText( m_pakfiles[i], SB_MSG );
+    if(sb) sb->PushStatusText( m_pakfiles[i], SB_MSG );
     fs.ChangePathTo( m_pakfiles[i] + wxT("#zip:") + pakpath, true );
     // dirs first
     fn = fs.FindFirst( wxT("*"), wxDIR );
@@ -350,7 +339,7 @@ void PakManager::enumerate_pakdircontents( const wxString& pakpath, pakbrowser_d
     if( gauge )
       gauge->SetValue(++g);
 
-    sb->PopStatusText(SB_MSG);
+    if(sb) sb->PopStatusText(SB_MSG);
   }
   dirs->sort();
   dirs->unique();

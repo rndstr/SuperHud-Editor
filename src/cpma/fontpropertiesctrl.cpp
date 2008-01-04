@@ -23,10 +23,14 @@ FontPropertiesCtrl::FontPropertiesCtrl( wxWindow *parent ) :
 
   Append( new wxPropertyCategory( _("Font")) );
   
+  static const wxChar* font_type[] = {wxEmptyString, wxT("cpma"), wxT("id"), wxT("threewave"), wxT("idblock"), wxT("sansman"), (const wxChar*)0};
+  /*
   wxArrayString font_type;
   fonts_type fonts = wxGetApp().mainframe()->displayctrl()->fonts();
   for( fonts_type::const_iterator cit = fonts.begin(); cit != fonts.end(); ++cit )
     font_type.Add(cit->first);
+  */
+
   Append( new wxEnumProperty(_("Type"), wxT("font"), font_type) );
   //SetPropertyEditor(wxT("font"), wxPG_EDITOR(Choice));
 

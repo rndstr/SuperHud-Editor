@@ -13,10 +13,7 @@ class CPMADisplayCtrl : public DisplayCtrlBase
     static const int HEIGHT = 480;
     
   public:
-    CPMADisplayCtrl( wxWindow *parent ) :
-      DisplayCtrlBase(parent)
-    {
-    }
+    CPMADisplayCtrl( wxWindow *parent );
 
     void init();
     void cleanup();
