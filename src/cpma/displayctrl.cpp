@@ -47,7 +47,7 @@ void CPMADisplayCtrl::init()
   // load fonts
   for( fonts_type::iterator it = m_fonts.begin(); it != m_fonts.end(); ++it )
     if( !it->second->load() )
-      wxLogError( _("Cannot find font font: ") + it->first + wxT("\n\n") + _("You probably have an outdated CPMA version installed, make sure you got at least 1.44") );
+      wxLogError( _("Cannot find font: ") + it->first + wxT("\n\n") + _("You probably have an outdated CPMA version installed, make sure you got at least 1.44") );
 }
 
 void CPMADisplayCtrl::load_background()

@@ -71,14 +71,12 @@ GLuint Texture::create_texture( wxImage& img, bool mipmap /*=false */ )
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (mipmap ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR) );
 
   glPixelStorei(GL_UNPACK_ALIGNMENT,   1   );
-  /*
   glPixelStorei(GL_PACK_ALIGNMENT, 1);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
   glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
   glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
   glPixelStorei(GL_UNPACK_SWAP_BYTES, GL_FALSE);
-  */
 
   
   //make the image GL compliant (on 2^ size boundaries)
@@ -86,25 +84,36 @@ GLuint Texture::create_texture( wxImage& img, bool mipmap /*=false */ )
     img = image_makecompliantsize(img);
 
   
-  wxLogDebug(wxT("hasalpha  %d"), img.HasAlpha());
-  if( mipmap )
-    gluBuild2DMipmaps(GL_TEXTURE_2D, (img.HasAlpha() ?  4 : 3), img.GetWidth(), 
-    img.GetHeight(), (img.HasAlpha() ?  GL_RGBA : GL_RGB), GL_UNSIGNED_BYTE, img.GetData());
+  if( img.HasAlpha() )
+  { // 
+    unsigned int imgsize = img.GetWidth() * img.GetHeight() * 4;
+    unsigned char *data = new unsigned char[imgsize];
+
+    unsigned char *alpha = img.GetAlpha();
+    unsigned char *src = img.GetData();
+    unsigned char *dst = data;
+    for( unsigned int i=0; i < imgsize; i+=4, dst+=4, src+=3, ++alpha )
+    {
+      dst[0] = *data;
+      dst[1] = *(data+1);
+      dst[1] = *(data+2);
+      dst[3] = *alpha;
+    }
+    if( mipmap )
+      gluBuild2DMipmaps(GL_TEXTURE_2D, 4, img.GetWidth(), img.GetHeight(), GL_RGBA, GL_UNSIGNED_BYTE, data);
+    else
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.GetWidth(), img.GetHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+    delete [] data;
+  }
   else
-    glTexImage2D(GL_TEXTURE_2D,
-					 0,
-					 GL_RGB, 
-					 img.GetWidth(),
-					 img.GetHeight(),
-					 0, 
-					 GL_RGB,
-					 GL_UNSIGNED_BYTE,
-					 img.GetData());
+  {
+    if( mipmap )
+      gluBuild2DMipmaps(GL_TEXTURE_2D, 3, img.GetWidth(), img.GetHeight(), GL_RGB, GL_UNSIGNED_BYTE, img.GetData());
+    else
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img.GetWidth(), img.GetHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, img.GetData());
+  }
   
-  //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB/*(img.HasAlpha() ?  GL_RGBA : GL_RGB)*/, img.GetWidth(),
-    //img.GetHeight(), 0, GL_RGB /*(img.HasAlpha() ?  GL_RGBA : GL_RGB)*/, GL_UNSIGNED_BYTE, img.GetData());
-    //glTexImage2D(GL_TEXTURE_2D, 0, (img.HasAlpha() ?  4 : 3), img.GetWidth(),
-    //img.GetHeight(), 0, (img.HasAlpha() ?  GL_RGBA : GL_RGB), GL_UNSIGNED_BYTE, img.GetData());
 
   return texid;
 }

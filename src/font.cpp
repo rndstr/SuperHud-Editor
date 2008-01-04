@@ -44,11 +44,11 @@ bool IFont::load()
   {
     if( cwsize != F_COUNT_X * F_COUNT_Y )
     {
-      wxLogWarning( wxT("Fontwidth file ") + m_name + wxT(".cw") + wxT(" has less entries than expected: %i < %i"), cwsize, F_COUNT_X * F_COUNT_Y );
+      wxLogWarning( _("Fontwidth file %s.cw has less entries than expected: %i < %i"), m_name.c_str(), cwsize, F_COUNT_X * F_COUNT_Y );
     }
     if( cwsize > F_COUNT_X * F_COUNT_Y )
     {
-      wxLogError( wxT("Fontwidth file ") + m_name + wxT(".cw") + wxT(" has more entries than expected: %i > %i"), cwsize, F_COUNT_X * F_COUNT_Y );
+      wxLogError( _("Fontwidth file %s.cw has more entries than expected: %i < %i"), m_name.c_str(), cwsize, F_COUNT_X * F_COUNT_Y );
       return false;
     }
     memcpy( m_widths, cwbuf, cwsize );
@@ -110,7 +110,7 @@ void CPMAFont::print( const wxRect& r, int sizex, int sizey, const wxString& msg
 {
   if( !m_tex || !m_tex->is_ok() )
   {
-    wxLogDebug(wxT("CPMAFont::print - not_ok"));
+    wxLogDebug(wxT("CPMAFont::print - ") + m_name + wxT(" not_ok"));
     return;
   }
   glPushMatrix();
