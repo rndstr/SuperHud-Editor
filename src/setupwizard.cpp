@@ -14,15 +14,23 @@ SetupWizard::SetupWizard( wxFrame *frame ) :
                    wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
 {
 
+  /*
   m_one = new wxWizardPageSimple(this);
   new wxStaticText(m_one, wxID_ANY,
              _("This wizard guides you through some essential settings.\n"),
              wxPoint(5,5)
         );
+        */
   m_two = new GameDirPage(this);
-  m_three = new DisplayPage(this);
-  wxWizardPageSimple::Chain(m_one, m_two);
-  wxWizardPageSimple::Chain(m_two, m_three);
+  // only display further dialogs for the first start
+  // becausewe also call this setup wizard when the 
+  // gamedir is missing
+  if( wxGetApp().is_firststart() )
+  {
+    m_three = new DisplayPage(this);
+//  wxWizardPageSimple::Chain(m_one, m_two);
+    wxWizardPageSimple::Chain(m_two, m_three);
+  }
 }
 
 DisplayPage::DisplayPage(wxWizard *parent) : wxWizardPageSimple(parent)
@@ -31,7 +39,6 @@ DisplayPage::DisplayPage(wxWizard *parent) : wxWizardPageSimple(parent)
   wxStaticText *title = new wxStaticText(this, wxID_ANY, _("Display"));
   wxStaticText *saspectratio = new wxStaticText(this, wxID_ANY, _("Select your aspect ratio"));
   wxArrayString aspectratio_choices;
-  //aspectratio_choices.Add(_("Select your aspect ratio"));
   aspectratio_choices.Add(_("Standard (4:3)"));
   aspectratio_choices.Add(_("Widescreen (16:10)"));
   //aspectratio_choices.Add(_("Custom"));
@@ -55,7 +62,7 @@ wxString DisplayPage::aspectratio() const
 {
   switch( m_aspectratio->GetCurrentSelection() )
   {
-    case 1: return wxT("16:9");
+    case 1: return wxT("16:10");
     case 0: 
     default:
       break;
@@ -81,7 +88,7 @@ GameDirPage::GameDirPage(wxWizard *parent) : wxWizardPageSimple(parent)
   mainsizer->Add(title, 0, wxALL, 5);
   mainsizer->Add(
     new wxStaticText(this, wxID_ANY,
-    wxString::Format(_("Select the directory where your %s resides:\n"), wxGetApp().factory()->gamename().c_str())), 
+    wxString::Format(_("Select your %s directory\n"), wxGetApp().factory()->gamename().c_str())), 
     0, wxALL, 5
     );
   wxBoxSizer *dirsizer = new wxBoxSizer(wxHORIZONTAL);

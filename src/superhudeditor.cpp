@@ -100,6 +100,13 @@ bool SHEApp::OnInit()
       Prefs::get().set(wxT("view_aspectratio"), wizard.aspectratio());
     }
   }
+  else if( Prefs::get().var(wxT("q3_gamedir")).stringval().empty() )
+  {
+    SetupWizard wizard(0);
+    if( wizard.RunWizard(wizard.GetFirstPage()) )
+      wxGetApp().factory()->set_dir_game(wizard.gamedir());
+  }
+
   PakManager::get().init();
 
   m_mainframe = new MainFrame(0, wxID_ANY, APP_NAME, wxDefaultPosition, wxSize(800,600));
