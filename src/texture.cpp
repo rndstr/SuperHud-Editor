@@ -24,6 +24,7 @@ void Texture::load( const wxString& fpath, int search_where, bool mipmap /*=fals
   wxGetApp().mainframe()->statusbar()->PushStatusText(_("Loading texture ") + fpath);
   cleanup();
   wxLogDebug(wxT("Loading texture: ") + fpath);
+  m_name = fpath;
 
   char *buf;
   size_t size;
@@ -43,7 +44,6 @@ void Texture::load( const wxString& fpath, int search_where, bool mipmap /*=fals
     wxGetApp().mainframe()->statusbar()->PopStatusText();
     return;
   }
-  m_name = fpath;
   m_texid = Texture::create_texture( img, mipmap );
   // we no longer need teh buffa
   PakManager::get().cleanup_lastloaded();
