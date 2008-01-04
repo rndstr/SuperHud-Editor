@@ -73,18 +73,23 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   menu_bar->Append( elements_menu, _("&Elements") );
 
   m_view_menu = new wxMenu;
-  m_view_menu->Append( ID_MENU_VIEW_DEFAULTPERSPECTIVE, _("&Reset View") );
-  wxMenu *view_panes_submenu = new wxMenu;
-  view_panes_submenu->AppendCheckItem( ID_MENU_VIEW_CONFIGPREVIEW, _("Config Preview\tCtrl+C"), _("Display the config preview panel") );
-  view_panes_submenu->AppendCheckItem( ID_MENU_VIEW_TOOLBAR_FILE, _("Toolbar File"), _("Display the file toolbar") );
-  m_view_menu->AppendSubMenu(view_panes_submenu, _("Panes"), _("Select which panes you would like to be visible or not"));
+  wxMenu *view_layout_submenu = new wxMenu;
+
+  view_layout_submenu->Append( ID_MENU_VIEW_DEFAULTPERSPECTIVE, _("&Default Layout") );
+  view_layout_submenu->AppendSeparator();
+  view_layout_submenu->AppendCheckItem( ID_MENU_VIEW_CONFIGPREVIEW, _("Config &Preview\tCtrl+C"), _("Display the config preview panel") );
+  view_layout_submenu->AppendCheckItem( ID_MENU_VIEW_TOOLBAR_FILE, _("Toolbar &File"), _("Display the file toolbar") );
+  m_view_menu->AppendSubMenu(view_layout_submenu, _("&Layout"), _("Select which panes you would like to be visible or not"));
   m_view_menu->AppendSeparator();
-  m_view_menu->AppendCheckItem( ID_MENU_VIEW_GRID, _("Display Grid\tCtrl+G"), _("Draws a grid over the hud") );
+  m_view_menu->AppendCheckItem( ID_MENU_VIEW_GRID, _("Display &Grid\tCtrl+G"), _("Draws a grid over the hud") );
   
   menu_bar->Append( m_view_menu, _("&View") );
 
   wxMenu *help_menu = new wxMenu;
-  help_menu->Append( ID_MENU_HELP_UPDATE, _("Check for updates...") );
+#ifdef WIN32
+  // so far only win32 :x
+  help_menu->Append( ID_MENU_HELP_UPDATE, _("Check for &updates...") );
+#endif
   help_menu->Append( wxID_ABOUT, _("&About\tCtrl+A") );
   
   menu_bar->Append( help_menu, _("Help") );
@@ -92,12 +97,12 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   SetMenuBar( menu_bar );
 
   // statusbar plz
-  m_statusbar = CreateStatusBar(2);
+  m_statusbar = CreateStatusBar(3);
   m_statusbar->SetStatusText(_("Ready"));
-  int statusbar_widths[] = { -1, 100 };
-  m_statusbar->SetStatusWidths(2, statusbar_widths);
-  int statusbar_styles[] = { wxSB_NORMAL, wxSB_FLAT };
-  m_statusbar->SetStatusStyles( 2, statusbar_styles );
+  int statusbar_widths[] = { -3, -1, 100 };
+  m_statusbar->SetStatusWidths(3, statusbar_widths);
+  int statusbar_styles[] = { wxSB_NORMAL, wxSB_NORMAL, wxSB_FLAT };
+  m_statusbar->SetStatusStyles( 3, statusbar_styles );
   
 
   // create toolbar
@@ -463,16 +468,23 @@ void MainFrame::OnElementSelectionChanged()
   {
     caption = _("Properties");
     caption += wxT(": ") + els.front()->name();
+    wxRect r = els.front()->iget_rect();
+    m_statusbar->SetStatusText( els.front()->name() + wxString::Format(wxT(" @ (%i,%i)-(%i,%i)"), r.GetLeft(), r.GetTop(), r.GetRight(), r.GetBottom()), SB_ELEMENT );
   }
   else if( els.size() == 0 )
   {
     caption = _("Properties");
     caption += wxT(": ") + wxString(_("(none)"));
+    m_statusbar->SetStatusText( wxT(""), SB_ELEMENT );
   }
   else
   {
     caption = _("Properties");
     caption += wxT(": ") + wxString(_("(multiple)"));
+    wxString sb;
+    for( cit_elements cit = els.begin(); cit != els.end(); ++cit )
+      sb += wxT(" ") + (*cit)->name();
+    m_statusbar->SetStatusText( sb, SB_ELEMENT );
   }
   propsinfo.Caption( caption );
   DoUpdate();

@@ -57,13 +57,14 @@ wxString pretty_print_float(float f, int aftercomma /*= 3*/)
 
 void draw_rect( const wxRect& r, bool texcoords /*=false*/ )
 {
+  // was: bot+1, ri+1
 glBegin( GL_QUADS );
   if( texcoords) glTexCoord2i(0,1);
-  glVertex2i( r.GetLeft(), r.GetBottom()+1 );
+  glVertex2i( r.GetLeft(), r.GetBottom() );
   if( texcoords) glTexCoord2i(1,1);
-  glVertex2i( r.GetRight()+1, r.GetBottom()+1 );
+  glVertex2i( r.GetRight(), r.GetBottom() );
   if( texcoords) glTexCoord2i(1,0);
-  glVertex2i( r.GetRight()+1, r.GetTop() );
+  glVertex2i( r.GetRight(), r.GetTop() );
   if( texcoords) glTexCoord2i(0,0);
   glVertex2i( r.GetLeft(), r.GetTop()   );
 glEnd();

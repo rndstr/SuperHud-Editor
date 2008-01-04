@@ -7,7 +7,8 @@
 
 /// statusbar column
 const int SB_MSG = 0;
-const int SB_MOUSEPOS = 1;
+const int SB_ELEMENT = 1;
+const int SB_MOUSEPOS = 2;
 
 class wxTextCtrl;
 class ElementsCtrlBase;

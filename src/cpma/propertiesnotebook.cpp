@@ -5,6 +5,7 @@
 #include "colorpropertiesctrl.h"
 #include "imagepropertiesctrl.h"
 #include "miscpropertiesctrl.h"
+#include "../prefs.h"
 
 #include "element.h"
 #include <wx/propgrid/propgrid.h>
@@ -16,11 +17,22 @@ CPMAPropertiesNotebook::CPMAPropertiesNotebook( wxWindow *parent ) :
 {
   wxPropertyGrid::SetBoolChoices(_("On"), _("Off"));
 
+  wxColour col = Prefs::get().var(wxT("props_color")).wxcolorval();
+  wxColour bgcol = Prefs::get().var(wxT("props_bgcolor")).wxcolorval();
+  wxColour icol = Prefs::get().var(wxT("props_inheritcolor")).wxcolorval();
+  wxColour ibgcol = Prefs::get().var(wxT("props_inheritbgcolor")).wxcolorval();
+
   m_vis = new VisibilityPropertiesCtrl(this);
   m_font = new FontPropertiesCtrl(this);
   m_color = new ColorPropertiesCtrl(this);
   m_image = new ImagePropertiesCtrl(this);
   m_misc = new MiscPropertiesCtrl(this);
+  m_vis->set_colors(icol, ibgcol, col, bgcol);
+  m_font->set_colors(icol, ibgcol, col, bgcol);
+  m_color->set_colors(icol, ibgcol, col, bgcol);
+  m_image->set_colors(icol, ibgcol, col, bgcol);
+  m_misc->set_colors(icol, ibgcol, col, bgcol);
+
   AddPage( m_vis, _("Visibility") );
   AddPage( m_font, _("Font") );
   AddPage( m_color, _("Color") );

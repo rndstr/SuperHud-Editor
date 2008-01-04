@@ -109,10 +109,8 @@ int CPMAFont::get_width( int sizex, const wxString& msg, bool monospace ) const
 void CPMAFont::print( const wxRect& r, int sizex, int sizey, const wxString& msg, bool monospace /*=false*/, char textalign /*='L'*/ ) const
 {
   if( !m_tex || !m_tex->is_ok() )
-  {
-    wxLogDebug(wxT("CPMAFont::print - ") + m_name + wxT(" not_ok"));
     return;
-  }
+
   glPushMatrix();
   glLoadIdentity();
 

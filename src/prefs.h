@@ -53,6 +53,11 @@ class Variable
       wxASSERT_MSG( m_type == PVT_ANY || m_type == PVT_COLOR, m_name );
       return cval;
     }
+    wxColour wxcolorval() const
+    {
+      wxASSERT_MSG( m_type == PVT_ANY || m_type == PVT_COLOR, m_name );
+      return cval.to_wxColour();
+    }
 
     wxString stringval() const
     {

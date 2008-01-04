@@ -199,6 +199,9 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
     {
       if( m_drag_mode == DRAG_START )
       { // initialize
+        if( abs(m_drag_start.x - clientpos.x) <= Prefs::get().var(wxT("view_dragthreshold")).intval() &&
+            abs(m_drag_start.y - clientpos.y) <= Prefs::get().var(wxT("view_dragthreshold")).intval() )
+          return;
         m_drag_mode = DRAG_DRAGGING;
         // fix m_drag_start to point lefttop
         if( ~m_drag_el->has() & E_HAS_RECT )
@@ -300,7 +303,7 @@ void DisplayCtrlBase::prepare2d()
   //
   double w = (double)GetSize().x;
   double h = (double)GetSize().y;
-  GLdouble hudw = width(), hudh = height();
+  int hudw = width(), hudh = height();
   double aspectcorrect = (w/h)/Prefs::get().var(wxT("view_aspectratio")).floatval();
   double empty; // how much space left/right or bottom/top has to be empty
 
@@ -313,8 +316,8 @@ void DisplayCtrlBase::prepare2d()
     m_hudrect.SetTop(0);
     m_hudrect.SetBottom(hudh);
     empty = hudw*(aspectcorrect-1)/2.0; 
-    m_hudrect.SetLeft(-empty);
-    m_hudrect.SetRight(hudw + empty);
+    m_hudrect.SetLeft((int)-empty);
+    m_hudrect.SetRight(hudw + (int)empty);
   }
   else
   { // width will fill the available space (= e.g. 5:4)
@@ -329,8 +332,8 @@ void DisplayCtrlBase::prepare2d()
     m_hudrect.SetLeft(0);
     m_hudrect.SetRight(hudw);
     empty = (hudh/aspectcorrect - hudh)/2.0;
-    m_hudrect.SetTop(-empty);
-    m_hudrect.SetBottom(hudh+empty);
+    m_hudrect.SetTop((int)-empty);
+    m_hudrect.SetBottom(hudh+(int)empty);
   }
 
   glViewport(0, 0, (GLint)w, (GLint)h);
@@ -400,10 +403,10 @@ void DisplayCtrlBase::render_helper( const wxRect& rect, bool selected /*= false
 
     Prefs::get().var(wxT("view_helper_border_selected")).colorval().glBind();
   glBegin( GL_LINE_LOOP );
-    glVertex2i( rect.GetLeft(), rect.GetBottom()+1 );
-    glVertex2i( rect.GetRight(), rect.GetBottom()+1 );
-    glVertex2i( rect.GetRight(), rect.GetTop()+1 );
-    glVertex2i( rect.GetLeft(), rect.GetTop()+1 );
+    glVertex2i( rect.GetLeft(), rect.GetBottom() );
+    glVertex2i( rect.GetRight(), rect.GetBottom() );
+    glVertex2i( rect.GetRight(), rect.GetTop() );
+    glVertex2i( rect.GetLeft(), rect.GetTop() );
   glEnd();
   }
   else
@@ -413,10 +416,10 @@ void DisplayCtrlBase::render_helper( const wxRect& rect, bool selected /*= false
 
     Prefs::get().var(wxT("view_helper_border")).colorval().glBind();
   glBegin( GL_LINE_LOOP );
-    glVertex2i( rect.GetLeft(), rect.GetBottom()+1 );
-    glVertex2i( rect.GetRight(), rect.GetBottom()+1 );
-    glVertex2i( rect.GetRight(), rect.GetTop()+1 );
-    glVertex2i( rect.GetLeft(), rect.GetTop()+1 );
+    glVertex2i( rect.GetLeft(), rect.GetBottom() );
+    glVertex2i( rect.GetRight(), rect.GetBottom() );
+    glVertex2i( rect.GetRight(), rect.GetTop() );
+    glVertex2i( rect.GetLeft(), rect.GetTop() );
   glEnd();
   }
   glEnable(GL_TEXTURE_2D);

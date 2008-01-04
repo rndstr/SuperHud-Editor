@@ -152,8 +152,8 @@ void Prefs::load()
   addvar(wxT("app_height"), wxT("-1"), PVT_INT);
   addvar(wxT("view_aspectratio"), wxT("4:3"), PVT_FLOAT);
   addvar(wxT("view_grid"), wxT("true"), PVT_BOOL);
-  addvar(wxT("view_gridX"), wxT("16"), PVT_INT);
-  addvar(wxT("view_gridY"), wxT("16"), PVT_INT);
+  addvar(wxT("view_gridX"), wxT("12"), PVT_INT);
+  addvar(wxT("view_gridY"), wxT("12"), PVT_INT);
   addvar(wxT("grid_color"), wxT("1 1 1 0.3"), PVT_COLOR);
   addvar(wxT("view_helper"), wxT("true"), PVT_BOOL);
   addvar(wxT("view_helper_border"), wxT("1 1 1 0.8"), PVT_COLOR);
@@ -163,6 +163,11 @@ void Prefs::load()
   addvar(wxT("elements_collections"), wxT("true"), PVT_BOOL);
   addvar(wxT("elements_collnamecount"), wxT("3"), PVT_INT); ///< minimum matching starting chars for a collection to be created
   addvar(wxT("app_perspective"), wxT(""), PVT_STRING);
+  addvar(wxT("props_color"), wxT("0 0 0 1"), PVT_COLOR);
+  addvar(wxT("props_bgcolor"), wxT("1 1 1 1"), PVT_COLOR);
+  addvar(wxT("props_inheritcolor"), wxT("0.39 0.39 0.58 1"), PVT_COLOR);
+  addvar(wxT("props_inheritbgcolor"), wxT("0.94 0.94 1.0 1"), PVT_COLOR);
+  addvar(wxT("view_dragthreshold"), wxT("3"), PVT_INT); ///< how many pixels till we start dragging
 
 
     // -- game specific
