@@ -37,7 +37,7 @@ void Texture::load( const wxString& fpath, int search_where, bool mipmap /*=fals
   
   wxMemoryInputStream mis( buf, size );
   wxImage img;
-  if( !img.LoadFile(mis, bitmap_type_by_ext(file_ext(fpath))) )
+  if( !img.LoadFile(mis, she::bitmap_type_by_ext(she::file_ext(fpath))) )
   {
     wxLogWarning(wxT("Failed loading image: %s"), fpath.c_str());
     wxGetApp().mainframe()->statusbar()->PopStatusText();

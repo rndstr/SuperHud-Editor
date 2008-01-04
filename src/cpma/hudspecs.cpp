@@ -42,13 +42,13 @@ bool CPMAHudSpecs::load()
   while(!sis.Eof())
   {
     line = tis.ReadLine();
-    wxTrim(line);
+    she::wxTrim(line);
     if( 0 == line.length() || line[0] == '#' )
       continue;
 
     if( (pos = line.find( wxT("=") )) == wxString::npos )
     { // chcek if already one is in there with same name (and has HIF_NOTUNIQ), if so copy flags (of nearest previous one).
-      wxTrim(line);
+      she::wxTrim(line);
       cit_hsitems from = m_items.end();
       for( cit_hsitems cit = m_items.begin(); cit != m_items.end(); ++cit )
         if( cit->name.CmpNoCase( line ) == 0 && (cit->flags & E_NOTUNIQ) )
@@ -67,7 +67,7 @@ bool CPMAHudSpecs::load()
       continue;
     }
     name = line.substr(0, pos);
-    wxTrim(name);
+    she::wxTrim(name);
     value = line.substr(pos+1, line.length() - pos - 1);
     if( name.find(HS_IGNOREPREFIX) == 0 )
     {
@@ -75,7 +75,7 @@ bool CPMAHudSpecs::load()
         desc = value;
       continue;
     }
-    wxTrim(value, wxT(" \"'"));
+    she::wxTrim(value, wxT(" \"'"));
 
     wxStringTokenizer options( value, wxT(":") );
     int flags = E_NONE;
@@ -96,8 +96,8 @@ bool CPMAHudSpecs::load()
         arg = key.substr(pos+1, key.length() - pos - 1);
         key = key.substr(0, pos);
       }
-      wxTrim(key);
-      wxTrim(arg);
+      she::wxTrim(key);
+      she::wxTrim(arg);
       if( key.empty() )
         continue;
       

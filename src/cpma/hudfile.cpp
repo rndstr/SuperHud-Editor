@@ -61,7 +61,7 @@ bool CPMAHudFile::load( const wxString& filename )
   while(!fis.Eof())
   {
     line = tis.ReadLine();
-    wxTrim(line);
+    she::wxTrim(line);
     if( 0 == line.length() || line[0] == '#' )
       continue;
     if( (pos = line.find( wxT("#") )) != wxString::npos )
@@ -70,7 +70,7 @@ bool CPMAHudFile::load( const wxString& filename )
     content += wxT("\n");
   }
 
-  wxTrim( content ); 
+  she::wxTrim( content ); 
   try
   {
     wxStringTokenizer tok( content, wxT("}") );
@@ -116,7 +116,7 @@ bool CPMAHudFile::load( const wxString& filename )
 
 bool CPMAHudFile::parse_item( wxString s )
 {
-  wxLTrim(s);
+  she::wxLTrim(s);
 
   // fish name of item.
   size_t pos = s.find_first_of( wxT(" {\n\t\r") );
@@ -125,7 +125,7 @@ bool CPMAHudFile::parse_item( wxString s )
   // extract properties of this item
   pos = s.find_first_of('{');
   wxString props = s.substr( pos + 1, s.length() - pos - 1 );
-  wxTrim( props );
+  she::wxTrim( props );
   if( props.find('{') != wxString::npos )
   {
     wxString e = wxString::Format(_("Missing closing brace in element `%s'"), name.c_str());
@@ -205,7 +205,7 @@ bool CPMAHudFile::read_properties( ElementBase *hi, const wxString& props )
   while( linetok.HasMoreTokens() )
   {
     prop = linetok.GetNextToken();
-    wxTrim( prop );
+    she::wxTrim( prop );
     if (prop.empty())
       continue;
 
@@ -227,7 +227,7 @@ bool CPMAHudFile::read_properties( ElementBase *hi, const wxString& props )
     if( pos != wxString::npos )
     {
       args = prop.substr(pos+1, prop.length() - pos - 1);
-      wxTrim( args );
+      she::wxTrim( args );
       // remove commas and multi-spaces, we only care about ONE single space as delimiter.
       args.Replace( wxT(","), wxT(" ") );
       while( args.Replace( wxT("  "), wxT(" ") ) > 0 );

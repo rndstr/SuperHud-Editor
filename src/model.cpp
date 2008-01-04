@@ -116,7 +116,7 @@ bool Model::load_mde( const wxString& fpath, int search_where )
   while(!mis.Eof())
   {
     line = contents.ReadLine();
-    wxTrim(line);
+    she::wxTrim(line);
     if( 0 == line.length() || line[0] == '#' )
       continue;
     wxStringInputStream sis(line);

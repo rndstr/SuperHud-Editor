@@ -250,7 +250,7 @@ size_t PakManager::enumerate_game_pakfiles( wxArrayString *files )
   while( tok.HasMoreTokens() )
   {
     token = tok.GetNextToken();
-    wxTrim( token );
+    she::wxTrim( token );
     // get basename :o
     pos = token.find_last_of( wxT("\\/") );
     if( pos != wxString::npos )

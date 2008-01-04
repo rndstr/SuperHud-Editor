@@ -396,7 +396,7 @@ void DisplayCtrlBase::render_helper( const wxRect& rect, bool selected /*= false
   if( selected )
   {
     Prefs::get().var(wxT("view_helper_fill_selected")).colorval().glBind();
-    draw_rect(rect);
+    she::draw_rect(rect);
 
     Prefs::get().var(wxT("view_helper_border_selected")).colorval().glBind();
   glBegin( GL_LINE_LOOP );
@@ -409,7 +409,7 @@ void DisplayCtrlBase::render_helper( const wxRect& rect, bool selected /*= false
   else
   {
     Prefs::get().var(wxT("view_helper_fill")).colorval().glBind();
-    draw_rect(rect);
+    she::draw_rect(rect);
 
     Prefs::get().var(wxT("view_helper_border")).colorval().glBind();
   glBegin( GL_LINE_LOOP );

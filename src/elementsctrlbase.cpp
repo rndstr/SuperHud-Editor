@@ -256,7 +256,7 @@ void ElementsCtrlBase::list_refresh( const elements_type& elements )
         for( size_t h=i; h <= g-1; ++h )
         {
           m_list->SetItem(h+collcount, 0, wxEmptyString, E_LIST_IMG_COLLITEM);
-          minshare = wxMin(common_start(elements[h]->name(), elements[h-1]->name()), minshare);
+          minshare = wxMin(she::common_start(elements[h]->name(), elements[h-1]->name()), minshare);
         }
         
         size_t realinsert = i;
@@ -284,7 +284,7 @@ void ElementsCtrlBase::list_refresh( const elements_type& elements )
         long idx = m_list->InsertItem(li);
         m_list->SetItem(idx, 0, wxEmptyString, E_LIST_IMG_COLLTITLE);
         collname = elements[i]->name().Left(minshare);
-        wxTrim(collname, wxT("_"));
+        she::wxTrim(collname, wxT("_"));
         m_list->SetItem(idx, 1, collname, -1);
         m_list->SetItemData(idx, 0);
         

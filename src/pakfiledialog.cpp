@@ -181,7 +181,7 @@ void PakFileDialog::OnListItemSelected( wxListEvent& ev )
 
 void PakFileDialog::update_preview( const wxString& loc )
 {
-  if( !is_image_ext(file_ext(loc)) )
+  if( !she::is_image_ext(she::file_ext(loc)) )
   {
     m_preview->SetBitmap(wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_OTHER, wxSize(64, 64)));
     m_infolabel->SetLabel(wxT(""));
@@ -197,7 +197,7 @@ void PakFileDialog::update_preview( const wxString& loc )
   
   wxMemoryInputStream mis( buf, size );
   wxImage img;
-  if( !img.LoadFile(mis, bitmap_type_by_ext(file_ext(loc))) )
+  if( !img.LoadFile(mis, she::bitmap_type_by_ext(she::file_ext(loc))) )
   {
     wxLogError(_("Failed loading image: %s"), loc.c_str());
     delete [] buf;
@@ -269,7 +269,7 @@ void PakFileDialog::update_pakpath( const wxString& pakpath )
   }
   for(pakbrowser_files_type::const_iterator cit = m_files.begin(); cit != m_files.end(); ++cit )
   {
-    if( !is_valid_ext(file_ext(cit->first)) )
+    if( !is_valid_ext(she::file_ext(cit->first)) )
       continue;
     long idx = m_list->InsertItem(i, cit->first);
     m_list->SetItemImage(idx, 1);

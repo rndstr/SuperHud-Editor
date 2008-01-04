@@ -21,7 +21,11 @@
 #include <wx/log.h>
 
 #include "misc.h"
+
 #include "common.h"
+
+namespace she
+{
 
 void wxLTrim( wxStringBase& s, const wxStringBase& trimset /*=" \n\r\t"*/)
 {
@@ -35,8 +39,8 @@ void wxRTrim( wxStringBase& s, const wxStringBase& trimset /*=" \n\r\t"*/)
 
 void wxTrim( wxStringBase& s, const wxStringBase& trimset /*=" \n\r\t"*/)
 {
-  wxRTrim(s, trimset);
-  wxLTrim(s, trimset);
+  she::wxRTrim(s, trimset);
+  she::wxLTrim(s, trimset);
 }
 
 wxString pretty_print_float(float f, int aftercomma /*= 3*/)
@@ -180,4 +184,4 @@ int versioncheck( int major, int minor, int release, const wxString& type )
   return APP_RELEASE_TYPE.CmpNoCase(type);
 }
 */
-
+};

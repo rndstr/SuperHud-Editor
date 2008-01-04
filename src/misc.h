@@ -22,46 +22,49 @@
 #include <wx/gdicmn.h>
 #include <string>
 
-template<class T> 
-void ltrim(std::basic_string<T> &s, const std::basic_string<T> &trimset=" \n\r\t") 
-{ 
-  s.erase(0, s.find_first_not_of(trimset)); 
-} 
+namespace she
+{
+  template<class T> 
+  void ltrim(std::basic_string<T> &s, const std::basic_string<T> &trimset=" \n\r\t") 
+  { 
+    s.erase(0, s.find_first_not_of(trimset)); 
+  } 
 
-template<class T> 
-void rtrim(std::basic_string<T> &s, const std::basic_string<T> &trimset=" \n\r\t") 
-{ 
-  s.resize(s.find_last_not_of(trimset) + 1); // (many group discussions on whether this is legit) 
-} 
+  template<class T> 
+  void rtrim(std::basic_string<T> &s, const std::basic_string<T> &trimset=" \n\r\t") 
+  { 
+    s.resize(s.find_last_not_of(trimset) + 1); // (many group discussions on whether this is legit) 
+  } 
 
-template<class T> 
-void trim(std::basic_string<T> &s, const std::basic_string<T> &trimset=" \n\r\t") 
-{ 
-  rtrim(s, trimset); 
-  ltrim(s, trimset); 
-}
+  template<class T> 
+  void trim(std::basic_string<T> &s, const std::basic_string<T> &trimset=" \n\r\t") 
+  { 
+    rtrim(s, trimset); 
+    ltrim(s, trimset); 
+  }
 
-void wxLTrim( wxStringBase& s, const wxStringBase& trimset=wxT(" \n\r\t"));
-void wxRTrim( wxStringBase& s, const wxStringBase& trimset=wxT(" \n\r\t"));
-void wxTrim( wxStringBase& s, const wxStringBase& trimset=wxT(" \n\r\t"));
-wxString pretty_print_float(float f, int aftercomma = 3);
+  void wxLTrim( wxStringBase& s, const wxStringBase& trimset=wxT(" \n\r\t"));
+  void wxRTrim( wxStringBase& s, const wxStringBase& trimset=wxT(" \n\r\t"));
+  void wxTrim( wxStringBase& s, const wxStringBase& trimset=wxT(" \n\r\t"));
+  wxString pretty_print_float(float f, int aftercomma = 3);
 
-void draw_rect( const wxRect& r, bool texcoords =false );
-wxString safe_filename( const wxString& filename );
+  void draw_rect( const wxRect& r, bool texcoords =false );
+  wxString safe_filename( const wxString& filename );
 
-bool exists_in_zip( const wxString& filepath, const wxString& entrypath );
-bool load_from_zip( char **buf, const wxString& filepath, const wxString& entrypath, size_t *size=0 );
+  bool exists_in_zip( const wxString& filepath, const wxString& entrypath );
+  bool load_from_zip( char **buf, const wxString& filepath, const wxString& entrypath, size_t *size=0 );
 
-wxString file_ext( const wxString& str );
-bool is_image_ext( const wxString& ext );
+  wxString file_ext( const wxString& str );
+  bool is_image_ext( const wxString& ext );
 
-long bitmap_type_by_ext( const wxString& ext );
+  long bitmap_type_by_ext( const wxString& ext );
 
-int common_start( const wxString& lhs, const wxString& rhs );
+  int common_start( const wxString& lhs, const wxString& rhs );
 
 
-/// Checks if the latest version is newer than our.
-/// @return <0 if our<latest, =0 if our=latest, >0 if our>latest.
-//int versioncheck( int major, int minor, int release, const wxString& type );
+  /// Checks if the latest version is newer than our.
+  /// @return <0 if our<latest, =0 if our=latest, >0 if our>latest.
+  //int versioncheck( int major, int minor, int release, const wxString& type );
+};
 
 #endif

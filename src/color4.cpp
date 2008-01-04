@@ -23,10 +23,10 @@ wxString Color4::to_string() const
   switch( type )
   {
   case COLOR_RGBA:
-    return pretty_print_float( r ) + wxT(" ") +
-      pretty_print_float( g ) + wxT(" ") +
-      pretty_print_float( b ) + wxT(" ") +
-      pretty_print_float( a ) + wxT(" ");
+    return she::pretty_print_float( r ) + wxT(" ") +
+      she::pretty_print_float( g ) + wxT(" ") +
+      she::pretty_print_float( b ) + wxT(" ") +
+      she::pretty_print_float( a ) + wxT(" ");
   
   case COLOR_T:
     return wxT("T");

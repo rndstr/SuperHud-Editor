@@ -183,7 +183,7 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
   else if( cmd.CmpNoCase(wxT("image"))==0 )
   {
     m_image = args;
-    wxTrim(m_image, wxT("\"'"));
+    she::wxTrim(m_image, wxT("\"'"));
     m_has |= E_HAS_IMAGE;
   }
   else if( cmd.CmpNoCase(wxT("model"))==0 )
@@ -196,7 +196,7 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
     }
     else
     {
-      wxTrim(m_model, wxT("\"'"));
+      she::wxTrim(m_model, wxT("\"'"));
       m_has |= E_HAS_MODEL;
     }
     set_usemodel();
@@ -296,9 +296,9 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
     }
     if( m_has & E_HAS_OFFSET )
     {
-      wxString offset = wxT("offset ") + pretty_print_float(m_offset[E_OFFSET_X]) + wxT(" ") + 
-        pretty_print_float(m_offset[E_OFFSET_Y]) + wxT(" ") +
-        pretty_print_float(m_offset[E_OFFSET_Z]);
+      wxString offset = wxT("offset ") + she::pretty_print_float(m_offset[E_OFFSET_X]) + wxT(" ") + 
+        she::pretty_print_float(m_offset[E_OFFSET_Y]) + wxT(" ") +
+        she::pretty_print_float(m_offset[E_OFFSET_Z]);
       lines.push_back( offset );
     }
   }
@@ -589,11 +589,11 @@ void CPMAElement::render() const
         top.height = top.height/2-2;
         bottom.height = top.height;
         bottom.y += bottom.height+4;
-        draw_rect(top);
-        draw_rect(top);(bottom);
+        she::draw_rect(top);
+        she::draw_rect(top);(bottom);
       }
       else
-        draw_rect(r);
+        she::draw_rect(r);
     }
     break;
 
@@ -612,7 +612,7 @@ void CPMAElement::render() const
       if( fill && bgcolor.a1() != 0.f )
       {
         bgcolor.glBind();
-        draw_rect(r);
+        she::draw_rect(r);
       }
       if( !usemodel() )
       {
@@ -622,14 +622,14 @@ void CPMAElement::render() const
           m_ptex->glBind();
         else
           wxGetApp().mainframe()->displayctrl()->texture_default()->glBind();
-        draw_rect( r, true );
+        she::draw_rect( r, true );
       }
       else // usemodel
       {
         color.glBind();
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
         wxGetApp().mainframe()->displayctrl()->texture_model()->glBind();
-        draw_rect( r, true );
+        she::draw_rect( r, true );
       }
     }
     break;
@@ -648,13 +648,13 @@ void CPMAElement::render() const
       if( iget_fill() )
       {
         bgcolor.glBind();
-        draw_rect(r);
+        she::draw_rect(r);
       }
       if( m_ptex && m_ptex->is_ok() )
       {
         color.glBind();
         m_ptex->glBind();
-        draw_rect( r, true );
+        she::draw_rect( r, true );
       }
     }
     break;
@@ -708,7 +708,7 @@ void CPMAElement::render() const
       if( rr.width && rr.height && bgcolor.a1() != 0.f )
       {
         bgcolor.glBind();
-        draw_rect(rr);
+        she::draw_rect(rr);
       }
 
       if( font && !text.empty())

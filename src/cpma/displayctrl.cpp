@@ -133,7 +133,7 @@ void CPMADisplayCtrl::render()
     m_background->glBind();
     // background
     glColor4f(1.f, 1.f, 1.f, 1.f);
-    draw_rect(wxRect(0, 0, WIDTH, HEIGHT), true);
+    she::draw_rect(wxRect(0, 0, WIDTH, HEIGHT), true);
     /*
     glBegin(GL_QUADS);
       glColor4f(1.f, 1.f, 1.f, 1.f);
