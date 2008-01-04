@@ -1,5 +1,3 @@
-
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include <wx/wxprec.h>
 
@@ -56,7 +54,7 @@ bool SHEApp::OnInit()
   wxInitAllImageHandlers();
 
   // set up config file
-  
+
   m_firststart = Prefs::get().init();
 
   if( (!is_cpma() && !is_q4max()) || Prefs::get().var(wxT("startup_gameselection")) )
@@ -136,7 +134,7 @@ int SHEApp::OnRun()
   if( Prefs::get()->startup_checkforupdates )
     m_frame->check_for_updates();
     */
-  
+
 
   return wxApp::OnRun();
 }

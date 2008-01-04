@@ -5,6 +5,7 @@
 % encapsulate own functions (misc.h/cpp) into namespace she {}
 + defaultdir for opening hudfiles
 + check for no gamedir available on startup and prompt
++ add preferences to specify datadir (in case someone wants to overwrite it)
 
 [UNIX] the logfile is written as relative path, this will go into wrong place definitely
 [UNIX] disable the webupdater to actually update something.. just tell that there is a new version

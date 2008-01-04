@@ -12,7 +12,7 @@
 #include <wx/arrstr.h>
 
 
-PakManager& PakManager::get() 
+PakManager& PakManager::get()
 {
   static PakManager pinstance;
   return pinstance;
@@ -74,7 +74,7 @@ wxString PakManager::get_location( const wxString& fpath, int search_where /*=PM
   }
 
   if( !found && search_where & PM_SEARCH_GAMERELATIVE )
-  { 
+  {
     // TODO does this find something if the fpath is absolute dir but not below cpma?
     // what about `..' hacks?
 
@@ -118,8 +118,23 @@ wxString PakManager::get_location( const wxString& fpath, int search_where /*=PM
 
 
 
+#define LOADZIP_ALTERNATE 1
 bool PakManager::load_from_location( char **buf, const wxString& location, size_t *psize /*=0*/ )
 {
+  wxLogDebug(wxT("PakManager::load_from_location - ") + location);
+#if LOADZIP_ALTERNATE
+  // check if we are loading from zip
+  size_t pos;
+  if( wxNOT_FOUND != (pos = (location.Find(wxT("#zip:")))) )
+  {
+    wxString zipfname = location.SubString(0, pos);
+    wxString fname = location.SubString(pos+5, location.length() - (pos+5) - 1);
+    wxLogMessage(wxT("%s -> %s | %s"), location.c_str(), zipfname.c_str(), fname.c_str());
+
+    return false;
+  }
+#endif
+
   wxFileSystem fs;
   wxFSFile *file = 0;
   {
@@ -133,20 +148,27 @@ bool PakManager::load_from_location( char **buf, const wxString& location, size_
     wxLogDebug(wxT("PakManager::load_from_location - Failed opening file: ") + location );
     return false;
   }
-  
-  wxStreamBuffer streambuf( *file->GetStream(), wxStreamBuffer::read ); 
- 
-  size_t size = file->GetStream()->GetSize(); 
+
+  wxStreamBuffer streambuf( *file->GetStream(), wxStreamBuffer::read );
+
+  size_t size = file->GetStream()->GetSize();
   if( psize )
     *psize = size;
-  if (!size ) 
+  if (!size )
   {
+    wxLogDebug(wxT("PakManager::load_from_location - file of size 0"));
     delete file;
-    return false; 
+    return false;
   }
- 
-  *buf = new char[ size ];                             
-  streambuf.Read( *buf, size );
+
+  *buf = new char[ size ];
+  wxLogDebug(wxT("%d"), size);
+  if( size != streambuf.Read(*buf, size) )
+  {
+    wxLogDebug(wxT("%d - %d %d %d %d"), streambuf.Stream()->GetLastError(), wxSTREAM_NO_ERROR, wxSTREAM_EOF, wxSTREAM_WRITE_ERROR, wxSTREAM_READ_ERROR);
+    delete file;
+    return false;
+  }
   delete file;
   return true;
 }
@@ -180,7 +202,7 @@ bool PakManager::load( char **buf, const wxString& fpath, int search_where, size
 
   if( found == PM_SEARCH_NOWHERE )
   {
-    wxLogDebug(wxT("PakManager::load - Cannot find file: %s)"), fpath.c_str());
+    wxLogDebug(wxT("PakManager::load - Cannot find file: %s"), fpath.c_str());
     return false;
   }
   wxLogDebug(wxT("PakManager::load - Found file: %s [%s]"), fpath.c_str(), PakManager::searchwhere2string(found).c_str());
@@ -195,7 +217,7 @@ bool PakManager::load( char **buf, const wxString& fpath, int search_where, size
     if( !PakManager::load_from_location(buf, location, &size) )
       return false;
     if( cont == m_pakcontent.end() )
-    { // no entry, add it but only if 
+    { // no entry, add it but only if
       wxLogDebug(wxT("PakManager::load -  insert item [%d Bytes]: %s"), size, location.c_str());
       std::pair<pakcontent_t::iterator, bool> mofo = m_pakcontent.insert( std::make_pair(location, pakcontentnode_t( *buf, size)) );
       cont = mofo.first;
@@ -226,7 +248,7 @@ size_t PakManager::enumerate_game_pakfiles( wxArrayString *files )
 {
   wxLogDebug( wxT("PakManager::enumerate_game_pakfiles") );
   size_t count=0;
-  
+
   wxStringTokenizer tok(wxGetApp().factory()->pakfiles(), wxT(";"));
   wxString token;
   size_t pos;
@@ -246,7 +268,7 @@ size_t PakManager::enumerate_game_pakfiles( wxArrayString *files )
       count += wxDir::GetAllFiles( wxGetApp().factory()->dir_game() + PATH_SEP + token.substr(0, pos+1), files, token.substr(pos+1, token.length()-pos-1), GETALLFILES_FLAGS);
 
 #ifndef WIN32
-      // NB this is not entirely correct.. we need to figure out how to get $HOME the correct way 
+      // NB this is not entirely correct.. we need to figure out how to get $HOME the correct way
       // for e.g. Mac builds, i don't know where they store the userfiles.
       wxLogDebug( wxT(" > in ") + homedir + PATH_SEP + wxGetApp().factory()->unixdirname_userdata() + PATH_SEP + token.substr(0, pos+1) + wxT(" for ") + token.substr(pos+1, token.length()-pos-1) );
       count += wxDir::GetAllFiles( homedir + PATH_SEP + wxGetApp().factory()->unixdirname_userdata() + + PATH_SEP + token.substr(0, pos+1), &homefiles, token.substr(pos+1, token.length()-pos-1), GETALLFILES_FLAGS);

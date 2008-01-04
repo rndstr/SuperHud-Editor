@@ -168,9 +168,9 @@ void ImagePropertiesCtrl::append_model_properties( CPMAElement *el /*=0*/ )
   Append( new wxPropertyCategory(_("Offset"), wxT("cat-offset")) );
   SetPropertyHelpString( wxT("cat-offset"), _("Moves the model along the X/Y/Z axis.") );
   Append( new wxBoolProperty(_("Use"), wxT("use-offset"), el ? (el->has() & E_HAS_OFFSET) != 0 : false) );
-  Append( new wxIntProperty(wxT("X"), wxT("x"), el ? el->iget_offset(E_OFFSET_X) : 0) );
-  Append( new wxIntProperty(wxT("y"), wxT("y"), el ? el->iget_offset(E_OFFSET_Y) : 0) );
-  Append( new wxIntProperty(wxT("z"), wxT("z"), el ? el->iget_offset(E_OFFSET_Z) : 0) );
+  Append( new wxIntProperty(wxT("X"), wxT("x"), el ? (int)el->iget_offset(E_OFFSET_X) : 0) );
+  Append( new wxIntProperty(wxT("y"), wxT("y"), el ? (int)el->iget_offset(E_OFFSET_Y) : 0) );
+  Append( new wxIntProperty(wxT("z"), wxT("z"), el ? (int)el->iget_offset(E_OFFSET_Z) : 0) );
 }
 
 void ImagePropertiesCtrl::update_layout()

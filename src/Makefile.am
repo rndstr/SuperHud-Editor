@@ -12,7 +12,6 @@ superhudeditor_SOURCES = \
                          exceptions.h \
                          factorybase.h \
                          font.cpp font.h \
-                         glcanvasbase.cpp glcanvasbase.h \
                          hudfilebase.cpp hudfilebase.h \
                          mainframe.cpp mainframe.h \
                          misc.cpp misc.h \
