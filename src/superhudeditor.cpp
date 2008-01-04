@@ -120,6 +120,7 @@ int SHEApp::OnRun()
   m_mainframe->update_title();
   if( Prefs::get().var(wxT("startup_load")) && !Prefs::get().var(wxT("startup_loadfile")).stringval().empty() )
     m_hudfile->OnOpen( Prefs::get().var(wxT("startup_loadfile")) );
+  m_mainframe->update_title();
 
   PakManager::get().debug();
   m_ready = true;

@@ -8,14 +8,6 @@
 
 #include <algorithm>
 
-int wxCALLBACK list_sort(long a, long b, long)
-{
-  if( a < b )
-    return -1;
-  if( a > b )
-    return 1;
-  return 0;
-}
 
 // begin wxGlade: ::extracode
 // end wxGlade
@@ -99,17 +91,28 @@ bool PakFileDialog::Validate()
 {
   if( m_selected.empty() )
   {
-    m_infolabel->SetLabel(_("Please select a file"));
+//    m_infolabel->SetLabel(_("Please select a file"));
     return false; // nothing selected
   }
 
   if( m_files.find(m_selected) != m_files.end() )
-    return true; // it's a file woohooh
+  { // it's a file woohooh
+    for( int i=0; i < m_exts.Count(); ++i )
+    {
+      if( m_selected.Matches(wxT("*.") + m_exts[i]) )
+        return true;
+    }
+    // file selected of which we don't accept the extension
+    return false; 
+  }
 
+  // must be a dir then
   wxASSERT(std::find(m_dirs.begin(), m_dirs.end(), m_selected) != m_dirs.end());
+  if( !m_exts.Count() ) // we accept dirs?
+    return true;
 
-  m_infolabel->SetLabel(_("(doubleclick to open)"));
-  return false; // OHNOEZ dirz0r wtfnewb
+  open_dir(m_selected);
+  return false;
 }
 
 PakFileDialog& PakFileDialog::AddExtImages()
@@ -124,15 +127,34 @@ bool PakFileDialog::Show(bool show)
 {
   bool ret = wxDialog::Show(show);
   if( !show ) return ret;
+  update_nolabel();
   update_pakpath(wxT(""));
 
   return ret;
 }
 
+void PakFileDialog::update_nolabel()
+{
+  if( !m_exts.Count() )
+    m_infolabel->SetLabel(_("Select a directory"));
+  else
+  {
+    wxString l = _("Select a file");
+    l += wxT(" (");
+    for( int i=0; i < m_exts.Count(); ++i )
+    {
+      if( i != 0 ) l += wxT(" ");
+      l += m_exts[i];
+    }
+    l += wxT(")");
+    m_infolabel->SetLabel(l);
+  }
+}
+
 void PakFileDialog::OnListItemDeselected( wxListEvent& ev )
 {
   m_selected = wxEmptyString;
-  m_infolabel->SetLabel(wxT(""));
+  update_nolabel();
   m_preview->SetBitmap(wxArtProvider::GetBitmap(wxART_MISSING_IMAGE, wxART_OTHER, wxSize(64, 64)));
 }
 
@@ -153,8 +175,7 @@ void PakFileDialog::OnListItemSelected( wxListEvent& ev )
   else
   { // it's a dir
     m_preview->SetBitmap(wxArtProvider::GetBitmap(wxART_FOLDER, wxART_OTHER, wxSize(64, 64)));
-    m_infolabel->SetLabel(_("(doubleclick to open)"));
-    
+    update_nolabel();
   }
 }
 
@@ -190,7 +211,11 @@ void PakFileDialog::update_preview( const wxString& loc )
 void PakFileDialog::OnListItemDblClick( wxListEvent& ev )
 {
   wxString name = ev.GetLabel();
-  wxLogDebug(name);
+  open_dir(name);
+}
+
+void PakFileDialog::open_dir( const wxString& name )
+{
   pakbrowser_dirs_type::iterator dirit = std::find( m_dirs.begin(), m_dirs.end(), name );
   if( m_dirs.end() == dirit )
   { // so it must be a file?
@@ -218,7 +243,7 @@ void PakFileDialog::OnBtnGodirup( wxCommandEvent& )
 bool PakFileDialog::is_valid_ext( const wxString& ext ) const
 {
   if( m_exts.Count() == 0 )
-    return true;
+    return false;
   for( size_t i=0; i<m_exts.Count(); ++i )
     if( m_exts[i] == ext )
       return true;
@@ -240,7 +265,6 @@ void PakFileDialog::update_pakpath( const wxString& pakpath )
   {
     long idx = m_list->InsertItem(i, *cit);
     m_list->SetItemImage(idx, 0);
-    m_list->SetItemData(idx, i);
     ++i;
   }
   for(pakbrowser_files_type::const_iterator cit = m_files.begin(); cit != m_files.end(); ++cit )
@@ -249,12 +273,10 @@ void PakFileDialog::update_pakpath( const wxString& pakpath )
       continue;
     long idx = m_list->InsertItem(i, cit->first);
     m_list->SetItemImage(idx, 1);
-    m_list->SetItemData(idx, i);
     ++i;
   }
   m_curpath = pakpath;
   m_curpathlabel->SetLabel( wxT("/") + pakpath);
- // m_list->SortItems(list_sort, 0);
   m_gauge->Hide();
 }
 

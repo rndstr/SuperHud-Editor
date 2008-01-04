@@ -88,7 +88,6 @@ wxString PakManager::get_location( const wxString& fpath, int search_where /*=PM
   }
   if( !found && search_where & PM_SEARCH_GAMEPAK )
   { // search pak files
-    wxLogDebug(fpath);
     for( int i=m_pakfiles.Count()-1; i >= 0; --i )
     {
       fs.ChangePathTo(m_pakfiles[i] + wxT("#zip:"));
@@ -98,7 +97,6 @@ wxString PakManager::get_location( const wxString& fpath, int search_where /*=PM
         found = PM_SEARCH_GAMEPAK;
         break;
       }
-        wxLogDebug(wxT("FALSE"));
     }
   }
   if( !found && search_where & PM_SEARCH_APPRELATIVE )
@@ -156,7 +154,6 @@ bool PakManager::load_from_location( char **buf, const wxString& location, size_
   }
 
   *buf = new char[ size ];
-  wxLogDebug(wxT("%d"), size);
   if( size != streambuf.Read(*buf, size) )
   {
 //    wxLogDebug(wxT("%d - %d %d %d %d"), streambuf.Stream()->GetLastError(), wxSTREAM_NO_ERROR, wxSTREAM_EOF, wxSTREAM_WRITE_ERROR, wxSTREAM_READ_ERROR);

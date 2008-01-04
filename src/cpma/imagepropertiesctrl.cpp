@@ -5,7 +5,7 @@
 #include "../hudfilebase.h"
 #include "../elementbase.h"
 #include "../propertiesnotebookbase.h"
-#include "../pakimageproperty.h"
+#include "../pakfileproperty.h"
 
 #include "element.h"
 
@@ -141,7 +141,7 @@ void ImagePropertiesCtrl::append_picture_properties( CPMAElement *el /*=0*/ )
 {
   Append( new wxPropertyCategory(_("Picture"), wxT("cat-picture")) );
 
-  Append( new wxStringProperty(_("File"), wxT("image"), el != 0 ? el->iget_image() : wxT("")) );
+  Append( new PakFileProperty(_("File"), wxT("image"), el != 0 ? el->iget_image() : wxT(""), PFP_IMAGE) );
 }
 
 void ImagePropertiesCtrl::append_model_properties( CPMAElement *el /*=0*/ )

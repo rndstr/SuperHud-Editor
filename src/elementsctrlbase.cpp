@@ -231,7 +231,7 @@ void ElementsCtrlBase::list_refresh( const elements_type& elements )
   {
     // now insert collection items
     wxString collname;
-    int collcount = 0;
+    int collcount = 0; // how many collection titles we already inserted
     for( size_t i=1; i < elements.size(); ++i )
     {
       if( elements[i]->name().Left(3) == elements[i-1]->name().Left(3) && elements[i]->name().Left(3) != collname)
@@ -254,11 +254,19 @@ void ElementsCtrlBase::list_refresh( const elements_type& elements )
           m_list->SetItem(h+collcount, 0, wxEmptyString, E_LIST_IMG_COLLITEM);
           minshare = wxMin(common_start(elements[h]->name(), elements[h-1]->name()), minshare);
         }
+        // also include the previous E_PARENT items
+        size_t realinsert = i;
+        for( size_t k=i-1; k>0; --k )
+        {
+          if( elements[k]->flags() & E_PARENT )
+            --realinsert;
+        }
+
 
         // insert collection title
         wxListItem li;
         li.SetMask(wxLIST_MASK_TEXT);
-        li.SetId(i-1+collcount);
+        li.SetId(realinsert-1+collcount);
         li.SetFont(*wxITALIC_FONT);
         li.SetTextColour(wxColour(*wxWHITE));
         li.SetBackgroundColour(wxColour(*wxBLACK));

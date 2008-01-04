@@ -17,7 +17,7 @@ superhudeditor_SOURCES = \
                          misc.cpp misc.h \
                          model.cpp model.h \
                          pakfiledialog.cpp src/pakfiledialog.h \
-                         pakimageproperty.cpp pakimageproperty.h \
+                         pakfileproperty.cpp pakfileroperty.h \
                          pakmanager.cpp pakmanager.h \
                          prefs.cpp prefs.h \
                          propertiesnotebookbase.h \

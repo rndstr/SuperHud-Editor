@@ -38,10 +38,13 @@ public:
     wxString  m_selected;
     pakbrowser_files_type m_files;
     pakbrowser_dirs_type m_dirs;
-    wxArrayString m_exts;
+    wxArrayString m_exts; ///< which extensions we accept, is empty if we accept only directories
     void update_pakpath( const wxString& dir );
     void update_preview( const wxString& loc );
     bool is_valid_ext( const wxString& ext ) const;
+    void open_dir( const wxString& name );
+    /// updates the infolabel if there is no specific label around
+    void update_nolabel();
 
     void          OnListItemDblClick( wxListEvent& );
     void          OnListItemSelected( wxListEvent& );
