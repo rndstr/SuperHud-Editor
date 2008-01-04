@@ -112,6 +112,11 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
 
 
   // create panes
+  m_displayctrl = wxGetApp().factory()->create_displayctrl(this);
+  m_mgr.AddPane( m_displayctrl, 
+      wxAuiPaneInfo().Name(wxT("display")).Caption(_("Display")).MaximizeButton(true).CloseButton(false).
+      CenterPane()
+      );
   m_elementsctrl = wxGetApp().factory()->create_elementsctrl(this);
   m_mgr.AddPane( m_elementsctrl,
       wxAuiPaneInfo().Name(wxT("elements")).Caption(_("Elements")).MaximizeButton(true).CloseButton(false)
@@ -121,11 +126,6 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_mgr.AddPane( m_configpreview, wxAuiPaneInfo().Name(wxT("configpreview")).Caption(_("Config Preview")).
     CloseButton(true).MaximizeButton(true)
     );
-  m_displayctrl = wxGetApp().factory()->create_displayctrl(this);
-  m_mgr.AddPane( m_displayctrl, 
-      wxAuiPaneInfo().Name(wxT("display")).Caption(_("Display")).MaximizeButton(true).CloseButton(false).
-      CenterPane()
-      );
 
   m_propertiesnotebook = wxGetApp().factory()->create_propertiesnotebook(this);
   m_mgr.AddPane( m_propertiesnotebook, 

@@ -307,7 +307,7 @@ void PakManager::enumerate_pakdircontents( const wxString& pakpath, pakbrowser_d
   wxFileSystem fs;
   wxString fn; // finding
   wxString rel; // relative to pak
-  wxString dirname; // last dirname only
+  wxString name; // last part of path only
   size_t pos;
   wxStatusBar *sb = wxGetApp().mainframe()->statusbar();
 
@@ -329,9 +329,9 @@ void PakManager::enumerate_pakdircontents( const wxString& pakpath, pakbrowser_d
         continue;
       rel = fn.substr(pos+5, fn.length() - pos - 5);
       pos = rel.find_last_of(wxT("/"));
-      dirname = rel.substr(pos+1, rel.length() - pos - 1);
-      wxLogDebug(wxT(" DIR > %s"), dirname.c_str());
-      dirs->push_back(dirname);
+      name = rel.substr(pos+1, rel.length() - pos - 1);
+      wxLogDebug(wxT(" DIR > %s"), name.c_str());
+      dirs->push_back(name);
       fn = fs.FindNext();
     }
     // files now
@@ -342,9 +342,9 @@ void PakManager::enumerate_pakdircontents( const wxString& pakpath, pakbrowser_d
         continue;
       rel = fn.substr(pos+5, fn.length() - pos - 5);
       pos = rel.find_last_of(wxT("/"));
-      fname = rel.substr(pos+1, rel.length() - pos - 1);
-      wxLogDebug(wxT(" FIL > %s, %s"), fname.c_str(), m_pakfiles[i].c_str());
-      files->insert( std::make_pair(fname, m_pakfiles[i]) );
+      name = rel.substr(pos+1, rel.length() - pos - 1);
+      wxLogDebug(wxT(" FIL > %s, %s"), name.c_str(), m_pakfiles[i].c_str());
+      files->insert( std::make_pair(name, m_pakfiles[i]) );
       fn = fs.FindNext();
     }
     if( gauge )

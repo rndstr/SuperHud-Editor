@@ -33,7 +33,9 @@ class DisplayCtrlBase : public wxGLCanvas
     virtual void cleanup();
 
 
+    const fonts_type& fonts() const { return m_fonts; }
     IFont*    font( const wxString& name );
+
     const Texture* const texture_default() const { return m_texdefault; }
     const Texture* const texture_model() const { return m_texmodel; }
 

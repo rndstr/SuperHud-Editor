@@ -27,9 +27,9 @@ void CPMADisplayCtrl::init()
   PakManager::get().enumerate_pakdircontents(wxT("/fonts/"), &dirs, &files);
   for( pakbrowser_files_type::const_iterator it = files.begin(); it != files.end(); ++it )
   {
-    if( it->Matches(wxT("*.tga")) )
+    if( it->first.Matches(wxT("*.tga")) )
     {
-      wxString name = it->SubString(0, it->length()-4);
+      wxString name = it->first.SubString(0, it->first.length()-5);
       if( m_fonts.find(name) == m_fonts.end() )
         m_fonts[name] = new CPMAFont(name);
     }
