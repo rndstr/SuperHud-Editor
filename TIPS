@@ -1,1 +1,3 @@
-The colored properties in the Properties panel are being inherited by a parent element (!DEFAULT or the game's default value)
+The colored element properties are being inherited by a parent element (!DEFAULT or the game's default value)
+While moving elements with your mouse you can press Shift to disable snapping temporarily
+If you press Ctrl after you started moving an element it will lock to its X-/Y-axis

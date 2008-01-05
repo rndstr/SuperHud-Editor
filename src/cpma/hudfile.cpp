@@ -23,7 +23,7 @@ CPMAHudFile::CPMAHudFile() :
 }
 
 
-const std::list<wxString>& notuniq_elements() const
+const std::list<wxString>& CPMAHudFile::notuniq_elements() const
 {
   return CPMAHudSpecs::get().notuniqs();
 }

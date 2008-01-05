@@ -155,7 +155,7 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
   if( ev.ButtonDown() )
     SetFocus();
 
-  if( ev.ControlDown() )
+  if( m_drag_mode == DRAG_NONE && ev.ControlDown() )
   {
     if( ev.LeftDown() )
     {
@@ -229,7 +229,13 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
       }
       else if( m_drag_mode = DRAG_DRAGGING )
       {
-        //m_drag_el->move_to( m_dragelpos + (clientpos - m_drag_start) );
+        if( ev.ControlDown() )
+        { // restrict to x/y axis
+          if( abs(m_drag_start.x - clientpos.x) < abs(m_drag_start.y - clientpos.y) )
+            clientpos.x = m_drag_start.x;
+          else
+            clientpos.y = m_drag_start.y;
+        }
         // how much moved so far = clientpos - m_drag_start;
         elements_type& els = wxGetApp().elementsctrl()->selected_elements();
         Vec2 move(clientpos - m_drag_start);
@@ -240,27 +246,30 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
           // move to new position
           (*it)->move(move);
         }
-        // now check if we have some snapping
-        Vec2 snapels = snap_to_elements();
-        Vec2 snapgrid = snap_to_grid();
-
-        // hmm, we pick the one that is not 0 and closer
-        Vec2 snap;
-        if( snapels == Vec2(0,0) )
-          snap = snapgrid;
-        else if( snapgrid == Vec2(0,0) )
-          snap = snapels;
-        else
-        { // pick closer
-          double lgrid = snapgrid.x*snapgrid.x + snapgrid.y*snapgrid.y;
-          double lels = snapels.x*snapels.x + snapels.y*snapels.y;
-          snap = (lgrid < lels ? snapgrid : snapels);
-        }
-        if( snap != Vec2(0,0) )
+        // now check if we have some snapping (only if not Shift pressed)
+        if( !ev.ShiftDown() )
         {
-          for( it_elements it = els.begin(); it != els.end(); ++it )
-            (*it)->move(snap);
-          move += snap;
+          Vec2 snapels = snap_to_elements();
+          Vec2 snapgrid = snap_to_grid();
+
+          // hmm, we pick the one that is not 0 and closer
+          Vec2 snap;
+          if( snapels == Vec2(0,0) )
+            snap = snapgrid;
+          else if( snapgrid == Vec2(0,0) )
+            snap = snapels;
+          else
+          { // pick closer
+            double lgrid = snapgrid.x*snapgrid.x + snapgrid.y*snapgrid.y;
+            double lels = snapels.x*snapels.x + snapels.y*snapels.y;
+            snap = (lgrid < lels ? snapgrid : snapels);
+          }
+          if( snap != Vec2(0,0) )
+          {
+            for( it_elements it = els.begin(); it != els.end(); ++it )
+              (*it)->move(snap);
+            move += snap;
+          }
         }
         moved = move;
         wxGetApp().mainframe()->OnElementSelectionChanged();

@@ -17,13 +17,17 @@
 //#define COLLECTION_INCLUDES_PARENT 1
 
 BEGIN_EVENT_TABLE(ElementsCtrlBase, wxPanel)
-  EVT_BUTTON(ID_BTN_COPY, ElementsCtrlBase::OnBtnCopy)
-  EVT_BUTTON(ID_BTN_PASTE, ElementsCtrlBase::OnBtnPaste)
+  EVT_BUTTON(wxID_COPY, ElementsCtrlBase::OnCopy)
+  EVT_BUTTON(wxID_PASTE, ElementsCtrlBase::OnPaste)
+
+  EVT_MENU(wxID_COPY, ElementsCtrlBase::OnCopy)
+  EVT_MENU(wxID_PASTE, ElementsCtrlBase::OnPaste)
 
   EVT_LIST_ITEM_SELECTED(ID_LISTCTRL_ELEMENTS, ElementsCtrlBase::OnItemSelected)
   EVT_LIST_ITEM_DESELECTED(ID_LISTCTRL_ELEMENTS, ElementsCtrlBase::OnItemDeselected)
   EVT_LIST_ITEM_ACTIVATED(ID_LISTCTRL_ELEMENTS, ElementsCtrlBase::OnItemActivated)
   EVT_LIST_BEGIN_DRAG(ID_LISTCTRL_ELEMENTS, ElementsCtrlBase::OnBeginDrag)
+  EVT_LIST_ITEM_RIGHT_CLICK(ID_LISTCTRL_ELEMENTS, ElementsCtrlBase::OnItemRightClick)
 END_EVENT_TABLE()
 
 // begin wxGlade: ::extracode
@@ -149,7 +153,8 @@ class ListDrop : public wxTextDropTarget
 
 
 ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long style):
-    wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL)
+    wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL),
+    m_copyfrom(0)
 {
   /* FIXMEHERE
     m_list = new ElementsListCtrl(this);
@@ -161,8 +166,8 @@ ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos,
     m_btn_insertpredecorate = new wxButton(this, ID_BTN_INSERTPREDECORATE, wxT("+ PreDecorate"));
     m_btn_insertpostdecorate = new wxButton(this, ID_BTN_INSERTPOSTDECORATE, wxT("+ PostDecorate"));
     m_list = new ElementsListCtrl(this);
-    m_btn_copy = new wxBitmapButton( this, ID_BTN_COPY, wxArtProvider::GetBitmap(ART_ELEMENT_COPY, wxART_BUTTON, wxSize(16,16)) );
-    m_btn_paste = new wxBitmapButton( this, ID_BTN_PASTE, wxArtProvider::GetBitmap(ART_ELEMENT_PASTE, wxART_BUTTON, wxSize(16,16)) );
+    m_btn_copy = new wxBitmapButton( this, wxID_COPY, wxArtProvider::GetBitmap(wxART_COPY, wxART_BUTTON, wxSize(16,16)) );
+    m_btn_paste = new wxBitmapButton( this, wxID_PASTE, wxArtProvider::GetBitmap(wxART_PASTE, wxART_BUTTON, wxSize(16,16)) );
 
     set_properties();
     do_layout();
@@ -296,12 +301,12 @@ void ElementsCtrlBase::list_refresh( const elements_type& elements )
 }
 
 
-void ElementsCtrlBase::OnBtnCopy( wxCommandEvent& )
+void ElementsCtrlBase::OnCopy( wxCommandEvent& )
 {
   wxLogDebug(wxT("copy"));
 }
 
-void ElementsCtrlBase::OnBtnPaste( wxCommandEvent& )
+void ElementsCtrlBase::OnPaste( wxCommandEvent& )
 {
   wxLogDebug(wxT("paste"));
 }
@@ -333,6 +338,44 @@ void ElementsCtrlBase::OnItemActivated( wxListEvent& ev )
 
   // propagate
   wxGetApp().mainframe()->OnPropertiesChanged();
+}
+
+void ElementsCtrlBase::OnItemRightClick( wxListEvent& ev )
+{
+  if( ev.GetIndex() == wxNOT_FOUND )
+    return;
+  wxRect r;
+  m_list->GetItemRect(ev.GetIndex(), r, wxLIST_RECT_BOUNDS);
+  show_element_popup(r.GetPosition());
+}
+
+void ElementsCtrlBase::show_element_popup( const wxPoint& p )
+{
+  static wxMenu *pup = 0;
+
+  // we only display if there is exactly one element selected
+  if( m_selels.size() != 1 )
+    return; 
+
+  if( pup ) wxDELETE(pup);
+  pup = new wxMenu();
+  const std::list<wxString>& notuniqs = wxGetApp().hudfile()->notuniq_elements();
+  for( std::list<wxString>::const_iterator cit = notuniqs.begin(); cit != notuniqs.end(); ++cit )
+    pup->Append(wxID_ANY, wxString::Format(_("Insert %s"), cit->c_str()));
+
+  pup->AppendSeparator();
+
+  // only enable delete if we actually can delete the element (i.e. it's a notuniq one)
+  wxMenuItem *item = pup->Append( wxID_DELETE, _("Delete") );
+  item->Enable( std::find(notuniqs.begin(), notuniqs.end(), m_selels.front()->name()) != notuniqs.end() );
+
+  item = pup->Append( wxID_COPY, _("Copy") );
+  item = pup->Append( wxID_PASTE, _("Paste") );
+  item->Enable( m_copyfrom != 0 );
+  item = pup->Append( ID_PASTE_NORECT, _("Paste w/o position") );
+  item->Enable( m_copyfrom != 0 );
+
+  PopupMenu(pup, p);
 }
 
 void ElementsCtrlBase::OnBeginDrag( wxListEvent& ev )

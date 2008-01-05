@@ -84,7 +84,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
 
   view_layout_submenu->Append( ID_MENU_VIEW_DEFAULTPERSPECTIVE, _("&Default Layout") );
   view_layout_submenu->AppendSeparator();
-  view_layout_submenu->AppendCheckItem( ID_MENU_VIEW_CONFIGPREVIEW, _("Config &Preview\tCtrl+C"), _("Display the config preview panel") );
+  view_layout_submenu->AppendCheckItem( ID_MENU_VIEW_CONFIGPREVIEW, _("Config &Preview\tCtrl+O"), _("Display the config preview panel") );
   view_layout_submenu->AppendCheckItem( ID_MENU_VIEW_TOOLBAR_FILE, _("Toolbar &File"), _("Display the file toolbar") );
   m_view_menu->AppendSubMenu(view_layout_submenu, _("&Layout"), _("Select which panes you would like to be visible or not"));
   m_view_menu->AppendSeparator();

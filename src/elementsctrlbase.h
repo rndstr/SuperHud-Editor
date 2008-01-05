@@ -62,18 +62,22 @@ class ElementsCtrlBase: public wxPanel
     /// an ordered list (by idx) of selected elements
     elements_type   m_selels;
 
+    ElementBase     *m_copyfrom;
+
     /// update m_selidx and m_selels according to current selection
     void update_selection();
 
 
   private:
-    void OnBtnCopy( wxCommandEvent& );
-    void OnBtnPaste( wxCommandEvent& );
+    void OnCopy( wxCommandEvent& );
+    void OnPaste( wxCommandEvent& );
     void          OnItemSelected( wxListEvent& ev );
     void          OnItemDeselected( wxListEvent& ev );
     void          OnItemActivated( wxListEvent& ev );
     void          OnBeginDrag( wxListEvent& );
+    void          OnItemRightClick( wxListEvent& );
     long          index_by_pointer( const ElementBase* const el ) const;
+    void          show_element_popup( const wxPoint& p );
 
 
     /// @arg idx The item index in the list we want to update according to pel
