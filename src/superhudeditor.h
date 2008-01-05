@@ -2,6 +2,7 @@
 #define __SUPERHUDEDITOR_H__
 
 #include <wx/app.h>
+#include <wx/intl.h>
 
 const wxString APP_NAME = wxT("SuperHud Editor");
 const wxString APP_NAME_UNIX = wxT("superhudeditor");
@@ -56,6 +57,8 @@ class SHEApp : public wxApp
     HudFileBase *m_hudfile;
 
     bool          m_ready;
+
+    wxLocale      m_locale;
 };
 
 DECLARE_APP(SHEApp)

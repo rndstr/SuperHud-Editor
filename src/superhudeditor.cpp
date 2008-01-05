@@ -57,6 +57,14 @@ bool SHEApp::OnInit()
 
   m_firststart = Prefs::get().init();
 
+  /*
+  wxLocale::AddCatalogLookupPathPrefix(wxT("./locale/"));
+  wxLocale::AddCatalogLookupPathPrefix(wxT("../locale/"));
+
+  if( !m_locale.Init(wxLANGUAGE_GERMAN) )
+    wxLogError(wxT("Couldn't initialize language"));
+    */
+
   if( (!is_cpma() && !is_q4max()) || Prefs::get().var(wxT("startup_gameselection")) )
   {
     GameSelectionDialog dlg(0);
