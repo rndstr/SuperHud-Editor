@@ -7,6 +7,7 @@
 #include "pakmanager.h"
 
 #include <cmath>
+#include <algorithm>
 
 BEGIN_EVENT_TABLE(DisplayCtrlBase, wxGLCanvas)
   EVT_IDLE(DisplayCtrlBase::OnIdle)

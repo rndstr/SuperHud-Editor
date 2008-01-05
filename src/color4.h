@@ -15,8 +15,8 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 
-#ifndef __COLOR4_H__
-#define __COLOR4_H__
+#ifndef COLOR4_H
+#define COLOR4_H
 
 #include <wx/colour.h>
 #include <wx/txtstrm.h>

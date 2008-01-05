@@ -1,6 +1,6 @@
 /// includes some common headers
-#ifndef __COMMON_H__
-#define __COMMON_H__
+#ifndef COMMON_H
+#define COMMON_H
 
 #include <wx/wx.h>
 #include <wx/string.h>
@@ -38,5 +38,5 @@ const int GETALLFILES_FLAGS = wxDIR_FILES|wxDIR_HIDDEN;
 const wxString PATH_SEP = wxFileName::GetPathSeparator();
 
 
-#endif // __COMMON_H__
+#endif // COMMON_H
 

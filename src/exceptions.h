@@ -1,5 +1,5 @@
-#ifndef __EXCEPTIONS_H__
-#define __EXCEPTIONS_H__
+#ifndef EXCEPTIONS_H
+#define EXCEPTIONS_H
 
 #include <stdexcept>
 #include <string>
@@ -24,5 +24,5 @@ class hudfile_parse_error : public she_exception
 };
 
 
-#endif // __EXCEPTIONS_H__
+#endif // EXCEPTIONS_H
 

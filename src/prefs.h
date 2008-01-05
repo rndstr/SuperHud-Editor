@@ -1,5 +1,5 @@
-#ifndef __PREFS_H__
-#define __PREFS_H__
+#ifndef PREFS_H
+#define PREFS_H
 
 #include <wx/string.h>
 #include "color4.h"
@@ -186,4 +186,4 @@ class Prefs
     Prefs& operator= (const Prefs&);
 };
 
-#endif // __PREFS_H__
+#endif // PREFS_H

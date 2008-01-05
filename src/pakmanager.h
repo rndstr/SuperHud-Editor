@@ -1,5 +1,5 @@
-#ifndef __PAKMANAGER_H__
-#define __PAKMANAGER_H__
+#ifndef PAKMANAGER_H
+#define PAKMANAGER_H
 
 #include <wx/wx.h>
 #include <wx/arrstr.h>
@@ -111,4 +111,4 @@ class PakManager
     PakManager& operator= (const PakManager&);
 };
 
-#endif // __PAKMANAGER_H__
+#endif // PAKMANAGER_H

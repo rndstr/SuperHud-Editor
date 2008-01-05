@@ -1,4 +1,4 @@
-#ifndef PAKFILEPROPERTY_H
+#ifndef PAKFILEPRROPERTY_H
 #define PAKFILEPPROPERTY_H
 
 #include <wx/wx.h>

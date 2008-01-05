@@ -1,5 +1,5 @@
-#ifndef __ELEMENTSLISTCTRL_H__
-#define __ELEMENTSLISTCTRL_H__
+#ifndef ELEMENTSLISTCTRL_H
+#define ELEMENTSLISTCTRL_H
 
 #include "elementbase.h"
 
@@ -40,5 +40,5 @@ class ElementsListCtrl : public wxListCtrl
 };
 
 
-#endif // __ELEMENTSLISTCTRL_H__
+#endif // ELEMENTSLISTCTRL_H
 

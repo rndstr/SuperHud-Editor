@@ -1,5 +1,5 @@
-#ifndef __ELEMENTBASE_H__
-#define __ELEMENTBASE_H__
+#ifndef ELEMENTBASE_H
+#define ELEMENTBASE_H
 
 #include <wx/string.h>
 #include <wx/txtstrm.h>
@@ -131,4 +131,4 @@ class ElementBase
     wxRect   m_rect;
 };
 
-#endif // __ELEMENTBASE_H__
+#endif // ELEMENTBASE_H

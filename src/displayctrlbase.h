@@ -1,5 +1,5 @@
-#ifndef __DISPLAYCTRLBASE_H__
-#define __DISPLAYCTRLBASE_H__
+#ifndef DISPLAYCTRLBASE_H
+#define DISPLAYCTRLBASE_H
 
 #include "font.h"
 #include <wx/gdicmn.h>
@@ -98,5 +98,5 @@ class DisplayCtrlBase : public wxGLCanvas
 };
 
 
-#endif // __DISPLAYCTRLBASE_H__
+#endif // DISPLAYCTRLBASE_H
 

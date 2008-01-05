@@ -1,5 +1,5 @@
-#ifndef __FACTORYBASE_H__
-#define __FACTORYBASE_H__
+#ifndef FACTORYBASE_H
+#define FACTORYBASE_H
 
 #include <wx/string.h>
 
@@ -49,5 +49,5 @@ class FactoryBase
 
 };
 
-#endif // __FACTORYBASE_H__
+#endif // FACTORYBASE_H
 

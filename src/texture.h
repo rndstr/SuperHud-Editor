@@ -1,5 +1,5 @@
-#ifndef __TEXTURE_H__
-#define __TEXTURE_H__
+#ifndef TEXTURE_H
+#define TEXTURE_H
 
 #include "common.h"
 
@@ -30,4 +30,4 @@ class Texture
     static wxImage  image_makecompliantsize(const wxImage& image);
 };
 
-#endif // __TEXTURE_H__
+#endif // TEXTURE_H

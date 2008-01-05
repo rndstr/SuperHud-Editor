@@ -1,5 +1,5 @@
-#ifndef __MAINFRAME_H__
-#define __MAINFRAME_H__
+#ifndef MAINFRAME_H
+#define MAINFRAME_H
 
 
 #include <wx/frame.h>
@@ -98,4 +98,4 @@ class MainFrame : public wxFrame
 };
 
 
-#endif // __MAINFRAME_H__
+#endif // MAINFRAME_H

@@ -1,10 +1,10 @@
-#ifndef __SETUPWIZARD_H__
-#define __SETUPWIZARD_H__
+#ifndef SETUPWIZARD_H
+#define SETUPWIZARD_H
 
 #include <wx/wizard.h>
-
 #include <wx/textctrl.h>
 #include <wx/combobox.h>
+
 class GameDirPage : public wxWizardPageSimple
 {
 public:
@@ -50,4 +50,4 @@ class SetupWizard : public wxWizard
 
 
 
-#endif // __SETUPWIZARD_H__
+#endif // SETUPWIZARD_H

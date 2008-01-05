@@ -1,5 +1,5 @@
-#ifndef __EVENTIDS_H__
-#define __EVENTIDS_H__
+#ifndef EVENTIDS_H
+#define EVENTIDS_H
 
 enum
 {
@@ -50,4 +50,4 @@ enum
   ID_BTN_PAKFILEDLG_GODIRUP
 };
 
-#endif //  __EVENTIDS_H__
+#endif //  EVENTIDS_H

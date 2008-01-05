@@ -1,5 +1,5 @@
-#ifndef __HUDFILEBASE_H__
-#define __HUDFILEBASE_H__
+#ifndef HUDFILEBASE_H
+#define HUDFILEBASE_H
 
 #include "common.h"
 #include "elementbase.h"
@@ -71,5 +71,5 @@ class HudFileBase
 };
 
 
-#endif // __HUDFILEBASE_H__
+#endif // HUDFILEBASE_H
 

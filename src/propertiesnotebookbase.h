@@ -1,5 +1,5 @@
-#ifndef __PROPERTIESNOTEBOOKBASE_H__
-#define __PROPERTIESNOTEBOOKBASE_H__
+#ifndef PROPERTIESNOTEBOOKBASE_H
+#define PROPERTIESNOTEBOOKBASE_H
 
 #include "superhudeditor.h"
 #include "hudfilebase.h"
@@ -28,4 +28,4 @@ class PropertiesNotebookBase : public wxAuiNotebook
 
 };
 
-#endif // __PROPERTIESCTRLBASE_H__
+#endif

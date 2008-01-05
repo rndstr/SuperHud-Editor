@@ -1,5 +1,5 @@
-#ifndef __ARTPROVIDER_H__
-#define __ARTPROVIDER_H__
+#ifndef ARTPROVIDER_H
+#define ARTPROVIDER_H
 
 #include <wx/wx.h>
 #include <wx/artprov.h>
@@ -93,5 +93,5 @@ class ArtProvider : public wxArtProvider
 
 };
 
-#endif // __ARTPROVIDER_H__
+#endif // ARTPROVIDER_H
 
