@@ -27,11 +27,11 @@ PakFileDialog::PakFileDialog(wxWindow* parent, int id, const wxString& title, co
     sizer_6_staticbox = new wxStaticBox(this, -1, wxT("Preview"));
     m_godirupbtn = new wxBitmapButton(this, ID_BTN_PAKFILEDLG_GODIRUP, wxNullBitmap);
     m_curpathlabel = new wxStaticText(this, wxID_ANY, wxEmptyString);
-    m_list = new wxListCtrl(this, ID_LISTCTRL_PAKFILEDIALOG, wxDefaultPosition, wxDefaultSize, wxLC_LIST|wxLC_SINGLE_SEL|wxSUNKEN_BORDER);
+    m_list = new wxListCtrl(this, ID_LISTCTRL_PAKFILEDIALOG, wxDefaultPosition, wxDefaultSize, wxLC_LIST|wxLC_SINGLE_SEL|wxLC_SORT_ASCENDING|wxSUNKEN_BORDER);
     m_preview = new wxStaticBitmap(this, wxID_ANY, wxNullBitmap);
-    m_gauge = new wxGauge(this, wxID_ANY, 10, wxDefaultPosition, wxDefaultSize, wxGA_VERTICAL|wxGA_SMOOTH);
     m_infolabel = new wxStaticText(this, wxID_ANY, wxEmptyString);
     static_line_1 = new wxStaticLine(this, wxID_ANY);
+    m_gauge = new wxGauge(this, wxID_ANY, 10, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL|wxGA_SMOOTH);
     button_2 = new wxButton(this, wxID_CANCEL, wxT("&Cancel"));
     button_1 = new wxButton(this, wxID_OK, wxT("&Ok"));
 
@@ -39,7 +39,7 @@ PakFileDialog::PakFileDialog(wxWindow* parent, int id, const wxString& title, co
     do_layout();
     // end wxGlade
 
-    m_gauge->Hide();
+    m_gauge->SetValue(0);
     m_godirupbtn->SetBitmapLabel( wxArtProvider::GetBitmap(wxART_GO_DIR_UP, wxART_TOOLBAR, wxSize(16,16)) );
     m_list->SetImageList( &m_imglist, wxIMAGE_LIST_SMALL );
     m_imglist.Add(wxArtProvider::GetBitmap(wxART_FOLDER, wxART_OTHER, wxSize(16,16)));
@@ -73,12 +73,11 @@ void PakFileDialog::do_layout()
     sizer_2->Add(m_list, 1, wxALL|wxEXPAND, 5);
     sizer_6->Add(m_preview, 0, 0, 0);
     sizer_5->Add(sizer_6, 0, wxEXPAND, 0);
-    sizer_5->Add(m_gauge, 1, wxEXPAND, 0);
     sizer_2->Add(sizer_5, 0, wxEXPAND, 0);
     mainsizer->Add(sizer_2, 1, wxEXPAND, 0);
     mainsizer->Add(m_infolabel, 0, wxALL, 5);
     mainsizer->Add(static_line_1, 0, wxEXPAND, 0);
-    sizer_4->Add(20, 20, 1, 0, 0);
+    sizer_4->Add(m_gauge, 1, wxEXPAND, 0);
     sizer_4->Add(button_2, 0, wxALL, 5);
     sizer_4->Add(button_1, 0, wxALL, 5);
     mainsizer->Add(sizer_4, 0, wxEXPAND, 0);
@@ -252,7 +251,7 @@ bool PakFileDialog::is_valid_ext( const wxString& ext ) const
 
 void PakFileDialog::update_pakpath( const wxString& pakpath )
 {
-  m_gauge->Show();
+  //m_gauge->Show();
   wxBusyCursor schaffe;
 
   wxLogDebug( wxT("change dir to ") + pakpath );
@@ -277,8 +276,12 @@ void PakFileDialog::update_pakpath( const wxString& pakpath )
   }
   m_curpath = pakpath;
   m_curpathlabel->SetLabel( wxT("/") + pakpath);
-  m_gauge->Hide();
+  m_gauge->SetValue(0);
 }
+
+
+
+
 
 
 

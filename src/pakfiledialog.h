@@ -68,9 +68,9 @@ protected:
     wxStaticText* m_curpathlabel;
     wxListCtrl* m_list;
     wxStaticBitmap* m_preview;
-    wxGauge* m_gauge;
     wxStaticText* m_infolabel;
     wxStaticLine* static_line_1;
+    wxGauge* m_gauge;
     wxButton* button_2;
     wxButton* button_1;
     // end wxGlade
