@@ -27,6 +27,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_MENU(wxID_OPEN, MainFrame::OnMenuOpen)
   EVT_MENU(wxID_NEW, MainFrame::OnMenuNew)
   EVT_MENU(ID_MENU_TOOLS_SWITCHGAME, MainFrame::OnMenuToolsSwitchGame)
+  EVT_MENU(ID_MENU_TOOLS_SNAPELEMENTS, MainFrame::OnMenuToolsSnapElements)
+  EVT_MENU(ID_MENU_TOOLS_SNAPGRID, MainFrame::OnMenuToolsSnapGrid)
   EVT_MENU(ID_MENU_TOOLS_PREFERENCES, MainFrame::OnMenuToolsPreferences)
   EVT_MENU(ID_MENU_VIEW_DEFAULTPERSPECTIVE, MainFrame::OnMenuViewDefaultPerspective)
   EVT_CLOSE(MainFrame::OnClose)
@@ -64,10 +66,15 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   menu_bar->Append( file_menu, _("&File") );
 
   wxMenu *tools_menu = new wxMenu;
-  tools_menu->Append( ID_MENU_TOOLS_SWITCHGAME, _("&Switch game") );
+  tools_menu->Append( ID_MENU_TOOLS_SWITCHGAME, _("&Switch Game") );
+  tools_menu->AppendSeparator();
+  tools_menu->AppendCheckItem( ID_MENU_TOOLS_SNAPELEMENTS, _("&Snap to &Elements") );
+  tools_menu->AppendCheckItem( ID_MENU_TOOLS_SNAPGRID, _("Snap to &Grid") );
   tools_menu->AppendSeparator();
   tools_menu->Append( ID_MENU_TOOLS_PREFERENCES, _("&Preferences\tCtrl+P") );
   menu_bar->Append( tools_menu, _("&Tools") );
+  tools_menu->Check( ID_MENU_TOOLS_SNAPELEMENTS, Prefs::get().var(wxT("view_snapelements")).boolval() );
+  tools_menu->Check( ID_MENU_TOOLS_SNAPGRID, Prefs::get().var(wxT("view_snapgrid")).boolval() );
 
   wxMenu *elements_menu = new wxMenu;
   menu_bar->Append( elements_menu, _("&Elements") );
@@ -201,6 +208,16 @@ void MainFrame::OnMenuToolsSwitchGame( wxCommandEvent& )
   Prefs::get().save();
   wxMessageBox(_("The application will now restart"));
   restart_app();
+}
+
+void MainFrame::OnMenuToolsSnapElements( wxCommandEvent& ev )
+{
+  Prefs::get().setb(wxT("view_snapelements"), ev.IsChecked());
+}
+
+void MainFrame::OnMenuToolsSnapGrid( wxCommandEvent& ev )
+{
+  Prefs::get().setb(wxT("view_snapgrid"), ev.IsChecked());
 }
 
 void MainFrame::OnMenuExit( wxCommandEvent& )

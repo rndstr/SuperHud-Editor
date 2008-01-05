@@ -6,6 +6,8 @@
 #include "texture.h"
 #include "pakmanager.h"
 
+#include <cmath>
+
 BEGIN_EVENT_TABLE(DisplayCtrlBase, wxGLCanvas)
   EVT_IDLE(DisplayCtrlBase::OnIdle)
   EVT_SIZE(DisplayCtrlBase::OnSize)
@@ -40,6 +42,7 @@ void DisplayCtrlBase::OnPaint( wxPaintEvent& )
     return;
 
   wxPaintDC dc(this);
+  PrepareDC(dc);
 
 #ifndef __WXMOTIF__
   if (!GetContext()) return;
@@ -142,8 +145,7 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
   // LeftDown selects one and LeftUp toggles even if there wasn't a selection before)
   static bool selected_on_ldown = false; 
   /// how far we moved the elements so far
-  static wxPoint moved(0,0);
-  static wxPoint posatmoved(0,0);
+  static Vec2 moved(0,0);
 
   wxPoint clientpos = DisplayCtrlBase::panel_to_hud(ev.GetPosition());
   wxGetApp().mainframe()->statusbar()->SetStatusText(wxString::Format(wxT("(%i,%i)"), clientpos.x, clientpos.y), SB_MOUSEPOS);
@@ -152,11 +154,14 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
   if( ev.ButtonDown() )
     SetFocus();
 
-  if( ev.ControlDown() && ev.LeftDown() )
+  if( ev.ControlDown() )
   {
-    ElementBase *el = element_hittest(clientpos, false);
-    if( el ) // toggle selection
-      wxGetApp().elementsctrl()->select_item(el, !el->is_selected());
+    if( ev.LeftDown() )
+    {
+      ElementBase *el = element_hittest(clientpos, false);
+      if( el ) // toggle selection
+        wxGetApp().elementsctrl()->select_item(el, !el->is_selected());
+    }
   }
   else // !ControlDown
   {
@@ -226,13 +231,35 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
         //m_drag_el->move_to( m_dragelpos + (clientpos - m_drag_start) );
         // how much moved so far = clientpos - m_drag_start;
         elements_type& els = wxGetApp().elementsctrl()->selected_elements();
-        wxPoint move(clientpos - m_drag_start);
+        Vec2 move(clientpos - m_drag_start);
         for( it_elements it = els.begin(); it != els.end(); ++it )
         {
           // first move back to initial
           (*it)->move(-moved);
           // move to new position
           (*it)->move(move);
+        }
+        // now check if we have some snapping
+        Vec2 snapels = snap_to_elements();
+        Vec2 snapgrid = snap_to_grid();
+
+        // hmm, we pick the one that is not 0 and closer
+        Vec2 snap;
+        if( snapels == Vec2(0,0) )
+          snap = snapgrid;
+        else if( snapgrid == Vec2(0,0) )
+          snap = snapels;
+        else
+        { // pick closer
+          double lgrid = snapgrid.x*snapgrid.x + snapgrid.y*snapgrid.y;
+          double lels = snapels.x*snapels.x + snapels.y*snapels.y;
+          snap = (lgrid < lels ? snapgrid : snapels);
+        }
+        if( snap != Vec2(0,0) )
+        {
+          for( it_elements it = els.begin(); it != els.end(); ++it )
+            (*it)->move(snap);
+          move += snap;
         }
         moved = move;
         wxGetApp().mainframe()->OnElementSelectionChanged();
@@ -251,8 +278,9 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
         }
       }
       else if( m_drag_mode == DRAG_DRAGGING )
-      {
-        // move it back to starting position and then issue the whole operation.
+      { // drop!
+        /*
+        // NOTE that this (probably?) isn't necessary as we will have received a OnMouse move event previously
         elements_type& els = wxGetApp().elementsctrl()->selected_elements();
         wxPoint move(clientpos - m_drag_start);
         for( it_elements it = els.begin(); it != els.end(); ++it )
@@ -263,6 +291,7 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
           (*it)->move(move);
         }
         wxGetApp().mainframe()->OnElementSelectionChanged();
+        */
         /*
         m_drag_el->m_rect.SetPosition( m_drag_itempt );
         wxGetApp().cmds()->Submit( new MoveToCommand( m_drag_hi, m_drag_realpt ) );
@@ -275,9 +304,157 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
       }
       m_drag_mode = DRAG_NONE;
       m_drag_el = 0;
-      moved = wxPoint(0,0);
+      moved = Vec2(0,0);
     }
   } // if ControlDown
+}
+
+Vec2 DisplayCtrlBase::snap_to_grid() const
+{
+  if( !Prefs::get().var(wxT("view_snapgrid")).boolval() )
+    return Vec2(0,0);
+
+  wxASSERT_MSG( m_drag_el != 0, wxT("need a valid element") );
+
+  const int gx = Prefs::get().var(wxT("view_gridX"));
+  const int gy = Prefs::get().var(wxT("view_gridY"));
+  const int threshold = Prefs::get().var(wxT("view_snapthreshold"));
+
+  const wxRect elr = m_drag_el->iget_rect();
+  Vec2 p;
+
+  if( (elr.x % gx) < threshold )
+    p.x = (int)std::floor(elr.x/(float)gx)*gx - elr.x;
+  else if( (elr.x % gx) > gx-threshold )
+    p.x = (int)std::ceil(elr.x/(float)gx)*gx - elr.x;
+
+  if( (elr.y % gy) < threshold )
+    p.y = (int)std::floor(elr.y/(float)gy)*gy - elr.y;
+  else if( (elr.y % gy) > gy-threshold )
+    p.y = (int)std::ceil(elr.y/(float)gy)*gy - elr.y;
+
+  return p;
+}
+
+Vec2 DisplayCtrlBase::snap_to_elements() const
+{
+  if( !Prefs::get().var(wxT("view_snapelements")).boolval() )
+    return Vec2(0,0);
+
+  wxASSERT_MSG( m_drag_el != 0, wxT("need a valid element") );
+
+  // this element is already moved to real position
+  const wxRect elr = m_drag_el->iget_rect();
+  // rectangle we snap
+  wxRect r = elr;
+
+  // assert( r now has the real position where it is currently )
+  const int threshold = Prefs::get().var(wxT("view_snapthreshold"));
+  const elements_type& els = wxGetApp().hudfile()->elements();
+  const elements_type& sels = wxGetApp().elementsctrl()->selected_elements();
+  wxRect itr; // rectangle to be checked against
+  for( cit_elements cit = els.begin(); cit != els.end(); ++cit )
+  {
+    if( m_drag_el == *cit )
+    { // self exclusion for screen boundary
+      itr.x = 0;
+      itr.y = 0;
+      itr.width = width();
+      itr.height = height();
+    }
+    else
+    {
+      // skip other selected elements
+      if( std::find(sels.begin(), sels.end(), *cit) != sels.end() )
+      {
+        wxLogDebug(wxT("ISSEL ") + (*cit)->name());
+        continue;
+      }
+      if( !(*cit)->is_rendered() )
+        continue;
+      itr = (*cit)->iget_rect();
+    }
+
+ /*
+         top  
+       _|_ _|_
+  left  |   |  right
+       _|_ _|_
+        |   |
+        bottom
+    */
+    // has an X value which is on both rectangles
+    bool xx = (r.GetBottom() > itr.GetTop() && r.GetTop() < itr.GetBottom());
+    // has an Y value which is on both rectangles
+    bool yy = (r.GetRight() > itr.GetLeft() && r.GetLeft() < itr.GetRight());
+    
+
+    if( !xx && !yy )
+      continue;
+    
+    if( xx )
+    {
+      enum { LL = 0, LR = 1, RR = 2, RL = 3};
+      // first char is the huditem to snap, second is the foreign huditem.
+      int d[4] = {
+        abs(r.GetLeft() - itr.GetLeft()),
+        abs(r.GetLeft() - itr.GetRight()),
+        abs(r.GetRight() - itr.GetRight()),
+        abs(r.GetRight() - itr.GetLeft())
+      };
+      int smallest_idx = -1;
+      int smallest = threshold+1;
+      for( int i=0; i<4; ++i )
+        if( d[i] < smallest )
+        {
+          smallest_idx = i;
+          smallest = d[i];
+        }
+      switch( smallest_idx )
+      {
+      case LL: r.x = itr.GetLeft(); break;
+      case LR: r.x = itr.GetRight() + 1; break;
+      case RR: r.x = itr.GetRight() - r.GetWidth() + 1; break;
+      case RL: r.x = itr.GetLeft() - r.GetWidth(); break;
+      }
+    }
+    if( yy )
+    {
+      enum { TT = 0, TB = 1, BB = 2, BT = 3};
+      // first char is the huditem to snap, second is the foreign huditem.
+      int d[4] = {
+        abs(r.GetTop() - itr.GetTop()),
+        abs(r.GetTop() - itr.GetBottom()),
+        abs(r.GetBottom() - itr.GetBottom()),
+        abs(r.GetBottom() - itr.GetTop())
+      };
+      int smallest_idx = -1;
+      int smallest = threshold+1;
+      for( int i=0; i<4; ++i )
+        if( d[i] < smallest )
+        {
+          smallest_idx = i;
+          smallest = d[i];
+        }
+      switch( smallest_idx )
+      {
+      case TT: r.y = itr.GetTop(); break;
+      case TB: r.y = itr.GetBottom() + 1; break;
+      case BB: r.y = itr.GetBottom() - r.GetHeight()+1; break;
+      case BT: r.y = itr.GetTop() - r.GetHeight(); break;
+      }
+    }
+  }
+  /*
+  if( ev.ControlDown() )
+  { // lock to x/y axis of m_drag_itempt
+    if( abs( r.x - m_drag_itempt.x ) < abs( r.y - m_drag_itempt.y ) )
+      r.x = m_drag_itempt.x;
+    else
+      r.y = m_drag_itempt.y;
+  }
+  */
+  return r.GetPosition() - elr.GetPosition();
 }
 
 void DisplayCtrlBase::reset_projection_mode()

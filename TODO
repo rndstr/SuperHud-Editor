@@ -2,10 +2,10 @@
 ? if hud is modified, SwitchGame behaves wrongly.. launches 2 instances
 + add second background image for 16:10
 ! toolbar file view is not properly updated with menu item
-% encapsulate own functions (misc.h/cpp) into namespace she {}
 + defaultdir for opening hudfiles
-+ check for no gamedir available on startup and prompt
 + add preferences to specify datadir (in case someone wants to overwrite it)
++ if imagepath cannot be found auto append .tga!
+! properties dialog does not update title if detached
 t put an unknown elementname into the hud, code adds it anyway.. what happens then..? can we delete? write?
 t the global defined messages (common.h) are they translated?
 

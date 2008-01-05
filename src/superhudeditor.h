@@ -7,7 +7,11 @@ const wxString APP_NAME = wxT("SuperHud Editor");
 const wxString APP_NAME_UNIX = wxT("superhudeditor");
 const wxString APP_VERSION = wxT("0.3.0");
 const wxString APP_VENDOR = wxEmptyString;
-const wxString APP_CAPTION = APP_NAME + wxT(" v") + APP_VERSION;
+#ifndef NDEBUG
+  const wxString APP_CAPTION = APP_NAME + wxT(" v") + APP_VERSION + wxT(" DEBUG BUILD");
+#else
+  const wxString APP_CAPTION = APP_NAME + wxT(" v") + APP_VERSION;
+#endif
 const wxString APP_CONFIG = wxT("superhudeditor.conf");
 const wxString APP_URL = wxT("http://plrf.org/superhudeditor");
 

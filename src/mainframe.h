@@ -78,6 +78,8 @@ class MainFrame : public wxFrame
     void OnMenuSave( wxCommandEvent& );
     void OnMenuSaveAs( wxCommandEvent& );
     void OnMenuToolsPreferences( wxCommandEvent& );
+    void OnMenuToolsSnapElements( wxCommandEvent& );
+    void OnMenuToolsSnapGrid( wxCommandEvent& );
     void OnMenuViewDefaultPerspective( wxCommandEvent& );
     void OnMenuViewConfigPreview( wxCommandEvent& );
     void OnMenuViewToolbarFile( wxCommandEvent& );

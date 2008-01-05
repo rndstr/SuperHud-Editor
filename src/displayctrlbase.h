@@ -15,6 +15,8 @@ typedef std::map<wxString, IFont*> fonts_type;
 typedef fonts_type::iterator it_fonts;
 typedef fonts_type::const_iterator cit_fonts;
 
+typedef wxPoint Vec2;
+
 class Texture;
 class ElementBase;
 
@@ -54,7 +56,7 @@ class DisplayCtrlBase : public wxGLCanvas
 
     ElementBase   *m_drag_el;
     eDragMode     m_drag_mode;
-    wxPoint       m_drag_start; ///< mouse position when we started dragging
+    wxPoint       m_drag_start; ///< mouse position when we started dragging, hudcoords
 
     fonts_type    m_fonts;
 
@@ -67,6 +69,12 @@ class DisplayCtrlBase : public wxGLCanvas
     void OnEraseBackground( wxEraseEvent& );
     void OnMouse( wxMouseEvent& );
     void OnPaint( wxPaintEvent& );
+
+    /// smallest distance (max view_snapthreshold) to other elements
+    /// @returns The 2d vector we have to move the selection to snap or wxPoint(0,0) if it's disabled by prefs 
+    Vec2 snap_to_elements() const;
+
+    Vec2 snap_to_grid() const;
 
     virtual void render() {}
     

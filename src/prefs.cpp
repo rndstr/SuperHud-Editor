@@ -167,7 +167,10 @@ void Prefs::load()
   addvar(wxT("props_bgcolor"), wxT("1 1 1 1"), PVT_COLOR);
   addvar(wxT("props_inheritcolor"), wxT("0.39 0.39 0.58 1"), PVT_COLOR);
   addvar(wxT("props_inheritbgcolor"), wxT("0.94 0.94 1.0 1"), PVT_COLOR);
-  addvar(wxT("view_dragthreshold"), wxT("3"), PVT_INT); ///< how many pixels till we start dragging
+  addvar(wxT("view_dragthreshold"), wxT("1"), PVT_INT); ///< how many pixels till we start dragging
+  addvar(wxT("view_snapthreshold"), wxT("3"), PVT_INT); ///< how many pixels we snap to snappable items
+  addvar(wxT("view_snapelements"), wxT("true"), PVT_BOOL); ///< whether to snap to other elements
+  addvar(wxT("view_snapgrid"), wxT("true"), PVT_BOOL); ///< whether to snap to grid
 
 
     // -- game specific

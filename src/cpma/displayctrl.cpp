@@ -90,7 +90,8 @@ void CPMADisplayCtrl::render()
   if( !IsShown() ) return;
   // that this is not yet ready only happens on wxGTK
   if( !wxGetApp().hudfile() ) return; 
-  wxLogDebug(wxT("CPMADisplayCtrl::render"));
+  
+  //wxLogDebug(wxT("CPMADisplayCtrl::render"));
 
  
   if( wxGetApp().mainframe() && wxGetApp().mainframe()->model() )
