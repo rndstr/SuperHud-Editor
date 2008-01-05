@@ -104,7 +104,7 @@ bool CPMAHudSpecs::load()
       if( key.CmpNoCase(wxT("short"))==0 ) flags |= E_SHORT;
       else if( key.CmpNoCase(wxT("enable"))==0 ) enable = true;
       else if( key.CmpNoCase(wxT("enablealways"))==0 ) flags |= E_ENABLEALWAYS;
-      else if( key.CmpNoCase(wxT("notuniq"))==0 ) { flags |= E_NOTUNIQ; /*m_special_items.push_back( name );*/ }
+      else if( key.CmpNoCase(wxT("notuniq"))==0 ) { flags |= E_NOTUNIQ; m_notuniqs.push_back( name ); }
       else if( key.CmpNoCase(wxT("nodefault"))==0 ) { flags |= E_NODEFAULT; }
       else if( key.CmpNoCase(wxT("drawnever"))==0 ) flags |= E_DRAWNEVER;
       else if( key.CmpNoCase(wxT("drawback"))==0 ) flags |= E_DRAWBACK;

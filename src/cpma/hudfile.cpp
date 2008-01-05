@@ -23,6 +23,10 @@ CPMAHudFile::CPMAHudFile() :
 }
 
 
+const std::list<wxString>& notuniq_elements() const
+{
+  return CPMAHudSpecs::get().notuniqs();
+}
 
 void CPMAHudFile::load_default_elements()
 {

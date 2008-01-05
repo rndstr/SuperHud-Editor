@@ -51,9 +51,11 @@ class CPMAHudSpecs
     hsitems_type&         items() { return m_items; }
 
     const hsitem_s*       find_item( const wxString& name );
+    const std::list<wxString>& notuniqs() const { return m_notuniqs; }
 
   protected:
     hsitems_type          m_items;
+    std::list<wxString>   m_notuniqs;
 
   // singleton
   public:
