@@ -28,6 +28,7 @@ BEGIN_EVENT_TABLE(ElementsCtrlBase, wxPanel)
   EVT_LIST_ITEM_ACTIVATED(ID_LISTCTRL_ELEMENTS, ElementsCtrlBase::OnItemActivated)
   EVT_LIST_BEGIN_DRAG(ID_LISTCTRL_ELEMENTS, ElementsCtrlBase::OnBeginDrag)
   EVT_LIST_ITEM_RIGHT_CLICK(ID_LISTCTRL_ELEMENTS, ElementsCtrlBase::OnItemRightClick)
+  EVT_MENU_RANGE( ID_INSERT_NOTUNIQ, ID_INSERT_NOTUNIQ_END, ElementsCtrlBase::OnInsertNotuniq)
 END_EVENT_TABLE()
 
 // begin wxGlade: ::extracode
@@ -154,7 +155,8 @@ class ListDrop : public wxTextDropTarget
 
 ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long style):
     wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL),
-    m_copyfrom(0)
+    m_copyfrom(0),
+    m_elpopup(0)
 {
   /* FIXMEHERE
     m_list = new ElementsListCtrl(this);
@@ -174,6 +176,13 @@ ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos,
     // end wxGlade
     ListDrop *ld = new ListDrop(m_list);
     m_list->SetDropTarget(ld);
+}
+
+bool ElementsCtrlBase::Destroy()
+{
+  if( m_elpopup )
+    wxDELETE(m_elpopup);
+  return wxPanel::Destroy();
 }
 
 void ElementsCtrlBase::set_properties()
@@ -311,6 +320,7 @@ void ElementsCtrlBase::OnPaste( wxCommandEvent& )
   wxLogDebug(wxT("paste"));
 }
 
+
 void ElementsCtrlBase::OnItemDeselected( wxListEvent& ev )
 {
   OnSelectionChanged();
@@ -351,31 +361,43 @@ void ElementsCtrlBase::OnItemRightClick( wxListEvent& ev )
 
 void ElementsCtrlBase::show_element_popup( const wxPoint& p )
 {
-  static wxMenu *pup = 0;
-
   // we only display if there is exactly one element selected
   if( m_selels.size() != 1 )
     return; 
 
-  if( pup ) wxDELETE(pup);
-  pup = new wxMenu();
-  const std::list<wxString>& notuniqs = wxGetApp().hudfile()->notuniq_elements();
-  for( std::list<wxString>::const_iterator cit = notuniqs.begin(); cit != notuniqs.end(); ++cit )
-    pup->Append(wxID_ANY, wxString::Format(_("Insert %s"), cit->c_str()));
+  if( m_elpopup ) wxDELETE(m_elpopup);
+  m_elpopup = new wxMenu();
+  const notuniqs_type& notuniqs = wxGetApp().hudfile()->notuniq_elements();
+  int i=0;
+  for( cit_notuniqs cit = notuniqs.begin(); cit != notuniqs.end() && i <= (ID_INSERT_NOTUNIQ - ID_INSERT_NOTUNIQ_END); ++cit, ++i )
+    m_elpopup->Append(ID_INSERT_NOTUNIQ+i, wxString::Format(_("Insert %s"), cit->c_str()));
 
-  pup->AppendSeparator();
+  m_elpopup->AppendSeparator();
 
   // only enable delete if we actually can delete the element (i.e. it's a notuniq one)
-  wxMenuItem *item = pup->Append( wxID_DELETE, _("Delete") );
+  wxMenuItem *item = m_elpopup->Append( wxID_DELETE, _("Delete") );
   item->Enable( std::find(notuniqs.begin(), notuniqs.end(), m_selels.front()->name()) != notuniqs.end() );
 
-  item = pup->Append( wxID_COPY, _("Copy") );
-  item = pup->Append( wxID_PASTE, _("Paste") );
+  item = m_elpopup->Append( wxID_COPY, _("Copy") );
+  item = m_elpopup->Append( wxID_PASTE, _("Paste") );
   item->Enable( m_copyfrom != 0 );
-  item = pup->Append( ID_PASTE_NORECT, _("Paste w/o position") );
+  item = m_elpopup->Append( ID_PASTE_NORECT, _("Paste w/o position") );
   item->Enable( m_copyfrom != 0 );
 
-  PopupMenu(pup, p);
+  PopupMenu(m_elpopup, p);
+}
+
+void ElementsCtrlBase::OnInsertNotuniq( wxCommandEvent& ev )
+{
+  int idx = ev.GetId() - ID_INSERT_NOTUNIQ;
+
+  if( m_selels.size() != 1 )
+    return;
+  const notuniqs_type& notuniqs = wxGetApp().hudfile()->notuniq_elements();
+
+
+
+
 }
 
 void ElementsCtrlBase::OnBeginDrag( wxListEvent& ev )

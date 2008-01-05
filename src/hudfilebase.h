@@ -4,11 +4,13 @@
 #include "common.h"
 #include "elementbase.h"
 #include <vector>
-#include <list>
 
 typedef std::vector<ElementBase*>           elements_type;
 typedef elements_type::iterator             it_elements;
 typedef elements_type::const_iterator       cit_elements;
+
+typedef std::vector<wxString>               notuniqs_type;
+typedef notuniqs_type::const_iterator       cit_notuniqs;
 
 /// represents a hudfile (document)
 class HudFileBase
@@ -54,7 +56,7 @@ class HudFileBase
 
     const elements_type& elements() const { return m_els; }
 
-    virtual const std::list<wxString>& notuniq_elements() const = 0;
+    virtual const notuniqs_type& notuniq_elements() const = 0;
 
   protected:
     ElementBase*        find_element( const wxString& name );

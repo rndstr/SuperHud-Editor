@@ -31,6 +31,7 @@ class ElementsCtrlBase: public wxPanel
 
     ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
 
+    virtual bool Destroy();
 
     virtual void clear();
     virtual void append( ElementBase *el );
@@ -64,6 +65,8 @@ class ElementsCtrlBase: public wxPanel
 
     ElementBase     *m_copyfrom;
 
+    wxMenu          *m_elpopup;
+
     /// update m_selidx and m_selels according to current selection
     void update_selection();
 
@@ -76,6 +79,7 @@ class ElementsCtrlBase: public wxPanel
     void          OnItemActivated( wxListEvent& ev );
     void          OnBeginDrag( wxListEvent& );
     void          OnItemRightClick( wxListEvent& );
+    void          OnInsertNotuniq( wxCommandEvent& );
     long          index_by_pointer( const ElementBase* const el ) const;
     void          show_element_popup( const wxPoint& p );
 

@@ -1,6 +1,9 @@
 #ifndef __CPMA_HUDSPECS_H__
 #define __CPMA_HUDSPECS_H__
 
+
+#include "../hudfilebase.h"
+
 #include <wx/string.h>
 #include <list>
 
@@ -51,11 +54,11 @@ class CPMAHudSpecs
     hsitems_type&         items() { return m_items; }
 
     const hsitem_s*       find_item( const wxString& name );
-    const std::list<wxString>& notuniqs() const { return m_notuniqs; }
+    const notuniqs_type& notuniqs() const { return m_notuniqs; }
 
   protected:
     hsitems_type          m_items;
-    std::list<wxString>   m_notuniqs;
+    notuniqs_type         m_notuniqs;
 
   // singleton
   public:

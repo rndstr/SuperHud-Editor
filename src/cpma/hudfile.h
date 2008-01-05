@@ -35,7 +35,7 @@ class CPMAHudFile : public HudFileBase
     bool load( const wxString& filename );
     bool save( const wxString& filename );
 
-    const std::list<wxString>& notuniq_elements() const;
+    const notuniqs_type& notuniq_elements() const;
 
   private:
     bool parse_item( wxString s );
