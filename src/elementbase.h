@@ -88,11 +88,17 @@ class ElementBase
     virtual bool    parse_property( const wxString& cmd, wxString args );
     virtual void    write_properties( wxTextOutputStream& stream ) const;
 
-    // some post/preprocessing functions
+    /// some post/preprocessing functions
     virtual void prerender() {}
 
-
+    /// draw on view
     virtual void render() const {}
+
+    /// copy properties from foreign element
+    virtual void copy_from( const ElementBase * const el );
+
+    /// resets all properties to default
+    virtual void reset();
  
     void            move_to( const wxPoint& p ) { m_rect.SetPosition(p); }
     /// moving by offset
@@ -126,7 +132,7 @@ class ElementBase
     int       m_has;
     
 
-    // global props
+    // props for all items
     bool     m_enabled;
     wxRect   m_rect;
 };

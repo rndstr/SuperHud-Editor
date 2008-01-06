@@ -10,6 +10,7 @@
 #include <wx/dnd.h>
 
 #include <algorithm>
+#include <functional>
 
 #include "xpm/icons/predecorate_insert.xpm"
 #include "xpm/icons/postdecorate_insert.xpm"
@@ -22,6 +23,8 @@ BEGIN_EVENT_TABLE(ElementsCtrlBase, wxPanel)
 
   EVT_MENU(wxID_COPY, ElementsCtrlBase::OnCopy)
   EVT_MENU(wxID_PASTE, ElementsCtrlBase::OnPaste)
+  EVT_MENU(wxID_DELETE, ElementsCtrlBase::OnDelete)
+  EVT_MENU(wxID_CLEAR, ElementsCtrlBase::OnReset)
 
   EVT_LIST_ITEM_SELECTED(ID_LISTCTRL_ELEMENTS, ElementsCtrlBase::OnItemSelected)
   EVT_LIST_ITEM_DESELECTED(ID_LISTCTRL_ELEMENTS, ElementsCtrlBase::OnItemDeselected)
@@ -65,6 +68,7 @@ class ListDrop : public wxTextDropTarget
       // TODO simple but expensive ;) hooray (doesn't flicker on MSW, checkcheck for GTK)
       static_cast<ElementsCtrlBase*>(m_list->GetParent())->list_refresh(wxGetApp().hudfile()->elements());
       // TODO ignore EVT_LIST_ITEM_SELECTED during this loop
+
       for( cit_elements cit = els.begin(); cit != els.end(); ++cit )
         static_cast<ElementsCtrlBase*>(m_list->GetParent())->select_item(*cit);
 
@@ -196,7 +200,7 @@ void ElementsCtrlBase::set_properties()
     m_btn_insertpostdecorate->SetToolTip(wxT("Insert a PostDecorate element"));
     m_btn_copy->SetToolTip(wxT("Copy element properties"));
     m_btn_copy->SetSize(m_btn_copy->GetBestSize());
-    m_btn_paste->SetToolTip(wxT("Paste element properties"));
+    m_btn_paste->SetToolTip(wxT("Paste properties to selected elements"));
     m_btn_paste->SetSize(m_btn_paste->GetBestSize());
     // end wxGlade
     m_btn_paste->Disable();
@@ -312,14 +316,43 @@ void ElementsCtrlBase::list_refresh( const elements_type& elements )
 
 void ElementsCtrlBase::OnCopy( wxCommandEvent& )
 {
-  wxLogDebug(wxT("copy"));
+  wxASSERT_MSG( m_selels.size() > 0, wxT("no elements selected") );
+  m_copyfrom = m_selels.front();
+  m_btn_paste->Enable(true);
 }
 
 void ElementsCtrlBase::OnPaste( wxCommandEvent& )
 {
-  wxLogDebug(wxT("paste"));
+  std::for_each(m_selels.begin(), m_selels.end(), std::bind2nd(std::mem_fun(&ElementBase::copy_from), m_copyfrom));
+
+  wxGetApp().mainframe()->update_displayctrl();
+  wxGetApp().mainframe()->update_propertiesctrl();
+  wxGetApp().mainframe()->update_configpreview();
+  // update item
+  cit_indecies idit = m_selidx.begin();
+  wxASSERT( m_selidx.size() == m_selels.size() );
+  for( cit_elements elit = m_selels.begin(); elit != m_selels.end(); ++elit, ++idit )
+    update_item(*idit, *elit);
 }
 
+void ElementsCtrlBase::OnReset( wxCommandEvent& )
+{
+  std::for_each(m_selels.begin(), m_selels.end(), std::mem_fun(&ElementBase::reset));
+
+  wxGetApp().mainframe()->update_displayctrl();
+  wxGetApp().mainframe()->update_propertiesctrl();
+  wxGetApp().mainframe()->update_configpreview();
+  // update item
+  cit_indecies idit = m_selidx.begin();
+  wxASSERT( m_selidx.size() == m_selels.size() );
+  for( cit_elements elit = m_selels.begin(); elit != m_selels.end(); ++elit, ++idit )
+    update_item(*idit, *elit);
+}
+
+void ElementsCtrlBase::OnDelete( wxCommandEvent& )
+{
+
+}
 
 void ElementsCtrlBase::OnItemDeselected( wxListEvent& ev )
 {
@@ -364,7 +397,7 @@ void ElementsCtrlBase::OnItemRightClick( wxListEvent& ev )
 void ElementsCtrlBase::show_element_popup( const wxPoint& p )
 {
   // we only display if there is exactly one element selected
-  if( m_selels.size() != 1 )
+  if( m_selels.size() == 0 )
     return; 
 
   if( m_elpopup ) wxDELETE(m_elpopup);
@@ -372,18 +405,33 @@ void ElementsCtrlBase::show_element_popup( const wxPoint& p )
 
   const notuniqs_type& notuniqs = wxGetApp().hudfile()->notuniq_elements();
   int i=0;
+  wxMenuItem *item;
   for( cit_notuniqs cit = notuniqs.begin(); cit != notuniqs.end() && i <= (ID_INSERT_NOTUNIQ_END - ID_INSERT_NOTUNIQ); ++cit, ++i )
-    m_elpopup->Append(ID_INSERT_NOTUNIQ+i, wxString::Format(_("Insert %s"), cit->c_str()));
+  {
+    item = m_elpopup->Append(ID_INSERT_NOTUNIQ+i, wxString::Format(_("Insert %s"), cit->c_str()));
+    item->Enable( m_selels.size() == 1);
+  }
+
+  m_elpopup->AppendSeparator();
+
+  item = m_elpopup->Append( wxID_COPY, _("Copy") ); // only for 1 element selected
+  item->Enable( m_selels.size() == 1 );
+  item = m_elpopup->Append( wxID_PASTE, _("Paste") ); // only if there is something to copy from
+  item->Enable( m_copyfrom != 0 );
 
   m_elpopup->AppendSeparator();
 
   // only enable delete if we actually can delete the element (i.e. it's a notuniq one)
-  wxMenuItem *item = m_elpopup->Append( wxID_DELETE, _("Delete") );
-  item->Enable( std::find(notuniqs.begin(), notuniqs.end(), m_selels.front()->name()) != notuniqs.end() );
-
-  item = m_elpopup->Append( wxID_COPY, _("Copy") );
-  item = m_elpopup->Append( wxID_PASTE, _("Paste") );
-  item->Enable( m_copyfrom != 0 );
+  item = m_elpopup->Append( wxID_DELETE, _("Delete") ); // only for removable elements
+  // only display if all selected elements are notuniqs!
+  for( cit_elements cit = m_selels.begin(); cit != m_selels.end(); ++cit )
+    if( ~(*cit)->flags() & E_NOTUNIQ )
+    {
+      item->Enable(false);
+      break;
+    }
+  item = m_elpopup->Append( wxID_CLEAR, _("Reset") ); // always
+  
 
   PopupMenu(m_elpopup, p);
 }
@@ -499,24 +547,10 @@ bool ElementsCtrlBase::is_selected( const ElementBase* const el) const
 void ElementsCtrlBase::OnSelectionChanged()
 { 
   update_selection();
-  // -- first update this control's stuff that we have to do upon selection change
 
-  // disable/enable copy/paste buttons
-  if( m_selidx.size() == 0 )
-  { // none selected
-    m_btn_copy->Disable();
-    m_btn_paste->Disable();
-  }
-  else if( m_selidx.size() == 1 )
-  { // there is a selection
-    m_btn_copy->Enable();
-    m_btn_paste->Disable(); // FIXME enable if data available
-  }
-  else // multiple, only paste if pasting is available
-  {
-    m_btn_copy->Disable();
-    m_btn_paste->Disable();  // FIXME enable if data available
-  }
+  // -- first update this control's stuff that we have to do upon selection change
+  m_btn_copy->Enable( m_selels.size() == 1 );
+  m_btn_paste->Enable( m_copyfrom != 0 && m_selels.size() > 0 );
 
   // -- propagate the element selection
   wxGetApp().mainframe()->OnElementSelectionChanged();

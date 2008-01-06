@@ -74,6 +74,48 @@ class Texture;
 class CPMAElement : public ElementBase
 {
   public:
+    struct Properties
+    {
+      Properties();
+
+      wxString    m_font;
+      // either pointsize or coordsize.
+      int         m_fontsize_type; ///< eElementFontSizeType
+      int         m_fontsize_pt;
+      int         m_fontsize_x;
+      int         m_fontsize_y;
+
+      wxChar      m_textalign; // L|C|R
+      int         m_time; ///< milliseconds.
+
+      int         m_textstyle; // 1 = dropshadow
+      
+
+      Color4      m_color;
+
+      Color4      m_bgcolor;
+      
+      
+      Color4      m_fade; ///< only used if m_time bigger than 0.
+
+      wxString    m_image;
+
+      /// the model to display, only if type == HIT_ICON|HIT_USERICON|HIT_TEXT
+      wxString    m_model; ///< if this is set, m_image contains skinpath!
+
+      wxString    m_skin; ///< will finally go to m_image
+
+      bool        m_usemodel; ///< for prefs dialog whether use model is selected
+
+      float       m_offset[3];
+
+      int         m_angle_pitch;
+      int         m_angle_yaw;
+      int         m_angle_roll;
+      int         m_angle_pan;
+    };
+
+  public:
     //CPMAElement();
     CPMAElement( const hsitem_s& def );
     CPMAElement( const wxString& name, const wxString& desc =wxT(""), int type =E_T_UNKNOWN, 
@@ -83,19 +125,23 @@ class CPMAElement : public ElementBase
 
     virtual void  write_properties( wxTextOutputStream& stream ) const;
     virtual bool  parse_property( const wxString& cmd, wxString args );
-    virtual void prerender();
-    virtual void render() const;
+    virtual void  prerender();
+    virtual void  render() const;
+    virtual void copy_from( const ElementBase * const el );
+    virtual void reset();
+
+    const Properties&  properties() const { return m_props; }
 
     bool        iget_has(int what) const;
 
     int         iget_time() const;
-    void        set_time( int time ) { m_time = time; }
+    void        set_time( int time ) { m_props.m_time = time; }
 
-    void        set_font( const wxString& font ) { m_font = font; }
-    wxString    font() const { return m_font; }
+    void        set_font( const wxString& font ) { m_props.m_font = font; }
+    wxString    font() const { return m_props.m_font; }
     wxString    iget_font() const;
 
-    void        set_textalign( const wxChar& ta ) { m_textalign = ta; }
+    void        set_textalign( const wxChar& ta ) { m_props.m_textalign = ta; }
     wxChar      iget_textalign() const;
 
     void        set_monospace( bool monospace = true ) { add_has( E_HAS_MONOSPACE, monospace ); }
@@ -117,99 +163,53 @@ class CPMAElement : public ElementBase
     float       iget_offset(int which) const;
     void        set_offset(int which, float val);
 
-    void        set_fontsizetype( int fst ) { m_fontsize_type = fst; }
-    int         fontsizetype() const { return m_fontsize_type; }
+    void        set_fontsizetype( int fst ) { m_props.m_fontsize_type = fst; }
+    int         fontsizetype() const { return m_props.m_fontsize_type; }
     int         iget_fontsizetype() const;
-    void        set_fontsizept( int pt ) { m_fontsize_pt = pt; }
-    int         fontsizept() const { return m_fontsize_pt; }
+    void        set_fontsizept( int pt ) { m_props.m_fontsize_pt = pt; }
+    int         fontsizept() const { return m_props.m_fontsize_pt; }
     int         iget_fontsizept() const;
-    void        set_fontsizex( int x ) { m_fontsize_x = x; }
-    int         fontsizex() const { return m_fontsize_x; }
+    void        set_fontsizex( int x ) { m_props.m_fontsize_x = x; }
+    int         fontsizex() const { return m_props.m_fontsize_x; }
     int         iget_fontsizex() const;
-    void        set_fontsizey( int y ) { m_fontsize_y = y; }
-    int         fontsizey() const { return m_fontsize_y; }
+    void        set_fontsizey( int y ) { m_props.m_fontsize_y = y; }
+    int         fontsizey() const { return m_props.m_fontsize_y; }
     int         iget_fontsizey() const;
 
-    void        set_textstyle( int textstyle ) { m_textstyle = textstyle; }
+    void        set_textstyle( int textstyle ) { m_props.m_textstyle = textstyle; }
     int         iget_textstyle() const;
-    int         textstyle() const { return m_textstyle; }
+    int         textstyle() const { return m_props.m_textstyle; }
 
-    void        set_color( const wxColour& c ) { m_color.set(c); }
-    void        set_color( const Color4& c ) { m_color.set(c); }
-    void        set_color_a100( int a100 ) { m_color.set_a100(a100); }
+    void        set_color( const wxColour& c ) { m_props.m_color.set(c); }
+    void        set_color( const Color4& c ) { m_props.m_color.set(c); }
+    void        set_color_a100( int a100 ) { m_props.m_color.set_a100(a100); }
     Color4      iget_color() const;
-    void        set_bgcolor( const wxColour& c ) { m_bgcolor.set(c); }
+    void        set_bgcolor( const wxColour& c ) { m_props.m_bgcolor.set(c); }
     Color4      iget_bgcolor() const;
-    void        set_fade( const wxColour& c ) { m_fade.set(c); }
+    void        set_fade( const wxColour& c ) { m_props.m_fade.set(c); }
     Color4      iget_fade() const;
     void        set_fill( bool fill = true ) { add_has( E_HAS_FILL, fill ); }
     bool        fill() const { return (m_has & E_HAS_FILL) != 0; }
     bool        iget_fill() const;
 
     wxString    iget_image() const;
-    void        set_image( const wxString& image ) { m_image = image; }
-    wxString    image() const { return m_image; }
+    void        set_image( const wxString& image ) { m_props.m_image = image; }
+    wxString    image() const { return m_props.m_image; }
     wxString    iget_model() const;
-    void        set_model( const wxString& model ) { m_model = model; }
-    wxString    model() const { return m_model; }
+    void        set_model( const wxString& model ) { m_props.m_model = model; }
+    wxString    model() const { return m_props.m_model; }
     wxString    iget_skin() const;
-    void        set_skin( const wxString& skin ) { m_skin = skin; }
-    wxString    skin() const { return m_skin; }
+    void        set_skin( const wxString& skin ) { m_props.m_skin = skin; }
+    wxString    skin() const { return m_props.m_skin; }
 
-    bool        usemodel() const { return m_usemodel; }
-    void        set_usemodel( bool um = true ) { m_usemodel = um; }
+    bool        usemodel() const { return m_props.m_usemodel; }
+    void        set_usemodel( bool um = true ) { m_props.m_usemodel = um; }
 
   protected:
-    wxString      m_desc;
     int           m_type ; ///< eElementType    
-    
+    Properties    m_props;
 
-    /// properties
-    /// @{
-    
-
-    wxString    m_font;
-    // either pointsize or coordsize.
-    int         m_fontsize_type; ///< eElementFontSizeType
-    int         m_fontsize_pt;
-    int         m_fontsize_x;
-    int         m_fontsize_y;
-
-    wxChar      m_textalign; // L|C|R
-    int         m_time; ///< milliseconds.
-
-    int         m_textstyle; // 1 = dropshadow
-    
-
-    Color4      m_color;
-
-    Color4      m_bgcolor;
-    
-    
-    Color4      m_fade; ///< only used if m_time bigger than 0.
-
-    wxString    m_image;
-
-    /// the model to display, only if type == HIT_ICON|HIT_USERICON|HIT_TEXT
-    wxString    m_model; ///< if this is set, m_image contains skinpath!
-
-    wxString    m_skin; ///< will finally go to m_image
-
-    bool        m_usemodel; ///< for prefs dialog whether use model is selected
-
-    float       m_offset[3];
-
-    int         m_angle_pitch;
-    int         m_angle_yaw;
-    int         m_angle_roll;
-    int         m_angle_pan;
-
-    // no longer stored, we just use E_HAS_name
-    //bool        m_doublebar;
-    //bool        m_draw3d;
-    //bool        m_monospace;
-    //bool        m_fill;
-    /// @}
+     
 
     wxString    m_text; ///< text for preview
     wxString    m_icon;

@@ -50,6 +50,7 @@ class CPMAPropertyGridBase : public wxPropertyGridManager
         if( pwc->GetParentingType() != 0 ) /*PT_NONE*/
           pwc->SetExpanded( expand );
       }
+      RefreshGrid();
     }
 
     /// reimplement CollapseAll  which was removed in wxpropgrid 1.3
@@ -70,7 +71,7 @@ class CPMAPropertyGridBase : public wxPropertyGridManager
     /// @returns The current element or 0 if none selected
     CPMAElement* current_element() const
     {
-      PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesnotebook();
+      PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesctrl();
       if( !p )
       {
         wxLogDebug(wxT("CPMAPropertyGridBase::curel() - PropertiesNotebook is not yet available"));

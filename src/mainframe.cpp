@@ -544,3 +544,19 @@ void MainFrame::update_configpreview()
 }
 
 
+void MainFrame::update_displayctrl()
+{
+  m_displayctrl->Refresh();
+}
+
+void MainFrame::update_elementsctrl()
+{
+  const elements_type& els = wxGetApp().hudfile()->elements();
+  m_elementsctrl->list_refresh(els);
+}
+
+void MainFrame::update_propertiesctrl()
+{
+  elements_type& els = wxGetApp().elementsctrl()->selected_elements();
+  m_propertiesnotebook->update_from_element(els);
+}

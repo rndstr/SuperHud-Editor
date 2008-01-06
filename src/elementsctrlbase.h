@@ -72,8 +72,10 @@ class ElementsCtrlBase: public wxPanel
 
 
   private:
-    void OnCopy( wxCommandEvent& );
-    void OnPaste( wxCommandEvent& );
+    void          OnCopy( wxCommandEvent& );
+    void          OnPaste( wxCommandEvent& );
+    void          OnDelete( wxCommandEvent& );
+    void          OnReset( wxCommandEvent& );
     void          OnItemSelected( wxListEvent& ev );
     void          OnItemDeselected( wxListEvent& ev );
     void          OnItemActivated( wxListEvent& ev );

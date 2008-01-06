@@ -72,7 +72,7 @@ VisibilityPropertiesCtrl::VisibilityPropertiesCtrl( wxWindow *parent ) :
 
 void VisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
 {
-  PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesnotebook();
+  PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesctrl();
   if( !p )
   {
     wxLogDebug(wxT("VisibilityPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
@@ -136,7 +136,7 @@ void VisibilityPropertiesCtrl::from_element( ElementBase *el )
 
 void VisibilityPropertiesCtrl::update_layout()
 {
-  PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesnotebook();
+  PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesctrl();
   if( !p )
   {
     wxLogDebug(wxT("VisibilityPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
@@ -152,7 +152,7 @@ void VisibilityPropertiesCtrl::update_layout()
 
 void VisibilityPropertiesCtrl::OnElementVisibility( wxCommandEvent& ev )
 {
-  PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesnotebook();
+  PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesctrl();
   if( !p )
   {
     wxLogDebug(wxT("VisibilityPropertiesCtrl::OnElementVisibility() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));

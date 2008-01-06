@@ -33,7 +33,7 @@ class MainFrame : public wxFrame
 
 
     ElementsCtrlBase*   elementsctrl() { return m_elementsctrl; }
-    PropertiesNotebookBase* propertiesnotebook() { return m_propertiesnotebook; }
+    PropertiesNotebookBase* propertiesctrl() { return m_propertiesnotebook; }
     DisplayCtrlBase*    displayctrl() { return m_displayctrl; }
     wxTextCtrl*         configpreview() { return m_configpreview; }
     wxStatusBar*        statusbar() { return m_statusbar; }
@@ -44,11 +44,19 @@ class MainFrame : public wxFrame
     /// Properties changed in PropertiesCtrl
     void                OnPropertiesChanged();
 
+    /// several functions to update certain stuff
+    /// @{
+    void                update_configpreview();
+    void                update_displayctrl();
+    void                update_elementsctrl();
+    void                update_propertiesctrl();
+    /// @}
+
     
 
   protected:
     void set_floating_hint( wxAuiManagerOption hint );
-    void update_configpreview();
+    
     int  confirm_savechanges_dlg();
     /// call this if you are about to clear the current hudfile (e.g. closing the app,
     /// opening new file, etc). it does all the checks and prompts

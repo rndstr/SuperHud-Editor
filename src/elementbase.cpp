@@ -17,10 +17,25 @@ bool ElementBase::parse_property( const wxString& cmd, wxString args )
     m_has |= E_HAS_RECT;
   }
   else
-  {
     return false;
-  }
+
   return true;
+}
+void ElementBase::copy_from( const ElementBase * const el )
+{ 
+  wxLogDebug(wxT("COPY FROM %s TO %s"), el->name().c_str(), name().c_str()); 
+  m_has = el->has();
+  m_enabled = el->is_enabled();
+  // we do not copy position... would just confuse
+  m_rect.width = el->rect().width;
+  m_rect.height = el->rect().height;
+}
+void ElementBase::reset()
+{ 
+  wxLogDebug(wxT("RESET %s"), name().c_str()); 
+  m_has = E_HAS_RECT;
+  m_rect.width = E_RECT_DEFAULT.width;
+  m_rect.height = E_RECT_DEFAULT.height;
 }
 
 
