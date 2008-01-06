@@ -170,7 +170,7 @@ ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos,
     m_btn_copy = new wxBitmapButton( this, wxID_COPY, wxArtProvider::GetBitmap(wxART_COPY, wxART_BUTTON, wxSize(16,16)) );
     m_btn_paste = new wxBitmapButton( this, wxID_PASTE, wxArtProvider::GetBitmap(wxART_PASTE, wxART_BUTTON, wxSize(16,16)) );
     static_line_1 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL);
-    m_btn_reset = new wxBitmapButton(this, wxID_CLEAR, wxArtProvider::GetBitmap(wxART_CLEAR, wxART_BUTTON, wxSize(16,16)));
+    m_btn_reset = new wxBitmapButton(this, wxID_CLEAR, wxArtProvider::GetBitmap(ART_CLEAR, wxART_BUTTON, wxSize(16,16)));
     m_btn_delete = new wxBitmapButton(this, wxID_DELETE, wxArtProvider::GetBitmap(wxART_DELETE, wxART_BUTTON, wxSize(16,16)));
   */
     // begin wxGlade: ElementsCtrlBase::ElementsCtrlBase
@@ -181,7 +181,7 @@ ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos,
     m_btn_copy = new wxBitmapButton( this, wxID_COPY, wxArtProvider::GetBitmap(wxART_COPY, wxART_BUTTON, wxSize(16,16)) );
     m_btn_paste = new wxBitmapButton( this, wxID_PASTE, wxArtProvider::GetBitmap(wxART_PASTE, wxART_BUTTON, wxSize(16,16)) );
     static_line_1 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL);
-    m_btn_reset = new wxBitmapButton(this, wxID_CLEAR, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID(wxART_CLEAR), wxART_BUTTON, wxSize(16,16)));
+    m_btn_reset = new wxBitmapButton(this, wxID_CLEAR, wxArtProvider::GetBitmap(ART_CLEAR, wxART_BUTTON, wxSize(16,16)));
     m_btn_delete = new wxBitmapButton(this, wxID_DELETE, wxArtProvider::GetBitmap(wxART_DELETE, wxART_BUTTON, wxSize(16,16)));
 
     set_properties();

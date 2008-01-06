@@ -23,6 +23,9 @@
 
 #include "xpm/bitmaps/setupwizard.xpm"
 
+#include "xpm/icons/clear.xpm"
+
+
 const wxArtID ART_CPMA = _T("ART_CPMA");
 const wxArtID ART_Q4MAX = _T("ART_Q4MAX");
 const wxArtID ART_ALIGN_LEFT = _T("ART_ALIGN_LEFT");
@@ -38,6 +41,7 @@ const wxArtID ART_ELEMENTS_COLLECTION_TITLE = _T("ART_ELEMENTS_COLLECTION_TITLE"
 const wxArtID ART_ELEMENTS_COLLECTION_ITEM = _T("ART_ELEMENTS_COLLECTION_ITEM");
 
 const wxArtID ART_BMP_SETUPWIZARD = _T("ART_BMP_SETUPWIZARD");
+const wxArtID ART_CLEAR = _T("ART_CLEAR");
 
 
 class ArtProvider : public wxArtProvider
@@ -74,6 +78,9 @@ class ArtProvider : public wxArtProvider
 
       else if( id == ART_BMP_SETUPWIZARD )
         return wxBitmap(setupwizard_xpm);
+
+      else if( id == ART_CLEAR )
+        return wxBitmap(clear_xpm);
       
       return wxNullBitmap;
     }
