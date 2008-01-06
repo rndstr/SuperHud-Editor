@@ -27,21 +27,21 @@ CPMAElement::CPMAElement( const wxString& name, const wxString& desc /*=""*/, in
 }
 
 CPMAElement::Properties::Properties() :
-    m_font(E_FONT_DEFAULT),
-    m_fontsize_type(E_FST_POINT),
-    m_fontsize_pt(E_FONTSIZE_DEFAULT_POINT), m_fontsize_x(E_FONTSIZE_DEFAULT_COORDX), m_fontsize_y(E_FONTSIZE_DEFAULT_COORDY),
-    m_textalign(E_TEXTALIGN_DEFAULT),
-    m_time(E_TIME_DEFAULT),
-    m_textstyle(E_TEXTSTYLE_DEFAULT),
-    m_color(E_COLOR_DEFAULT),
-    m_bgcolor(E_BGCOLOR_DEFAULT),
-    m_fade(E_COLOR_DEFAULT), // ?
-    m_image(),
-    m_model(),
-    m_usemodel(false),
-    m_angle_pitch(0), m_angle_yaw(0), m_angle_roll(0), m_angle_pan(0)
+    font(E_FONT_DEFAULT),
+    fontsize_type(E_FST_POINT),
+    fontsize_pt(E_FONTSIZE_DEFAULT_POINT), fontsize_x(E_FONTSIZE_DEFAULT_COORDX), fontsize_y(E_FONTSIZE_DEFAULT_COORDY),
+    textalign(E_TEXTALIGN_DEFAULT),
+    time(E_TIME_DEFAULT),
+    textstyle(E_TEXTSTYLE_DEFAULT),
+    color(E_COLOR_DEFAULT),
+    bgcolor(E_BGCOLOR_DEFAULT),
+    fade(E_COLOR_DEFAULT), // ?
+    image(),
+    model(),
+    usemodel(false),
+    angle_pitch(0), angle_yaw(0), angle_roll(0), angle_pan(0)
 {
-  m_offset[0] = 0.f; m_offset[1] = 0.f; m_offset[2] = 0.f;
+  offset[0] = 0.f; offset[1] = 0.f; offset[2] = 0.f;
 }
 
 CPMAElement::CPMAElement( const hsitem_s& def ) :
@@ -84,7 +84,7 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
   }
   else if( cmd.CmpNoCase(wxT("font")) == 0 )
   {
-    m_props.m_font = args;
+    m_props.font = args;
     m_has |= E_HAS_FONT;
   }
   else if( cmd.CmpNoCase(wxT("fontsize")) == 0 )
@@ -93,27 +93,27 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
     switch( targ.CountTokens() )
     {
     case 1:
-      if( 1 != sscanf( targ.GetNextToken().mb_str(), "%i", &m_props.m_fontsize_pt ) )
+      if( 1 != sscanf( targ.GetNextToken().mb_str(), "%i", &m_props.fontsize_pt ) )
       {
         wxLogWarning( _("Unknown `fontsize' argument in element `%s', should be one (pointsize) or two (xy-size) numbers. (defaultvalues set)"), m_name.c_str() );
-        m_props.m_fontsize_pt = E_FONTSIZE_DEFAULT_POINT;
+        m_props.fontsize_pt = E_FONTSIZE_DEFAULT_POINT;
       }
-      m_props.m_fontsize_x = E_FONTSIZE_DEFAULT_COORDX;
-      m_props.m_fontsize_y = E_FONTSIZE_DEFAULT_COORDY;
-      m_props.m_fontsize_type = E_FST_POINT;
+      m_props.fontsize_x = E_FONTSIZE_DEFAULT_COORDX;
+      m_props.fontsize_y = E_FONTSIZE_DEFAULT_COORDY;
+      m_props.fontsize_type = E_FST_POINT;
       m_has |= E_HAS_FONTSIZE;
       break;
 
     case 2:
-      if( 1 != sscanf( targ.GetNextToken().mb_str(), "%i", &m_props.m_fontsize_x ) ||
-        1 !=sscanf( targ.GetNextToken().mb_str(), "%i", &m_props.m_fontsize_y ) )
+      if( 1 != sscanf( targ.GetNextToken().mb_str(), "%i", &m_props.fontsize_x ) ||
+        1 !=sscanf( targ.GetNextToken().mb_str(), "%i", &m_props.fontsize_y ) )
       {
         wxLogWarning( _("Unknown `fontsize' argument in element `%s', should be one (pointsize) or two (xy-size) numbers. (defaultvalues set)"), m_name.c_str() );
-        m_props.m_fontsize_x = E_FONTSIZE_DEFAULT_COORDX;
-        m_props.m_fontsize_y = E_FONTSIZE_DEFAULT_COORDY;
+        m_props.fontsize_x = E_FONTSIZE_DEFAULT_COORDX;
+        m_props.fontsize_y = E_FONTSIZE_DEFAULT_COORDY;
       }
-      m_props.m_fontsize_pt = E_FONTSIZE_DEFAULT_POINT;
-      m_props.m_fontsize_type = E_FST_COORD;
+      m_props.fontsize_pt = E_FONTSIZE_DEFAULT_POINT;
+      m_props.fontsize_type = E_FST_COORD;
       m_has |= E_HAS_FONTSIZE;
       break;
 
@@ -124,41 +124,41 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
   }
   else if( cmd.CmpNoCase(wxT("color"))==0 )
   {
-    if( !m_props.m_color.from_string( args ) )
+    if( !m_props.color.from_string( args ) )
       wxLogWarning( _("Unknown `%s' argument: %s"), "color", args.c_str() );
     m_has |= E_HAS_COLOR;
   }
   else if( cmd.CmpNoCase(wxT("bgcolor"))==0 )
   {
-    if( !m_props.m_bgcolor.from_string( args ) )
+    if( !m_props.bgcolor.from_string( args ) )
       wxLogWarning( _("Unknown `%s' argument: %s"), "bgcolor", args.c_str() );
     m_has |= E_HAS_BGCOLOR;
   }
   else if( cmd.CmpNoCase(wxT("fade"))==0 )
   {
-    if( !m_props.m_fade.from_string( args ) )
+    if( !m_props.fade.from_string( args ) )
       wxLogWarning( _("Unknown `%s' argument: %s"), "fade", args.c_str() );
     m_has |= E_HAS_FADE;
   }
   else if( cmd.CmpNoCase(wxT("time"))==0 )
   {
-    sscanf( args.mb_str(), "%i", &m_props.m_time );
+    sscanf( args.mb_str(), "%i", &m_props.time );
     m_has |= E_HAS_TIME;
   }
   else if( cmd.CmpNoCase(wxT("textalign"))==0 )
   {
-    sscanf( args.mb_str(), "%c", &m_props.m_textalign );
-    m_props.m_textalign = toupper( m_props.m_textalign );
-    if( m_props.m_textalign != 'C' && m_props.m_textalign != 'L' && m_props.m_textalign != 'R')
+    sscanf( args.mb_str(), "%c", &m_props.textalign );
+    m_props.textalign = toupper( m_props.textalign );
+    if( m_props.textalign != 'C' && m_props.textalign != 'L' && m_props.textalign != 'R')
     {
-      wxLogWarning( _("Unknown `%c' argument: %s"), "textalign", m_props.m_textalign );
-      m_props.m_textalign = 'L';
+      wxLogWarning( _("Unknown `%c' argument: %s"), "textalign", m_props.textalign );
+      m_props.textalign = 'L';
     }
     m_has |= E_HAS_TEXTALIGN;
   }
   else if( cmd.CmpNoCase(wxT("textstyle"))==0 )
   {
-    sscanf( args.mb_str(), "%i", &m_props.m_textstyle );
+    sscanf( args.mb_str(), "%i", &m_props.textstyle );
     m_has |= E_HAS_TEXTSTYLE;
   }
   else if( cmd.CmpNoCase(wxT("monospace"))==0 )
@@ -175,21 +175,21 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
   }
   else if( cmd.CmpNoCase(wxT("image"))==0 )
   {
-    m_props.m_image = args;
-    she::wxTrim(m_props.m_image, wxT("\"'"));
+    m_props.image = args;
+    she::wxTrim(m_props.image, wxT("\"'"));
     m_has |= E_HAS_IMAGE;
   }
   else if( cmd.CmpNoCase(wxT("model"))==0 )
   {
-    m_props.m_model = args;
+    m_props.model = args;
     if( m_type == E_T_ICON )
     { // model implies draw3d (and there is no model drawn, see data/cpma/docs/README.superhud)
       m_has |= E_HAS_DRAW3D;
-      m_props.m_model = wxT("");
+      m_props.model = wxT("");
     }
     else
     {
-      she::wxTrim(m_props.m_model, wxT("\"'"));
+      she::wxTrim(m_props.model, wxT("\"'"));
       m_has |= E_HAS_MODEL;
     }
     set_usemodel();
@@ -198,9 +198,9 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
   {
     wxStringTokenizer targ( args, HF_PROPERTY_ARG_DELIM );
     if( targ.CountTokens() != 3 ||
-        1 != sscanf(targ.GetNextToken().mb_str(), "%f", &m_props.m_offset[E_OFFSET_X]) ||
-        1 != sscanf(targ.GetNextToken().mb_str(), "%f", &m_props.m_offset[E_OFFSET_Y]) ||
-        1 != sscanf(targ.GetNextToken().mb_str(), "%f", &m_props.m_offset[E_OFFSET_Z])
+        1 != sscanf(targ.GetNextToken().mb_str(), "%f", &m_props.offset[E_OFFSET_X]) ||
+        1 != sscanf(targ.GetNextToken().mb_str(), "%f", &m_props.offset[E_OFFSET_Y]) ||
+        1 != sscanf(targ.GetNextToken().mb_str(), "%f", &m_props.offset[E_OFFSET_Z])
         )
       wxLogWarning( _("Unknown `offset' argument in element `%s', should be three numbers (z x y). (ignored)"), m_name.c_str() );
     m_has |= E_HAS_OFFSET;
@@ -223,10 +223,10 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
     }
     else if( targ.CountTokens() == 1 )
       sscanf(targ.GetNextToken().mb_str(), "%f", &pan); // optional
-    m_props.m_angle_pitch = static_cast<int>(pitch);
-    m_props.m_angle_yaw = static_cast<int>(yaw);
-    m_props.m_angle_roll = static_cast<int>(roll);
-    m_props.m_angle_pan = static_cast<int>(pan);
+    m_props.angle_pitch = static_cast<int>(pitch);
+    m_props.angle_yaw = static_cast<int>(yaw);
+    m_props.angle_roll = static_cast<int>(roll);
+    m_props.angle_pan = static_cast<int>(pan);
 
       
     m_has |= E_HAS_ANGLES;
@@ -245,25 +245,25 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
   ElementBase::write_properties(stream);
 
   list<wxString> lines;
-  if( (m_has & E_HAS_FONT)  && !m_props.m_font.empty() )
-    lines.push_back( wxT("font ") + m_props.m_font );
-  if( (m_has & E_HAS_TIME) && m_props.m_time >= 0 )
-    lines.push_back(wxString::Format( wxT("time %i"), m_props.m_time ));
-  if( (m_has & E_HAS_FONTSIZE) && m_props.m_fontsize_type == E_FST_POINT )
-    lines.push_back(wxString::Format( wxT("fontsize %i"),  m_props.m_fontsize_pt));
-  if( (m_has & E_HAS_FONTSIZE) && m_props.m_fontsize_type == E_FST_COORD )
-    lines.push_back(wxString::Format( wxT("fontsize %i %i"),  m_props.m_fontsize_x, m_props.m_fontsize_y ));
+  if( (m_has & E_HAS_FONT)  && !m_props.font.empty() )
+    lines.push_back( wxT("font ") + m_props.font );
+  if( (m_has & E_HAS_TIME) && m_props.time >= 0 )
+    lines.push_back(wxString::Format( wxT("time %i"), m_props.time ));
+  if( (m_has & E_HAS_FONTSIZE) && m_props.fontsize_type == E_FST_POINT )
+    lines.push_back(wxString::Format( wxT("fontsize %i"),  m_props.fontsize_pt));
+  if( (m_has & E_HAS_FONTSIZE) && m_props.fontsize_type == E_FST_COORD )
+    lines.push_back(wxString::Format( wxT("fontsize %i %i"),  m_props.fontsize_x, m_props.fontsize_y ));
   if( monospace() )
     lines.push_back(wxT("monospace"));
-  if( (m_has & E_HAS_TEXTSTYLE) && m_props.m_textstyle >= 0 )
-    lines.push_back(wxString::Format( wxT("textstyle %i"), m_props.m_textstyle ));
-  if( (m_has & E_HAS_TEXTALIGN) && m_props.m_textalign != ' ' )
-    lines.push_back(wxString::Format( wxT("textalign %c"),  m_props.m_textalign));
+  if( (m_has & E_HAS_TEXTSTYLE) && m_props.textstyle >= 0 )
+    lines.push_back(wxString::Format( wxT("textstyle %i"), m_props.textstyle ));
+  if( (m_has & E_HAS_TEXTALIGN) && m_props.textalign != ' ' )
+    lines.push_back(wxString::Format( wxT("textalign %c"),  m_props.textalign));
   if( m_has & E_HAS_COLOR )
-    //stream << wxString::Format( "\n  color %i %i %i %i", m_props.m_color.r_norm(), m_props.m_color.g_norm(), m_props.m_color.b_norm(), m_props.m_color.a_norm() );
-    lines.push_back(wxT("color ") + m_props.m_color.to_string());
+    //stream << wxString::Format( "\n  color %i %i %i %i", m_props.color.r_norm(), m_props.color.g_norm(), m_props.color.b_norm(), m_props.color.a_norm() );
+    lines.push_back(wxT("color ") + m_props.color.to_string());
   if( m_has & E_HAS_BGCOLOR )
-    lines.push_back(wxT("bgcolor ") + m_props.m_bgcolor.to_string());
+    lines.push_back(wxT("bgcolor ") + m_props.bgcolor.to_string());
   if( fill() )
     lines.push_back(wxT("fill"));
   if( doublebar() )
@@ -271,32 +271,32 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
   if( draw3d() )
     lines.push_back(wxT("draw3d"));
   if( m_has & E_HAS_FADE )
-    lines.push_back(wxT("fade ") + m_props.m_fade.to_string());
+    lines.push_back(wxT("fade ") + m_props.fade.to_string());
   if( usemodel() ) //m_has & E_HAS_MODEL )
   {
     if( m_has & E_HAS_MODEL )
-      lines.push_back(wxT("model \"") + m_props.m_model + wxT("\""));
+      lines.push_back(wxT("model \"") + m_props.model + wxT("\""));
     if( m_has & E_HAS_SKIN )
-      lines.push_back(wxT("image \"") + m_props.m_skin + wxT("\""));
+      lines.push_back(wxT("image \"") + m_props.skin + wxT("\""));
     if( m_has & E_HAS_ANGLES )
     {
       wxString angles;
-      if( m_props.m_angle_pan == 0 )
-        angles = wxString::Format( wxT("angles %d %d %d"), m_props.m_angle_pitch, m_props.m_angle_yaw, m_props.m_angle_roll );
+      if( m_props.angle_pan == 0 )
+        angles = wxString::Format( wxT("angles %d %d %d"), m_props.angle_pitch, m_props.angle_yaw, m_props.angle_roll );
       else
-        angles = wxString::Format( wxT("angles %d %d %d %d"), m_props.m_angle_pitch, m_props.m_angle_yaw, m_props.m_angle_roll, m_props.m_angle_pan );
+        angles = wxString::Format( wxT("angles %d %d %d %d"), m_props.angle_pitch, m_props.angle_yaw, m_props.angle_roll, m_props.angle_pan );
       lines.push_back( angles );
     }
     if( m_has & E_HAS_OFFSET )
     {
-      wxString offset = wxT("offset ") + she::pretty_print_float(m_props.m_offset[E_OFFSET_X]) + wxT(" ") + 
-        she::pretty_print_float(m_props.m_offset[E_OFFSET_Y]) + wxT(" ") +
-        she::pretty_print_float(m_props.m_offset[E_OFFSET_Z]);
+      wxString offset = wxT("offset ") + she::pretty_print_float(m_props.offset[E_OFFSET_X]) + wxT(" ") + 
+        she::pretty_print_float(m_props.offset[E_OFFSET_Y]) + wxT(" ") +
+        she::pretty_print_float(m_props.offset[E_OFFSET_Z]);
       lines.push_back( offset );
     }
   }
   else if( m_has & E_HAS_IMAGE )
-    lines.push_back(wxT("image \"") + m_props.m_image + wxT("\""));
+    lines.push_back(wxT("image \"") + m_props.image + wxT("\""));
 
 
   if( m_flags & E_SHORT )
@@ -313,7 +313,7 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
 
 int CPMAElement::iget_time() const
 {
-  int t = m_props.m_time;
+  int t = m_props.time;
   if( !(m_has & E_HAS_TIME) )
   {
     const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TIME ));
@@ -324,7 +324,7 @@ int CPMAElement::iget_time() const
 }
 wxString CPMAElement::iget_font() const
 {
-  wxString f = m_props.m_font;
+  wxString f = m_props.font;
   if( !(m_has & E_HAS_FONT) )
   {
     const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONT ));
@@ -335,7 +335,7 @@ wxString CPMAElement::iget_font() const
 }
 wxChar CPMAElement::iget_textalign() const
 {
-  wxChar ta = m_props.m_textalign;
+  wxChar ta = m_props.textalign;
   if( !(m_has & E_HAS_TEXTALIGN) )
   {
     const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TEXTALIGN ));
@@ -373,7 +373,7 @@ bool CPMAElement::iget_draw3d() const
 }
 int CPMAElement::iget_fontsizetype() const
 {
-  int fst = m_props.m_fontsize_type;
+  int fst = m_props.fontsize_type;
   if( !(m_has & E_HAS_FONTSIZE) )
   {
     const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
@@ -384,7 +384,7 @@ int CPMAElement::iget_fontsizetype() const
 }
 int CPMAElement::iget_fontsizept() const
 {
-  int s = m_props.m_fontsize_pt;
+  int s = m_props.fontsize_pt;
   if( !(m_has & E_HAS_FONTSIZE) )
   {
     const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
@@ -395,7 +395,7 @@ int CPMAElement::iget_fontsizept() const
 }
 int CPMAElement::iget_fontsizex() const
 {
-  int s = m_props.m_fontsize_x;
+  int s = m_props.fontsize_x;
   if( !(m_has & E_HAS_FONTSIZE) )
   {
     const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
@@ -406,7 +406,7 @@ int CPMAElement::iget_fontsizex() const
 }
 int CPMAElement::iget_fontsizey() const
 {
-  int s = m_props.m_fontsize_y;
+  int s = m_props.fontsize_y;
   if( !(m_has & E_HAS_FONTSIZE) )
   {
     const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
@@ -417,7 +417,7 @@ int CPMAElement::iget_fontsizey() const
 }
 int CPMAElement::iget_textstyle() const
 {
-  int ts = m_props.m_textstyle;
+  int ts = m_props.textstyle;
   if( !(m_has & E_HAS_TEXTSTYLE) )
   {
     const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TEXTSTYLE ));
@@ -428,7 +428,7 @@ int CPMAElement::iget_textstyle() const
 }
 Color4 CPMAElement::iget_color() const
 {
-  Color4 c = m_props.m_color;
+  Color4 c = m_props.color;
   if( !(m_has & E_HAS_COLOR) )
   {
     const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_COLOR ));
@@ -439,7 +439,7 @@ Color4 CPMAElement::iget_color() const
 }
 Color4 CPMAElement::iget_bgcolor() const
 {
-  Color4 c = m_props.m_bgcolor;
+  Color4 c = m_props.bgcolor;
   if( !(m_has & E_HAS_COLOR) )
   {
     const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_BGCOLOR ));
@@ -459,7 +459,7 @@ bool CPMAElement::iget_fill() const
 }
 Color4 CPMAElement::iget_fade() const
 {
-  Color4 c = m_props.m_fade;
+  Color4 c = m_props.fade;
   if( !(m_has & E_HAS_FADE) )
   {
     const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FADE ));
@@ -482,7 +482,7 @@ bool CPMAElement::iget_has(int what) const
 
 wxString CPMAElement::iget_image() const
 {
-  wxString img = m_props.m_image;
+  wxString img = m_props.image;
   if( !(m_has & E_HAS_IMAGE) )
   {
     const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_IMAGE ));
@@ -493,7 +493,7 @@ wxString CPMAElement::iget_image() const
 }
 wxString CPMAElement::iget_model() const
 {
-  wxString m = m_props.m_model;
+  wxString m = m_props.model;
   if( !(m_has & E_HAS_MODEL) )
   {
     const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_MODEL ));
@@ -504,7 +504,7 @@ wxString CPMAElement::iget_model() const
 }
 wxString CPMAElement::iget_skin() const
 {
-  wxString s = m_props.m_skin;
+  wxString s = m_props.skin;
   if( !(m_has & E_HAS_SKIN) )
   {
     const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_SKIN ));
@@ -515,7 +515,7 @@ wxString CPMAElement::iget_skin() const
 }
 float CPMAElement::iget_offset(int which) const
 {
-  float d = m_props.m_offset[which];
+  float d = m_props.offset[which];
   if( !(m_has & E_HAS_OFFSET) )
   {
     const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_OFFSET ));
@@ -528,7 +528,7 @@ void CPMAElement::set_offset( int which, float val )
 {
   if( which < E_OFFSET_X || which > E_OFFSET_Z )
     return;
-  m_props.m_offset[which] = val;
+  m_props.offset[which] = val;
 }
 int CPMAElement::iget_angle(int which) const
 {
@@ -545,20 +545,20 @@ void CPMAElement::set_angle( int which, int val )
 {
   switch(which)
   {
-  case E_ANGLE_YAW: m_props.m_angle_yaw = val; break;
-  case E_ANGLE_PITCH: m_props.m_angle_pitch = val; break;
-  case E_ANGLE_ROLL: m_props.m_angle_roll = val; break;
-  case E_ANGLE_PAN: m_props.m_angle_pan = val; break;
+  case E_ANGLE_YAW: m_props.angle_yaw = val; break;
+  case E_ANGLE_PITCH: m_props.angle_pitch = val; break;
+  case E_ANGLE_ROLL: m_props.angle_roll = val; break;
+  case E_ANGLE_PAN: m_props.angle_pan = val; break;
   }
 }
 int CPMAElement::angle(int which) const
 {
   switch(which)
   {
-  case E_ANGLE_YAW: return m_props.m_angle_yaw;
-  case E_ANGLE_PITCH: return m_props.m_angle_pitch;
-  case E_ANGLE_ROLL: return m_props.m_angle_roll;
-  case E_ANGLE_PAN: return m_props.m_angle_pan;
+  case E_ANGLE_YAW: return m_props.angle_yaw;
+  case E_ANGLE_PITCH: return m_props.angle_pitch;
+  case E_ANGLE_ROLL: return m_props.angle_roll;
+  case E_ANGLE_PAN: return m_props.angle_pan;
   default:
     break;
   }
@@ -593,7 +593,7 @@ void CPMAElement::render() const
   case E_T_USERICON:
     { // COLOR_T && FILL = border around ...
       bool fill = iget_fill();
-      bool hasimage = (!iget_image().empty() && !m_props.m_usemodel);
+      bool hasimage = (!iget_image().empty() && !m_props.usemodel);
       Color4 bgcolor = iget_bgcolor();
       Color4 color = iget_color();
       if( color.is_special() )
@@ -733,12 +733,12 @@ void CPMAElement::prerender()
       m_ptex = new Texture(m_icon, PM_SEARCH_HUDFILE);
     break;
   case E_T_USERICON:
-    if( !m_props.m_image.empty() )
+    if( !m_props.image.empty() )
     {
       if( !m_ptex )
-        m_ptex = new Texture( m_props.m_image, PM_SEARCH_HUDFILE );
-      else if( m_props.m_image.Cmp(m_ptex->name()) != 0 )
-        m_ptex->load( m_props.m_image, PM_SEARCH_HUDFILE );
+        m_ptex = new Texture( m_props.image, PM_SEARCH_HUDFILE );
+      else if( m_props.image.Cmp(m_ptex->name()) != 0 )
+        m_ptex->load( m_props.image, PM_SEARCH_HUDFILE );
     }
     break;
   }
