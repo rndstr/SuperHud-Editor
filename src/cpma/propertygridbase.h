@@ -40,6 +40,25 @@ class CPMAPropertyGridBase : public wxPropertyGridManager
       m_bgcol = bgcol;
     }
 
+    /// reimplement ExpandAll  which was removed in wxpropgrid 1.3
+    void ExpandAll( bool expand = true )
+    {
+      wxPGVIterator it;
+      for( it = GetVIterator(wxPG_ITERATE_ALL); !it.AtEnd(); it.Next() )
+      {
+        wxPGPropertyWithChildren* pwc = (wxPGPropertyWithChildren*) it.GetProperty();
+        if( pwc->GetParentingType() != 0 ) /*PT_NONE*/
+          pwc->SetExpanded( expand );
+      }
+    }
+
+    /// reimplement CollapseAll  which was removed in wxpropgrid 1.3
+    void CollapseAll( bool collapse = true )
+    {
+      ExpandAll(!collapse);
+    }
+
+
   protected:
     wxColour m_icol; ///< text color for inherited values
     wxColour m_ibgcol; ///< background color for inherited values
