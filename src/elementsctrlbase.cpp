@@ -46,7 +46,8 @@ class ListDrop : public wxTextDropTarget
     ListDrop( ElementsListCtrl *list) : m_list(list) {}
     virtual bool OnDropText(wxCoord x, wxCoord y, const wxString& data)
     {
-      const elements_type& els = static_cast<ElementsCtrlBase*>(m_list->GetParent())->selected_elements();
+      // copy selection as it changes after the list_refresh
+      const elements_type els = static_cast<ElementsCtrlBase*>(m_list->GetParent())->selected_elements();
       if( 0 == els.size() )
         return false; // no elements selected
       int flags = wxLIST_HITTEST_BELOW;
@@ -63,8 +64,10 @@ class ListDrop : public wxTextDropTarget
 
       // TODO simple but expensive ;) hooray (doesn't flicker on MSW, checkcheck for GTK)
       static_cast<ElementsCtrlBase*>(m_list->GetParent())->list_refresh(wxGetApp().hudfile()->elements());
-      // TODO reselect items :o
-      // TODO scroll to item D:
+      // TODO ignore EVT_LIST_ITEM_SELECTED during this loop
+      for( cit_elements cit = els.begin(); cit != els.end(); ++cit )
+        static_cast<ElementsCtrlBase*>(m_list->GetParent())->select_item(*cit);
+
 
       return true;
     }
@@ -98,6 +101,7 @@ class ListDrop : public wxTextDropTarget
       wxSize s = m_list->GetSize();
       int scroll = rh.GetHeight();
       int snap = rh.GetHeight()*2;
+      // [wxGTK] ScrollList not inplemented?
       if( y < snap )
         m_list->ScrollList(0, -scroll);
       else if( y > s.y - snap )
@@ -323,11 +327,13 @@ void ElementsCtrlBase::OnPaste( wxCommandEvent& )
 
 void ElementsCtrlBase::OnItemDeselected( wxListEvent& ev )
 {
+  wxLogDebug(wxT("ElementsCtrlBase::OnItemDeselected"));
   OnSelectionChanged();
 }
 
 void ElementsCtrlBase::OnItemSelected( wxListEvent& ev )
 {
+  wxLogDebug(wxT("ElementsCtrlBase::OnItemSelected"));
   OnSelectionChanged();
   m_list->EnsureVisible( ev.GetIndex() );
 }
@@ -367,6 +373,7 @@ void ElementsCtrlBase::show_element_popup( const wxPoint& p )
 
   if( m_elpopup ) wxDELETE(m_elpopup);
   m_elpopup = new wxMenu();
+
   const notuniqs_type& notuniqs = wxGetApp().hudfile()->notuniq_elements();
   int i=0;
   for( cit_notuniqs cit = notuniqs.begin(); cit != notuniqs.end() && i <= (ID_INSERT_NOTUNIQ - ID_INSERT_NOTUNIQ_END); ++cit, ++i )
@@ -380,8 +387,6 @@ void ElementsCtrlBase::show_element_popup( const wxPoint& p )
 
   item = m_elpopup->Append( wxID_COPY, _("Copy") );
   item = m_elpopup->Append( wxID_PASTE, _("Paste") );
-  item->Enable( m_copyfrom != 0 );
-  item = m_elpopup->Append( ID_PASTE_NORECT, _("Paste w/o position") );
   item->Enable( m_copyfrom != 0 );
 
   PopupMenu(m_elpopup, p);
