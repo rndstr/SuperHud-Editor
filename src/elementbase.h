@@ -121,16 +121,13 @@ class ElementBase
     // get&set properties (with regard to `i'nheritance)
     wxRect          iget_rect() const;
     bool            is_rendered() const;
-
-
-    
+    bool            is_removable() const { return (flags() & E_NOTUNIQ) != 0; }
 
   protected:
     wxString  m_name; ///< is not unique
     wxString  m_desc;
     int       m_flags;
     int       m_has;
-    
 
     // props for all items
     bool     m_enabled;

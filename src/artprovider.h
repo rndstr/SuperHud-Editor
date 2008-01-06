@@ -16,9 +16,6 @@
 #include "xpm/icons/align_middle.xpm"
 #include "xpm/icons/align_bottom.xpm"
 
-#include "xpm/icons/element_copy.xpm"
-#include "xpm/icons/element_paste.xpm"
-
 #include "xpm/icons/element_enabled.xpm"
 #include "xpm/icons/element_disabled.xpm"
 #include "xpm/icons/elements_collection_title.xpm"
@@ -34,8 +31,6 @@ const wxArtID ART_ALIGN_RIGHT = _T("ART_ALIGN_RIGHT");
 const wxArtID ART_ALIGN_TOP = _T("ART_ALIGN_TOP");
 const wxArtID ART_ALIGN_MIDDLE = _T("ART_ALIGN_MIDDLE");
 const wxArtID ART_ALIGN_BOTTOM = _T("ART_ALIGN_BOTTOM");
-const wxArtID ART_ELEMENT_COPY = _T("ART_ELEMENT_COPY");
-const wxArtID ART_ELEMENT_PASTE = _T("ART_ELEMENT_PASTE");
 
 const wxArtID ART_ELEMENT_ENABLED = _T("ART_ELEMENT_ENABLED");
 const wxArtID ART_ELEMENT_DISABLED = _T("ART_ELEMENT_DISABLED");
@@ -68,12 +63,6 @@ class ArtProvider : public wxArtProvider
       else if( id == ART_ALIGN_BOTTOM)
         return wxBitmap(align_bottom_xpm);
       
-
-      else if( id == ART_ELEMENT_COPY )
-        return wxBitmap(element_copy_xpm);
-      else if( id == ART_ELEMENT_PASTE )
-        return wxBitmap(element_paste_xpm);
-
       else if( id == ART_ELEMENT_ENABLED )
         return wxBitmap(element_enabled_xpm);
       else if( id == ART_ELEMENT_DISABLED )

@@ -8,10 +8,10 @@
 
 // begin wxGlade: ::dependencies
 #include <wx/listctrl.h>
+#include <wx/statline.h>
 // end wxGlade
 
 // begin wxGlade: ::extracode
-
 // end wxGlade
 
 #include "elementslistctrl.h"
@@ -104,8 +104,11 @@ protected:
     ElementsListCtrl* m_list;
     wxBitmapButton* m_btn_copy;
     wxBitmapButton* m_btn_paste;
+    wxStaticLine* static_line_1;
+    wxBitmapButton* m_btn_delete;
+    wxBitmapButton* m_btn_reset;
     // end wxGlade
-    /* FIXMEHERE
+    /* FIXWXGLADE
     ElementsListCtrl* m_list;
     */
 
