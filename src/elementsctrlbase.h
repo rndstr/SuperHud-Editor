@@ -30,8 +30,8 @@ class ElementsCtrlBase: public wxPanel
     // end wxGlade
 
     ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
+    virtual ~ElementsCtrlBase();
 
-    virtual bool Destroy();
 
     virtual void clear();
     virtual void append( ElementBase *el );

@@ -182,11 +182,10 @@ ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos,
     m_list->SetDropTarget(ld);
 }
 
-bool ElementsCtrlBase::Destroy()
+ElementsCtrlBase::~ElementsCtrlBase()
 {
   if( m_elpopup )
     wxDELETE(m_elpopup);
-  return wxPanel::Destroy();
 }
 
 void ElementsCtrlBase::set_properties()
@@ -243,10 +242,7 @@ void ElementsCtrlBase::list_refresh( const elements_type& elements )
 {
   clear();
   for( cit_elements cit = elements.begin(); cit != elements.end(); ++cit )
-  {
     append(*cit);
-  }
-
 
   int collnamecount = Prefs::get().var(wxT("elements_collnamecount")).intval();
   if( Prefs::get().var(wxT("elements_collections")) )
@@ -279,7 +275,7 @@ void ElementsCtrlBase::list_refresh( const elements_type& elements )
         
         size_t realinsert = i;
         /*
-        // also include the previous E_PARENT items
+        // also include the previous E_PARENT items.
 #if COLLECTION_INCLUDES_PARENT
         for( size_t k=i-2; k>0; --k )
         {
@@ -376,7 +372,7 @@ void ElementsCtrlBase::show_element_popup( const wxPoint& p )
 
   const notuniqs_type& notuniqs = wxGetApp().hudfile()->notuniq_elements();
   int i=0;
-  for( cit_notuniqs cit = notuniqs.begin(); cit != notuniqs.end() && i <= (ID_INSERT_NOTUNIQ - ID_INSERT_NOTUNIQ_END); ++cit, ++i )
+  for( cit_notuniqs cit = notuniqs.begin(); cit != notuniqs.end() && i <= (ID_INSERT_NOTUNIQ_END - ID_INSERT_NOTUNIQ); ++cit, ++i )
     m_elpopup->Append(ID_INSERT_NOTUNIQ+i, wxString::Format(_("Insert %s"), cit->c_str()));
 
   m_elpopup->AppendSeparator();
