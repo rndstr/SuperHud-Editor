@@ -54,8 +54,18 @@ bool SHEApp::OnInit()
   wxInitAllImageHandlers();
 
   // set up config file
-
   m_firststart = Prefs::get().init();
+
+#ifndef NDEBUG
+  // also log to file in debug mode
+  wxString logfilename = wxStandardPaths::Get().GetUserDataDir() + wxT("/") + APP_NAME_UNIX + wxT(".log");
+  wxLogDebug(wxT("Logging to file: ") + logfilename );
+  FILE *fp = fopen(logfilename.mb_str(), "w");
+  if( fp )
+    wxLogChain *ruelps = new wxLogChain(new wxLogStderr(fp));
+  else
+    wxLogWarning(wxT("Cannot open logfile:\n\n") + logfilename);
+#endif
 
   /*
   wxLocale::AddCatalogLookupPathPrefix(wxT("./locale/"));
