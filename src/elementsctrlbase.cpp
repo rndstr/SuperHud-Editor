@@ -436,9 +436,9 @@ void ElementsCtrlBase::OnItemActivated( wxListEvent& ev )
 
 void ElementsCtrlBase::OnKeyDown( wxListEvent& ev )
 {
-  int kc = ev.GetKeyCode();
-  wxLogDebug(wxT("%d"), kc);
-  if( kc >= 65 && kc <= 90 )
+  int kc = tolower(ev.GetKeyCode());
+  wxLogDebug(wxT("%d %c"), kc, kc);
+  if( kc >= 'a' && kc <= 'z' )
   {
     const long startidx = (m_selidx.size() == 0 ? 0 : m_selidx.front());
     long idx = startidx;
@@ -454,7 +454,7 @@ void ElementsCtrlBase::OnKeyDown( wxListEvent& ev )
       info.m_itemId = idx;
       if( m_list->GetItem(info) )
       {
-        if( info.m_text.Lower().StartsWith(wxString::Format(wxT("%c"), tolower(kc))) )
+        if( info.m_text.Lower().StartsWith(wxString::Format(wxT("%c"), kc)) )
         {
           deselect_all();
           select_item(idx);
