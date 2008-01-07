@@ -6,6 +6,7 @@
 #include "misc.h"
 #include "mainframe.h"
 #include "prefs.h"
+#include "optionalmessagedialog.h"
 
 #include <wx/dnd.h>
 
@@ -20,6 +21,8 @@
 BEGIN_EVENT_TABLE(ElementsCtrlBase, wxPanel)
   EVT_BUTTON(wxID_COPY, ElementsCtrlBase::OnCopy)
   EVT_BUTTON(wxID_PASTE, ElementsCtrlBase::OnPaste)
+  EVT_BUTTON(wxID_CLEAR, ElementsCtrlBase::OnReset)
+  EVT_BUTTON(wxID_DELETE, ElementsCtrlBase::OnDelete)
 
   EVT_MENU(wxID_COPY, ElementsCtrlBase::OnCopy)
   EVT_MENU(wxID_PASTE, ElementsCtrlBase::OnPaste)
@@ -351,6 +354,13 @@ void ElementsCtrlBase::OnPaste( wxCommandEvent& )
 
 void ElementsCtrlBase::OnReset( wxCommandEvent& )
 {
+  OptionalMessageDialog dlg(wxT("dlg_reset"), wxID_YES); 
+  dlg.add_button_yesno();
+  dlg.Create(0, _("This will fill default values on all properties of selected elements, proceed?"), _("Reset properties?"));
+
+  if( dlg.ShowModal() != wxID_YES )
+    return;
+
   std::for_each(m_selels.begin(), m_selels.end(), std::mem_fun(&ElementBase::reset));
 
   wxGetApp().mainframe()->update_displayctrl();
@@ -403,12 +413,10 @@ void ElementsCtrlBase::OnItemRightClick( wxListEvent& ev )
 {
   if( ev.GetIndex() == wxNOT_FOUND )
     return;
-  wxRect r;
-  m_list->GetItemRect(ev.GetIndex(), r, wxLIST_RECT_BOUNDS);
-  show_element_popup(r.GetPosition());
+  show_element_popup();
 }
 
-void ElementsCtrlBase::show_element_popup( const wxPoint& p )
+void ElementsCtrlBase::show_element_popup( const wxPoint& p /*=wxDefaultPosition*/ )
 {
   // we only display if there is exactly one element selected
   if( m_selels.size() == 0 )
@@ -437,6 +445,7 @@ void ElementsCtrlBase::show_element_popup( const wxPoint& p )
 
   // only enable delete if we actually can delete the element (i.e. it's a notuniq one)
   item = m_elpopup->Append( wxID_DELETE, _("Remove") ); // only for removable elements
+  item->Enable( m_selels.size() > 0 );
   // only display if all selected elements are notuniqs!
   for( cit_elements cit = m_selels.begin(); cit != m_selels.end(); ++cit )
     if( !(*cit)->is_removable() )
@@ -447,7 +456,7 @@ void ElementsCtrlBase::show_element_popup( const wxPoint& p )
   item = m_elpopup->Append( wxID_CLEAR, _("Reset") ); // always if something is selected
   
 
-  PopupMenu(m_elpopup, p);
+  PopupMenu(m_elpopup, wxDefaultPosition);
 }
 
 void ElementsCtrlBase::OnInsertNotuniq( wxCommandEvent& ev )
@@ -567,7 +576,7 @@ void ElementsCtrlBase::OnSelectionChanged()
   m_btn_paste->Enable( m_copyfrom != 0 && m_selels.size() > 0 );
   m_btn_reset->Enable( m_selels.size() > 0 );
 
-  m_btn_delete->Enable();
+  m_btn_delete->Enable( m_selels.size() > 0 );
   for( cit_elements cit = m_selels.begin(); cit != m_selels.end(); ++cit )
     if( !(*cit)->is_removable() )
     {

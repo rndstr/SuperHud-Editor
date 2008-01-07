@@ -38,6 +38,7 @@ enum
   /// @}
 
   ID_MENU_HELP_UPDATE,
+  ID_MENU_HELP_TIP,
 
 
   ID_NOTEBOOK_PROPERTIES,

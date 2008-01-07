@@ -186,6 +186,9 @@ void Prefs::load()
   addvar(wxT("q3_hudspecs"), wxT("cpma/hudspecs.dat"), PVT_STRING);
   addvar(wxT("q3_background"), wxT("cpma/texture/background.jpg"), PVT_STRING);
 
+  // optional message dialogs
+  addvar(wxT("dlg_reset"), wxT("-1"), PVT_INT);
+
   // q4max
   addvar(wxT("q4_gamedir"), wxT(""), PVT_STRING);
   // -- misc
@@ -194,6 +197,8 @@ void Prefs::load()
   addvar(wxT("startup_gameselection"), wxT("true"), PVT_BOOL);
   addvar(wxT("startup_load"), wxT("true"), PVT_BOOL);
   addvar(wxT("startup_loadfile"), wxT(""), PVT_STRING);
+  addvar(wxT("startup_tips"), wxT("true"), PVT_BOOL);
+  addvar(wxT("startup_tipidx"), wxT("0"), PVT_INT);
 
   // -- saving
   addvar(wxT("save_writedisabled"), wxT("true"), PVT_BOOL);

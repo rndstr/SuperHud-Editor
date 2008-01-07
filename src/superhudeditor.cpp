@@ -149,6 +149,12 @@ int SHEApp::OnRun()
 
   PakManager::get().debug();
   m_ready = true;
+
+  if( Prefs::get().var(wxT("startup_tips")).boolval() )
+  {
+    wxCommandEvent plaarfz;
+    m_mainframe->OnMenuHelpTip(plaarfz);
+  }
   /*
   if( m_firststart )
   {

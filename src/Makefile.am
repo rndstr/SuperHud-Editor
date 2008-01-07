@@ -16,6 +16,7 @@ superhudeditor_SOURCES = \
                          mainframe.cpp mainframe.h \
                          misc.cpp misc.h \
                          model.cpp model.h \
+                         optionalmessagedialog.cpp optionalmessagedialog.h \
                          pakfiledialog.cpp src/pakfiledialog.h \
                          pakfileproperty.cpp pakfileroperty.h \
                          pakmanager.cpp pakmanager.h \

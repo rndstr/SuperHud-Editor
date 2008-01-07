@@ -7,6 +7,7 @@
 #include <wx/menu.h>
 #include <wx/stdpaths.h>
 #include <wx/file.h>
+#include <wx/tipdlg.h>
 
 #include "factorybase.h"
 #include "model.h"
@@ -36,6 +37,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_MENU(ID_MENU_VIEW_TOOLBAR_FILE, MainFrame::OnMenuViewToolbarFile)
   EVT_MENU(ID_MENU_VIEW_GRID, MainFrame::OnMenuViewGrid)
   EVT_MENU(ID_MENU_HELP_UPDATE, MainFrame::OnMenuHelpUpdate)
+  EVT_MENU(ID_MENU_HELP_TIP, MainFrame::OnMenuHelpTip)
   
   EVT_UPDATE_UI_RANGE(ID_MENU_VIEW_CONFIGPREVIEW, ID_MENU_VIEW_TOOLBAR_FILE, MainFrame::OnUpdateViewPanes)
 END_EVENT_TABLE()
@@ -97,6 +99,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   // so far only win32 :x
   help_menu->Append( ID_MENU_HELP_UPDATE, _("Check for &updates...") );
 #endif
+  help_menu->Append( ID_MENU_HELP_TIP, _("&Tip of the Day") );
   help_menu->Append( wxID_ABOUT, _("&About\tCtrl+A") );
   
   menu_bar->Append( help_menu, _("Help") );
@@ -180,6 +183,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
 #endif
   m_mgr.Update();
 
+
 }
 
 
@@ -229,15 +233,13 @@ void MainFrame::OnMenuExit( wxCommandEvent& )
 #include "model.h"
 void MainFrame::OnMenuAbout( wxCommandEvent& )
 {
-  PakFileDialog dlg(this, wxID_ANY, wxT(""));
-  dlg.ShowModal();
-
   wxAboutDialogInfo info;
   info.SetName(APP_NAME);
   info.SetVersion(APP_VERSION);
-  info.SetDescription(APP_URL);
-  info.SetCopyright(wxT("(C) 2007 Roland Schilter <rolansch@ethz.ch>"));
-   //wxAboutBox(info);
+  info.SetDescription(wxT("Head-Up Display Editor for CPMA(q3) and Q4MAX(q4) under GPL Licence"));
+  info.SetCopyright(wxT("(C) 2006-2008 Roland Schilter <rolansch@ethz.ch>"));
+  info.SetWebSite(APP_URL, APP_NAME + wxT(" website"));
+  wxAboutBox(info);
 
   /*
   m_model = new Model();
@@ -406,6 +408,17 @@ void MainFrame::OnMenuViewGrid( wxCommandEvent& ev )
 {
   Prefs::get().setb(wxT("view_grid"), ev.IsChecked());
   m_displayctrl->Refresh();
+}
+
+void MainFrame::OnMenuHelpTip( wxCommandEvent& )
+{
+  wxTipProvider *provider = wxCreateFileTipProvider(
+      wxStandardPaths::Get().GetDataDir() + PATH_SEP + wxT("data") + PATH_SEP + wxT("tips.txt"), 
+      Prefs::get().var(wxT("startup_tipidx")).intval()
+      );
+  Prefs::get().setb(wxT("startup_tips"), wxShowTip(this, provider));
+  Prefs::get().seti(wxT("startup_tipidx"), provider->GetCurrentTip());
+  delete provider;
 }
 
 void MainFrame::OnUpdateViewPanes( wxUpdateUIEvent& ev )

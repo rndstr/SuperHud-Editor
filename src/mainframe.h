@@ -53,6 +53,7 @@ class MainFrame : public wxFrame
     /// @}
 
     
+    void OnMenuHelpTip( wxCommandEvent& );
 
   protected:
     void set_floating_hint( wxAuiManagerOption hint );

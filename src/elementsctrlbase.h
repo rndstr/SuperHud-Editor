@@ -83,7 +83,7 @@ class ElementsCtrlBase: public wxPanel
     void          OnItemRightClick( wxListEvent& );
     void          OnInsertNotuniq( wxCommandEvent& );
     long          index_by_pointer( const ElementBase* const el ) const;
-    void          show_element_popup( const wxPoint& p );
+    void          show_element_popup( const wxPoint& p = wxDefaultPosition );
 
 
     /// @arg idx The item index in the list we want to update according to pel
