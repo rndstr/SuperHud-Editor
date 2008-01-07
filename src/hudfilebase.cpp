@@ -141,11 +141,11 @@ void HudFileBase::insert( size_t pos, ElementBase *el )
 void HudFileBase::insert( const ElementBase * const after, ElementBase *el )
 {
   set_modified();
-  for( cit_elements cit = m_els.begin(); cit != m_els.end(); ++cit )
+  for( it_elements it = m_els.begin(); it != m_els.end(); ++it )
   {
-    if( *cit == after )
+    if( *it == after )
     {
-      m_els.insert( ++cit, el );
+      m_els.insert( ++it, el );
       return;
     }
   }
@@ -156,12 +156,12 @@ void HudFileBase::insert( const ElementBase * const after, ElementBase *el )
 
 bool HudFileBase::remove( ElementBase *el )
 {
-  for( cit_elements cit = m_els.begin(); cit != m_els.end(); ++cit )
+  for( it_elements it = m_els.begin(); it != m_els.end(); ++it )
   {
-    if( *cit == el )
+    if( *it == el )
     {
       set_modified();
-      m_els.erase(cit);
+      m_els.erase(it);
       return true;
     }
   }

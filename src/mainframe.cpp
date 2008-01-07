@@ -37,6 +37,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_MENU(ID_MENU_TOOLS_SNAPGRID, MainFrame::OnMenuToolsSnapGrid)
   EVT_MENU(ID_MENU_TOOLS_PREFERENCES, MainFrame::OnMenuToolsPreferences)
   EVT_MENU(ID_MENU_VIEW_DEFAULTPERSPECTIVE, MainFrame::OnMenuViewDefaultPerspective)
+  EVT_MENU_RANGE(ID_MENU_VIEW_FOCUSELEMENTS, ID_MENU_VIEW_FOCUSPROPERTIES, MainFrame::OnMenuViewFocus)
   EVT_CLOSE(MainFrame::OnClose)
   EVT_MENU(ID_MENU_VIEW_CONFIGPREVIEW, MainFrame::OnMenuViewConfigPreview)
   EVT_MENU(ID_MENU_VIEW_TOOLBAR_FILE, MainFrame::OnMenuViewToolbarFile)
@@ -105,7 +106,6 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
 
   m_view_menu = new wxMenu;
   wxMenu *view_layout_submenu = new wxMenu;
-
   view_layout_submenu->Append( ID_MENU_VIEW_DEFAULTPERSPECTIVE, _("&Default Layout") );
   view_layout_submenu->AppendSeparator();
   view_layout_submenu->AppendCheckItem( ID_MENU_VIEW_CONFIGPREVIEW, _("Config &Preview\tCtrl+O"), _("Display the config preview panel") );
@@ -113,7 +113,10 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_view_menu->AppendSubMenu(view_layout_submenu, _("&Layout"), _("Select which panes you would like to be visible or not"));
   m_view_menu->AppendSeparator();
   m_view_menu->AppendCheckItem( ID_MENU_VIEW_GRID, _("Display &Grid\tCtrl+G"), _("Draws a grid over the hud") );
-  
+  m_view_menu->AppendSeparator();
+  m_view_menu->Append( ID_MENU_VIEW_FOCUSELEMENTS, _("Focus Elementlist\tF6") );
+  m_view_menu->Append( ID_MENU_VIEW_FOCUSHUD, _("Focus Hud\tF7") );
+  m_view_menu->Append( ID_MENU_VIEW_FOCUSPROPERTIES, _("Focus Properties\tF8") );
   menu_bar->Append( m_view_menu, _("&View") );
 
   wxMenu *help_menu = new wxMenu;
@@ -451,6 +454,24 @@ void MainFrame::OnMenuViewGrid( wxCommandEvent& ev )
   Prefs::get().setb(wxT("view_grid"), ev.IsChecked());
   m_displayctrl->Refresh();
 }
+
+void MainFrame::OnMenuViewFocus( wxCommandEvent& ev )
+{
+  wxLogDebug(wxT("focus"));
+  switch( ev.GetId() )
+  {
+    case ID_MENU_VIEW_FOCUSELEMENTS:
+      m_elementsctrl->SetFocus();
+      break;
+    case ID_MENU_VIEW_FOCUSHUD:
+      m_displayctrl->SetFocus();
+      break;
+    case ID_MENU_VIEW_FOCUSPROPERTIES:
+      m_propertiesnotebook->SetFocus();
+      break;
+  }
+}
+
 
 void MainFrame::OnMenuHelpTip( wxCommandEvent& )
 {

@@ -4,6 +4,7 @@ superhudeditor_SOURCES = \
                          artprovider.h \
                          color4.cpp color4.h \
                          common.h \
+                         command.cpp command.h \
                          displayctrlbase.cpp displayctrlbase.h \
                          elementbase.cpp elementbase.h \
                          elementsctrlbase.cpp elementsctrlbase.h \

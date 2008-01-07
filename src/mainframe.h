@@ -100,6 +100,7 @@ class MainFrame : public wxFrame
     void OnMenuViewDefaultPerspective( wxCommandEvent& );
     void OnMenuViewConfigPreview( wxCommandEvent& );
     void OnMenuViewToolbarFile( wxCommandEvent& );
+    void OnMenuViewFocus( wxCommandEvent& );
     void OnMenuToolsSwitchGame( wxCommandEvent& );
     void OnMenuViewGrid( wxCommandEvent& );
     void OnUpdateViewPanes( wxUpdateUIEvent& );
