@@ -133,6 +133,41 @@ void HudFileBase::append( ElementBase *el )
   m_els.push_back(el);
 }
 
+void HudFileBase::insert( size_t pos, ElementBase *el )
+{
+  set_modified();
+  m_els.insert( m_els.begin() + pos, el );
+}
+void HudFileBase::insert( const ElementBase * const after, ElementBase *el )
+{
+  set_modified();
+  for( cit_elements cit = m_els.begin(); cit != m_els.end(); ++cit )
+  {
+    if( *cit == after )
+    {
+      m_els.insert( ++cit, el );
+      return;
+    }
+  }
+  // just append if we can't find it
+  wxLogDebug(wxT("HudFileBase::insert - Couldn't find element to insert after"));
+  append(el);
+}
+
+bool HudFileBase::remove( ElementBase *el )
+{
+  for( cit_elements cit = m_els.begin(); cit != m_els.end(); ++cit )
+  {
+    if( *cit == el )
+    {
+      set_modified();
+      m_els.erase(cit);
+      return true;
+    }
+  }
+  return false;
+}
+
 ElementBase* HudFileBase::find_element( const wxString& name )
 {
   for( cit_elements cit = m_els.begin(); cit != m_els.end(); ++cit )

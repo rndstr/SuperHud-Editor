@@ -7,14 +7,12 @@
 #include "mainframe.h"
 #include "prefs.h"
 #include "optionalmessagedialog.h"
+#include "command.h"
 
 #include <wx/dnd.h>
 
 #include <algorithm>
 #include <functional>
-
-#include "xpm/icons/predecorate_insert.xpm"
-#include "xpm/icons/postdecorate_insert.xpm"
 
 //#define COLLECTION_INCLUDES_PARENT 1
 
@@ -23,6 +21,7 @@ BEGIN_EVENT_TABLE(ElementsCtrlBase, wxPanel)
   EVT_BUTTON(wxID_PASTE, ElementsCtrlBase::OnPaste)
   EVT_BUTTON(wxID_CLEAR, ElementsCtrlBase::OnReset)
   EVT_BUTTON(wxID_DELETE, ElementsCtrlBase::OnDelete)
+  EVT_BUTTON(ID_BTN_INSERT, ElementsCtrlBase::OnBtnInsert)
 
   EVT_MENU(wxID_COPY, ElementsCtrlBase::OnCopy)
   EVT_MENU(wxID_PASTE, ElementsCtrlBase::OnPaste)
@@ -62,13 +61,17 @@ class ListDrop : public wxTextDropTarget
 
       wxASSERT( m_list->GetItemData(hit) );
 
+      ReorderCommand *s = new ReorderCommand(_("Reorder elements"));
       ElementBase *after = reinterpret_cast<ElementBase*>(m_list->GetItemData(hit));
       // move all selected items after the one the cursor is over
       for( size_t rev = els.size(); rev != 0; --rev )
         wxGetApp().hudfile()->move_element_after( els[rev-1], after );
+      s->takepost();
+      wxGetApp().cmds()->Submit(s);
 
       // TODO simple but expensive ;) hooray (doesn't flicker on MSW, checkcheck for GTK)
-      static_cast<ElementsCtrlBase*>(m_list->GetParent())->list_refresh(wxGetApp().hudfile()->elements());
+      // Note this is already done in ReorderCommand::Do
+      //static_cast<ElementsCtrlBase*>(m_list->GetParent())->list_refresh(wxGetApp().hudfile()->elements());
       // TODO ignore EVT_LIST_ITEM_SELECTED during this loop
 
       for( cit_elements cit = els.begin(); cit != els.end(); ++cit )
@@ -169,23 +172,25 @@ ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos,
     m_elpopup(0)
 {
   /* FIXWXGLADE
+    m_btn_insert = new wxBitmapButton(this, ID_BTN_INSERT, wxArtProvider::GetBitmap(wxART_NEW, wxART_BUTTON, wxSize(16,16)));
+    static_line_2 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL);
+    m_btn_delete = new wxBitmapButton(this, wxID_DELETE, wxArtProvider::GetBitmap(wxART_DELETE, wxART_BUTTON, wxSize(16,16)));
     m_list = new ElementsListCtrl(this);
     m_btn_copy = new wxBitmapButton( this, wxID_COPY, wxArtProvider::GetBitmap(wxART_COPY, wxART_BUTTON, wxSize(16,16)) );
     m_btn_paste = new wxBitmapButton( this, wxID_PASTE, wxArtProvider::GetBitmap(wxART_PASTE, wxART_BUTTON, wxSize(16,16)) );
     static_line_1 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL);
     m_btn_reset = new wxBitmapButton(this, wxID_CLEAR, wxArtProvider::GetBitmap(ART_CLEAR, wxART_BUTTON, wxSize(16,16)));
-    m_btn_delete = new wxBitmapButton(this, wxID_DELETE, wxArtProvider::GetBitmap(wxART_DELETE, wxART_BUTTON, wxSize(16,16)));
+    
   */
     // begin wxGlade: ElementsCtrlBase::ElementsCtrlBase
-    m_btn_insertdefault = new wxButton(this, ID_BTN_INSERTDEFAULT, wxT("+ !DEFAULT"));
-    m_btn_insertpredecorate = new wxButton(this, ID_BTN_INSERTPREDECORATE, wxT("+ PreDecorate"));
-    m_btn_insertpostdecorate = new wxButton(this, ID_BTN_INSERTPOSTDECORATE, wxT("+ PostDecorate"));
+    m_btn_insert = new wxBitmapButton(this, ID_BTN_INSERT, wxArtProvider::GetBitmap(wxART_NEW, wxART_BUTTON, wxSize(16,16)));
+    static_line_2 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL);
+    m_btn_delete = new wxBitmapButton(this, wxID_DELETE, wxArtProvider::GetBitmap(wxART_DELETE, wxART_BUTTON, wxSize(16,16)));
     m_list = new ElementsListCtrl(this);
     m_btn_copy = new wxBitmapButton( this, wxID_COPY, wxArtProvider::GetBitmap(wxART_COPY, wxART_BUTTON, wxSize(16,16)) );
     m_btn_paste = new wxBitmapButton( this, wxID_PASTE, wxArtProvider::GetBitmap(wxART_PASTE, wxART_BUTTON, wxSize(16,16)) );
     static_line_1 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL);
     m_btn_reset = new wxBitmapButton(this, wxID_CLEAR, wxArtProvider::GetBitmap(ART_CLEAR, wxART_BUTTON, wxSize(16,16)));
-    m_btn_delete = new wxBitmapButton(this, wxID_DELETE, wxArtProvider::GetBitmap(wxART_DELETE, wxART_BUTTON, wxSize(16,16)));
 
     set_properties();
     do_layout();
@@ -202,17 +207,16 @@ ElementsCtrlBase::~ElementsCtrlBase()
 
 void ElementsCtrlBase::set_properties()
 {
+  // FIXWXGLADE
     // begin wxGlade: ElementsCtrlBase::set_properties
-    m_btn_insertdefault->SetToolTip(wxT("Insert a !DEFAULT element"));
-    m_btn_insertpredecorate->SetToolTip(wxT("Insert a PreDecorate element"));
-    m_btn_insertpostdecorate->SetToolTip(wxT("Insert a PostDecorate element"));
+    m_btn_insert->SetSize(m_btn_insert->GetBestSize());
+    m_btn_delete->SetToolTip(wxT("Remove selected element(s) from hud"));
+    m_btn_delete->SetSize(m_btn_delete->GetBestSize());
     m_btn_copy->SetToolTip(wxT("Copy element properties"));
     m_btn_copy->SetSize(m_btn_copy->GetBestSize());
     m_btn_paste->SetToolTip(wxT("Paste properties to selected elements (except position)"));
     m_btn_paste->SetSize(m_btn_paste->GetBestSize());
-    m_btn_delete->SetToolTip(wxT("Remove selected elements from hud"));
-    m_btn_delete->SetSize(m_btn_delete->GetBestSize());
-    m_btn_reset->SetToolTip(wxT("Reset element properties to defaults (except position)"));
+    m_btn_reset->SetToolTip(wxT("Reset element properties to defaults (except visibility)"));
     m_btn_reset->SetSize(m_btn_reset->GetBestSize());
     // end wxGlade
     m_btn_paste->Disable();
@@ -225,15 +229,14 @@ void ElementsCtrlBase::do_layout()
     wxBoxSizer* sizer_3 = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* sizer_4 = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* sizer_1 = new wxBoxSizer(wxHORIZONTAL);
-    sizer_1->Add(m_btn_insertdefault, 0, 0, 0);
-    sizer_1->Add(m_btn_insertpredecorate, 0, 0, 0);
-    sizer_1->Add(m_btn_insertpostdecorate, 0, 0, 0);
+    sizer_1->Add(m_btn_insert, 0, wxALL, 2);
+    sizer_1->Add(static_line_2, 0, wxLEFT|wxRIGHT|wxEXPAND, 5);
+    sizer_1->Add(m_btn_delete, 0, wxALL, 2);
     sizer_3->Add(sizer_1, 0, wxEXPAND, 0);
     sizer_3->Add(m_list, 1, wxEXPAND, 0);
     sizer_4->Add(m_btn_copy, 0, wxALL, 2);
     sizer_4->Add(m_btn_paste, 0, wxALL, 2);
     sizer_4->Add(static_line_1, 0, wxLEFT|wxRIGHT|wxEXPAND, 5);
-    sizer_4->Add(m_btn_delete, 0, wxALL, 2);
     sizer_4->Add(m_btn_reset, 0, wxALL, 2);
     sizer_3->Add(sizer_4, 0, wxEXPAND, 0);
     SetSizer(sizer_3);
@@ -248,7 +251,7 @@ void ElementsCtrlBase::append( ElementBase *el )
   long idx = m_list->InsertItem(m_list->GetItemCount(), wxEmptyString, -1);
   m_list->SetItem( idx, 1, el->name(), (el->is_enabled() ? E_LIST_IMG_ENABLED : E_LIST_IMG_DISABLED));
   m_list->SetItemData( idx, (long)(el) );
-  if( el->flags() & E_PARENT )
+  if( el->flags() & E_NOTUNIQ )
     m_list->SetItemFont(idx, *wxITALIC_FONT);
 }
 
@@ -331,13 +334,18 @@ void ElementsCtrlBase::list_refresh( const elements_type& elements )
 
 void ElementsCtrlBase::OnCopy( wxCommandEvent& )
 {
-  wxASSERT_MSG( m_selels.size() > 0, wxT("no elements selected") );
+  if( m_selels.size() != 1 )
+    return;
+
   m_copyfrom = m_selels.front();
   m_btn_paste->Enable(true);
 }
 
 void ElementsCtrlBase::OnPaste( wxCommandEvent& )
 {
+  if( m_selels.size() == 0 || m_copyfrom == 0 )
+    return;
+
   std::for_each(m_selels.begin(), m_selels.end(), std::bind2nd(std::mem_fun(&ElementBase::copy_from), m_copyfrom));
 
   wxGetApp().mainframe()->update_displayctrl();
@@ -354,6 +362,9 @@ void ElementsCtrlBase::OnPaste( wxCommandEvent& )
 
 void ElementsCtrlBase::OnReset( wxCommandEvent& )
 {
+  if( m_selels.size() == 0 )
+    return;
+
   OptionalMessageDialog dlg(wxT("dlg_reset"), wxID_YES); 
   dlg.add_button_yesno();
   dlg.Create(0, _("This will fill default values on all properties of selected elements, proceed?"), _("Reset properties?"));
@@ -375,7 +386,20 @@ void ElementsCtrlBase::OnReset( wxCommandEvent& )
 
 void ElementsCtrlBase::OnDelete( wxCommandEvent& )
 {
-
+  if( m_selels.size() == 0 )
+    return;
+  // delete all notuniq elements
+  for( it_elements it = m_selels.begin(); it != m_selels.end(); ++it )
+  {
+    if( (*it)->is_removable() )
+    {
+      if( m_copyfrom == (*it) )
+        m_copyfrom = 0;
+      wxGetApp().hudfile()->remove( *it );
+    }
+  }
+  wxGetApp().mainframe()->update_elementsctrl();
+  OnSelectionChanged();
 }
 
 void ElementsCtrlBase::OnItemDeselected( wxListEvent& ev )
@@ -409,6 +433,11 @@ void ElementsCtrlBase::OnItemActivated( wxListEvent& ev )
   wxGetApp().mainframe()->OnPropertiesChanged();
 }
 
+void ElementsCtrlBase::OnBtnInsert( wxCommandEvent& )
+{
+  show_element_popup(true);
+}
+
 void ElementsCtrlBase::OnItemRightClick( wxListEvent& ev )
 {
   if( ev.GetIndex() == wxNOT_FOUND )
@@ -416,7 +445,7 @@ void ElementsCtrlBase::OnItemRightClick( wxListEvent& ev )
   show_element_popup();
 }
 
-void ElementsCtrlBase::show_element_popup( const wxPoint& p /*=wxDefaultPosition*/ )
+void ElementsCtrlBase::show_element_popup( bool only_insert /*=false*/, const wxPoint& p /*=wxDefaultPosition*/ )
 {
   // we only display if there is exactly one element selected
   if( m_selels.size() == 0 )
@@ -434,27 +463,29 @@ void ElementsCtrlBase::show_element_popup( const wxPoint& p /*=wxDefaultPosition
     item->Enable( m_selels.size() == 1);
   }
 
-  m_elpopup->AppendSeparator();
+  if( !only_insert )
+  {
+    m_elpopup->AppendSeparator();
 
-  item = m_elpopup->Append( wxID_COPY, _("Copy") ); // only for 1 element selected
-  item->Enable( m_selels.size() == 1 );
-  item = m_elpopup->Append( wxID_PASTE, _("Paste") ); // only if there is something to copy from
-  item->Enable( m_copyfrom != 0 );
+    item = m_elpopup->Append( wxID_COPY, _("Copy") ); // only for 1 element selected
+    item->Enable( m_selels.size() == 1 );
+    item = m_elpopup->Append( wxID_PASTE, _("Paste") ); // only if there is something to copy from
+    item->Enable( m_copyfrom != 0 );
 
-  m_elpopup->AppendSeparator();
+    m_elpopup->AppendSeparator();
 
-  // only enable delete if we actually can delete the element (i.e. it's a notuniq one)
-  item = m_elpopup->Append( wxID_DELETE, _("Remove") ); // only for removable elements
-  item->Enable( m_selels.size() > 0 );
-  // only display if all selected elements are notuniqs!
-  for( cit_elements cit = m_selels.begin(); cit != m_selels.end(); ++cit )
-    if( !(*cit)->is_removable() )
-    {
-      item->Enable(false);
-      break;
-    }
-  item = m_elpopup->Append( wxID_CLEAR, _("Reset") ); // always if something is selected
-  
+    // only enable delete if we actually can delete the element (i.e. it's a notuniq one)
+    item = m_elpopup->Append( wxID_DELETE, _("Remove") ); // only for removable elements
+    item->Enable( m_selels.size() > 0 );
+    // only display if all selected elements are notuniqs!
+    for( cit_elements cit = m_selels.begin(); cit != m_selels.end(); ++cit )
+      if( !(*cit)->is_removable() )
+      {
+        item->Enable(false);
+        break;
+      }
+    item = m_elpopup->Append( wxID_CLEAR, _("Reset") ); // always if something is selected
+  }
 
   PopupMenu(m_elpopup, wxDefaultPosition);
 }
@@ -466,10 +497,13 @@ void ElementsCtrlBase::OnInsertNotuniq( wxCommandEvent& ev )
   if( m_selels.size() != 1 )
     return;
   const notuniqs_type& notuniqs = wxGetApp().hudfile()->notuniq_elements();
+  ElementBase *el = wxGetApp().hudfile()->create_element( notuniqs[idx] );
+  wxGetApp().hudfile()->insert( m_selels.front(), el );
+  wxGetApp().mainframe()->update_elementsctrl();
 
-
-
-
+  long itemidx = index_by_pointer(el);
+  m_list->EnsureVisible( itemidx );
+  select_item( itemidx );
 }
 
 void ElementsCtrlBase::OnBeginDrag( wxListEvent& ev )
@@ -573,9 +607,12 @@ void ElementsCtrlBase::OnSelectionChanged()
 
   // -- first update this control's stuff that we have to do upon selection change
   m_btn_copy->Enable( m_selels.size() == 1 );
+  wxGetApp().mainframe()->edit_menu()->Enable( wxID_COPY, m_btn_copy->IsEnabled() );
   m_btn_paste->Enable( m_copyfrom != 0 && m_selels.size() > 0 );
+  wxGetApp().mainframe()->edit_menu()->Enable( wxID_PASTE, m_btn_paste->IsEnabled() );
   m_btn_reset->Enable( m_selels.size() > 0 );
 
+  m_btn_insert->Enable( m_selels.size() == 1 );
   m_btn_delete->Enable( m_selels.size() > 0 );
   for( cit_elements cit = m_selels.begin(); cit != m_selels.end(); ++cit )
     if( !(*cit)->is_removable() )
@@ -652,6 +689,12 @@ void ElementsCtrlBase::deselect_all()
   for( int i=0; i < m_list->GetItemCount(); ++i )
     m_list->SetItemState(i, 0, wxLIST_STATE_SELECTED);
 }
+
+
+
+
+
+
 
 
 

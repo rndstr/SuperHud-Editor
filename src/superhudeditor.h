@@ -4,6 +4,7 @@
 #include <wx/app.h>
 #include <wx/intl.h>
 
+
 const wxString APP_NAME = wxT("SuperHud Editor");
 const wxString APP_NAME_UNIX = wxT("superhudeditor");
 const wxString APP_VERSION = wxT("0.3.0");
@@ -17,7 +18,7 @@ const wxString APP_CONFIG = wxT("superhudeditor.conf");
 const wxString APP_URL = wxT("http://plrf.org/superhudeditor");
 
 
-
+class wxCommandProcessor;
 class FactoryBase;
 class HudFileBase;
 class ElementsCtrlBase;
@@ -47,18 +48,18 @@ class SHEApp : public wxApp
 
     bool is_ready() const { return m_ready; }
 
+    wxCommandProcessor* cmds();
+
   protected:
     void load_config();
 
-    bool m_firststart;
-
+    bool        m_firststart;
     MainFrame   *m_mainframe;
     FactoryBase *m_factory;
     HudFileBase *m_hudfile;
-
-    bool          m_ready;
-
-    wxLocale      m_locale;
+    bool        m_ready;
+    wxLocale    m_locale;
+    wxCommandProcessor *m_commands;
 };
 
 DECLARE_APP(SHEApp)

@@ -55,10 +55,13 @@ class ElementsCtrlBase: public wxPanel
     bool          is_selected( const ElementBase* const el) const;
 
     
+    void          OnCopy( wxCommandEvent& );
+    void          OnPaste( wxCommandEvent& );
 
   protected:
     
     /// an ordered list (by idx) of selected indecies
+    /// NOTE that is the index in the list
     indecies_type   m_selidx;
     /// an ordered list (by idx) of selected elements
     elements_type   m_selels;
@@ -72,8 +75,7 @@ class ElementsCtrlBase: public wxPanel
 
 
   private:
-    void          OnCopy( wxCommandEvent& );
-    void          OnPaste( wxCommandEvent& );
+    
     void          OnDelete( wxCommandEvent& );
     void          OnReset( wxCommandEvent& );
     void          OnItemSelected( wxListEvent& ev );
@@ -82,8 +84,9 @@ class ElementsCtrlBase: public wxPanel
     void          OnBeginDrag( wxListEvent& );
     void          OnItemRightClick( wxListEvent& );
     void          OnInsertNotuniq( wxCommandEvent& );
+    void          OnBtnInsert( wxCommandEvent& );
     long          index_by_pointer( const ElementBase* const el ) const;
-    void          show_element_popup( const wxPoint& p = wxDefaultPosition );
+    void          show_element_popup( bool only_insert = false, const wxPoint& p = wxDefaultPosition );
 
 
     /// @arg idx The item index in the list we want to update according to pel
@@ -98,14 +101,13 @@ private:
 
 protected:
     // begin wxGlade: ElementsCtrlBase::attributes
-    wxButton* m_btn_insertdefault;
-    wxButton* m_btn_insertpredecorate;
-    wxButton* m_btn_insertpostdecorate;
+    wxBitmapButton* m_btn_insert;
+    wxStaticLine* static_line_2;
+    wxBitmapButton* m_btn_delete;
     ElementsListCtrl* m_list;
     wxBitmapButton* m_btn_copy;
     wxBitmapButton* m_btn_paste;
     wxStaticLine* static_line_1;
-    wxBitmapButton* m_btn_delete;
     wxBitmapButton* m_btn_reset;
     // end wxGlade
     /* FIXWXGLADE

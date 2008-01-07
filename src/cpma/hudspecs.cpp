@@ -158,7 +158,7 @@ bool CPMAHudSpecs::load()
   return true;
 }
 
-const hsitem_s* CPMAHudSpecs::find_item( const wxString& name )
+const hsitem_s* CPMAHudSpecs::find_item( const wxString& name ) const
 {
   for( cit_hsitems cit = m_items.begin(); cit != m_items.end(); ++cit )
   {

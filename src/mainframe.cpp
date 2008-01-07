@@ -8,6 +8,7 @@
 #include <wx/stdpaths.h>
 #include <wx/file.h>
 #include <wx/tipdlg.h>
+#include <wx/cmdproc.h>
 
 #include "factorybase.h"
 #include "model.h"
@@ -27,6 +28,10 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_MENU(wxID_SAVEAS, MainFrame::OnMenuSaveAs)
   EVT_MENU(wxID_OPEN, MainFrame::OnMenuOpen)
   EVT_MENU(wxID_NEW, MainFrame::OnMenuNew)
+  EVT_MENU(wxID_COPY, MainFrame::OnMenuCopy)
+  EVT_MENU(wxID_PASTE, MainFrame::OnMenuPaste)
+  EVT_MENU(wxID_UNDO, MainFrame::OnMenuUndo)
+  EVT_MENU(wxID_REDO, MainFrame::OnMenuRedo)
   EVT_MENU(ID_MENU_TOOLS_SWITCHGAME, MainFrame::OnMenuToolsSwitchGame)
   EVT_MENU(ID_MENU_TOOLS_SNAPELEMENTS, MainFrame::OnMenuToolsSnapElements)
   EVT_MENU(ID_MENU_TOOLS_SNAPGRID, MainFrame::OnMenuToolsSnapGrid)
@@ -49,7 +54,16 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
         const wxPoint& pos /*= wxDefaultPosition*/, const wxSize& size /*= wxDefaultSize*/,
         long style /*= wxDEFAULT_FRAME_STYLE | wxSUNKEN_BORDER*/) :
   wxFrame(parent, id, title, pos, size, style),
-    m_model(0)
+    m_view_menu(0),
+    m_edit_menu(0),
+    m_statusbar(0),
+    m_toolbar_file(0),
+    m_model(0),
+    m_elementsctrl(0),
+    m_propertiesnotebook(0),
+    m_configpreview(0),
+    m_displayctrl(0)
+    
 {
 
   m_mgr.SetManagedWindow(this);
@@ -66,6 +80,14 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   file_menu->AppendSeparator();
   file_menu->Append( wxID_EXIT, _("E&xit\tCtrl+Q") );
   menu_bar->Append( file_menu, _("&File") );
+
+  m_edit_menu = new wxMenu;
+  m_edit_menu->Append(wxID_UNDO, _("&Undo\tCtrl+Z"));
+  m_edit_menu->Append(wxID_REDO, _("&Redo\tCtrl+Y"));
+  m_edit_menu->AppendSeparator();
+  m_edit_menu->Append( wxID_COPY, _("&Copy\tCtrl+C") );
+  m_edit_menu->Append( wxID_PASTE, _("&Paste\tCtrl+V") );
+  menu_bar->Append( m_edit_menu, _("&Edit") );
 
   wxMenu *tools_menu = new wxMenu;
   tools_menu->Append( ID_MENU_TOOLS_SWITCHGAME, _("&Switch Game") );
@@ -297,6 +319,26 @@ void MainFrame::OnMenuSaveAs( wxCommandEvent& )
     wxLogError( _("Failed writing Hud to `%s'"), filename.c_str() );
   update_title();
   wxEndBusyCursor();
+}
+
+void MainFrame::OnMenuCopy( wxCommandEvent& ev )
+{
+  m_elementsctrl->OnCopy(ev);
+}
+
+void MainFrame::OnMenuPaste( wxCommandEvent& ev )
+{
+  m_elementsctrl->OnPaste(ev);
+}
+
+void MainFrame::OnMenuUndo( wxCommandEvent& )
+{
+  wxGetApp().cmds()->Undo();
+}
+
+void MainFrame::OnMenuRedo( wxCommandEvent& )
+{
+  wxGetApp().cmds()->Redo();
 }
 
 

@@ -53,7 +53,7 @@ class CPMAHudSpecs
     const hsitems_type&   items() const { return m_items; }
     hsitems_type&         items() { return m_items; }
 
-    const hsitem_s*       find_item( const wxString& name );
+    const hsitem_s*       find_item( const wxString& name ) const;
     const notuniqs_type& notuniqs() const { return m_notuniqs; }
 
   protected:

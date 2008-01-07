@@ -277,6 +277,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\command.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\command.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\common.h"
 				>
 			</File>
@@ -362,6 +370,14 @@
 			</File>
 			<File
 				RelativePath=".\src\model.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\optionalmessagedialog.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\optionalmessagedialog.h"
 				>
 			</File>
 			<File

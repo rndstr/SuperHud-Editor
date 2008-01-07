@@ -36,6 +36,7 @@ class CPMAHudFile : public HudFileBase
     bool save( const wxString& filename );
 
     const notuniqs_type& notuniq_elements() const;
+    ElementBase*  create_element( const wxString& name ) const;
 
   private:
     bool parse_item( wxString s );

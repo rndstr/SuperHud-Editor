@@ -14,6 +14,8 @@
 
 #include <wx/stdpaths.h>
 #include <wx/fs_arc.h>
+#include <wx/cmdproc.h>
+
 #include "factorybase.h"
 #include "hudfilebase.h"
 #include "pakmanager.h"
@@ -132,6 +134,11 @@ bool SHEApp::OnInit()
   m_mainframe->Show();
 
   m_hudfile = m_factory->create_hudfile();
+
+  m_commands = new wxCommandProcessor();
+  m_commands->SetEditMenu(m_mainframe->edit_menu());
+  m_commands->Initialize();
+
   m_mainframe->elementsctrl()->OnSelectionChanged();
 
   return true;
@@ -178,6 +185,9 @@ int SHEApp::OnExit()
   Prefs::get().save();
   Prefs::get().shutdown();
 
+  m_commands->SetEditMenu(0);
+  wxDELETE(m_commands);
+
   m_factory->shutdown();
   wxDELETE(m_factory);
   wxDELETE(m_hudfile);
@@ -186,6 +196,10 @@ int SHEApp::OnExit()
   return 0;
 }
 
+wxCommandProcessor* SHEApp::cmds()
+{ 
+  return m_commands; 
+}
 
 
 bool SHEApp::is_cpma() const

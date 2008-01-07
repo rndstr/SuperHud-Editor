@@ -38,6 +38,7 @@ class MainFrame : public wxFrame
     wxTextCtrl*         configpreview() { return m_configpreview; }
     wxStatusBar*        statusbar() { return m_statusbar; }
     Model*              model() { return m_model; }
+    wxMenu*             edit_menu() { return m_edit_menu; }
 
     /// Selection changed in ElementsCtrl
     void                OnElementSelectionChanged();
@@ -67,14 +68,17 @@ class MainFrame : public wxFrame
     void restart_app();
 
     wxMenu            *m_view_menu;
+    wxMenu            *m_edit_menu;
     wxStatusBar       *m_statusbar;
     wxToolBar         *m_toolbar_file;
+
+    Model             *m_model;
 
     ElementsCtrlBase  *m_elementsctrl;
     PropertiesNotebookBase *m_propertiesnotebook;
     wxTextCtrl        *m_configpreview;
     DisplayCtrlBase   *m_displayctrl;
-    Model             *m_model;
+    
 
   private:
 
@@ -86,6 +90,10 @@ class MainFrame : public wxFrame
     void OnMenuOpen( wxCommandEvent& );
     void OnMenuSave( wxCommandEvent& );
     void OnMenuSaveAs( wxCommandEvent& );
+    void OnMenuCopy( wxCommandEvent& );
+    void OnMenuPaste( wxCommandEvent& );
+    void OnMenuUndo( wxCommandEvent& );
+    void OnMenuRedo( wxCommandEvent& );
     void OnMenuToolsPreferences( wxCommandEvent& );
     void OnMenuToolsSnapElements( wxCommandEvent& );
     void OnMenuToolsSnapGrid( wxCommandEvent& );

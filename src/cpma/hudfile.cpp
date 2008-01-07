@@ -23,9 +23,18 @@ CPMAHudFile::CPMAHudFile() :
 }
 
 
+
 const notuniqs_type& CPMAHudFile::notuniq_elements() const
 {
   return CPMAHudSpecs::get().notuniqs();
+}
+
+ElementBase*  CPMAHudFile::create_element( const wxString& name ) const
+{
+  const hsitem_s *item = CPMAHudSpecs::get().find_item( name );
+  if( !item ) return 0;
+
+  return new CPMAElement(*item);
 }
 
 void CPMAHudFile::load_default_elements()
