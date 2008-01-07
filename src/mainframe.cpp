@@ -114,9 +114,9 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_view_menu->AppendSeparator();
   m_view_menu->AppendCheckItem( ID_MENU_VIEW_GRID, _("Display &Grid\tCtrl+G"), _("Draws a grid over the hud") );
   m_view_menu->AppendSeparator();
-  m_view_menu->Append( ID_MENU_VIEW_FOCUSELEMENTS, _("Focus Elementlist\tF6") );
-  m_view_menu->Append( ID_MENU_VIEW_FOCUSHUD, _("Focus Hud\tF7") );
-  m_view_menu->Append( ID_MENU_VIEW_FOCUSPROPERTIES, _("Focus Properties\tF8") );
+  //m_view_menu->Append( ID_MENU_VIEW_FOCUSPROPERTIES, _("Focus Properties\tF6") );
+  m_view_menu->Append( ID_MENU_VIEW_FOCUSELEMENTS, _("Focus Elementlist\tF7") );
+  m_view_menu->Append( ID_MENU_VIEW_FOCUSHUD, _("Focus Hud\tF8") );
   menu_bar->Append( m_view_menu, _("&View") );
 
   wxMenu *help_menu = new wxMenu;

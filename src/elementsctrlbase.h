@@ -81,11 +81,13 @@ class ElementsCtrlBase: public wxPanel
     void          OnItemSelected( wxListEvent& ev );
     void          OnItemDeselected( wxListEvent& ev );
     void          OnItemActivated( wxListEvent& ev );
+    void          OnKeyDown( wxListEvent& ev );
     void          OnBeginDrag( wxListEvent& );
     void          OnItemRightClick( wxListEvent& );
     void          OnInsertNotuniq( wxCommandEvent& );
     void          OnBtnInsert( wxCommandEvent& );
     long          index_by_pointer( const ElementBase* const el ) const;
+    ElementBase*  pointer_by_index( long idx ) const;
     void          show_element_popup( bool only_insert = false, const wxPoint& p = wxDefaultPosition );
 
 

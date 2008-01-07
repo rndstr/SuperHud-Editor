@@ -28,6 +28,7 @@ BEGIN_EVENT_TABLE(ElementsCtrlBase, wxPanel)
   EVT_MENU(wxID_DELETE, ElementsCtrlBase::OnDelete)
   EVT_MENU(wxID_CLEAR, ElementsCtrlBase::OnReset)
 
+  EVT_LIST_KEY_DOWN(ID_LISTCTRL_ELEMENTS, ElementsCtrlBase::OnKeyDown)
   EVT_LIST_ITEM_SELECTED(ID_LISTCTRL_ELEMENTS, ElementsCtrlBase::OnItemSelected)
   EVT_LIST_ITEM_DESELECTED(ID_LISTCTRL_ELEMENTS, ElementsCtrlBase::OnItemDeselected)
   EVT_LIST_ITEM_ACTIVATED(ID_LISTCTRL_ELEMENTS, ElementsCtrlBase::OnItemActivated)
@@ -433,6 +434,37 @@ void ElementsCtrlBase::OnItemActivated( wxListEvent& ev )
   wxGetApp().mainframe()->OnPropertiesChanged();
 }
 
+void ElementsCtrlBase::OnKeyDown( wxListEvent& ev )
+{
+  int kc = ev.GetKeyCode();
+  wxLogDebug(wxT("%d"), kc);
+  if( kc >= 65 && kc <= 90 )
+  {
+    const long startidx = (m_selidx.size() == 0 ? 0 : m_selidx.front());
+    long idx = startidx;
+    wxListItem info;
+    for( ;; )
+    {
+      idx = m_list->GetNextItem(idx, wxLIST_NEXT_BELOW, wxLIST_STATE_DONTCARE);
+      if( idx == -1 ) idx = 0;
+      if( idx == startidx )
+        break;
+      info.m_mask = wxLIST_MASK_TEXT;
+      info.m_col = 1;
+      info.m_itemId = idx;
+      if( m_list->GetItem(info) )
+      {
+        if( info.m_text.StartsWith(wxString::Format(wxT("%c"), kc)) )
+        {
+          deselect_all();
+          select_item(idx);
+          break;
+        }
+      }
+    }
+  }
+}
+
 void ElementsCtrlBase::OnBtnInsert( wxCommandEvent& )
 {
   show_element_popup(true);
@@ -625,6 +657,13 @@ void ElementsCtrlBase::OnSelectionChanged()
   wxGetApp().mainframe()->OnElementSelectionChanged();
 }
 
+ElementBase* ElementsCtrlBase::pointer_by_index( long idx ) const
+{
+  wxUIntPtr data = m_list->GetItemData(idx);
+  if( !data )
+    return 0;
+  return reinterpret_cast<ElementBase*>(data);
+}
 
 long ElementsCtrlBase::index_by_pointer( const ElementBase* const el ) const
 {
