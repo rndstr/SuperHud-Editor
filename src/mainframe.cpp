@@ -331,8 +331,8 @@ int MainFrame::confirm_savechanges_dlg()
 {
   wxMessageDialog dlg(
       this,
-      _("Do you want to save the changes?"),
-      _("Save changes?"),
+      _("Save changes to the current Hud?"),
+      _("Confirm"),
       wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION );
   return dlg.ShowModal();
 }
