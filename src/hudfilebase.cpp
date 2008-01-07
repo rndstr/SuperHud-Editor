@@ -197,6 +197,7 @@ bool HudFileBase::move_element_after( ElementBase *el, ElementBase *after )
     it_elements after_it = find( m_els.begin(), m_els.end(), after );
     m_els.insert( ++after_it, el );
   }
+  set_modified();
   return true;
 }
 

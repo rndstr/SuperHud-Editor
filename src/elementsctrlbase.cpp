@@ -449,12 +449,13 @@ void ElementsCtrlBase::OnKeyDown( wxListEvent& ev )
       if( idx == -1 ) idx = 0;
       if( idx == startidx )
         break;
-      info.m_mask = wxLIST_MASK_TEXT;
+      info.m_mask = wxLIST_MASK_TEXT|wxLIST_MASK_DATA;
       info.m_col = 1;
       info.m_itemId = idx;
       if( m_list->GetItem(info) )
       {
-        if( info.m_text.Lower().StartsWith(wxString::Format(wxT("%c"), kc)) )
+        // skip over collection titles
+        if( info.m_data != 0 && info.m_text.Lower().StartsWith(wxString::Format(wxT("%c"), kc)) )
         {
           deselect_all();
           select_item(idx);
