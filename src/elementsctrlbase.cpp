@@ -437,7 +437,7 @@ void ElementsCtrlBase::OnItemActivated( wxListEvent& ev )
 void ElementsCtrlBase::OnKeyDown( wxListEvent& ev )
 {
   int kc = tolower(ev.GetKeyCode());
-  wxLogDebug(wxT("%d %c"), kc, kc);
+  wxLogDebug(wxT("OnKeyDown - %d %c"), kc, kc);
   if( kc >= 'a' && kc <= 'z' )
   {
     const long startidx = (m_selidx.size() == 0 ? 0 : m_selidx.front());
