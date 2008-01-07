@@ -5,10 +5,9 @@
 
 #include <wx/wx.h>
 #include <wx/image.h>
+#include <wx/artprov.h>
 
-// begin wxGlade: ::dependencies
 #include <wx/statline.h>
-// end wxGlade
 
 #include <map>
 #include <list>
@@ -20,13 +19,11 @@
 class OptionalMessageDialog: public wxDialog
 {
   public:
-    // begin wxGlade: OptionalMessageDialog::ids
-    // end wxGlade
 
 
     /// @arg name         An unique name
     /// @arg saveid       Which id we store (in prefs) if a user decides to not show it anymore, use wxID_ANY for the user's pressed button
-    OptionalMessageDialog( const wxString& name, int saveid = wxID_ANY );
+    OptionalMessageDialog( const wxString& name, int saveid = wxID_ANY, wxArtID bitmapid = wxART_QUESTION );
     /// create it.
     virtual bool Create(wxWindow* parent, const wxString& msg, const wxString& title = wxT(""), int id = wxID_ANY, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize );
 
@@ -43,18 +40,18 @@ class OptionalMessageDialog: public wxDialog
     void OnButton( wxCommandEvent& ev );
 
 
-private:
-    // begin wxGlade: OptionalMessageDialog::methods
+  private:
     void set_properties();
     void do_layout();
-    // end wxGlade
 
-protected:
+  protected:
     int   m_saveid;
     int   m_storedid;
     wxString m_name; ///< unique name this dialog is identified with, also used in prefs saving.
   
     bool m_created; ///< in ShowModal and Show the dialog must have been created, we track it with this.
+
+    wxArtID m_bitmapid;
 
     // displayedname -> id
     std::map<wxString, int> m_buttondefs;
@@ -63,7 +60,7 @@ protected:
     wxStaticText* m_message;
     wxStaticLine* m_horiz_line;
     wxCheckBox* m_shownomore;
-}; // wxGlade: end class
+};
 
 
 #endif // OPTIONALMESSAGEDIALOG_H
