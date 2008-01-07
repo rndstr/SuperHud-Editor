@@ -454,7 +454,7 @@ void ElementsCtrlBase::OnKeyDown( wxListEvent& ev )
       info.m_itemId = idx;
       if( m_list->GetItem(info) )
       {
-        if( info.m_text.StartsWith(wxString::Format(wxT("%c"), kc)) )
+        if( info.m_text.Lower().StartsWith(wxString::Format(wxT("%c"), tolower(kc))) )
         {
           deselect_all();
           select_item(idx);
