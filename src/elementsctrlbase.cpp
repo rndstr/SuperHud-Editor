@@ -368,7 +368,13 @@ void ElementsCtrlBase::OnReset( wxCommandEvent& )
 
   OptionalMessageDialog dlg(wxT("dlg_reset"), wxID_YES); 
   dlg.add_button_yesno();
-  dlg.Create(0, _("This will fill default values on all properties of selected elements, proceed?"), _("Reset properties?"));
+  wxString msg =  _("This fills default values on all properties of selected elements:\n\n");
+  for( cit_elements cit = m_selels.begin(); cit != m_selels.end(); ++cit )
+    msg += (*cit)->name() + wxT("\n");
+
+  msg += wxT("\n");
+  msg += _("Proceed?");
+  dlg.Create(0, msg, _("Reset properties?"));
 
   if( dlg.ShowModal() != wxID_YES )
     return;
