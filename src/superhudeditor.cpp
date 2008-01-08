@@ -163,18 +163,6 @@ int SHEApp::OnRun()
     wxCommandEvent plaarfz;
     m_mainframe->OnMenuHelpTip(plaarfz);
   }
-  /*
-  if( m_firststart )
-  {
-    wxCommandEvent evt;
-    m_frame->OnMenuHelp( evt );
-  }
-  */
-  /*
-  if( Prefs::get()->startup_checkforupdates )
-    m_frame->check_for_updates();
-    */
-
 
   return wxApp::OnRun();
 }
@@ -193,6 +181,12 @@ int SHEApp::OnExit()
   wxDELETE(m_factory);
   wxDELETE(m_hudfile);
   PakManager::get().shutdown();
+
+  if( !m_exec.empty() )
+  {
+    
+    wxExecute( m_exec, wxEXEC_ASYNC );
+  }
 
   return 0;
 }

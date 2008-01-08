@@ -29,6 +29,12 @@ class MainFrame : public wxFrame
 
     void update_title();
 
+    void update_and_exit(bool savelog = FALSE,
+     				bool restart = TRUE,
+     				const wxString &xrc = wxEmptyString, 	// --xrc option won't be given using wxEmptyString
+         			const wxString &res = wxEmptyString,	// --res option won't be given using wxEmptyString
+            		const wxString &xml = wxEmptyString,	// --xml option won't be given using wxEmptyString
+         			const wxString &uri = wxEmptyString);	// --uri option won't be given using wxEmptyString
     
 
 

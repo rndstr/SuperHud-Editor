@@ -240,7 +240,6 @@ void MainFrame::OnMenuToolsSwitchGame( wxCommandEvent& )
 {
   Prefs::get().setb(wxT("startup_gameselection"), true);
   Prefs::get().save();
-  wxMessageBox(_("The application will now restart"));
   restart_app();
 }
 
@@ -414,6 +413,9 @@ bool MainFrame::confirm_saving()
 
 void MainFrame::OnClose( wxCloseEvent& ev )
 {
+  wxString exec = wxGetApp().exec();
+  wxGetApp().set_exec(wxEmptyString); // we will set it again if this function does not abort
+
   wxLogDebug(wxT("MainFrame::OnClose"));
 
   if( !confirm_saving() )
@@ -433,6 +435,10 @@ void MainFrame::OnClose( wxCloseEvent& ev )
   m_displayctrl->cleanup();
 
   ev.Skip();// this->Destroy()?!
+    
+  if( !exec.empty() )
+    wxLogDebug(wxT("MainFrame::OnClose - will exec: ") + exec);
+  wxGetApp().set_exec(exec);
 }
 
 void MainFrame::OnMenuViewDefaultPerspective( wxCommandEvent& )
@@ -498,13 +504,12 @@ void MainFrame::OnUpdateViewPanes( wxUpdateUIEvent& ev )
 }
 
 // call this in the event handler used to show the wxWebUpdateDlg
-static void wxUpdateAndExit(wxFrame *caller, 
-					bool savelog = FALSE,
-     				bool restart = TRUE,
-     				const wxString &xrc = wxEmptyString, 	// --xrc option won't be given using wxEmptyString
-         			const wxString &res = wxEmptyString,	// --res option won't be given using wxEmptyString
-            		const wxString &xml = wxEmptyString,	// --xml option won't be given using wxEmptyString
-         			const wxString &uri = wxEmptyString)	// --uri option won't be given using wxEmptyString
+void MainFrame::update_and_exit(bool savelog /*= FALSE*/,
+     				bool restart /*= TRUE*/,
+     				const wxString &xrc /*= wxEmptyString*/, 	// --xrc option won't be given using wxEmptyString
+         			const wxString &res /*= wxEmptyString*/,	// --res option won't be given using wxEmptyString
+            		const wxString &xml /*= wxEmptyString*/,	// --xml option won't be given using wxEmptyString
+         			const wxString &uri /*= wxEmptyString*/)	// --uri option won't be given using wxEmptyString
 {
 	wxString opts;
  
@@ -521,35 +526,38 @@ static void wxUpdateAndExit(wxFrame *caller,
  	if (!uri.IsEmpty())
   		opts += wxT(" --uri=\"") + uri + wxT("\"");
 
-  wxLogDebug(wxT("Invoking webupdater: ") + opts);
+  //wxLogDebug(wxT("Invoking webupdater: ") + opts);
+  wxString cmd;
 #ifdef __WXMSW__
-	wxExecute(wxT("webupdater.exe") + opts);
+	cmd = wxT("webupdater.exe") + opts;
 #else	
-	wxExecute(wxT("./webupdater") + opts);
+	wxmd = (wxT("./webupdater") + opts;
 #endif
-	caller->Close(true); // FIXME this does not go through MainFrame::OnClose?!
+  wxGetApp().set_exec(cmd);
+  Close(true);
 }
 
 void MainFrame::restart_app()
 {
-  wxString cmd = wxStandardPaths::Get().GetExecutablePath();
-  wxLogDebug(wxT("restart_app() - restarting [%s]"), cmd.c_str());
-  wxExecute( cmd, wxEXEC_ASYNC );
+  wxGetApp().set_exec(wxStandardPaths::Get().GetExecutablePath());
 	Close(true);
 }
 
 
 void MainFrame::OnMenuHelpUpdate( wxCommandEvent& )
 {
-  wxLogError(wxT("FIXME: this does not go through MainFrame::OnClose"));
-
+  // we only allow the updater to be called in release version.. otherwise there will be wrong versions executed etcetc.
+  // saves some confusion.
+#ifdef NDEBUG
   wxString dd = wxStandardPaths::Get().GetDataDir() + PATH_SEP;
-  wxUpdateAndExit(this, true, true, 
+  update_and_exit(true, true, 
     dd + wxT("data/webupdater/webupdatedlg.xrc"), 
     wxT("wxWebUpdateLogDlg"),
     dd + wxT("data/webupdater/local.xml")
     );
-
+#else
+  wxLogInformation(wxT("Updater is not available in debug version"));
+#endif
 }
 
 #include <wx/sstream.h>

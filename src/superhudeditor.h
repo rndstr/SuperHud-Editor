@@ -48,6 +48,9 @@ class SHEApp : public wxApp
 
     bool is_ready() const { return m_ready; }
 
+    void set_exec( const wxString& exec ) { m_exec = exec; }
+    wxString exec() const { return m_exec; }
+
     wxCommandProcessor* cmds();
 
   protected:
@@ -58,6 +61,7 @@ class SHEApp : public wxApp
     FactoryBase *m_factory;
     HudFileBase *m_hudfile;
     bool        m_ready;
+    wxString    m_exec; ///< what command to execute after shutdown
     wxLocale    m_locale;
     wxCommandProcessor *m_commands;
 };
