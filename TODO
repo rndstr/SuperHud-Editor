@@ -9,6 +9,7 @@
 t put an unknown elementname into the hud, code adds it anyway.. what happens then..? can we delete? write?
 t the global defined messages (common.h) are they translated?
 % if several selected display only collection title in statusbar
++ autosave every X mins
 
 [UNIX] make APPRELATIVE and APPPAK also look in ~/.superhudeditor/
 [UNIX] disable the webupdater to actually update something.. just tell that there is a new version

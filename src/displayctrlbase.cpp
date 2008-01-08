@@ -272,7 +272,10 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
           }
         }
         moved = move;
-        wxGetApp().mainframe()->OnElementSelectionChanged();
+        wxGetApp().mainframe()->update_displayctrl();
+        wxGetApp().mainframe()->update_propertiesctrl();
+        // this below does tooo much so it lags quite a bit
+//        wxGetApp().mainframe()->OnElementSelectionChanged();
       }
     }
     else if( ev.LeftUp() )

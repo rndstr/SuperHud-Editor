@@ -1,5 +1,5 @@
-The colored element properties are being inherited by a parent element (!DEFAULT or the game's default value).
-While moving elements with your mouse you can press Shift to disable snapping temporarily.
-If you press Ctrl after you started moving an element it will lock to its X-/Y-axis.
-You can reset or paste to several items. Select elements while holding Shift/Control and then perform the action.
-You can move several items at once. Select elements while holding Shift/Control and then drag&drop in main view.
+_("The colored element properties are being inherited by a parent element (!DEFAULT or the game's default value).")
+_("While moving elements with your mouse you can press Shift to disable snapping temporarily.")
+_("If you press Ctrl after you started moving an element it will lock to its X-/Y-axis.")
+_("You can reset or paste to several items. Select elements while holding Shift/Control and then perform the action.")
+_("You can move several items at once. Select elements while holding Shift/Control and then drag&drop in main view.")

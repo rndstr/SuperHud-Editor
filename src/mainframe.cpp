@@ -13,6 +13,7 @@
 #include "factorybase.h"
 #include "model.h"
 #include "prefs.h"
+#include "prefsdialog.h"
 
 #include "cpma/elementsctrl.h"
 #include "cpma/propertiesnotebook.h"
@@ -228,7 +229,9 @@ void MainFrame::set_floating_hint( wxAuiManagerOption hint )
 
 void MainFrame::OnMenuToolsPreferences( wxCommandEvent& )
 {
-  wxMessageBox(wxT("Not yet available, edit config file directly:\n") + wxStandardPaths::Get().GetUserDataDir() + wxT("/") + APP_CONFIG );
+  PrefsDialog dlg(this);
+  dlg.ShowModal();
+//  wxMessageBox(wxT("Not yet available, edit config file directly:\n") + wxStandardPaths::Get().GetUserDataDir() + wxT("/") + APP_CONFIG );
 }
 
 void MainFrame::OnMenuToolsSwitchGame( wxCommandEvent& )

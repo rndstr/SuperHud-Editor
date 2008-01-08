@@ -22,6 +22,7 @@ superhudeditor_SOURCES = \
                          pakfileproperty.cpp pakfileroperty.h \
                          pakmanager.cpp pakmanager.h \
                          prefs.cpp prefs.h \
+                         prefsdialog.cpp prefsdialog.h \
                          propertiesnotebookbase.h \
                          setupwizard.cpp setupwizard.h \
                          superhudeditor.cpp superhudeditor.h \
@@ -55,7 +56,4 @@ else
 DEB = -DNDEBUG
 endif
 
-# FIXME this should go into configure.ac:AM_PATH_WXCONFIG
-# but somehow it doesn't include aui?
-superhudeditor_LDFLAGS = `wx-config --libs base,core,gl,net,aui`
 AM_CXXFLAGS = -Iwxpropgrid-1.3/include/ -DPACKAGE_PREFIX="\"$(prefix)\"" $(DEB)

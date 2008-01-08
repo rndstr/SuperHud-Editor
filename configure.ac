@@ -50,13 +50,6 @@ dnl check for opengl headers
 AC_CHECK_HEADER([GL/gl.h], , [AC_MSG_ERROR([Sorry, can't do anything for you])])
 AC_CHECK_HEADER([GL/glu.h], , [AC_MSG_ERROR([Sorry, can't do anything for you])])
 
-if test x$enable_debug = xyes; then
-  AM_PATH_WXCONFIG($reqwx, wxWin=1, , [base,core,net], [--debug])
-else
-  AM_PATH_WXCONFIG($reqwx, wxWin=1, , [base,core,net], [])
-fi
-
-
 
 dnl Checks for library functions.
 if test "$wxWin" != 1; then
@@ -76,8 +69,6 @@ CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY"
 CFLAGS="$CFLAGS $WX_CFLAGS_ONLY"
 LIBS="$LIBS $WX_LIBS"
 
-
-AC_CHECK_FUNCS([floor])
 
 AC_CONFIG_FILES([
 	Makefile
