@@ -730,12 +730,14 @@ void CPMAElement::prerender()
   switch(m_type)
   {
   case E_T_ICON:
+    wxGetApp().mainframe()->displayctrl()->SetCurrent();
     if( !m_ptex && !m_icon.empty() )
       m_ptex = new Texture(m_icon, PM_SEARCH_HUDFILE);
     break;
   case E_T_USERICON:
     if( !m_props.image.empty() )
     {
+    wxGetApp().mainframe()->displayctrl()->SetCurrent();
       if( !m_ptex )
         m_ptex = new Texture( m_props.image, PM_SEARCH_HUDFILE );
       else if( m_props.image.Cmp(m_ptex->name()) != 0 )

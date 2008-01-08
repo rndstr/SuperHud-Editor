@@ -39,6 +39,7 @@ SHEApp::SHEApp() :
 {
 
 }
+// FIXME remove this Oo
 ElementsCtrlBase* SHEApp::elementsctrl() { return m_mainframe->elementsctrl(); }
 
 bool SHEApp::OnInit()

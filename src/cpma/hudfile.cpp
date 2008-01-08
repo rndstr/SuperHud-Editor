@@ -2,6 +2,7 @@
 #include "hudfile.h"
 #include "../common.h"
 #include "../elementsctrlbase.h"
+#include "../pakmanager.h"
 
 
 #include "hudspecs.h"
@@ -12,6 +13,7 @@
 #include <wx/wfstream.h>
 #include <wx/file.h>
 #include <wx/tokenzr.h>
+#include <wx/mstream.h>
 //#include <wx/stdpaths.h>
 //#include <wx/dir.h>
 //#include <algorithm>
@@ -48,9 +50,6 @@ void CPMAHudFile::load_default_elements()
       continue;
     el = new CPMAElement(*cit);// cit->name, cit->desc, cit->enable, cit->text, cit->icon, 0, E_RECT_DEFAULT, cit->type, cit->flags, cit->has );    
     append( el );
-
-    //if( force_disable ) 
-      //hi->set_enable( false );
   }
   m_modified = false;
 }
@@ -58,20 +57,28 @@ void CPMAHudFile::load_default_elements()
 bool CPMAHudFile::load( const wxString& filename )
 {
   wxLogDebug(wxT("Loading hudfile: ") + filename);
+
   wxString content;
-  wxFileInputStream fis( filename );
+  char *buf;
+  size_t size;
+
+  if( !PakManager::get().load( &buf, filename, PM_SEARCH_EVERYWHERE, &size ) )
+  {
+    wxLogError(_("Couldn't find/load hud: %s"), filename.c_str());
+    return false;
+  }
+
+
+  wxMemoryInputStream mis( buf, size );
 
   m_load_prevel = 0;
 
-  if( !fis.Ok() )
-    return false;
-
   load_default_elements();
-  wxTextInputStream tis( fis );
+  wxTextInputStream tis( mis );
   wxString line;
   size_t pos;
   // read file line by line and remove `#' comments
-  while(!fis.Eof())
+  while(!mis.Eof())
   {
     line = tis.ReadLine();
     she::wxTrim(line);
@@ -95,7 +102,8 @@ bool CPMAHudFile::load( const wxString& filename )
     wxString str = wxString::Format(_("ERROR while parsing `%s'"), filename.c_str());
     str += wxString(err.what(), wxConvUTF8);
     wxLogError( str );
-    load_default_elements();
+    OnNew();
+//    load_default_elements();
     return false;
   }
   // removeo all non-unique elements that aren't enabled
@@ -119,10 +127,8 @@ bool CPMAHudFile::load( const wxString& filename )
       break;
   }
   
-  //if( m_had_unknown_items )
-//    wxLogWarning( wxT("You had unknown elements in your hudfile. This could be due to\nmisspellings or an outdated hudspecs file. \nTry updating your hudspecs file by visiting the website: 'Help->Visit website'") );
   m_filename = filename;
-  wxGetApp().elementsctrl()->list_refresh(m_els);
+  wxGetApp().mainframe()->update_elementsctrl();
   m_modified = false;
   return true;
 }
@@ -163,7 +169,6 @@ bool CPMAHudFile::parse_item( wxString s )
   ElementBase *el = 0; // the item we are gonna create
   if (defit == 0)
   { // warning, unknown item!
-    //m_had_unknown_items = true;
     wxLogWarning( _("Unknown elementname `%s', adding it anyway."), name.c_str() );
     el = new CPMAElement(name);
     append(el);

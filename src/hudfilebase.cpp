@@ -7,6 +7,7 @@
 #include <wx/txtstrm.h>
 #include <wx/wfstream.h>
 #include <wx/datetime.h>
+#include <wx/progdlg.h>
 
 #include <algorithm>
 using namespace std;
@@ -58,9 +59,15 @@ int HudFileBase::OnOpen( const wxString& filename /*=wxT("")*/ )
   wxGetApp().mainframe()->statusbar()->PushStatusText(wxString::Format(_("Loading hud: %s"), f.c_str()));
   wxBusyCursor wait0r;
   if( !load( f ) )
-  {
     wxLogError( _("Failed reading Hud from file `%s'"), f.c_str() );
-    wxGetApp().mainframe()->statusbar()->PopStatusText();
+
+  wxProgressDialog dlg(_("Processing elements"), wxEmptyString, m_els.size(), wxGetApp().mainframe(), 
+      wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME);
+  int i=0;
+  for( it_elements it = m_els.begin(); it != m_els.end(); ++it, ++i )
+  {
+    dlg.Update(i, (*it)->name());
+    (*it)->prerender();
   }
   wxGetApp().mainframe()->statusbar()->PopStatusText();
   return ret;
@@ -124,6 +131,8 @@ void HudFileBase::OnNew()
 {
   clear();
   load_default_elements();
+  OnOpen(wxT("hud/hud.cfg")); // load default hud
+  m_filename = wxEmptyString;
   wxGetApp().elementsctrl()->list_refresh(m_els);
 }
 

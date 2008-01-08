@@ -1,6 +1,8 @@
 #include "texture.h"
+
 #include "common.h"
 #include "pakmanager.h"
+
 #include <wx/mstream.h>
 
 

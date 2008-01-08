@@ -8,6 +8,7 @@
 ! properties dialog does not update title if detached
 t put an unknown elementname into the hud, code adds it anyway.. what happens then..? can we delete? write?
 t the global defined messages (common.h) are they translated?
+t what happens if startupfile is no longer available?
 % if several selected display only collection title in statusbar
 + autosave every X mins
 
