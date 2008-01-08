@@ -194,7 +194,7 @@ bool PakManager::load( char **buf, const wxString& fpath, int search_where, size
 
   if( found == PM_SEARCH_NOWHERE )
   {
-    wxLogDebug(wxT("PakManager::load - Cannot find file: %s"), fpath.c_str());
+    wxLogDebug(wxT("PakManager::load - WARNING Cannot find file: %s"), fpath.c_str());
     return false;
   }
   wxLogDebug(wxT("PakManager::load - Found file: %s [%s]"), fpath.c_str(), PakManager::searchwhere2string(found).c_str());
@@ -216,7 +216,7 @@ bool PakManager::load( char **buf, const wxString& fpath, int search_where, size
     }
     else
     { // we only refreshed cache
-      wxLogDebug(wxT("PakManager::load -  update ite [%d Bytes]: %s"), size, location.c_str());
+      wxLogDebug(wxT("PakManager::load -  update item [%d Bytes]: %s"), size, location.c_str());
       cont->second.buffer = *buf;
       cont->second.bufsize = size;
     }

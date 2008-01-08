@@ -88,7 +88,10 @@ class ElementBase
     virtual bool    parse_property( const wxString& cmd, wxString args );
     virtual void    write_properties( wxTextOutputStream& stream ) const;
 
-    /// some post/preprocessing functions
+    /// is called after parsing finished for this element
+    virtual void    postparse() {}
+
+    /// is called everytime before rendering
     virtual void prerender() {}
 
     /// draw on view

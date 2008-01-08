@@ -125,6 +125,7 @@ class CPMAElement : public ElementBase
 
     virtual void  write_properties( wxTextOutputStream& stream ) const;
     virtual bool  parse_property( const wxString& cmd, wxString args );
+    virtual void  postparse();
     virtual void  prerender();
     virtual void  render() const;
     virtual void copy_from( const ElementBase * const el );

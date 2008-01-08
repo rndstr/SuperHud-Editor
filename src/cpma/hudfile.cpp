@@ -258,6 +258,7 @@ bool CPMAHudFile::read_properties( ElementBase *hi, const wxString& props )
       //throw hudfilereader_parse_error( e.c_str() );
     }
   }
+  hi->postparse();
 
   return true;
 }

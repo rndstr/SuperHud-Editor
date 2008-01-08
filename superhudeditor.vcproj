@@ -413,6 +413,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\prefsdialog.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\prefsdialog.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\propertiesnotebookbase.h"
 				>
 			</File>

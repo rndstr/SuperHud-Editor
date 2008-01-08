@@ -57,7 +57,7 @@ wxPanel* PrefsDialog::create_display(wxWindow *parent)
     // begin wxGlade: prefs_display::prefs_display
     sizer_8_staticbox = new wxStaticBox(this, -1, wxT("Grid"));
     sizer_3_staticbox = new wxStaticBox(this, -1, wxT("Aspect Ratio"));
-    const wxString m_aspectratio_choices[] = {
+    const wxString m_aspectratio_choices[] = { wxT("hehe")
         
     };
     m_aspectratio = new wxComboBox(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, 0, m_aspectratio_choices, wxCB_DROPDOWN);
