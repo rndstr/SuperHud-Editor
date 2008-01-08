@@ -84,12 +84,12 @@ VoteMessageArena=type=text
 _desc=Normal votes.
 VoteMessageWorld=text=vote(3); map cpm22:type=text
 
-_desc=Frag/Cap limit (if set)
-Score_Limit=short:text=30:type=text
+_desc=Frag/Cap/Time limit (if set)
+Score_Limit=short:text=15:type=text
 _desc=Your score. Cannot be omitted. To remove place at off-screen x,y coordinates or set opaque 0. To get old RED/BLUE use color T and color E, plus bgcolor.
-Score_OWN=short:enablealways:text=112:type=text
+Score_OWN=short:enablealways:text=30:type=text
 _desc=Enemy score. Cannot be omitted. To remove place at off-screen x,y coordinates or set opaque 0. To get old RED/BLUE use color T and color E, plus bgcolor.
-Score_NME=short:enablealways:text=109:type=text
+Score_NME=short:enablealways:text=22:type=text
 
 _desc=Status of your flag. To get old RED/BLUE use color T and color E, plus bgcolor.
 FlagStatus_OWN=short:type=icon:icon=icons/flag_pm0.tga
