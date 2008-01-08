@@ -16,16 +16,19 @@ PrefsDialog::PrefsDialog(wxWindow *parent)
   m_imglist->Add(wxArtProvider::GetIcon(wxART_INFORMATION, wxART_OTHER, imgsize));
   m_imglist->Add(wxArtProvider::GetIcon(wxART_INFORMATION, wxART_OTHER, imgsize));
 
-  SetSheetStyle(wxPROPSHEET_LISTBOOK);
+  SetSheetStyle(wxPROPSHEET_SHRINKTOFIT | wxPROPSHEET_BUTTONTOOLBOOK);
+  SetSheetInnerBorder(0);
+  SetSheetOuterBorder(0);
 
 
-  Create(parent, wxID_ANY, _("Preferences"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+  Create(parent, wxID_ANY, _("Preferences"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE);
   CreateButtons( wxOK | wxCANCEL );
 
   wxBookCtrlBase *ctrl = GetBookCtrl();
   ctrl->SetImageList(m_imglist);
 
   wxPanel* display = create_display(ctrl);
+  ctrl->AddPage(display, _("Display"), true, 0);
 
   LayoutDialog();
 }
@@ -34,7 +37,115 @@ PrefsDialog::~PrefsDialog()
 {
   delete m_imglist;
 }
+#if 0
 
+wxPanel* PrefsDialog::create_display(wxWindow *parent)
+{
+    wxPanel* panel = new wxPanel(parent, wxID_ANY);
+
+    wxBoxSizer *topSizer = new wxBoxSizer( wxVERTICAL );
+
+    //// LOAD LAST FILE
+
+    wxBoxSizer* itemSizer3 = new wxBoxSizer( wxHORIZONTAL );
+    wxCheckBox* checkBox3 = new wxCheckBox(panel, wxID_ANY, _("&Load last project on startup"), wxDefaultPosition, wxDefaultSize);
+    itemSizer3->Add(checkBox3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    topSizer->Add(itemSizer3, 0, wxGROW|wxALL, 0);
+
+    //// AUTOSAVE
+
+    wxString autoSaveLabel = _("&Auto-save every");
+    wxString minsLabel = _("mins");
+
+    wxBoxSizer* itemSizer12 = new wxBoxSizer( wxHORIZONTAL );
+    wxCheckBox* checkBox12 = new wxCheckBox(panel, wxID_ANY, autoSaveLabel, wxDefaultPosition, wxDefaultSize);
+
+    wxSpinCtrl* spinCtrl12 = new wxSpinCtrl(panel, wxID_ANY, wxEmptyString,
+        wxDefaultPosition, wxSize(40, wxDefaultCoord), wxSP_ARROW_KEYS, 1, 60, 1);
+    
+    itemSizer12->Add(checkBox12, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    itemSizer12->Add(spinCtrl12, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    itemSizer12->Add(new wxStaticText(panel, wxID_STATIC, minsLabel), 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    topSizer->Add(itemSizer12, 0, wxGROW|wxALL, 0);
+
+    //// TOOLTIPS
+
+    wxBoxSizer* itemSizer8 = new wxBoxSizer( wxHORIZONTAL );
+    wxCheckBox* checkBox6 = new wxCheckBox(panel, wxID_ANY, _("Show &tooltips"), wxDefaultPosition, wxDefaultSize);
+    itemSizer8->Add(checkBox6, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    topSizer->Add(itemSizer8, 0, wxGROW|wxALL, 0);
+
+    panel->SetSizer(topSizer);
+    topSizer->Fit(panel);
+
+    return panel;
+
+
+}
+#elif 0
+
+wxPanel* PrefsDialog::create_display(wxWindow *parent)
+{
+    wxPanel* panel = new wxPanel(parent, wxID_ANY);
+
+    wxBoxSizer *topSizer = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer *item0 = new wxBoxSizer( wxVERTICAL );
+
+    //// LOAD LAST FILE
+
+    wxBoxSizer* itemSizer3 = new wxBoxSizer( wxHORIZONTAL );
+    wxCheckBox* checkBox3 = new wxCheckBox(panel, wxID_ANY, _("&Load last project on startup"), wxDefaultPosition, wxDefaultSize);
+    itemSizer3->Add(checkBox3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    item0->Add(itemSizer3, 0, wxGROW|wxALL, 0);
+
+    //// AUTOSAVE
+
+    wxString autoSaveLabel = _("&Auto-save every");
+    wxString minsLabel = _("mins");
+
+    wxBoxSizer* itemSizer12 = new wxBoxSizer( wxHORIZONTAL );
+    wxCheckBox* checkBox12 = new wxCheckBox(panel, wxID_ANY, autoSaveLabel, wxDefaultPosition, wxDefaultSize);
+
+    wxSpinCtrl* spinCtrl12 = new wxSpinCtrl(panel, wxID_ANY, wxEmptyString,
+        wxDefaultPosition, wxSize(40, wxDefaultCoord), wxSP_ARROW_KEYS, 1, 60, 1);
+    
+    itemSizer12->Add(checkBox12, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    itemSizer12->Add(spinCtrl12, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    itemSizer12->Add(new wxStaticText(panel, wxID_STATIC, minsLabel), 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    item0->Add(itemSizer12, 0, wxGROW|wxALL, 0);
+
+    //// TOOLTIPS
+
+    wxBoxSizer* itemSizer8 = new wxBoxSizer( wxHORIZONTAL );
+    wxCheckBox* checkBox6 = new wxCheckBox(panel, wxID_ANY, _("Show &tooltips"), wxDefaultPosition, wxDefaultSize);
+    itemSizer8->Add(checkBox6, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    item0->Add(itemSizer8, 0, wxGROW|wxALL, 0);
+
+    topSizer->Add( item0, 1, wxGROW|wxALIGN_CENTRE|wxALL, 5 );
+
+    panel->SetSizer(topSizer);
+    topSizer->Fit(panel);
+
+    return panel;
+
+
+}
+
+#elif 1
+
+wxPanel* PrefsDialog::create_display(wxWindow *parent)
+{
+  wxPanel *panel = new wxPanel(parent, wxID_ANY);
+  wxStaticText* label_1;
+  label_1 = new wxStaticText(this, wxID_ANY, wxT("01234567890fu fu fu fu fu fufu fu fu fu fu fufufu fu fu fuf uf fufuf ufu fu fu uff"));
+  wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
+    sizer_1->Add(label_1, 0, wxLEFT, 40);
+    panel->SetSizer(sizer_1);
+    sizer_1->Fit(panel);
+    return panel;
+}
+
+#else
 
 wxPanel* PrefsDialog::create_display(wxWindow *parent)
 {
@@ -89,7 +200,7 @@ wxPanel* PrefsDialog::create_display(wxWindow *parent)
     sizer_3->Add(sizer_4, 0, wxEXPAND, 0);
     sizer_3->Add(label_4, 1, wxALL|wxEXPAND, 5);
     top_sizer->Add(sizer_3, 0, wxEXPAND, 0);
-    sizer_9->Add(label_10, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 3);
+    sizer_9->Add(label_10, 0, wxALL|wxALIGN_CENTER_VERTICAL| wxADJUST_MINSIZE, 3);
     sizer_9->Add(m_gridX, 0, wxALL|wxADJUST_MINSIZE, 3);
     sizer_9->Add(label_11, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 3);
     sizer_9->Add(m_gridY, 0, wxALL|wxADJUST_MINSIZE, 3);
@@ -104,5 +215,5 @@ wxPanel* PrefsDialog::create_display(wxWindow *parent)
 }
 
 
-
+#endif
 

@@ -556,7 +556,7 @@ void MainFrame::OnMenuHelpUpdate( wxCommandEvent& )
     dd + wxT("data/webupdater/local.xml")
     );
 #else
-  wxLogInformation(wxT("Updater is not available in debug version"));
+  wxLogMessage(wxT("Updater is not available in debug version"));
 #endif
 }
 
