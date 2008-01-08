@@ -1,0 +1,12 @@
+(since 0.2.0)
+
+* elements can be reset (i.e. everything except visibility is put back to default)
+* you may now select multiple elements at once and apply an action:
+  - reset 
+  - reorder in elements list (drag&drop)
+  - change position on hud (drag&drop on hud)
+  - paste
+  - delete (only removable elements)
+* copy&paste can be accessed everywhere with Ctrl+C/Ctrl+V
+* put focus on elements list (F7) or hud (F8)
+* in elements list: press a key (a-z) to select next element that begins with that key
