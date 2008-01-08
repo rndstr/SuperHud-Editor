@@ -71,6 +71,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_mgr.SetManagedWindow(this);
 
   // create menu
+  wxMenuItem *item;
   wxMenuBar *menu_bar = new wxMenuBar;
 
   wxMenu *file_menu = new wxMenu;
@@ -97,7 +98,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   tools_menu->AppendCheckItem( ID_MENU_TOOLS_SNAPELEMENTS, _("&Snap to &Elements") );
   tools_menu->AppendCheckItem( ID_MENU_TOOLS_SNAPGRID, _("Snap to &Grid") );
   tools_menu->AppendSeparator();
-  tools_menu->Append( ID_MENU_TOOLS_PREFERENCES, _("&Preferences\tCtrl+P") );
+  item = tools_menu->Append( ID_MENU_TOOLS_PREFERENCES, _("&Preferences\tCtrl+P") );
+  item->SetBitmap(wxArtProvider::GetBitmap(wxART_HELP_SETTINGS, wxART_MENU, wxSize(16,16)));
   menu_bar->Append( tools_menu, _("&Tools") );
   tools_menu->Check( ID_MENU_TOOLS_SNAPELEMENTS, Prefs::get().var(wxT("view_snapelements")).boolval() );
   tools_menu->Check( ID_MENU_TOOLS_SNAPGRID, Prefs::get().var(wxT("view_snapgrid")).boolval() );
