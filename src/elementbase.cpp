@@ -130,8 +130,8 @@ void ElementBase::convert( double from, double to, bool size, bool stretchpositi
       else
       {
         // transform
-        int neww = (int)(width/ratio);
-        r.x += (int)((neww - width)/2.0);
+        int neww = (int)(width*ratio);
+        r.x -= (int)((neww - width)/2.0);
         // scale
         r.x = (int)(r.x*ratio);
       }
