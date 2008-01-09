@@ -289,6 +289,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\convertdialog.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\convertdialog.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\displayctrlbase.cpp"
 				>
 			</File>

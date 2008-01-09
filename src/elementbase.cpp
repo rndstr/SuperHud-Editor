@@ -96,22 +96,45 @@ void ElementBase::convert( double from, double to, bool size, bool stretchpositi
     if( size )
       r.width = (int)(r.width*ratio);
     if( stretchposition )
-    { // stretch positions to correct place
+    { // as we resized the elements, those that leaned against right border/other elements
+      // won't anymore. so we will move them to the right the amount we resized (as we did not change position while resizing)
+
       // if completely on left half of screen we make sure left side will be as before (already is)
       // if completely on right half of screen we move it to the right the amount we cut off the right side
       // if on left _and_ right side we restore the width (TODO maybe also restore width/height ratio?)
-      if( m_rect.x > width/2.0 )
+
+      // this is an invertible transformation
+      if( m_rect.x > width/2.0 ) // element is on right hand side
         r.x += m_rect.width - r.width;
-      else if( m_rect.x + m_rect.width > width/2.0 )
-      { // on both sides
+      else if( m_rect.x + m_rect.width > width/2.0 ) // element crosses middleline
         r.width = m_rect.width;
-      }
     }
     else
-    { // move to center
-      r.x = (int)(r.x*ratio);
-      int neww = (int)(width/ratio);
-      r.x += (int)((neww - width)/2.0);
+    { // the position wasn't touched so far and the user chose not to stretch the boundaries to 
+      // fill the new area but to move it to the center.
+      // i.e. if we go from 4:3 to 16:10 there will be empty space left&right after this
+
+      // 4:3 to 16:10 = scale * translate
+      // 16:10 to 4:3 = translate * scale
+      // -> not invertible
+
+      // move to center
+      if( ratio < 1.0 )
+      {
+        // scale
+        r.x = (int)(r.x*ratio);
+        // transform
+        int neww = (int)(width/ratio);
+        r.x += (int)((neww - width)/2.0);
+      }
+      else
+      {
+        // transform
+        int neww = (int)(width/ratio);
+        r.x += (int)((neww - width)/2.0);
+        // scale
+        r.x = (int)(r.x*ratio);
+      }
     }
     m_rect = r;
   }
