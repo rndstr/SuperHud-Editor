@@ -92,6 +92,9 @@ class HudFileBase
     elements_type         m_els;
     bool                  m_modified;
     wxString              m_filename;
+    /// options that have been set in the comments of the hudfile
+    /// like `version' `view_aspectratio'
+    wxArrayString         m_options; 
 };
 
 

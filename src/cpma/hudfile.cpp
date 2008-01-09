@@ -56,7 +56,7 @@ void CPMAHudFile::load_default_elements()
 
 bool CPMAHudFile::load( const wxString& filename )
 {
-  wxLogDebug(wxT("Loading hudfile: ") + filename);
+  wxLogDebug(wxT("Loading HUD: ") + filename);
 
   wxString content;
   char *buf;
@@ -64,7 +64,7 @@ bool CPMAHudFile::load( const wxString& filename )
 
   if( !PakManager::get().load( &buf, filename, PM_SEARCH_EVERYWHERE, &size ) )
   {
-    wxLogError(_("Couldn't find/load hud: %s"), filename.c_str());
+    wxLogError(_("Couldn't find/load HUD: %s"), filename.c_str());
     return false;
   }
 

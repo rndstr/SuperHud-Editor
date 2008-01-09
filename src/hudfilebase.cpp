@@ -42,7 +42,7 @@ int HudFileBase::OnOpen( const wxString& filename /*=wxT("")*/ )
         _("Open..."),
         wxT(""),
         wxT(""),
-        wxT("Hud Files (*.cfg)|*.cfg|All Files (*.*)|*.*"),
+        wxT("HUD Files (*.cfg)|*.cfg|All Files (*.*)|*.*"),
   #if wxCHECK_VERSION(2,7,0)
         wxFD_OPEN | wxFD_FILE_MUST_EXIST
   #else
@@ -56,11 +56,12 @@ int HudFileBase::OnOpen( const wxString& filename /*=wxT("")*/ )
 
   wxASSERT( !f.empty() );
 
-  wxGetApp().mainframe()->statusbar()->PushStatusText(wxString::Format(_("Loading hud: %s"), f.c_str()));
+  wxGetApp().mainframe()->statusbar()->PushStatusText(wxString::Format(_("Loading HUD: %s"), f.c_str()));
   wxBusyCursor wait0r;
   if( !load( f ) )
-    wxLogError( _("Failed reading Hud from file `%s'"), f.c_str() );
+    wxLogError( _("Failed reading HUD from file `%s'"), f.c_str() ); // default elements have been loaded
 
+  // load icons for elements
   wxProgressDialog dlg(_("Processing elements"), wxEmptyString, m_els.size(), wxGetApp().mainframe(), 
       wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME);
   int i=0;
@@ -101,12 +102,12 @@ int HudFileBase::OnSave( )
   if( Prefs::get().var(wxT("save_backup")) && wxFile::Exists(m_filename)  )
   {
     wxString target = m_filename + wxT(".bak");
-    wxGetApp().mainframe()->statusbar()->PushStatusText(wxString::Format(_("Creating backup hud: %s"), target.c_str()));
+    wxGetApp().mainframe()->statusbar()->PushStatusText(wxString::Format(_("Copying backup HUD: %s"), target.c_str()));
     if( !wxCopyFile( m_filename, target, true ) )
-      wxLogError( _("Failed creating backup hud: %s"), target.c_str() );
+      wxLogError( _("Failed copying backup HUD: %s"), target.c_str() );
     wxGetApp().mainframe()->statusbar()->PopStatusText();
   }
-  wxGetApp().mainframe()->statusbar()->PushStatusText(wxString::Format(_("Saving hud: %s"), m_filename.c_str()));
+  wxGetApp().mainframe()->statusbar()->PushStatusText(wxString::Format(_("Saving HUD: %s"), m_filename.c_str()));
   wxBusyCursor wait;
   if( !save( m_filename ) )
   {

@@ -10,7 +10,7 @@
 
 
 ConvertDialog::ConvertDialog(wxWindow* parent):
-    wxDialog(parent, wxID_ANY, _("Convert Hud"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
+    wxDialog(parent, wxID_ANY, _("Convert HUD"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE)
 {
     // begin wxGlade: ConvertDialog::ConvertDialog
     sizer_5_staticbox = new wxStaticBox(this, -1, wxT("Convert To"));

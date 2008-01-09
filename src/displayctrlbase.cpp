@@ -481,6 +481,8 @@ void DisplayCtrlBase::reset_projection_mode()
 
 void DisplayCtrlBase::prepare2d()
 {
+  SetCurrent();
+
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black Background
   glEnable(GL_TEXTURE_2D);   // textures
   glEnable(GL_COLOR_MATERIAL);
@@ -537,6 +539,8 @@ void DisplayCtrlBase::prepare2d()
 
 void DisplayCtrlBase::prepare3d()
 {
+  SetCurrent();
+
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black Background
   glClearDepth(1.0f);	// Depth Buffer Setup
   glEnable(GL_DEPTH_TEST); // Enables Depth Testing

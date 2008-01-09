@@ -97,7 +97,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   wxMenu *tools_menu = new wxMenu;
   tools_menu->Append( ID_MENU_TOOLS_SWITCHGAME, _("&Switch Game") );
   tools_menu->AppendSeparator();
-  tools_menu->Append( ID_MENU_TOOLS_CONVERT, _("Convert &Hud") );
+  tools_menu->Append( ID_MENU_TOOLS_CONVERT, _("Convert &HUD") );
   tools_menu->AppendSeparator();
   tools_menu->AppendCheckItem( ID_MENU_TOOLS_SNAPELEMENTS, _("&Snap to &Elements") );
   tools_menu->AppendCheckItem( ID_MENU_TOOLS_SNAPGRID, _("Snap to &Grid") );
@@ -119,7 +119,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   view_layout_submenu->AppendCheckItem( ID_MENU_VIEW_TOOLBAR_FILE, _("Toolbar &File"), _("Display the file toolbar") );
   m_view_menu->AppendSubMenu(view_layout_submenu, _("&Layout"), _("Select which panes you would like to be visible or not"));
   m_view_menu->AppendSeparator();
-  m_view_menu->AppendCheckItem( ID_MENU_VIEW_GRID, _("Display &Grid\tCtrl+G"), _("Draws a grid over the hud") );
+  m_view_menu->AppendCheckItem( ID_MENU_VIEW_GRID, _("Display &Grid\tCtrl+G"), _("Draws a grid over the HUD") );
   m_view_menu->AppendSeparator();
   //m_view_menu->Append( ID_MENU_VIEW_FOCUSPROPERTIES, _("Focus Properties\tF6") );
   m_view_menu->Append( ID_MENU_VIEW_FOCUSELEMENTS, _("Focus Elementlist\tF7") );
@@ -325,7 +325,7 @@ void MainFrame::OnMenuSaveAs( wxCommandEvent& )
       _("Save As..."),
       wxT(""),
       wxT(""),
-      wxT("Hud Files (*.cfg)|*.cfg|All Files (*.*)|*.*"),
+      wxT("SuperHUD Files (*.cfg)|*.cfg|All Files (*.*)|*.*"),
 #if wxCHECK_VERSION(2,7,0)
       wxFD_SAVE | wxFD_OVERWRITE_PROMPT
 #else // 2.6
@@ -339,7 +339,7 @@ void MainFrame::OnMenuSaveAs( wxCommandEvent& )
   
   wxBeginBusyCursor();
   if( !wxGetApp().hudfile()->save( filename ) )
-    wxLogError( _("Failed writing Hud to `%s'"), filename.c_str() );
+    wxLogError( _("Failed writing HUD to `%s'"), filename.c_str() );
   update_title();
   wxEndBusyCursor();
 }
@@ -396,7 +396,7 @@ int MainFrame::confirm_savechanges_dlg()
 {
   wxMessageDialog dlg(
       this,
-      _("Save changes to the current Hud?"),
+      _("Save changes to the current HUD?"),
       _("Confirm"),
       wxYES_NO|wxCANCEL|wxYES_DEFAULT|wxICON_QUESTION );
   return dlg.ShowModal();
