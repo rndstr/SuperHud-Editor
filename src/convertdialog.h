@@ -38,15 +38,15 @@ private:
 protected:
     // begin wxGlade: ConvertDialog::attributes
     wxStaticBox* sizer_6_staticbox;
-    wxStaticBox* sizer_5_staticbox;
     wxStaticBox* sizer_4_staticbox;
-    wxStaticText* label_1;
+    wxStaticText* label_3;
     wxChoice* m_aspectratio_from;
-    wxStaticText* label_1_copy;
+    wxStaticText* label_4;
     wxChoice* m_aspectratio_to;
     wxCheckBox* m_fontsize;
     wxCheckBox* m_size;
     wxCheckBox* m_stretchposition;
+    wxStaticText* label_2;
     wxButton* button_1;
     wxButton* button_2;
     // end wxGlade
