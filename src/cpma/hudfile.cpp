@@ -270,11 +270,10 @@ bool CPMAHudFile::save( const wxString& filename )
   wxFFileOutputStream file( filename.c_str() );
   if( !file.Ok() )
     return false;
+
   wxTextOutputStream stream( file );
-  wxDateTime dt(wxDateTime::Now());
+  write_header(stream);
   
-  stream << wxT("# written by ") << APP_NAME << wxT(" v") << APP_VERSION << wxT(" on ") << dt.FormatISODate() << wxT(" ") << dt.FormatISOTime() << wxT("\n");
-  stream << wxT("# ") << APP_URL << wxT("\n");
 
   for( cit_elements it = m_els.begin(); it != m_els.end(); ++it )
   {

@@ -86,22 +86,16 @@ bool ElementBase::is_selected() const
 }
 
 
-void ElementBase::convert( int fromarx, int fromary, int arx, int ary, bool size, bool keepwindow, bool fontsize)
+void ElementBase::convert( double from, double to, bool size, bool stretchposition, bool fontsize)
 {
-  double ratio = (fromarx/(double)fromary)/(arx/(double)ary);
+  double ratio = from/to;
   int width = wxGetApp().mainframe()->displayctrl()->width();
   if( m_has & E_HAS_RECT )
   {
     wxRect r = m_rect;
     if( size )
-      r.width *= ratio;
-    if( keepwindow )
-    {
-      r.x *= ratio;
-      int neww = width/ratio;
-      r.x += (neww - width)/2.0;
-    }
-    else
+      r.width = (int)(r.width*ratio);
+    if( stretchposition )
     { // stretch positions to correct place
       // if completely on left half of screen we make sure left side will be as before (already is)
       // if completely on right half of screen we move it to the right the amount we cut off the right side
@@ -112,6 +106,12 @@ void ElementBase::convert( int fromarx, int fromary, int arx, int ary, bool size
       { // on both sides
         r.width = m_rect.width;
       }
+    }
+    else
+    { // move to center
+      r.x = (int)(r.x*ratio);
+      int neww = (int)(width/ratio);
+      r.x += (int)((neww - width)/2.0);
     }
     m_rect = r;
   }

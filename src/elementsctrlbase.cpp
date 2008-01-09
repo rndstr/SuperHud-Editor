@@ -267,7 +267,7 @@ void ElementsCtrlBase::list_refresh( const elements_type& elements )
   for( cit_elements cit = elements.begin(); cit != elements.end(); ++cit )
     append(*cit);
 
-  int collnamecount = Prefs::get().var(wxT("elements_collnamecount")).intval();
+  int collnamecount = Prefs::get().var(wxT("elements_collnamecount")).ival();
   if( Prefs::get().var(wxT("elements_collections")) )
   {
     // now insert collection items

@@ -205,8 +205,8 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
     {
       if( m_drag_mode == DRAG_START )
       { // initialize
-        if( abs(m_drag_start.x - clientpos.x) <= Prefs::get().var(wxT("view_dragthreshold")).intval() &&
-            abs(m_drag_start.y - clientpos.y) <= Prefs::get().var(wxT("view_dragthreshold")).intval() )
+        if( abs(m_drag_start.x - clientpos.x) <= Prefs::get().var(wxT("view_dragthreshold")).ival() &&
+            abs(m_drag_start.y - clientpos.y) <= Prefs::get().var(wxT("view_dragthreshold")).ival() )
           return;
         m_drag_mode = DRAG_DRAGGING;
         // fix m_drag_start to point lefttop
@@ -324,7 +324,7 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
 
 Vec2 DisplayCtrlBase::snap_to_grid() const
 {
-  if( !Prefs::get().var(wxT("view_snapgrid")).boolval() )
+  if( !Prefs::get().var(wxT("view_snapgrid")).bval() )
     return Vec2(0,0);
 
   wxASSERT_MSG( m_drag_el != 0, wxT("need a valid element") );
@@ -351,7 +351,7 @@ Vec2 DisplayCtrlBase::snap_to_grid() const
 
 Vec2 DisplayCtrlBase::snap_to_elements() const
 {
-  if( !Prefs::get().var(wxT("view_snapelements")).boolval() )
+  if( !Prefs::get().var(wxT("view_snapelements")).bval() )
     return Vec2(0,0);
 
   wxASSERT_MSG( m_drag_el != 0, wxT("need a valid element") );
@@ -494,7 +494,7 @@ void DisplayCtrlBase::prepare2d()
   double w = (double)GetSize().x;
   double h = (double)GetSize().y;
   int hudw = width(), hudh = height();
-  double aspectcorrect = (w/h)/Prefs::get().var(wxT("view_aspectratio")).floatval();
+  double aspectcorrect = (w/h)/Prefs::get().var(wxT("view_aspectratio")).dval();
   double empty; // how much space left/right or bottom/top has to be empty
 
   // topleft is 0,0
@@ -588,10 +588,10 @@ void DisplayCtrlBase::render_helper( const wxRect& rect, bool selected /*= false
   // -- draw helper outline
   if( selected )
   {
-    Prefs::get().var(wxT("view_helper_fill_selected")).colorval().glBind();
+    Prefs::get().var(wxT("view_helper_fill_selected")).cval().glBind();
     she::draw_rect(rect);
 
-    Prefs::get().var(wxT("view_helper_border_selected")).colorval().glBind();
+    Prefs::get().var(wxT("view_helper_border_selected")).cval().glBind();
   glBegin( GL_LINE_LOOP );
     glVertex2i( rect.GetLeft(), rect.GetBottom() );
     glVertex2i( rect.GetRight(), rect.GetBottom() );
@@ -601,10 +601,10 @@ void DisplayCtrlBase::render_helper( const wxRect& rect, bool selected /*= false
   }
   else
   {
-    Prefs::get().var(wxT("view_helper_fill")).colorval().glBind();
+    Prefs::get().var(wxT("view_helper_fill")).cval().glBind();
     she::draw_rect(rect);
 
-    Prefs::get().var(wxT("view_helper_border")).colorval().glBind();
+    Prefs::get().var(wxT("view_helper_border")).cval().glBind();
   glBegin( GL_LINE_LOOP );
     glVertex2i( rect.GetLeft(), rect.GetBottom() );
     glVertex2i( rect.GetRight(), rect.GetBottom() );

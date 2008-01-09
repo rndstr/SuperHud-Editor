@@ -16,7 +16,7 @@
 
 bool CPMAHudSpecs::load()
 {
-  wxString hudspecs = Prefs::get().var(wxT("q3_hudspecs")).stringval();
+  wxString hudspecs = Prefs::get().var(wxT("q3_hudspecs")).sval();
   
   m_items.clear();
 

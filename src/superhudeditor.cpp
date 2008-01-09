@@ -121,7 +121,7 @@ bool SHEApp::OnInit()
       Prefs::get().set(wxT("view_aspectratio"), wizard.aspectratio());
     }
   }
-  else if( Prefs::get().var(wxT("q3_gamedir")).stringval().empty() )
+  else if( Prefs::get().var(wxT("q3_gamedir")).sval().empty() )
   {
     SetupWizard wizard(0);
     if( wizard.RunWizard(wizard.GetFirstPage()) )
@@ -151,14 +151,14 @@ int SHEApp::OnRun()
   wxLogDebug(wxT("SHEApp::OnRun"));
   m_hudfile->OnNew();
   m_mainframe->update_title();
-  if( Prefs::get().var(wxT("startup_load")) && !Prefs::get().var(wxT("startup_loadfile")).stringval().empty() )
+  if( Prefs::get().var(wxT("startup_load")) && !Prefs::get().var(wxT("startup_loadfile")).sval().empty() )
     m_hudfile->OnOpen( Prefs::get().var(wxT("startup_loadfile")) );
   m_mainframe->update_title();
 
   PakManager::get().debug();
   m_ready = true;
 
-  if( Prefs::get().var(wxT("startup_tips")).boolval() )
+  if( Prefs::get().var(wxT("startup_tips")).bval() )
   {
     wxCommandEvent plaarfz;
     m_mainframe->OnMenuHelpTip(plaarfz);
@@ -199,10 +199,10 @@ wxCommandProcessor* SHEApp::cmds()
 
 bool SHEApp::is_cpma() const
 {
-  return (Prefs::get().var(wxT("game")).stringval().CmpNoCase(wxT("cpma")) == 0);
+  return (Prefs::get().var(wxT("game")).sval().CmpNoCase(wxT("cpma")) == 0);
 }
 
 bool SHEApp::is_q4max() const
 {
-  return (Prefs::get().var(wxT("game")).stringval().CmpNoCase(wxT("q4max")) == 0);
+  return (Prefs::get().var(wxT("game")).sval().CmpNoCase(wxT("q4max")) == 0);
 }

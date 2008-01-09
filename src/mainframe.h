@@ -101,7 +101,7 @@ class MainFrame : public wxFrame
     void OnMenuUndo( wxCommandEvent& );
     void OnMenuRedo( wxCommandEvent& );
     void OnMenuToolsSwitchGame( wxCommandEvent& );
-    void OnMenuToolsConvertWidescreen( wxCommandEvent& );
+    void OnMenuToolsConvert( wxCommandEvent& );
     void OnMenuToolsPreferences( wxCommandEvent& );
     void OnMenuToolsSnapElements( wxCommandEvent& );
     void OnMenuToolsSnapGrid( wxCommandEvent& );

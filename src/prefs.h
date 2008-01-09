@@ -10,7 +10,7 @@
 enum
 {
   PVT_ANY, ///< valid as well but we don't do checks upon int/float/boolval() and there is no conversion stored
-  PVT_FLOAT,
+  PVT_DOUBLE,
   PVT_INT,
   PVT_BOOL,
   PVT_COLOR,
@@ -33,35 +33,34 @@ class Variable
   public:
     Variable( const wxString& name, const wxString& def = wxT(""), int type = PVT_ANY, int flags = PVF_NONE );
 
-    int intval() const
+    int ival() const
     { 
       wxASSERT_MSG( m_type == PVT_ANY || m_type == PVT_INT, m_name );
-      return ival;
+      return intval;
     }
-    float floatval() const
+    double dval() const
     {
-      wxASSERT_MSG( m_type == PVT_ANY || m_type == PVT_FLOAT, m_name );
-      return fval;
+      wxASSERT_MSG( m_type == PVT_ANY || m_type == PVT_DOUBLE, m_name );
+      return doubleval;
     }
-    bool boolval() const
+    bool bval() const
     {
       wxASSERT_MSG( m_type == PVT_ANY || m_type == PVT_BOOL, m_name );
-      return bval;
+      return boolval;
     }
-    Color4 colorval() const
+    Color4 cval() const
     {
       wxASSERT_MSG( m_type == PVT_ANY || m_type == PVT_COLOR, m_name );
-      return cval;
+      return colorval;
     }
-    wxColour wxcolorval() const
+    wxColour wxcval() const
     {
       wxASSERT_MSG( m_type == PVT_ANY || m_type == PVT_COLOR, m_name );
-      return cval.to_wxColour();
+      return colorval.to_wxColour();
     }
 
-    wxString stringval() const
+    wxString sval() const
     {
-      wxASSERT_MSG( m_type == PVT_ANY || m_type == PVT_STRING, m_name );
       return (m_isset ? m_value : m_def);
     }
 
@@ -69,11 +68,11 @@ class Variable
     void write();
     void set( const wxString& str, bool isset = true );
 
-    operator bool() const { return boolval(); }
-    operator Color4() const { return colorval(); }
-    operator float() const { return floatval(); }
-    operator int() const { return intval(); }
-    operator wxString() const { return stringval(); }
+    operator bool() const { return bval(); }
+    operator Color4() const { return cval(); }
+    operator double() const { return dval(); }
+    operator int() const { return ival(); }
+    operator wxString() const { return sval(); }
 
 
   protected:
@@ -88,10 +87,10 @@ class Variable
     bool      m_uptodate;
     // store conversions
     // FIXME this is waste of space, union?
-    float     fval;
-    int       ival;
-    bool      bval;
-    Color4    cval;
+    double    doubleval;
+    int       intval;
+    bool      boolval;
+    Color4    colorval;
 };
 
 typedef std::map<wxString, Variable> variables_type;

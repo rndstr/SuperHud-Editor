@@ -210,16 +210,25 @@ bool HudFileBase::move_element_after( ElementBase *el, ElementBase *after )
   return true;
 }
 
+void HudFileBase::write_header( wxTextOutputStream& stream )
+{
+  wxDateTime dt(wxDateTime::Now());
+  stream << wxT("# written by ") << APP_NAME << wxT(" v") << APP_VERSION << wxT(" on ") << dt.FormatISODate() << wxT(" ") << dt.FormatISOTime() << wxT("\n");
+  stream << wxT("# ") << APP_URL << wxT("\n");
+  stream << wxT("# -- DO NOT EDIT THE NEXT FEW LINES--\n");
+  stream << wxT("# version = ") << APP_VERSION << wxT("\n");
+  stream << wxT("# view_aspectratio = ") << Prefs::get().var(wxT("view_aspectratio")).sval() << wxT("\n");
+  stream << wxT("# -----------------------------------\n");
+}
+
 bool HudFileBase::save( const wxString& filename )
 {
   wxFFileOutputStream file( filename.c_str() );
   if( !file.Ok() )
     return false;
+
   wxTextOutputStream stream( file );
-  wxDateTime dt(wxDateTime::Now());
-  
-  stream << wxT("# written by ") << APP_NAME << wxT(" v") << APP_VERSION << wxT(" on ") << dt.FormatISODate() << wxT(" ") << dt.FormatISOTime() << wxT("\n");
-  stream << wxT("# ") << APP_URL << wxT("\n");
+  write_header(stream);
 
   for( cit_elements it = m_els.begin(); it != m_els.end(); ++it )
     write_element( stream, *(*it) );
@@ -270,9 +279,9 @@ const ElementBase* HudFileBase::get_parent( const ElementBase * const from, int 
   return d;
 }
 
-void HudFileBase::convert_all( int fromarx, int fromary, int arx, int ary, bool size, bool position, bool fontsize)
+void HudFileBase::convert_all( double from, double to, bool size, bool stretchposition, bool fontsize)
 {
   // as all huds are stored with 640x480 we 
   for( it_elements it = m_els.begin(); it != m_els.end(); ++it )
-    (*it)->convert( fromarx, fromary, arx, ary, size, position, fontsize);
+    (*it)->convert( from, to, size, stretchposition, fontsize);
 }

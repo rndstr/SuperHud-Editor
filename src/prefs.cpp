@@ -57,35 +57,20 @@ void Variable::set( const wxString& str, bool isset /*=true*/ )
   {
     long val;
     m_value.ToLong(&val);
-    ival = static_cast<int>(val);
+    intval = static_cast<int>(val);
   }
-  else if( m_type == PVT_FLOAT )
+  else if( m_type == PVT_DOUBLE )
   {
-    double val;
-    if( m_value.ToDouble(&val) )
-      fval = static_cast<float>(val);
-    else
-    { // maybe it's 4:3 ?
-      size_t pos = m_value.Find(wxT(":"));
-      if( pos != wxString::npos )
-      {
-        long lhs, rhs;
-        if( !m_value.Left(pos).ToLong(&lhs) || !m_value.Right(m_value.length() - pos - 1).ToLong(&rhs) )
-        {
-          wxLogError(wxT("Invalid value for aspectratio"));
-        }
-        else
-          fval = static_cast<float>(lhs)/static_cast<float>(rhs);
-      }
-    }
+    if( !she::ratio_string2double(m_value, &doubleval) )
+      wxLogError(wxT("Invalid value for aspectratio"));
   }
   else if( m_type == PVT_BOOL )
   {
-    bval = (m_value == wxT("true") || m_value == wxT("yes") || m_value == wxT("1"));
+    boolval = (m_value == wxT("true") || m_value == wxT("yes") || m_value == wxT("1"));
   }
   else if( m_type == PVT_COLOR )
   {
-    cval.set(m_value);
+    colorval.set(m_value);
   }
 }
 
@@ -150,7 +135,7 @@ void Prefs::load()
   addvar(wxT("app_maximized"), wxT("false"), PVT_BOOL);
   addvar(wxT("app_width"), wxT("-1"), PVT_INT);
   addvar(wxT("app_height"), wxT("-1"), PVT_INT);
-  addvar(wxT("view_aspectratio"), wxT("4:3"), PVT_FLOAT, PVF_NOARCHIVE);
+  addvar(wxT("view_aspectratio"), wxT("4:3"), PVT_DOUBLE, PVF_NOARCHIVE);
   addvar(wxT("view_grid"), wxT("true"), PVT_BOOL);
   addvar(wxT("view_gridX"), wxT("12"), PVT_INT);
   addvar(wxT("view_gridY"), wxT("12"), PVT_INT);

@@ -17,10 +17,10 @@ CPMAPropertiesNotebook::CPMAPropertiesNotebook( wxWindow *parent ) :
 {
   wxPropertyGrid::SetBoolChoices(_("On"), _("Off"));
 
-  wxColour col = Prefs::get().var(wxT("props_color")).wxcolorval();
-  wxColour bgcol = Prefs::get().var(wxT("props_bgcolor")).wxcolorval();
-  wxColour icol = Prefs::get().var(wxT("props_inheritcolor")).wxcolorval();
-  wxColour ibgcol = Prefs::get().var(wxT("props_inheritbgcolor")).wxcolorval();
+  wxColour col = Prefs::get().var(wxT("props_color")).wxcval();
+  wxColour bgcol = Prefs::get().var(wxT("props_bgcolor")).wxcval();
+  wxColour icol = Prefs::get().var(wxT("props_inheritcolor")).wxcval();
+  wxColour ibgcol = Prefs::get().var(wxT("props_inheritbgcolor")).wxcval();
 
   m_vis = new VisibilityPropertiesCtrl(this);
   m_font = new FontPropertiesCtrl(this);

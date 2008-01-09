@@ -153,10 +153,10 @@ void CPMADisplayCtrl::render()
     {
       glDisable(GL_TEXTURE_2D);
       // grid
-      Prefs::get().var(wxT("grid_color")).colorval().glBind();
+      Prefs::get().var(wxT("grid_color")).cval().glBind();
       glBegin(GL_POINTS);
-      for( int x=0; x < WIDTH; x += Prefs::get().var(wxT("view_gridX")).intval() )
-        for( int y=0; y < HEIGHT; y += Prefs::get().var(wxT("view_gridY")).intval() )
+      for( int x=0; x < WIDTH; x += Prefs::get().var(wxT("view_gridX")).ival() )
+        for( int y=0; y < HEIGHT; y += Prefs::get().var(wxT("view_gridY")).ival() )
           glVertex2i(x, y);
       glEnd();
       glEnable(GL_TEXTURE_2D);

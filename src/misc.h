@@ -59,6 +59,10 @@ namespace she
 
   int common_start( const wxString& lhs, const wxString& rhs );
 
+  /// convert a ratiovalue (a:b) to a real double
+  /// @returns True if successfull otherwise false
+  bool ratio_string2double( const wxString& ratio, double *val );
+
 
   /// Checks if the latest version is newer than our.
   /// @return <0 if our<latest, =0 if our=latest, >0 if our>latest.

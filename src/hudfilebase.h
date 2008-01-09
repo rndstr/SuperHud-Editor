@@ -62,15 +62,18 @@ class HudFileBase
 
     virtual bool          save( const wxString& filename );
 
+
     /// create an element by name
     virtual ElementBase*  create_element( const wxString& name ) const = 0;
 
+    /// writes the header that preceeds every file we write
+    void                  write_header( wxTextOutputStream& stream );
     /// writes the element to the given stream
     void                  write_element( wxTextOutputStream& stream, const ElementBase& el );
 
     const elements_type&  elements() const { return m_els; }
 
-    void                  convert_all( int fromarx, int fromary, int arx, int ary, bool size, bool position, bool fontsize);
+    void                  convert_all( double from, double to, bool size, bool stretchposition, bool fontsize);
 
     /// returns a list of names of notuniq elements
     virtual const notuniqs_type& notuniq_elements() const = 0;

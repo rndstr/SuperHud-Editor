@@ -166,6 +166,23 @@ long bitmap_type_by_ext( const wxString& ext )
   return wxBITMAP_TYPE_ANY; // auto
 }
 
+bool ratio_string2double( const wxString& ratio, double *val )
+{
+  wxASSERT(val);
+  if( ratio.ToDouble(val) )
+    return true;
+  // maybe it's a:b ?
+  size_t pos = ratio.Find(wxT(":"));
+  if( pos != wxString::npos )
+  {   
+    long lhs, rhs;
+    if( !ratio.Left(pos).ToLong(&lhs) || !ratio.Right(ratio.length() - pos - 1).ToLong(&rhs) )
+      return false;
+    *val = static_cast<double>(lhs)/static_cast<double>(rhs);
+    return true;
+  }
+  return false;
+}
 
 /*
 /// Checks if the latest version is newer than our.

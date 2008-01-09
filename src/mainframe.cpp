@@ -14,6 +14,7 @@
 #include "model.h"
 #include "prefs.h"
 #include "prefsdialog.h"
+#include "convertdialog.h"
 
 #include "cpma/elementsctrl.h"
 #include "cpma/propertiesnotebook.h"
@@ -34,7 +35,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_MENU(wxID_UNDO, MainFrame::OnMenuUndo)
   EVT_MENU(wxID_REDO, MainFrame::OnMenuRedo)
   EVT_MENU(ID_MENU_TOOLS_SWITCHGAME, MainFrame::OnMenuToolsSwitchGame)
-  EVT_MENU(ID_MENU_TOOLS_CONVERTWIDESCREEN, MainFrame::OnMenuToolsConvertWidescreen)
+  EVT_MENU(ID_MENU_TOOLS_CONVERT, MainFrame::OnMenuToolsConvert)
   EVT_MENU(ID_MENU_TOOLS_SNAPELEMENTS, MainFrame::OnMenuToolsSnapElements)
   EVT_MENU(ID_MENU_TOOLS_SNAPGRID, MainFrame::OnMenuToolsSnapGrid)
   EVT_MENU(ID_MENU_TOOLS_PREFERENCES, MainFrame::OnMenuToolsPreferences)
@@ -96,7 +97,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   wxMenu *tools_menu = new wxMenu;
   tools_menu->Append( ID_MENU_TOOLS_SWITCHGAME, _("&Switch Game") );
   tools_menu->AppendSeparator();
-  tools_menu->Append( ID_MENU_TOOLS_CONVERTWIDESCREEN, _("Convert Hud to &Widesreen") );
+  tools_menu->Append( ID_MENU_TOOLS_CONVERT, _("Convert &Hud") );
   tools_menu->AppendSeparator();
   tools_menu->AppendCheckItem( ID_MENU_TOOLS_SNAPELEMENTS, _("&Snap to &Elements") );
   tools_menu->AppendCheckItem( ID_MENU_TOOLS_SNAPGRID, _("Snap to &Grid") );
@@ -104,8 +105,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   item = tools_menu->Append( ID_MENU_TOOLS_PREFERENCES, _("&Preferences\tCtrl+P") );
   item->SetBitmap(wxArtProvider::GetBitmap(wxART_HELP_SETTINGS, wxART_MENU));
   menu_bar->Append( tools_menu, _("&Tools") );
-  tools_menu->Check( ID_MENU_TOOLS_SNAPELEMENTS, Prefs::get().var(wxT("view_snapelements")).boolval() );
-  tools_menu->Check( ID_MENU_TOOLS_SNAPGRID, Prefs::get().var(wxT("view_snapgrid")).boolval() );
+  tools_menu->Check( ID_MENU_TOOLS_SNAPELEMENTS, Prefs::get().var(wxT("view_snapelements")).bval() );
+  tools_menu->Check( ID_MENU_TOOLS_SNAPGRID, Prefs::get().var(wxT("view_snapgrid")).bval() );
 
   //wxMenu *elements_menu = new wxMenu;
   //menu_bar->Append( elements_menu, _("&Elements") );
@@ -205,8 +206,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
 
   if( Prefs::get().var(wxT("app_maximized")) )
     Maximize();
-  else if( Prefs::get().var(wxT("app_height")).intval() != -1 && Prefs::get().var(wxT("app_width")).intval() != -1 )
-    SetSize( Prefs::get().var(wxT("app_width")).intval(), Prefs::get().var(wxT("app_height")).intval() );
+  else if( Prefs::get().var(wxT("app_height")).ival() != -1 && Prefs::get().var(wxT("app_width")).ival() != -1 )
+    SetSize( Prefs::get().var(wxT("app_width")).ival(), Prefs::get().var(wxT("app_height")).ival() );
   
 #ifndef WIN32
   // default transparency hints on linux throw assertions all over the place 
@@ -246,14 +247,16 @@ void MainFrame::OnMenuToolsSwitchGame( wxCommandEvent& )
   restart_app();
 }
 
-void MainFrame::OnMenuToolsConvertWidescreen( wxCommandEvent& )
+void MainFrame::OnMenuToolsConvert( wxCommandEvent& )
 {
-  wxGetApp().hudfile()->convert_all( 4, 3, 16, 10, true, true, true );
-  Prefs::get().set(wxT("view_aspectratio"), wxT("16:10"));
-  m_displayctrl->reset_projection_mode();
-  update_displayctrl();
-
-
+  ConvertDialog dlg(this);
+  if( wxID_OK == dlg.ShowModal() )
+  {
+    wxGetApp().hudfile()->convert_all( dlg.convert_from(), dlg.convert_to(), dlg.size(), dlg.stretchposition(), dlg.fontsize() );
+    Prefs::get().set(wxT("view_aspectratio"), dlg.convert_to_str());
+    m_displayctrl->reset_projection_mode();
+    update_displayctrl();
+  }
 }
 
 void MainFrame::OnMenuToolsSnapElements( wxCommandEvent& ev )
@@ -501,7 +504,7 @@ void MainFrame::OnMenuHelpTip( wxCommandEvent& )
 {
   wxTipProvider *provider = wxCreateFileTipProvider(
       wxStandardPaths::Get().GetDataDir() + PATH_SEP + wxT("data") + PATH_SEP + wxT("tips.txt"), 
-      Prefs::get().var(wxT("startup_tipidx")).intval()
+      Prefs::get().var(wxT("startup_tipidx")).ival()
       );
   Prefs::get().setb(wxT("startup_tips"), wxShowTip(this, provider));
   Prefs::get().seti(wxT("startup_tipidx"), provider->GetCurrentTip());
@@ -544,7 +547,7 @@ void MainFrame::update_and_exit(bool savelog /*= FALSE*/,
 #ifdef __WXMSW__
 	cmd = wxT("webupdater.exe") + opts;
 #else	
-	wxmd = (wxT("./webupdater") + opts;
+	cmd = wxT("./webupdater") + opts;
 #endif
   wxGetApp().set_exec(cmd);
   Close(true);

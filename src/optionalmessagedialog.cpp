@@ -8,7 +8,7 @@
 OptionalMessageDialog::OptionalMessageDialog( const wxString& name, int saveid /*= wxID_ANY*/, wxArtID bitmapid /*= wxART_QUESTION*/ ) :
   wxDialog(),
   m_saveid(saveid),
-  m_storedid( Prefs::get().var(name).intval() ),
+  m_storedid( Prefs::get().var(name).ival() ),
   m_name(name),
   m_created(false),
   m_bitmapid(bitmapid)
