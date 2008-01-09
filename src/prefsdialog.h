@@ -17,6 +17,8 @@ class PrefsDialog : public wxPropertySheetDialog
   protected:
     wxImageList *m_imglist;
     wxPanel* create_display(wxWindow *parent);
+    wxPanel* create_sample(wxWindow *parent);
+    wxPanel* create_old(wxWindow *parent);
 };
 
 

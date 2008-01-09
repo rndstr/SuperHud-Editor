@@ -1,6 +1,7 @@
 #include "elementbase.h"
 #include "superhudeditor.h"
 #include "hudfilebase.h"
+#include "displayctrlbase.h"
 
 #include <wx/tokenzr.h>
 
@@ -82,4 +83,36 @@ bool ElementBase::is_rendered() const
 bool ElementBase::is_selected() const
 {
   return wxGetApp().elementsctrl()->is_selected(this);
+}
+
+
+void ElementBase::convert( int fromarx, int fromary, int arx, int ary, bool size, bool keepwindow, bool fontsize)
+{
+  double ratio = (fromarx/(double)fromary)/(arx/(double)ary);
+  int width = wxGetApp().mainframe()->displayctrl()->width();
+  if( m_has & E_HAS_RECT )
+  {
+    wxRect r = m_rect;
+    if( size )
+      r.width *= ratio;
+    if( keepwindow )
+    {
+      r.x *= ratio;
+      int neww = width/ratio;
+      r.x += (neww - width)/2.0;
+    }
+    else
+    { // stretch positions to correct place
+      // if completely on left half of screen we make sure left side will be as before (already is)
+      // if completely on right half of screen we move it to the right the amount we cut off the right side
+      // if on left _and_ right side we restore the width (TODO maybe also restore width/height ratio?)
+      if( m_rect.x > width/2.0 )
+        r.x += m_rect.width - r.width;
+      else if( m_rect.x + m_rect.width > width/2.0 )
+      { // on both sides
+        r.width = m_rect.width;
+      }
+    }
+    m_rect = r;
+  }
 }

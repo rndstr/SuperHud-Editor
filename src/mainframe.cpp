@@ -34,6 +34,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_MENU(wxID_UNDO, MainFrame::OnMenuUndo)
   EVT_MENU(wxID_REDO, MainFrame::OnMenuRedo)
   EVT_MENU(ID_MENU_TOOLS_SWITCHGAME, MainFrame::OnMenuToolsSwitchGame)
+  EVT_MENU(ID_MENU_TOOLS_CONVERTWIDESCREEN, MainFrame::OnMenuToolsConvertWidescreen)
   EVT_MENU(ID_MENU_TOOLS_SNAPELEMENTS, MainFrame::OnMenuToolsSnapElements)
   EVT_MENU(ID_MENU_TOOLS_SNAPGRID, MainFrame::OnMenuToolsSnapGrid)
   EVT_MENU(ID_MENU_TOOLS_PREFERENCES, MainFrame::OnMenuToolsPreferences)
@@ -95,6 +96,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   wxMenu *tools_menu = new wxMenu;
   tools_menu->Append( ID_MENU_TOOLS_SWITCHGAME, _("&Switch Game") );
   tools_menu->AppendSeparator();
+  tools_menu->Append( ID_MENU_TOOLS_CONVERTWIDESCREEN, _("Convert Hud to &Widesreen") );
+  tools_menu->AppendSeparator();
   tools_menu->AppendCheckItem( ID_MENU_TOOLS_SNAPELEMENTS, _("&Snap to &Elements") );
   tools_menu->AppendCheckItem( ID_MENU_TOOLS_SNAPGRID, _("Snap to &Grid") );
   tools_menu->AppendSeparator();
@@ -104,8 +107,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   tools_menu->Check( ID_MENU_TOOLS_SNAPELEMENTS, Prefs::get().var(wxT("view_snapelements")).boolval() );
   tools_menu->Check( ID_MENU_TOOLS_SNAPGRID, Prefs::get().var(wxT("view_snapgrid")).boolval() );
 
-  wxMenu *elements_menu = new wxMenu;
-  menu_bar->Append( elements_menu, _("&Elements") );
+  //wxMenu *elements_menu = new wxMenu;
+  //menu_bar->Append( elements_menu, _("&Elements") );
 
   m_view_menu = new wxMenu;
   wxMenu *view_layout_submenu = new wxMenu;
@@ -241,6 +244,16 @@ void MainFrame::OnMenuToolsSwitchGame( wxCommandEvent& )
   Prefs::get().setb(wxT("startup_gameselection"), true);
   Prefs::get().save();
   restart_app();
+}
+
+void MainFrame::OnMenuToolsConvertWidescreen( wxCommandEvent& )
+{
+  wxGetApp().hudfile()->convert_all( 4, 3, 16, 10, true, true, true );
+  Prefs::get().set(wxT("view_aspectratio"), wxT("16:10"));
+  m_displayctrl->reset_projection_mode();
+  update_displayctrl();
+
+
 }
 
 void MainFrame::OnMenuToolsSnapElements( wxCommandEvent& ev )

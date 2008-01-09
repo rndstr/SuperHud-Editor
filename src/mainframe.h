@@ -100,6 +100,8 @@ class MainFrame : public wxFrame
     void OnMenuPaste( wxCommandEvent& );
     void OnMenuUndo( wxCommandEvent& );
     void OnMenuRedo( wxCommandEvent& );
+    void OnMenuToolsSwitchGame( wxCommandEvent& );
+    void OnMenuToolsConvertWidescreen( wxCommandEvent& );
     void OnMenuToolsPreferences( wxCommandEvent& );
     void OnMenuToolsSnapElements( wxCommandEvent& );
     void OnMenuToolsSnapGrid( wxCommandEvent& );
@@ -107,7 +109,7 @@ class MainFrame : public wxFrame
     void OnMenuViewConfigPreview( wxCommandEvent& );
     void OnMenuViewToolbarFile( wxCommandEvent& );
     void OnMenuViewFocus( wxCommandEvent& );
-    void OnMenuToolsSwitchGame( wxCommandEvent& );
+    
     void OnMenuViewGrid( wxCommandEvent& );
     void OnUpdateViewPanes( wxUpdateUIEvent& );
 

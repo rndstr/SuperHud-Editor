@@ -102,6 +102,15 @@ class ElementBase
 
     /// resets all properties to default
     virtual void reset();
+
+    /// @arg fromarx  Current aspectratio X
+    /// @arg fromary  Current aspectratio Y
+    /// @arg arx      New aspectratio X
+    /// @arg ary      Newaspectratio Y
+    /// @arg size     Whether to adapt size(width) -> makes squares stay squares
+    /// @arg keepwindow Whether to keep the window ratio (where elements are drawn)
+    ///                 E.g. if we go from 4:3 to 16:10 and this is true then there will be empty space left&right otherwise elements are moved
+    virtual void convert( int fromarx, int fromary, int arx, int ary, bool size, bool keepwindow, bool fontsize);
  
     void            move_to( const wxPoint& p ) { m_rect.SetPosition(p); }
     /// moving by offset

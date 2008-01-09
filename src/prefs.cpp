@@ -150,7 +150,7 @@ void Prefs::load()
   addvar(wxT("app_maximized"), wxT("false"), PVT_BOOL);
   addvar(wxT("app_width"), wxT("-1"), PVT_INT);
   addvar(wxT("app_height"), wxT("-1"), PVT_INT);
-  addvar(wxT("view_aspectratio"), wxT("4:3"), PVT_FLOAT);
+  addvar(wxT("view_aspectratio"), wxT("4:3"), PVT_FLOAT, PVF_NOARCHIVE);
   addvar(wxT("view_grid"), wxT("true"), PVT_BOOL);
   addvar(wxT("view_gridX"), wxT("12"), PVT_INT);
   addvar(wxT("view_gridY"), wxT("12"), PVT_INT);

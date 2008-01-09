@@ -44,6 +44,12 @@ class DisplayCtrlBase : public wxGLCanvas
 
     void render_helper( const wxRect& rect, bool selected = false ) const;
 
+    void reset_projection_mode();
+    /// width of internal coordinate system
+    virtual int width() const = 0;
+    /// height of internal coordinate system
+    virtual int height() const = 0;
+
     /// finds the item(s) at that point
     /// @arg p The point where we are looking for items
     /// @arg toggle If true and we click on a point where several items underlay then we switch to next one, otherwise we keep it.
@@ -79,12 +85,9 @@ class DisplayCtrlBase : public wxGLCanvas
     virtual void render() {}
     
 
-    /// width of internal coordinate system
-    virtual int width() const = 0;
-    /// height of internal coordinate system
-    virtual int height() const = 0;
+    
 
-    void reset_projection_mode();
+    
 
     /// sets up the opengl view to use 2D
     void prepare2d();

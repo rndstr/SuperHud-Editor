@@ -70,6 +70,8 @@ class HudFileBase
 
     const elements_type&  elements() const { return m_els; }
 
+    void                  convert_all( int fromarx, int fromary, int arx, int ary, bool size, bool position, bool fontsize);
+
     /// returns a list of names of notuniq elements
     virtual const notuniqs_type& notuniq_elements() const = 0;
 

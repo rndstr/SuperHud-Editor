@@ -270,3 +270,9 @@ const ElementBase* HudFileBase::get_parent( const ElementBase * const from, int 
   return d;
 }
 
+void HudFileBase::convert_all( int fromarx, int fromary, int arx, int ary, bool size, bool position, bool fontsize)
+{
+  // as all huds are stored with 640x480 we 
+  for( it_elements it = m_els.begin(); it != m_els.end(); ++it )
+    (*it)->convert( fromarx, fromary, arx, ary, size, position, fontsize);
+}
