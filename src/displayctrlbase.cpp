@@ -482,7 +482,8 @@ void DisplayCtrlBase::reset_projection_mode()
 
 void DisplayCtrlBase::prepare2d()
 {
-  SetCurrent();
+  // FIXME this crashes on win32 while the canvas is hidden.. and we trigger this somewhere. is it needed?
+  //SetCurrent();
 
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black Background
   glEnable(GL_TEXTURE_2D);   // textures
@@ -540,7 +541,7 @@ void DisplayCtrlBase::prepare2d()
 
 void DisplayCtrlBase::prepare3d()
 {
-  SetCurrent();
+  //SetCurrent();
 
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black Background
   glClearDepth(1.0f);	// Depth Buffer Setup
