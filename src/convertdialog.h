@@ -10,6 +10,15 @@
 #define CONVERTDIALOG_H
 
 
+// indecies from wxChoice
+enum
+{
+  CONVERT_CURRENT = 0,
+  CONVERT_4_3 = 1,
+  CONVERT_16_10 = 2
+};
+
+
 // begin wxGlade: ::extracode
 // end wxGlade
 
@@ -25,11 +34,16 @@ public:
     double  convert_from() const;
     double  convert_to() const;
     wxString convert_to_str() const;
+    wxString convert_from_str() const;
     bool    size() const;
-    bool    fontsize() const;
     bool    stretchposition() const;
+    bool    fontsize() const;
+
+    void    set( bool size, bool stretchposition, bool fontsize );
+    void    set_conversion( int from, int to);
 
 private:
+    virtual bool Validate();
     // begin wxGlade: ConvertDialog::methods
     void set_properties();
     void do_layout();
@@ -41,12 +55,14 @@ protected:
     wxStaticBox* sizer_4_staticbox;
     wxStaticText* label_3;
     wxChoice* m_aspectratio_from;
+    wxStaticText* label_6;
     wxStaticText* label_4;
     wxChoice* m_aspectratio_to;
-    wxCheckBox* m_fontsize;
+    wxStaticText* label_7;
     wxCheckBox* m_size;
     wxCheckBox* m_stretchposition;
-    wxStaticText* label_2;
+    wxCheckBox* m_fontsize;
+    wxStaticText* label_5;
     wxButton* button_1;
     wxButton* button_2;
     // end wxGlade

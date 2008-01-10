@@ -655,7 +655,9 @@ void CPMAElement::render() const
 
   case E_T_TEXT:
     { // COLOR_T && FILE = border around ...
-      int sx, sy;
+      int sx = E_FONTSIZE_DEFAULT_COORDX, sy = E_FONTSIZE_DEFAULT_COORDX; // some safe default values
+      int fst = iget_fontsizetype();
+
       wxString text = m_text;
       bool monospace = iget_monospace();
       IFont *font = wxGetApp().mainframe()->displayctrl()->font( iget_font() );
@@ -670,7 +672,7 @@ void CPMAElement::render() const
         color = E_COLOR_DEFAULT;
       }
 
-      switch( iget_fontsizetype() )
+      switch( fst )
       {
       case E_FST_POINT:
         sx = iget_fontsizept();
@@ -707,7 +709,7 @@ void CPMAElement::render() const
       if( font && !text.empty())
       {
         color.glBind();
-        switch( iget_fontsizetype() )
+        switch( fst )
         {
         case E_FST_POINT:
           font->print( r, sx, text, monospace, iget_textalign() );
@@ -772,3 +774,35 @@ void CPMAElement::reset()
   ElementBase::reset();
   m_props = Properties();
 }
+
+void CPMAElement::convert( double from, double to, bool size, bool stretchposition, bool fontsize)
+{
+  ElementBase::convert( from, to, size, stretchposition, fontsize );
+
+  double ratio = from/to;
+  if( fontsize && (m_has & E_HAS_FONTSIZE) )
+  {
+    int sx = E_FONTSIZE_DEFAULT_COORDX;
+    int sy = E_FONTSIZE_DEFAULT_COORDY;
+
+    int fst = fontsizetype();
+
+    switch( fst )
+    {
+      case E_FST_POINT:
+        sx = fontsizept();
+        sy = fontsizept();
+        break;
+      case E_FST_COORD:
+        sx = fontsizex();
+        sy = fontsizey();
+        break;
+    }
+
+    sx  = (int)(sx*ratio);
+    set_fontsizetype(E_FST_COORD);
+    set_fontsizex(sx);
+    set_fontsizey(sy);
+  }
+}
+

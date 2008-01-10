@@ -130,6 +130,7 @@ class CPMAElement : public ElementBase
     virtual void  render() const;
     virtual void copy_from( const ElementBase * const el );
     virtual void reset();
+    virtual void convert( double from, double to, bool size, bool stretchposition, bool fontsize);
 
     const Properties&  properties() const { return m_props; }
 

@@ -138,7 +138,7 @@ bool PakManager::load_from_location( char **buf, const wxString& location, size_
   }
   if( 0 == file )
   {
-    wxLogDebug(wxT("PakManager::load_from_location - Failed opening file: ") + location );
+    wxLogDebug(wxT("PakManager::load_from_location - WARNING failed opening file: ") + location );
     return false;
   }
 
@@ -149,7 +149,7 @@ bool PakManager::load_from_location( char **buf, const wxString& location, size_
     *psize = size;
   if (!size )
   {
-    wxLogDebug(wxT("PakManager::load_from_location - file of size 0"));
+    wxLogDebug(wxT("PakManager::load_from_location - WARNING file of size 0"));
     delete file;
     return false;
   }
@@ -204,7 +204,7 @@ bool PakManager::load( char **buf, const wxString& fpath, int search_where, size
   if( cont == m_pakcontent.end() || cont->second.buffer == 0 )
   { // not found or cache not available
     // load
-    wxLogDebug(wxT("PakManager::load - Outdated or non-existant cache entry: %s"), location.c_str());
+    //wxLogDebug(wxT("PakManager::load - Outdated or non-existant cache entry: %s"), location.c_str());
     size_t size;
     if( !PakManager::load_from_location(buf, location, &size) )
       return false;

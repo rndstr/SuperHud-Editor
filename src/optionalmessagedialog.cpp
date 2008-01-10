@@ -5,13 +5,14 @@
 #include "superhudeditor.h"
 #include "mainframe.h"
 
-OptionalMessageDialog::OptionalMessageDialog( const wxString& name, int saveid /*= wxID_ANY*/, wxArtID bitmapid /*= wxART_QUESTION*/ ) :
+OptionalMessageDialog::OptionalMessageDialog( const wxString& name, int saveid /*= wxID_ANY*/, int default_button /*=wxID_ANY*/, wxArtID bitmapid /*= wxART_QUESTION*/ ) :
   wxDialog(),
   m_saveid(saveid),
   m_storedid( Prefs::get().var(name).ival() ),
   m_name(name),
   m_created(false),
-  m_bitmapid(bitmapid)
+  m_bitmapid(bitmapid),
+  m_default_button(default_button)
 {
 }
  
@@ -22,7 +23,7 @@ bool OptionalMessageDialog::Create(wxWindow* parent,
   if( m_storedid != -1 || m_created )
     return true;
 
-  wxASSERT_MSG( m_buttondefs.size() > 0, wxT("You need to add some buttons [add_button(text, id)] before you can create the OptionalMessageDialog.") );
+  wxASSERT_MSG( m_buttoninfos.size() > 0, wxT("You need to add some buttons [add_button(text, id)] before you can create the OptionalMessageDialog.") );
 
   if( !parent )
     parent = wxGetApp().mainframe();
@@ -32,11 +33,16 @@ bool OptionalMessageDialog::Create(wxWindow* parent,
 
   // -- create objects
   m_message = new wxStaticText(this, -1, msg);
-  for( std::map<wxString,int>::const_iterator cit = m_buttondefs.begin(); cit != m_buttondefs.end(); ++cit )
-    m_buttons.push_back( new wxButton(this, cit->second, cit->first) );
+  for( std::vector<buttoninfo_s>::const_iterator cit = m_buttoninfos.begin(); cit != m_buttoninfos.end(); ++cit )
+  {
+    wxButton *but = new wxButton(this, cit->id, cit->label);
+    if( cit->id == m_default_button )
+      but->SetDefault();
+    m_buttons.push_back( but );
+  }
   m_horiz_line = new wxStaticLine(this, -1);
   m_shownomore = new wxCheckBox(this, -1, _("Don't bug me again!"));
-  m_buttondefs.clear();
+  m_buttoninfos.clear();
   wxStaticBitmap *icon = new wxStaticBitmap(this, wxID_ANY, 
       wxArtProvider::GetBitmap(m_bitmapid, wxART_MESSAGE_BOX)
       );
@@ -55,10 +61,10 @@ bool OptionalMessageDialog::Create(wxWindow* parent,
   // expanding invisible item to make buttons align right.
   sizer_buttons->Add(20, 20, 1, wxADJUST_MINSIZE, 0);
 
-  for( std::list<wxButton*>::const_iterator cit = m_buttons.begin(); cit != m_buttons.end(); ++cit )
+  for( std::vector<wxButton*>::const_iterator it = m_buttons.begin(); it != m_buttons.end(); ++it )
   {
-    sizer_buttons->Add( *cit, 0, wxALL, 10 );
-    Connect( (*cit)->GetId(), wxID_ANY, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(OptionalMessageDialog::OnButton) );
+    sizer_buttons->Add( *it, 0, wxALL, 10 );
+    Connect( (*it)->GetId(), wxID_ANY, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(OptionalMessageDialog::OnButton) );
   }
   
   sizer_dlg->Add(sizer_buttons, 0, wxEXPAND, 0);
@@ -111,7 +117,7 @@ void OptionalMessageDialog::set_message( const wxString& msg )
 
 void OptionalMessageDialog::add_button( const wxString& text, int id )
 {
-  m_buttondefs.insert( std::make_pair(text, id) );
+  m_buttoninfos.push_back( buttoninfo_s(text, id) );
 }
 
 void OptionalMessageDialog::add_button_yesno()

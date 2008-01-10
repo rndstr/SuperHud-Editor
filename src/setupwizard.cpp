@@ -37,7 +37,7 @@ DisplayPage::DisplayPage(wxWizard *parent) : wxWizardPageSimple(parent)
 {
   wxBoxSizer *mainsizer = new wxBoxSizer(wxVERTICAL);
   wxStaticText *title = new wxStaticText(this, wxID_ANY, _("Display"));
-  wxStaticText *saspectratio = new wxStaticText(this, wxID_ANY, _("Select your aspect ratio"));
+  wxStaticText *saspectratio = new wxStaticText(this, wxID_ANY, _("Select your ingame aspect ratio"));
   wxArrayString aspectratio_choices;
   aspectratio_choices.Add(_("Standard (4:3)"));
   aspectratio_choices.Add(_("Widescreen (16:10)"));

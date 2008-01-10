@@ -77,13 +77,31 @@ bool CPMAHudFile::load( const wxString& filename )
   wxTextInputStream tis( mis );
   wxString line;
   size_t pos;
+  // default opts
+
   // read file line by line and remove `#' comments
   while(!mis.Eof())
   {
     line = tis.ReadLine();
     she::wxTrim(line);
     if( 0 == line.length() || line[0] == '#' )
+    { // check for options
+      if( (pos = line.find(wxT("="))) != wxString::npos )
+      {
+        wxString optname = line.Mid(1, pos-1);
+        wxString optval = line.Mid(pos+1);
+        she::wxTrim(optname);
+        she::wxTrim(optval);
+        wxLogDebug(wxT("CPMAHudFile::load - have found option: ") + optname + wxT(" = ") + optval);
+        if( optname == wxT("version") )
+          m_opt_version = optval;
+        else if( optname == wxT("view_aspectratio") )
+          m_opt_aspectratio = optval;
+        else
+          wxLogDebug(wxT("CPMAHudFile::load - WARNING: invalid option ") + optname);
+      }
       continue;
+    }
     if( (pos = line.find( wxT("#") )) != wxString::npos )
       line = line.substr( 0, pos );
     content += line;
@@ -206,7 +224,7 @@ bool CPMAHudFile::parse_item( wxString s )
   el->set_enabled( true );
   // make sure the order is the same as in hudfile.
   if( el != m_load_prevel && !move_element_after( el, m_load_prevel ) )
-      wxLogError( BUG_MSG + _("Failed moving item `%s'."), el->name().c_str());
+      wxLogError( BUG_MSG + wxT("Failed moving item ") + el->name() );
   m_load_prevel = el;
   
   // read properties
@@ -266,6 +284,7 @@ bool CPMAHudFile::read_properties( ElementBase *hi, const wxString& props )
 
 bool CPMAHudFile::save( const wxString& filename )
 {
+  wxLogDebug(wxT("Saving HUD: ") + filename);
   int decoratecount = 0;
   wxFFileOutputStream file( filename.c_str() );
   if( !file.Ok() )

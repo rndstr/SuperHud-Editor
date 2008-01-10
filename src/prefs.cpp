@@ -173,6 +173,7 @@ void Prefs::load()
 
   // optional message dialogs
   addvar(wxT("dlg_reset"), wxT("-1"), PVT_INT);
+  addvar(wxT("dlg_convertonload"), wxT("-1"), PVT_INT);
 
   // q4max
   addvar(wxT("q4_gamedir"), wxT(""), PVT_STRING);
@@ -188,6 +189,7 @@ void Prefs::load()
   // -- saving
   addvar(wxT("save_writedisabled"), wxT("true"), PVT_BOOL);
   addvar(wxT("save_backup"), wxT("true"), PVT_BOOL);
+  addvar(wxT("load_autoconvert"), wxT("false"), PVT_BOOL); ///< whether to auto convert huds that have a different aspectratio than we would like
 
   for( variables_type::iterator it = m_vars.begin(); it != m_vars.end(); ++it )
     it->second.read();

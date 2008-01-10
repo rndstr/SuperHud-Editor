@@ -119,6 +119,7 @@ bool SHEApp::OnInit()
     {
       wxGetApp().factory()->set_dir_game(wizard.gamedir());
       Prefs::get().set(wxT("view_aspectratio"), wizard.aspectratio());
+      Prefs::get().save(); // just save to make sure.. if we crash at least this we don't have to go through again
     }
   }
   else if( Prefs::get().var(wxT("q3_gamedir")).sval().empty() )
@@ -149,13 +150,13 @@ bool SHEApp::OnInit()
 int SHEApp::OnRun()
 {
   wxLogDebug(wxT("SHEApp::OnRun"));
-  m_hudfile->OnNew();
   m_mainframe->update_title();
   if( Prefs::get().var(wxT("startup_load")) && !Prefs::get().var(wxT("startup_loadfile")).sval().empty() )
     m_hudfile->OnOpen( Prefs::get().var(wxT("startup_loadfile")) );
+  else
+    m_hudfile->OnNew();
   m_mainframe->update_title();
 
-  PakManager::get().debug();
   m_ready = true;
 
   if( Prefs::get().var(wxT("startup_tips")).bval() )

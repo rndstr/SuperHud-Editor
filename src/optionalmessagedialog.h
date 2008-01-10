@@ -10,7 +10,7 @@
 #include <wx/statline.h>
 
 #include <map>
-#include <list>
+#include <vector>
 
 /// Order of use:
 ///  - ctor
@@ -18,12 +18,18 @@
 ///  -
 class OptionalMessageDialog: public wxDialog
 {
+  struct buttoninfo_s
+  {
+    buttoninfo_s( const wxString& l, int i ) : label(l), id(i) {}
+    wxString label;
+    int id;
+  };
   public:
 
 
     /// @arg name         An unique name
     /// @arg saveid       Which id we store (in prefs) if a user decides to not show it anymore, use wxID_ANY for the user's pressed button
-    OptionalMessageDialog( const wxString& name, int saveid = wxID_ANY, wxArtID bitmapid = wxART_QUESTION );
+    OptionalMessageDialog( const wxString& name, int saveid = wxID_ANY, int default_button = wxID_ANY, wxArtID bitmapid = wxART_QUESTION );
     /// create it.
     virtual bool Create(wxWindow* parent, const wxString& msg, const wxString& title = wxT(""), int id = wxID_ANY, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize );
 
@@ -53,9 +59,11 @@ class OptionalMessageDialog: public wxDialog
 
     wxArtID m_bitmapid;
 
+    int m_default_button; ///< the id of the default button (i.e. the one that will be selected)
+
     // displayedname -> id
-    std::map<wxString, int> m_buttondefs;
-    std::list<wxButton*> m_buttons;
+    std::vector<buttoninfo_s> m_buttoninfos;
+    std::vector<wxButton*> m_buttons;
 
     wxStaticText* m_message;
     wxStaticLine* m_horiz_line;

@@ -71,6 +71,7 @@ void DisplayCtrlBase::init()
   m_texmodel = new Texture( wxT("texture/model.tga"), PM_SEARCH_APPFILE );
 
   m_initialized = true;
+
 }
 
 IFont* DisplayCtrlBase::font( const wxString& name )

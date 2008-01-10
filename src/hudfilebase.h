@@ -26,7 +26,8 @@ class HudFileBase
     const wxString& filename() const { return m_filename; }
 
     /// displays open filedialog but only if supplied filename is empty, otherwise directly loads
-    int                   OnOpen( const wxString& filename = wxT("") );
+    /// @arg force_convert This overrules the load_autoconvert setting (thus if a user clicks File->New we can open it in widescreen)
+    int                   OnOpen( const wxString& filename = wxT(""), bool force_convert = false );
 
 
     /// sets up the document after user clicked File->New
@@ -55,6 +56,7 @@ class HudFileBase
     const ElementBase*    get_parent( const ElementBase * const from, int specifies = E_HAS_NONE ) const;
 
     /// Loads a hudfile
+    /// NOTE that you don't forget to read the (hud)options like m_opt_version&co
     /// @arg wxString filename The full filename
     virtual bool          load( const wxString& filename ) = 0;
     // clears all items and then loads default items
@@ -78,6 +80,9 @@ class HudFileBase
     /// returns a list of names of notuniq elements
     virtual const notuniqs_type& notuniq_elements() const = 0;
 
+    wxString              opt_version() const { return m_opt_version; }
+    wxString              opt_aspectratio() const { return m_opt_aspectratio; }
+
   protected:
     /// looks for an element in the element list (m_els)
     ElementBase*          find_element( const wxString& name );
@@ -92,9 +97,11 @@ class HudFileBase
     elements_type         m_els;
     bool                  m_modified;
     wxString              m_filename;
-    /// options that have been set in the comments of the hudfile
-    /// like `version' `view_aspectratio'
-    wxArrayString         m_options; 
+
+    // options that have been set in the comments of the hudfile
+    // like `version' `view_aspectratio'
+    wxString              m_opt_version;
+    wxString              m_opt_aspectratio;
 };
 
 

@@ -166,7 +166,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
       );
   m_elementsctrl = wxGetApp().factory()->create_elementsctrl(this);
   m_mgr.AddPane( m_elementsctrl,
-      wxAuiPaneInfo().Name(wxT("elements")).Caption(_("Elements")).MaximizeButton(true).CloseButton(false)
+      wxAuiPaneInfo().Name(wxT("elements")).Caption(_("Elements")).MaximizeButton(true).CloseButton(false).
+      MinSize(wxSize(200,100))
       );
   m_configpreview = new wxTextCtrl(this, ID_TEXTCTRL_CONFIGPREVIEW, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
   m_configpreview->SetFont(wxFont(8, wxMODERN, wxNORMAL, wxNORMAL, 0, wxT("")));
@@ -177,7 +178,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_propertiesnotebook = wxGetApp().factory()->create_propertiesnotebook(this);
   m_mgr.AddPane( m_propertiesnotebook, 
       wxAuiPaneInfo().Name(wxT("properties")).Caption(_("Properties")).MaximizeButton(true).CloseButton(false).
-      Right()
+      Right().MinSize(wxSize(200,100))
       );
 
   m_mgr.AddPane(m_toolbar_file, wxAuiPaneInfo().Name(wxT("tb-file")).Caption(_("File")).
@@ -204,6 +205,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   else
     SetIcon( wxArtProvider::GetIcon(ART_CPMA, wxART_FRAME_ICON, wxSize(16,16)) );
 
+  SetMinSize(wxSize(1000,600));
   if( Prefs::get().var(wxT("app_maximized")) )
     Maximize();
   else if( Prefs::get().var(wxT("app_height")).ival() != -1 && Prefs::get().var(wxT("app_width")).ival() != -1 )
@@ -249,10 +251,15 @@ void MainFrame::OnMenuToolsSwitchGame( wxCommandEvent& )
 
 void MainFrame::OnMenuToolsConvert( wxCommandEvent& )
 {
+  // default checking
+  static bool _s = true, _sp = true, _f = false; // store previous selection...
   ConvertDialog dlg(this);
+  dlg.set(_s, _sp, _f);
   if( wxID_OK == dlg.ShowModal() )
   {
-    wxGetApp().hudfile()->convert_all( dlg.convert_from(), dlg.convert_to(), dlg.size(), dlg.stretchposition(), dlg.fontsize() );
+    _s = dlg.size(); _sp = dlg.stretchposition(); _f = dlg.fontsize();
+    wxGetApp().hudfile()->convert_all( dlg.convert_from(), dlg.convert_to(), _s, _sp, _f );
+
     Prefs::get().set(wxT("view_aspectratio"), dlg.convert_to_str());
     m_displayctrl->reset_projection_mode();
     update_displayctrl();

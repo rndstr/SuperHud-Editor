@@ -3,6 +3,8 @@
 #include "elementsctrlbase.h"
 #include "displayctrlbase.h"
 #include "prefs.h"
+#include "optionalmessagedialog.h"
+#include "convertdialog.h"
 
 #include <wx/txtstrm.h>
 #include <wx/wfstream.h>
@@ -31,8 +33,11 @@ void HudFileBase::set_modified( bool modified /*= true*/ )
     if( modified ) wxGetApp().mainframe()->displayctrl()->Refresh();
   }
 }
-int HudFileBase::OnOpen( const wxString& filename /*=wxT("")*/ )
+
+int HudFileBase::OnOpen( const wxString& filename /*=wxT("")*/, bool force_convert /*=false*/ )
 {
+  m_opt_aspectratio = wxT("4:3");
+
   wxString f = filename;
   int ret = wxID_OK;
   if( f.empty() )
@@ -61,14 +66,78 @@ int HudFileBase::OnOpen( const wxString& filename /*=wxT("")*/ )
   if( !load( f ) )
     wxLogError( _("Failed reading HUD from file `%s'"), f.c_str() ); // default elements have been loaded
 
+
   // load icons for elements
-  wxProgressDialog dlg(_("Processing elements"), wxEmptyString, m_els.size(), wxGetApp().mainframe(), 
-      wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME);
-  int i=0;
-  for( it_elements it = m_els.begin(); it != m_els.end(); ++it, ++i )
   {
-    dlg.Update(i, (*it)->name());
-    (*it)->prerender();
+    wxProgressDialog dlg(_("Processing elements"), wxEmptyString, m_els.size(), wxGetApp().mainframe(), 
+        wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME);
+    int i=0;
+    for( it_elements it = m_els.begin(); it != m_els.end(); ++it, ++i )
+    {
+      dlg.Update(i, (*it)->name());
+      (*it)->prerender();
+    }
+  }
+
+  // conversion needed?
+  double hudar;
+  if( !she::ratio_string2double(m_opt_aspectratio, &hudar) )
+  {
+    wxLogWarning( _("Found an invalid aspect ratio stored inside the HUD file, will assume it's 4:3") );
+    m_opt_aspectratio = wxT("4:3");
+    hudar = 4/3.0;
+  }
+
+  wxLogDebug(wxT("HudFileBase::OnOpen - hudfile aspect ratio: ") + m_opt_aspectratio);
+  wxLogDebug(wxT("HudFileBase::OnOpen - view aspect ratio: ") + Prefs::get().var(wxT("view_aspectratio")).sval());
+
+  if( m_opt_aspectratio != Prefs::get().var(wxT("view_aspectratio")).sval() )
+  { // aspectratios are different.
+    if( Prefs::get().var(wxT("load_autoconvert")).bval() )
+    { // so we actually need to convert
+      wxLogDebug(wxT("HudFileBase::OnOpen - auto converting from %.2f to %.2f"), hudar, Prefs::get().var(wxT("view_aspectratio")).dval());
+      wxLogMessage(_("The HUD was converted from %s to %s\n\n(Due to your Preferences `auto convert on load' and the HUD being stored differently than current aspect ratio)"), m_opt_aspectratio.c_str(), Prefs::get().var(wxT("view_aspectratio")).sval().c_str());
+      convert_all( hudar, Prefs::get().var(wxT("view_aspectratio")).dval(), true, true, true );
+    }
+    else
+    { // ask the user what he would like to do.
+      // display in correct ratio or convert to his current ratio
+
+      OptionalMessageDialog dlg(wxT("dlg_convertonload"), wxID_ANY, wxID_CANCEL); 
+      dlg.add_button(_("Convert HUD..."), wxID_YES);
+      dlg.add_button(_("Modify Preferences"), wxID_NO);
+      dlg.add_button(_("Continue"), wxID_CANCEL);
+      wxString msg =  
+        wxString::Format(
+            _("The HUD I just loaded was very likely created for a different (%s)\naspect ratio than you are currently displaying (%s).\n\nYou can either convert the hud elements to your ratio,\ndisplay it in its original ratio (changing your preferences)\nor just show it as it is (skewed)."),
+            m_opt_aspectratio.c_str(),
+            Prefs::get().var(wxT("view_aspectratio")).sval().c_str()
+            );
+
+      dlg.Create(0, msg);
+      int ret = dlg.ShowModal();
+      if( ret == wxID_YES )
+      { // convert
+        ConvertDialog dlg(wxGetApp().mainframe());
+        dlg.set(true, true, false);
+        if( m_opt_aspectratio == wxT("4:3") ) // file is 4:3 (hence view 16:10 probably)
+          dlg.set_conversion( CONVERT_4_3, CONVERT_CURRENT );
+        else // file is 16:10 (hence view 4:3 probably)
+          dlg.set_conversion( CONVERT_16_10, CONVERT_CURRENT );
+        if( wxID_OK == dlg.ShowModal() )
+        {
+          wxGetApp().hudfile()->convert_all( dlg.convert_from(), dlg.convert_to(), dlg.size(), dlg.stretchposition(), dlg.fontsize() );
+          Prefs::get().set(wxT("view_aspectratio"), dlg.convert_to_str());
+        }
+      }
+      else if( wxID_NO == ret )
+      {
+        Prefs::get().set(wxT("view_aspectratio"), m_opt_aspectratio);
+        wxGetApp().mainframe()->displayctrl()->reset_projection_mode();
+      }
+//      update_displayctrl(); // redraw
+      // else wxID_CANCEL
+    }
   }
   wxGetApp().mainframe()->statusbar()->PopStatusText();
   return ret;
@@ -132,7 +201,7 @@ void HudFileBase::OnNew()
 {
   clear();
   load_default_elements();
-  OnOpen(wxT("hud/hud.cfg")); // load default hud
+  OnOpen(wxT("hud/hud.cfg"), false); // load default hud and force conversion
   m_filename = wxEmptyString;
   wxGetApp().elementsctrl()->list_refresh(m_els);
 }
@@ -216,8 +285,9 @@ void HudFileBase::write_header( wxTextOutputStream& stream )
   wxDateTime dt(wxDateTime::Now());
   stream << wxT("# written by ") << APP_NAME << wxT(" v") << APP_VERSION << wxT(" on ") << dt.FormatISODate() << wxT(" ") << dt.FormatISOTime() << wxT("\n");
   stream << wxT("# ") << APP_URL << wxT("\n");
-  stream << wxT("# -- DO NOT EDIT THE NEXT FEW LINES--\n");
-  stream << wxT("# version = ") << APP_VERSION << wxT("\n");
+  stream << wxT("#\n");
+  stream << wxT("# -- DO NOT EDIT THE NEXT FEW LINES --\n");
+  stream << wxT("# version =") << APP_VERSION << wxT("\n");
   stream << wxT("# view_aspectratio = ") << Prefs::get().var(wxT("view_aspectratio")).sval() << wxT("\n");
   stream << wxT("# -----------------------------------\n");
 }
@@ -286,3 +356,4 @@ void HudFileBase::convert_all( double from, double to, bool size, bool stretchpo
   for( it_elements it = m_els.begin(); it != m_els.end(); ++it )
     (*it)->convert( from, to, size, stretchposition, fontsize);
 }
+
