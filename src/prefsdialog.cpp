@@ -81,9 +81,9 @@ wxPanel* PrefsDialog::create_display(wxWindow *parent)
     wxStaticText* label_11_copy;
     wxButton* m_border;
     wxStaticText* labelahosehjfija;
-    wxSpinCtrl* m_border_alpha;
+    wxSlider* m_border_alpha;
     // end wxGlade
-    // begin wxGlade: display_prefs::display_prefs
+  // begin wxGlade: display_prefs::display_prefs
     grid_styler_staticbox = new wxStaticBox(panel, -1, wxT("Grid"));
     helper_styler_staticbox = new wxStaticBox(panel, -1, wxT("Helper"));
     ar_styler_staticbox = new wxStaticBox(panel, -1, wxT("Aspect ratio"));
@@ -123,7 +123,7 @@ wxPanel* PrefsDialog::create_display(wxWindow *parent)
     label_11_copy = new wxStaticText(panel, wxID_ANY, wxT("Outline:"));
     m_border = new wxButton(panel, wxID_ANY, wxEmptyString);
     labelahosehjfija = new wxStaticText(panel, wxID_ANY, wxT("Opacity:"));
-    m_border_alpha = new wxSpinCtrl(panel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+    m_border_alpha = new wxSlider(panel, wxID_ANY, 0, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL|wxSL_LABELS);
     // end wxGlade
     // begin wxGlade: display_prefs::set_properties
     m_aspectratio->SetSelection(0);
@@ -138,7 +138,6 @@ wxPanel* PrefsDialog::create_display(wxWindow *parent)
     m_border_selected_alpha->SetMinSize(wxSize(70, -1));
     label_8_copy->SetFont(wxFont(10, wxDEFAULT, wxNORMAL, wxBOLD, 0, wxT("")));
     m_fill_alpha->SetMinSize(wxSize(70, -1));
-    m_border_alpha->SetMinSize(wxSize(70, -1));
     // end wxGlade
     // begin wxGlade: display_prefs::do_layout
     wxBoxSizer* top_sizer = new wxBoxSizer(wxVERTICAL);
@@ -186,7 +185,7 @@ wxPanel* PrefsDialog::create_display(wxWindow *parent)
     grid_sizer_1_copy->Add(label_11_copy, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
     grid_sizer_1_copy->Add(m_border, 0, wxALL, 3);
     grid_sizer_1_copy->Add(labelahosehjfija, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
-    grid_sizer_1_copy->Add(m_border_alpha, 0, wxALL, 3);
+    grid_sizer_1_copy->Add(m_border_alpha, 0, wxALIGN_CENTER_VERTICAL, 0);
     helper_styler->Add(grid_sizer_1_copy, 1, wxEXPAND, 0);
     container->Add(helper_styler, 0, wxEXPAND, 0);
     // end wxGlade

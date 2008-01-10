@@ -71,7 +71,7 @@ display_prefs::display_prefs(wxWindow* parent, int id, const wxPoint& pos, const
     label_11_copy = new wxStaticText(this, wxID_ANY, wxT("Outline:"));
     m_border = new wxButton(this, wxID_ANY, wxEmptyString);
     labelahosehjfija = new wxStaticText(this, wxID_ANY, wxT("Opacity:"));
-    m_border_alpha = new wxSpinCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+    m_border_alpha = new wxSlider(this, wxID_ANY, 0, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL|wxSL_LABELS);
 
     set_properties();
     do_layout();
@@ -94,7 +94,6 @@ void display_prefs::set_properties()
     m_border_selected_alpha->SetMinSize(wxSize(70, -1));
     label_8_copy->SetFont(wxFont(10, wxDEFAULT, wxNORMAL, wxBOLD, 0, wxT("")));
     m_fill_alpha->SetMinSize(wxSize(70, -1));
-    m_border_alpha->SetMinSize(wxSize(70, -1));
     // end wxGlade
 }
 
@@ -147,7 +146,7 @@ void display_prefs::do_layout()
     grid_sizer_1_copy->Add(label_11_copy, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
     grid_sizer_1_copy->Add(m_border, 0, wxALL, 3);
     grid_sizer_1_copy->Add(labelahosehjfija, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
-    grid_sizer_1_copy->Add(m_border_alpha, 0, wxALL, 3);
+    grid_sizer_1_copy->Add(m_border_alpha, 0, wxALIGN_CENTER_VERTICAL, 0);
     helper_styler->Add(grid_sizer_1_copy, 1, wxEXPAND, 0);
     container->Add(helper_styler, 0, wxEXPAND, 0);
     top_sizer->Add(container, 1, wxALL|wxEXPAND, 5);
@@ -253,4 +252,6 @@ void cpma_prefs::do_layout()
     Layout();
     // end wxGlade
 }
+
+
 

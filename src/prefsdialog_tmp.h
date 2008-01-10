@@ -112,7 +112,7 @@ protected:
     wxStaticText* label_11_copy;
     wxButton* m_border;
     wxStaticText* labelahosehjfija;
-    wxSpinCtrl* m_border_alpha;
+    wxSlider* m_border_alpha;
     // end wxGlade
 }; // wxGlade: end class
 
