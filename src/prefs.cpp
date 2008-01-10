@@ -139,7 +139,7 @@ void Prefs::load()
   addvar(wxT("view_grid"), wxT("true"), PVT_BOOL);
   addvar(wxT("view_gridX"), wxT("12"), PVT_INT);
   addvar(wxT("view_gridY"), wxT("12"), PVT_INT);
-  addvar(wxT("grid_color"), wxT("1 1 1 0.3"), PVT_COLOR);
+  addvar(wxT("view_gridcolor"), wxT("1 1 1 0.3"), PVT_COLOR);
   addvar(wxT("view_helper"), wxT("true"), PVT_BOOL);
   addvar(wxT("view_helper_border"), wxT("1 1 1 0.8"), PVT_COLOR);
   addvar(wxT("view_helper_fill"), wxT("1 1 1 0.1"), PVT_COLOR);

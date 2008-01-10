@@ -119,56 +119,6 @@ class Prefs
     void setb( const wxString& name, bool bval );
     void seti( const wxString& name, int ival );
 
-  // settings
-  // NOARCHIVE = we don't write it.. only read
-  public:
-
-    /*
-    // -- display
-    wxString  perspective;
-    bool      app_maximized;
-    int       app_width, app_height;
-    
-    bool      grid;
-    int       grid_x, grid_y;
-    Color4    grid_color;
-    bool      helper;
-    Color4    helper_border;
-    Color4    helper_fill;
-    Color4    helper_border_selected;
-    Color4    helper_fill_selected;
-    bool      elements_collections;
-    
-
-    /// possible values 'q4max' or 'cpma'
-    wxString game;
-
-    // -- game specific
-    // cpma
-    wxString q3_gamedir; ///< "C:\games\quake3"
-#ifndef WIN32
-    wxString q3_homedirname; ///< NOARCHIVE ".q3a"
-#endif
-    wxString q3_pakfiles;
-    wxString q3_background;
-    // q4max
-    wxString q4_gamedir; ///< "C:\games\quake4"
-
-    // -- mis
-    wxString q3_hudspecs; ///< NOARCHIVE
-
-    // -- startup
-    bool startup_gameselection; // show game selection on startup always (even if there is already a `game' set
-
-    // -- saving
-    bool save_writedisabled; ///< whether we write the disabled elements (commented out ofc)
-    bool save_backup; ///< whether to create backup files upon saving
-    
-
-  private:
-    wxString  aspectratio; ///< human readable '4:3', '16:9'. this will be read/written
-    double    aspectratiod; ///< use this for calculations, will be updated after read
-    */
 
   protected:
     variables_type  m_vars;

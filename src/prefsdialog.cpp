@@ -47,46 +47,151 @@ wxPanel* PrefsDialog::create_display(wxWindow *parent)
       wxPanel* panel = new wxPanel(parent, wxID_ANY);
 
     // begin wxGlade: display_prefs::attributes
+    wxStaticBox* helper_styler_staticbox;
     wxStaticBox* grid_styler_staticbox;
+    wxStaticBox* ar_styler_staticbox;
     wxChoice* m_aspectratio;
     wxStaticText* label_1;
     wxTextCtrl* m_aspectratioX;
     wxStaticText* label_2;
     wxTextCtrl* m_aspectratioY;
     wxStaticText* label_3;
+    wxStaticText* label_4;
+    wxSpinCtrl* m_gridX;
+    wxStaticText* label_5;
+    wxSpinCtrl* m_gridY;
+    wxStaticText* label_6;
+    wxButton* m_gridcolor;
+    wxStaticText* label_7;
+    wxSpinCtrl* m_gridcolor_alpha;
+    wxStaticText* label_8;
+    wxStaticText* label_9;
+    wxButton* m_fill_selected;
+    wxStaticText* labelfa;
+    wxSpinCtrl* m_fill_selected_alpha;
+    wxStaticText* label_11;
+    wxButton* m_border_selected;
+    wxStaticText* labeloa;
+    wxSpinCtrl* m_border_selected_alpha;
+    wxStaticText* label_8_copy;
+    wxStaticText* label_9_copy;
+    wxButton* m_fill;
+    wxStaticText* labelaeijfafe;
+    wxSpinCtrl* m_fill_alpha;
+    wxStaticText* label_11_copy;
+    wxButton* m_border;
+    wxStaticText* labelahosehjfija;
+    wxSpinCtrl* m_border_alpha;
     // end wxGlade
     // begin wxGlade: display_prefs::display_prefs
     grid_styler_staticbox = new wxStaticBox(panel, -1, wxT("Grid"));
-    const wxString m_aspectratio_choices[] = {_("4:3 (Standard)"), _("16:10 (Widescreen")
-        
+    helper_styler_staticbox = new wxStaticBox(panel, -1, wxT("Helper"));
+    ar_styler_staticbox = new wxStaticBox(panel, -1, wxT("Aspect ratio"));
+    const wxString m_aspectratio_choices[] = {
+        wxT("Standard (4:3)"),
+        wxT("Widescreen (16:10)"),
+        wxT("Custom")
     };
-    m_aspectratio = new wxChoice(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, m_aspectratio_choices, 0);
+    m_aspectratio = new wxChoice(panel, wxID_ANY, wxDefaultPosition, wxDefaultSize, 3, m_aspectratio_choices, 0);
     label_1 = new wxStaticText(panel, wxID_ANY, wxT("Custom:"));
     m_aspectratioX = new wxTextCtrl(panel, wxID_ANY, wxEmptyString);
     label_2 = new wxStaticText(panel, wxID_ANY, wxT(":"));
     m_aspectratioY = new wxTextCtrl(panel, wxID_ANY, wxEmptyString);
     label_3 = new wxStaticText(panel, wxID_ANY, wxT("Proportion of width:height ingame."));
+    label_4 = new wxStaticText(panel, wxID_ANY, wxT("Distance X:"));
+    m_gridX = new wxSpinCtrl(panel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+    label_5 = new wxStaticText(panel, wxID_ANY, wxT("Distance Y:"));
+    m_gridY = new wxSpinCtrl(panel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+    label_6 = new wxStaticText(panel, wxID_ANY, wxT("Color:"));
+    m_gridcolor = new wxButton(panel, wxID_ANY, wxEmptyString);
+    label_7 = new wxStaticText(panel, wxID_ANY, wxT("Opacity:"));
+    m_gridcolor_alpha = new wxSpinCtrl(panel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+    label_8 = new wxStaticText(panel, wxID_ANY, wxT("Selected Elements"));
+    label_9 = new wxStaticText(panel, wxID_ANY, wxT("Background:"));
+    m_fill_selected = new wxButton(panel, wxID_ANY, wxEmptyString);
+    labelfa = new wxStaticText(panel, wxID_ANY, wxT("Opacity:"));
+    m_fill_selected_alpha = new wxSpinCtrl(panel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+    label_11 = new wxStaticText(panel, wxID_ANY, wxT("Outline:"));
+    m_border_selected = new wxButton(panel, wxID_ANY, wxEmptyString);
+    labeloa = new wxStaticText(panel, wxID_ANY, wxT("Opacity:"));
+    m_border_selected_alpha = new wxSpinCtrl(panel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+    label_8_copy = new wxStaticText(panel, wxID_ANY, wxT("Deselected Elements"));
+    label_9_copy = new wxStaticText(panel, wxID_ANY, wxT("Background:"));
+    m_fill = new wxButton(panel, wxID_ANY, wxEmptyString);
+    labelaeijfafe = new wxStaticText(panel, wxID_ANY, wxT("Opacity:"));
+    m_fill_alpha = new wxSpinCtrl(panel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+    label_11_copy = new wxStaticText(panel, wxID_ANY, wxT("Outline:"));
+    m_border = new wxButton(panel, wxID_ANY, wxEmptyString);
+    labelahosehjfija = new wxStaticText(panel, wxID_ANY, wxT("Opacity:"));
+    m_border_alpha = new wxSpinCtrl(panel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
     // end wxGlade
     // begin wxGlade: display_prefs::set_properties
+    m_aspectratio->SetSelection(0);
     m_aspectratioX->SetMinSize(wxSize(40, -1));
     m_aspectratioY->SetMinSize(wxSize(40, -1));
     label_3->SetForegroundColour(wxColour(0, 0, 85));
+    m_gridX->SetMinSize(wxSize(70, -1));
+    m_gridY->SetMinSize(wxSize(70, -1));
+    m_gridcolor_alpha->SetMinSize(wxSize(70, -1));
+    label_8->SetFont(wxFont(10, wxDEFAULT, wxNORMAL, wxBOLD, 0, wxT("")));
+    m_fill_selected_alpha->SetMinSize(wxSize(70, -1));
+    m_border_selected_alpha->SetMinSize(wxSize(70, -1));
+    label_8_copy->SetFont(wxFont(10, wxDEFAULT, wxNORMAL, wxBOLD, 0, wxT("")));
+    m_fill_alpha->SetMinSize(wxSize(70, -1));
+    m_border_alpha->SetMinSize(wxSize(70, -1));
     // end wxGlade
     // begin wxGlade: display_prefs::do_layout
     wxBoxSizer* top_sizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* container = new wxBoxSizer(wxVERTICAL);
+    wxStaticBoxSizer* helper_styler = new wxStaticBoxSizer(helper_styler_staticbox, wxVERTICAL);
+    wxFlexGridSizer* grid_sizer_1_copy = new wxFlexGridSizer(2, 4, 0, 0);
+    wxFlexGridSizer* grid_sizer_1 = new wxFlexGridSizer(2, 4, 0, 0);
     wxStaticBoxSizer* grid_styler = new wxStaticBoxSizer(grid_styler_staticbox, wxVERTICAL);
-    wxBoxSizer* sizer_1 = new wxBoxSizer(wxHORIZONTAL);
-    sizer_1->Add(m_aspectratio, 0, wxALL, 3);
-    sizer_1->Add(5, 5, 1, wxEXPAND, 0);
-    sizer_1->Add(label_1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
-    sizer_1->Add(m_aspectratioX, 0, wxALL, 3);
-    sizer_1->Add(label_2, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 3);
-    sizer_1->Add(m_aspectratioY, 0, wxALL, 3);
-    grid_styler->Add(sizer_1, 1, wxALL|wxEXPAND, 0);
-    grid_styler->Add(label_3, 0, wxALL|wxEXPAND, 3);
-    container->Add(grid_styler, 0, wxALL|wxEXPAND, 5);
+    wxFlexGridSizer* grid_el_sizer = new wxFlexGridSizer(2, 4, 0, 0);
+    wxStaticBoxSizer* ar_styler = new wxStaticBoxSizer(ar_styler_staticbox, wxVERTICAL);
+    wxBoxSizer* ar_el_sizer = new wxBoxSizer(wxHORIZONTAL);
+    ar_el_sizer->Add(m_aspectratio, 0, wxALL, 3);
+    ar_el_sizer->Add(label_1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
+    ar_el_sizer->Add(m_aspectratioX, 0, wxALL, 3);
+    ar_el_sizer->Add(label_2, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 3);
+    ar_el_sizer->Add(m_aspectratioY, 0, wxALL, 3);
+    ar_styler->Add(ar_el_sizer, 1, wxALL|wxEXPAND, 0);
+    ar_styler->Add(label_3, 0, wxALL|wxEXPAND, 3);
+    container->Add(ar_styler, 0, wxALL|wxEXPAND, 3);
+    grid_el_sizer->Add(label_4, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
+    grid_el_sizer->Add(m_gridX, 0, wxALL, 3);
+    grid_el_sizer->Add(label_5, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
+    grid_el_sizer->Add(m_gridY, 0, wxALL, 3);
+    grid_el_sizer->Add(label_6, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
+    grid_el_sizer->Add(m_gridcolor, 0, wxALL, 3);
+    grid_el_sizer->Add(label_7, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
+    grid_el_sizer->Add(m_gridcolor_alpha, 0, wxALL, 3);
+    grid_styler->Add(grid_el_sizer, 1, wxEXPAND, 0);
+    container->Add(grid_styler, 0, wxALL|wxEXPAND, 3);
+    helper_styler->Add(label_8, 0, wxALL, 3);
+    grid_sizer_1->Add(label_9, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
+    grid_sizer_1->Add(m_fill_selected, 0, wxALL, 3);
+    grid_sizer_1->Add(labelfa, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
+    grid_sizer_1->Add(m_fill_selected_alpha, 0, wxALL, 3);
+    grid_sizer_1->Add(label_11, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
+    grid_sizer_1->Add(m_border_selected, 0, wxALL, 3);
+    grid_sizer_1->Add(labeloa, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
+    grid_sizer_1->Add(m_border_selected_alpha, 0, wxALL, 3);
+    helper_styler->Add(grid_sizer_1, 1, wxEXPAND, 0);
+    helper_styler->Add(label_8_copy, 0, wxALL, 3);
+    grid_sizer_1_copy->Add(label_9_copy, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
+    grid_sizer_1_copy->Add(m_fill, 0, wxALL, 3);
+    grid_sizer_1_copy->Add(labelaeijfafe, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
+    grid_sizer_1_copy->Add(m_fill_alpha, 0, wxALL, 3);
+    grid_sizer_1_copy->Add(label_11_copy, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
+    grid_sizer_1_copy->Add(m_border, 0, wxALL, 3);
+    grid_sizer_1_copy->Add(labelahosehjfija, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
+    grid_sizer_1_copy->Add(m_border_alpha, 0, wxALL, 3);
+    helper_styler->Add(grid_sizer_1_copy, 1, wxEXPAND, 0);
+    container->Add(helper_styler, 0, wxEXPAND, 0);
     // end wxGlade
+
+
 
     top_sizer->Add( container, 1, wxEXPAND|wxALIGN_CENTRE|wxALL, 5 );
     //top_sizer->AddSpacer(5);

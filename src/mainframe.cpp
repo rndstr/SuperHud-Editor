@@ -45,6 +45,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_MENU(ID_MENU_VIEW_CONFIGPREVIEW, MainFrame::OnMenuViewConfigPreview)
   EVT_MENU(ID_MENU_VIEW_TOOLBAR_FILE, MainFrame::OnMenuViewToolbarFile)
   EVT_MENU(ID_MENU_VIEW_GRID, MainFrame::OnMenuViewGrid)
+  EVT_MENU(ID_MENU_VIEW_HELPER, MainFrame::OnMenuViewHelper)
   EVT_MENU(ID_MENU_HELP_UPDATE, MainFrame::OnMenuHelpUpdate)
   EVT_MENU(ID_MENU_HELP_TIP, MainFrame::OnMenuHelpTip)
   
@@ -120,6 +121,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_view_menu->AppendSubMenu(view_layout_submenu, _("&Layout"), _("Select which panes you would like to be visible or not"));
   m_view_menu->AppendSeparator();
   m_view_menu->AppendCheckItem( ID_MENU_VIEW_GRID, _("Display &Grid\tCtrl+G"), _("Draws a grid over the HUD") );
+  m_view_menu->AppendCheckItem( ID_MENU_VIEW_HELPER, _("Display &Helper\tCtrl+H"), _("Draws helper over elements to improve visibility") );
   m_view_menu->AppendSeparator();
   //m_view_menu->Append( ID_MENU_VIEW_FOCUSPROPERTIES, _("Focus Properties\tF6") );
   m_view_menu->Append( ID_MENU_VIEW_FOCUSELEMENTS, _("Focus Elementlist\tF7") );
@@ -198,6 +200,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   //m_view_menu->Check( ID_MENU_VIEW_TOOLBAR_FILE, m_toolbar_file->IsShown() ); // done through UpdateUI event
   //m_view_menu->Check( ID_MENU_VIEW_CONFIGPREVIEW, m_configpreview->IsShown() ); // done through UpdateUI event
   m_view_menu->Check( ID_MENU_VIEW_GRID, Prefs::get().var(wxT("view_grid")) );
+  m_view_menu->Check( ID_MENU_VIEW_HELPER, Prefs::get().var(wxT("view_helper")) );
+
   
 
   if( Prefs::get().var(wxT("game")) == wxT("q4max") )
@@ -486,7 +490,13 @@ void MainFrame::OnMenuViewToolbarFile( wxCommandEvent& )
 void MainFrame::OnMenuViewGrid( wxCommandEvent& ev )
 {
   Prefs::get().setb(wxT("view_grid"), ev.IsChecked());
-  m_displayctrl->Refresh();
+  update_displayctrl();
+}
+
+void MainFrame::OnMenuViewHelper( wxCommandEvent& ev )
+{
+  Prefs::get().setb(wxT("view_helper"), ev.IsChecked());
+  update_displayctrl();
 }
 
 void MainFrame::OnMenuViewFocus( wxCommandEvent& ev )

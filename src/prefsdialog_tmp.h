@@ -3,6 +3,7 @@
 #include <wx/wx.h>
 #include <wx/image.h>
 // begin wxGlade: ::dependencies
+#include <wx/spinctrl.h>
 // end wxGlade
 
 
@@ -14,6 +15,53 @@
 // end wxGlade
 
 
+
+
+class loadsave_prefs: public wxDialog {
+public:
+    // begin wxGlade: loadsave_prefs::ids
+    // end wxGlade
+
+    loadsave_prefs(wxWindow* parent, int id, const wxString& title, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxDEFAULT_DIALOG_STYLE);
+
+private:
+    // begin wxGlade: loadsave_prefs::methods
+    void set_properties();
+    void do_layout();
+    // end wxGlade
+
+protected:
+    // begin wxGlade: loadsave_prefs::attributes
+    wxCheckBox* checkbox_2;
+    wxCheckBox* checkbox_3;
+    // end wxGlade
+}; // wxGlade: end class
+
+
+class cpma_prefs: public wxDialog {
+public:
+    // begin wxGlade: cpma_prefs::ids
+    // end wxGlade
+
+    cpma_prefs(wxWindow* parent, int id, const wxString& title, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxDEFAULT_DIALOG_STYLE);
+
+private:
+    // begin wxGlade: cpma_prefs::methods
+    void set_properties();
+    void do_layout();
+    // end wxGlade
+
+protected:
+    // begin wxGlade: cpma_prefs::attributes
+    wxStaticBox* sizer_5_staticbox;
+    wxStaticBox* sizer_3_staticbox;
+    wxTextCtrl* m_gamedir;
+    wxButton* button_2;
+    wxTextCtrl* m_background;
+    wxButton* button_2_copy;
+    wxCheckBox* m_background_usedefault;
+    // end wxGlade
+}; // wxGlade: end class
 
 class display_prefs: public wxPanel {
 public:
@@ -30,13 +78,41 @@ private:
 
 protected:
     // begin wxGlade: display_prefs::attributes
+    wxStaticBox* helper_styler_staticbox;
     wxStaticBox* grid_styler_staticbox;
+    wxStaticBox* ar_styler_staticbox;
     wxChoice* m_aspectratio;
     wxStaticText* label_1;
     wxTextCtrl* m_aspectratioX;
     wxStaticText* label_2;
     wxTextCtrl* m_aspectratioY;
     wxStaticText* label_3;
+    wxStaticText* label_4;
+    wxSpinCtrl* m_gridX;
+    wxStaticText* label_5;
+    wxSpinCtrl* m_gridY;
+    wxStaticText* label_6;
+    wxButton* m_gridcolor;
+    wxStaticText* label_7;
+    wxSpinCtrl* m_gridcolor_alpha;
+    wxStaticText* label_8;
+    wxStaticText* label_9;
+    wxButton* m_fill_selected;
+    wxStaticText* labelfa;
+    wxSpinCtrl* m_fill_selected_alpha;
+    wxStaticText* label_11;
+    wxButton* m_border_selected;
+    wxStaticText* labeloa;
+    wxSpinCtrl* m_border_selected_alpha;
+    wxStaticText* label_8_copy;
+    wxStaticText* label_9_copy;
+    wxButton* m_fill;
+    wxStaticText* labelaeijfafe;
+    wxSpinCtrl* m_fill_alpha;
+    wxStaticText* label_11_copy;
+    wxButton* m_border;
+    wxStaticText* labelahosehjfija;
+    wxSpinCtrl* m_border_alpha;
     // end wxGlade
 }; // wxGlade: end class
 

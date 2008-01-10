@@ -29,6 +29,7 @@ enum
 
   ID_MENU_VIEW_DEFAULTPERSPECTIVE,
   ID_MENU_VIEW_GRID,
+  ID_MENU_VIEW_HELPER,
   /// all the panes that can be switched on/off
   /// keep first and last in order as we add evthandler with range
   /// @{

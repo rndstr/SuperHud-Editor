@@ -111,6 +111,7 @@ class MainFrame : public wxFrame
     void OnMenuViewFocus( wxCommandEvent& );
     
     void OnMenuViewGrid( wxCommandEvent& );
+    void OnMenuViewHelper( wxCommandEvent& );
     void OnUpdateViewPanes( wxUpdateUIEvent& );
 
     void OnMenuHelpUpdate( wxCommandEvent& );
