@@ -21,6 +21,7 @@
 	* add: support for renamed Pre/PostDecorate in cpma-1.44 (you still can load
 			huds from previous versions but it will be saved for >=cpma-1.44)
 	* add: a grid (of points) elements can snap to (defaults to 12x12)
+	* add: a pak file browser (with image preview!)
 
 
 	* chg: new highly modifiable user interface
