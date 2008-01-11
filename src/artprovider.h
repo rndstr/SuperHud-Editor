@@ -25,6 +25,10 @@
 
 #include "xpm/icons/clear.xpm"
 
+#include "xpm/icons/prefs_display.xpm"
+#include "xpm/icons/prefs_misc.xpm"
+#include "xpm/icons/prefs_advanced.xpm"
+
 
 const wxArtID ART_CPMA = _T("ART_CPMA");
 const wxArtID ART_Q4MAX = _T("ART_Q4MAX");
@@ -42,6 +46,12 @@ const wxArtID ART_ELEMENTS_COLLECTION_ITEM = _T("ART_ELEMENTS_COLLECTION_ITEM");
 
 const wxArtID ART_BMP_SETUPWIZARD = _T("ART_BMP_SETUPWIZARD");
 const wxArtID ART_CLEAR = _T("ART_CLEAR");
+
+const wxArtID ART_PREFS_DISPLAY = _T("ART_PREFS_DISPLAY");
+const wxArtID ART_PREFS_MISC = _T("ART_PREFS_MISC");
+const wxArtID ART_PREFS_ADVANCED = _T("ART_PREFS_ADVANCED");
+const wxArtID ART_PREFS_CPMA = ART_CPMA;
+
 
 
 class ArtProvider : public wxArtProvider
@@ -81,6 +91,13 @@ class ArtProvider : public wxArtProvider
 
       else if( id == ART_CLEAR )
         return wxBitmap(clear_xpm);
+
+      else if( id == ART_PREFS_DISPLAY )
+        return wxBitmap(prefs_display_xpm);
+      else if( id == ART_PREFS_MISC )
+        return wxBitmap(prefs_misc_xpm);
+      else if( id == ART_PREFS_ADVANCED )
+        return wxBitmap(prefs_advanced_xpm);
       
       return wxNullBitmap;
     }

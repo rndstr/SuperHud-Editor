@@ -14,15 +14,24 @@
 // along with this program; if not, write to the Free Software 
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
+#include "misc.h"
+#include "common.h"
+
 #include <wx/mstream.h>
 //#include <wx/wfstream.h>
 #include <wx/fs_zip.h>
 #include <wx/tokenzr.h>
 #include <wx/log.h>
 
-#include "misc.h"
 
-#include "common.h"
+
+#ifdef __WXMAC__
+  #include "OpenGL/gl.h"
+  #include "OpenGL/glu.h" // checkcheck
+#else
+  #include <GL/gl.h>
+  #include <GL/glu.h>
+#endif
 
 namespace she
 {

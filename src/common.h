@@ -2,17 +2,20 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#define ENABLE_Q4MAX 0
+#define ENABLE_CPMA 1
+
+#if ENABLE_Q4MAX && ENABLE_CPMA
+  #define HAS_MULTIPLE_GAMES 1
+#else
+  #define HAS_MULTIPLE_GAMES 0
+#endif
+
 #include <wx/wx.h>
 #include <wx/string.h>
 #include <wx/log.h>
 
-#ifdef __WXMAC__
-  #include "OpenGL/gl.h"
-  #include "OpenGL/glu.h" // checkcheck
-#else
-  #include <GL/gl.h>
-  #include <GL/glu.h>
-#endif
+
 
 #include "superhudeditor.h"
 #include "factorybase.h"

@@ -21,7 +21,9 @@
 #include "cpma/displayctrl.h"
 #include "cpma/hudfile.h"
 
-//DECLARE_APP(SHEApp);
+#if !defined(__WXMSW__) && !defined(__WXPM__)
+    #include "xpm/icons/superhudeditor.xpm"
+#endif
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_MENU(wxID_ABOUT, MainFrame::OnMenuAbout)
@@ -71,6 +73,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
     
 {
 
+  SetIcon(wxICON(superhudeditor));
   m_mgr.SetManagedWindow(this);
 
   // create menu
@@ -96,8 +99,10 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   menu_bar->Append( m_edit_menu, _("&Edit") );
 
   wxMenu *tools_menu = new wxMenu;
+#if HAS_MULTIPLE_GAMES
   tools_menu->Append( ID_MENU_TOOLS_SWITCHGAME, _("&Switch Game") );
   tools_menu->AppendSeparator();
+#endif
   tools_menu->Append( ID_MENU_TOOLS_CONVERT, _("Convert &HUD") );
   tools_menu->AppendSeparator();
   tools_menu->AppendCheckItem( ID_MENU_TOOLS_SNAPELEMENTS, _("&Snap to &Elements") );
@@ -203,11 +208,14 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_view_menu->Check( ID_MENU_VIEW_HELPER, Prefs::get().var(wxT("view_helper")) );
 
   
-
+  
+  /*
+  // set icon depending on gamename
   if( Prefs::get().var(wxT("game")) == wxT("q4max") )
     SetIcon( wxArtProvider::GetIcon(ART_Q4MAX, wxART_FRAME_ICON, wxSize(16,16)) );
   else
-    SetIcon( wxArtProvider::GetIcon(ART_CPMA, wxART_FRAME_ICON, wxSize(16,16)) );
+    SetIcon( wxArtProvider::GetIcon(ART_Q4MAX, wxART_FRAME_ICON, wxSize(16,16)) );
+    */
 
   SetMinSize(wxSize(1000,600));
   if( Prefs::get().var(wxT("app_maximized")) )
@@ -216,8 +224,9 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
     SetSize( Prefs::get().var(wxT("app_width")).ival(), Prefs::get().var(wxT("app_height")).ival() );
   
 #ifndef WIN32
-  // default transparency hints on linux throw assertions all over the place 
-  set_floating_hint( wxAUI_MGR_RECTANGLE_HINT );
+  // default transparency hints on linux throw assertions all over the place
+  // orly?
+  //set_floating_hint( wxAUI_MGR_RECTANGLE_HINT );
 #endif
   m_mgr.Update();
 

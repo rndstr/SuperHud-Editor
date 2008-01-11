@@ -78,6 +78,8 @@ bool SHEApp::OnInit()
     wxLogError(wxT("Couldn't initialize language"));
     */
 
+#if HAS_MULTIPLE_GAMES
+  wxLogDebug(wxT("Multiple Games"));
   if( (!is_cpma() && !is_q4max()) || Prefs::get().var(wxT("startup_gameselection")) )
   {
     GameSelectionDialog dlg(0);
@@ -94,6 +96,13 @@ bool SHEApp::OnInit()
       Prefs::get().set(wxT("game"), wxT("cpma"));
     }
   }
+#elif ENABLE_CPMA
+  wxLogDebug(wxT("Single Game: CPMA"));
+#elif ENABLE_Q4MAX
+  wxLogDebug(wxT("Single Game: Q4MAX"));
+#elif
+  wxLogDebug(wxT("ERROR - No game"));
+#endif
 
   if( is_cpma() )
   {
@@ -200,10 +209,23 @@ wxCommandProcessor* SHEApp::cmds()
 
 bool SHEApp::is_cpma() const
 {
+#if HAS_MULTIPLE_GAMES
   return (Prefs::get().var(wxT("game")).sval().CmpNoCase(wxT("cpma")) == 0);
+#elif ENABLE_CPMA
+  return true; // cpma only available, so this is always cpma
+#else
+  return false; // other game only available
+#endif
+
 }
 
 bool SHEApp::is_q4max() const
 {
+#if HAS_MULTIPLE_GAMES
   return (Prefs::get().var(wxT("game")).sval().CmpNoCase(wxT("q4max")) == 0);
+#elif ENABLE_Q4MAX
+  return true;
+#else
+  return false;
+#endif
 }

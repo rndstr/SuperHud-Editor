@@ -3,6 +3,14 @@
 
 #include "common.h"
 
+#ifdef __WXMAC__
+  #include "OpenGL/gl.h"
+  #include "OpenGL/glu.h" // checkcheck
+#else
+  #include <GL/gl.h>
+  #include <GL/glu.h>
+#endif
+
 class Texture
 {
   public:

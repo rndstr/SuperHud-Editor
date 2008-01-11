@@ -35,43 +35,45 @@ display_prefs::display_prefs(wxWindow* parent, int id, const wxPoint& pos, const
     grid_styler_staticbox = new wxStaticBox(this, -1, wxT("Grid"));
     helper_styler_staticbox = new wxStaticBox(this, -1, wxT("Helper"));
     ar_styler_staticbox = new wxStaticBox(this, -1, wxT("Aspect ratio"));
-    const wxString m_aspectratio_choices[] = {
+    display_title = new wxStaticText(this, wxID_ANY, wxT("Display"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
+    label_3 = new wxStaticText(this, wxID_ANY, wxT("Proportion of your ingame resolution, width:height."));
+    const wxString m_view_aspectratio_choices[] = {
         wxT("Standard (4:3)"),
         wxT("Widescreen (16:10)"),
         wxT("Custom")
     };
-    m_aspectratio = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 3, m_aspectratio_choices, 0);
+    m_view_aspectratio = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 3, m_view_aspectratio_choices, 0);
     label_1 = new wxStaticText(this, wxID_ANY, wxT("Custom:"));
-    m_aspectratioX = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
+    m_view_aspectratioX = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
     label_2 = new wxStaticText(this, wxID_ANY, wxT(":"));
-    m_aspectratioY = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
-    label_3 = new wxStaticText(this, wxID_ANY, wxT("Proportion of width:height ingame."));
+    m_view_aspectratioY = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
     label_4 = new wxStaticText(this, wxID_ANY, wxT("Distance X:"));
-    m_gridX = new wxSpinCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+    m_view_gridX = new wxSpinCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
     label_5 = new wxStaticText(this, wxID_ANY, wxT("Distance Y:"));
-    m_gridY = new wxSpinCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+    m_view_gridY = new wxSpinCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
     label_6 = new wxStaticText(this, wxID_ANY, wxT("Color:"));
-    m_gridcolor = new wxButton(this, wxID_ANY, wxEmptyString);
+    m_view_gridcolor = new wxButton(this, ID_BTN_GRIDCOLOR, wxEmptyString);
     label_7 = new wxStaticText(this, wxID_ANY, wxT("Opacity:"));
-    m_gridcolor_alpha = new wxSpinCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+    m_view_gridcolor_alpha = new wxSlider(this, wxID_ANY, 0, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL|wxSL_LABELS);
+    label_10 = new wxStaticText(this, wxID_ANY, wxT("Additionally drawn to help visualize the position of the\nelements better."));
     label_8 = new wxStaticText(this, wxID_ANY, wxT("Selected Elements"));
     label_9 = new wxStaticText(this, wxID_ANY, wxT("Background:"));
-    m_fill_selected = new wxButton(this, wxID_ANY, wxEmptyString);
+    m_view_fill_selected = new wxButton(this, ID_BTN_FILLSEL, wxEmptyString);
     labelfa = new wxStaticText(this, wxID_ANY, wxT("Opacity:"));
-    m_fill_selected_alpha = new wxSpinCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+    m_view_fill_selected_alpha = new wxSlider(this, wxID_ANY, 0, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL|wxSL_LABELS);
     label_11 = new wxStaticText(this, wxID_ANY, wxT("Outline:"));
-    m_border_selected = new wxButton(this, wxID_ANY, wxEmptyString);
+    m_view_border_selected = new wxButton(this, ID_BTN_OUTLINESEL, wxEmptyString);
     labeloa = new wxStaticText(this, wxID_ANY, wxT("Opacity:"));
-    m_border_selected_alpha = new wxSpinCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+    m_view_border_selected_alpha = new wxSlider(this, wxID_ANY, 0, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL|wxSL_LABELS);
     label_8_copy = new wxStaticText(this, wxID_ANY, wxT("Deselected Elements"));
     label_9_copy = new wxStaticText(this, wxID_ANY, wxT("Background:"));
-    m_fill = new wxButton(this, wxID_ANY, wxEmptyString);
+    m_view_fill = new wxButton(this, ID_BTN_FILL, wxEmptyString);
     labelaeijfafe = new wxStaticText(this, wxID_ANY, wxT("Opacity:"));
-    m_fill_alpha = new wxSpinCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+    m_view_fill_alpha = new wxSlider(this, wxID_ANY, 0, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_LABELS);
     label_11_copy = new wxStaticText(this, wxID_ANY, wxT("Outline:"));
-    m_border = new wxButton(this, wxID_ANY, wxEmptyString);
+    m_view_border = new wxButton(this, ID_BTN_OUTLINE, wxEmptyString);
     labelahosehjfija = new wxStaticText(this, wxID_ANY, wxT("Opacity:"));
-    m_border_alpha = new wxSlider(this, wxID_ANY, 0, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL|wxSL_LABELS);
+    m_view_border_alpha = new wxSlider(this, wxID_ANY, 0, 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL|wxSL_LABELS);
 
     set_properties();
     do_layout();
@@ -82,18 +84,18 @@ display_prefs::display_prefs(wxWindow* parent, int id, const wxPoint& pos, const
 void display_prefs::set_properties()
 {
     // begin wxGlade: display_prefs::set_properties
-    m_aspectratio->SetSelection(0);
-    m_aspectratioX->SetMinSize(wxSize(40, -1));
-    m_aspectratioY->SetMinSize(wxSize(40, -1));
+    display_title->SetBackgroundColour(wxColour(0, 0, 85));
+    display_title->SetForegroundColour(wxColour(255, 255, 255));
+    display_title->SetFont(wxFont(12, wxDEFAULT, wxNORMAL, wxBOLD, 0, wxT("")));
     label_3->SetForegroundColour(wxColour(0, 0, 85));
-    m_gridX->SetMinSize(wxSize(70, -1));
-    m_gridY->SetMinSize(wxSize(70, -1));
-    m_gridcolor_alpha->SetMinSize(wxSize(70, -1));
+    m_view_aspectratio->SetSelection(0);
+    m_view_aspectratioX->SetMinSize(wxSize(40, -1));
+    m_view_aspectratioY->SetMinSize(wxSize(40, -1));
+    m_view_gridX->SetMinSize(wxSize(70, -1));
+    m_view_gridY->SetMinSize(wxSize(70, -1));
+    label_10->SetForegroundColour(wxColour(0, 0, 85));
     label_8->SetFont(wxFont(10, wxDEFAULT, wxNORMAL, wxBOLD, 0, wxT("")));
-    m_fill_selected_alpha->SetMinSize(wxSize(70, -1));
-    m_border_selected_alpha->SetMinSize(wxSize(70, -1));
     label_8_copy->SetFont(wxFont(10, wxDEFAULT, wxNORMAL, wxBOLD, 0, wxT("")));
-    m_fill_alpha->SetMinSize(wxSize(70, -1));
     // end wxGlade
 }
 
@@ -110,44 +112,48 @@ void display_prefs::do_layout()
     wxFlexGridSizer* grid_el_sizer = new wxFlexGridSizer(2, 4, 0, 0);
     wxStaticBoxSizer* ar_styler = new wxStaticBoxSizer(ar_styler_staticbox, wxVERTICAL);
     wxBoxSizer* ar_el_sizer = new wxBoxSizer(wxHORIZONTAL);
-    ar_el_sizer->Add(m_aspectratio, 0, wxALL, 3);
-    ar_el_sizer->Add(label_1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
-    ar_el_sizer->Add(m_aspectratioX, 0, wxALL, 3);
-    ar_el_sizer->Add(label_2, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 3);
-    ar_el_sizer->Add(m_aspectratioY, 0, wxALL, 3);
-    ar_styler->Add(ar_el_sizer, 1, wxALL|wxEXPAND, 0);
+    wxBoxSizer* sizer_8 = new wxBoxSizer(wxVERTICAL);
+    sizer_8->Add(display_title, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 3);
+    container->Add(sizer_8, 0, wxEXPAND, 0);
     ar_styler->Add(label_3, 0, wxALL|wxEXPAND, 3);
+    ar_el_sizer->Add(m_view_aspectratio, 0, wxALL, 3);
+    ar_el_sizer->Add(label_1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
+    ar_el_sizer->Add(m_view_aspectratioX, 0, wxALL, 3);
+    ar_el_sizer->Add(label_2, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 3);
+    ar_el_sizer->Add(m_view_aspectratioY, 0, wxALL, 3);
+    ar_styler->Add(ar_el_sizer, 1, wxALL|wxEXPAND, 0);
     container->Add(ar_styler, 0, wxALL|wxEXPAND, 3);
     grid_el_sizer->Add(label_4, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
-    grid_el_sizer->Add(m_gridX, 0, wxALL, 3);
+    grid_el_sizer->Add(m_view_gridX, 0, wxALL, 3);
     grid_el_sizer->Add(label_5, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
-    grid_el_sizer->Add(m_gridY, 0, wxALL, 3);
+    grid_el_sizer->Add(m_view_gridY, 0, wxALL, 3);
     grid_el_sizer->Add(label_6, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
-    grid_el_sizer->Add(m_gridcolor, 0, wxALL, 3);
+    grid_el_sizer->Add(m_view_gridcolor, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
     grid_el_sizer->Add(label_7, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
-    grid_el_sizer->Add(m_gridcolor_alpha, 0, wxALL, 3);
+    grid_el_sizer->Add(m_view_gridcolor_alpha, 0, 0, 0);
     grid_styler->Add(grid_el_sizer, 1, wxEXPAND, 0);
     container->Add(grid_styler, 0, wxALL|wxEXPAND, 3);
+    helper_styler->Add(label_10, 0, wxALL, 3);
     helper_styler->Add(label_8, 0, wxALL, 3);
     grid_sizer_1->Add(label_9, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
-    grid_sizer_1->Add(m_fill_selected, 0, wxALL, 3);
+    grid_sizer_1->Add(m_view_fill_selected, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
     grid_sizer_1->Add(labelfa, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
-    grid_sizer_1->Add(m_fill_selected_alpha, 0, wxALL, 3);
+    grid_sizer_1->Add(m_view_fill_selected_alpha, 0, 0, 0);
     grid_sizer_1->Add(label_11, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
-    grid_sizer_1->Add(m_border_selected, 0, wxALL, 3);
+    grid_sizer_1->Add(m_view_border_selected, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
     grid_sizer_1->Add(labeloa, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
-    grid_sizer_1->Add(m_border_selected_alpha, 0, wxALL, 3);
-    helper_styler->Add(grid_sizer_1, 1, wxEXPAND, 0);
+    grid_sizer_1->Add(m_view_border_selected_alpha, 0, 0, 0);
+    helper_styler->Add(grid_sizer_1, 0, wxEXPAND, 0);
     helper_styler->Add(label_8_copy, 0, wxALL, 3);
     grid_sizer_1_copy->Add(label_9_copy, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
-    grid_sizer_1_copy->Add(m_fill, 0, wxALL, 3);
+    grid_sizer_1_copy->Add(m_view_fill, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
     grid_sizer_1_copy->Add(labelaeijfafe, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
-    grid_sizer_1_copy->Add(m_fill_alpha, 0, wxALL, 3);
+    grid_sizer_1_copy->Add(m_view_fill_alpha, 0, 0, 0);
     grid_sizer_1_copy->Add(label_11_copy, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
-    grid_sizer_1_copy->Add(m_border, 0, wxALL, 3);
+    grid_sizer_1_copy->Add(m_view_border, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
     grid_sizer_1_copy->Add(labelahosehjfija, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
-    grid_sizer_1_copy->Add(m_border_alpha, 0, wxALIGN_CENTER_VERTICAL, 0);
-    helper_styler->Add(grid_sizer_1_copy, 1, wxEXPAND, 0);
+    grid_sizer_1_copy->Add(m_view_border_alpha, 0, 0, 0);
+    helper_styler->Add(grid_sizer_1_copy, 0, wxEXPAND, 0);
     container->Add(helper_styler, 0, wxEXPAND, 0);
     top_sizer->Add(container, 1, wxALL|wxEXPAND, 5);
     SetSizer(top_sizer);
@@ -167,36 +173,19 @@ void display_prefs::do_layout()
 loadsave_prefs::loadsave_prefs(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
     wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE)
 {
-    // begin wxGlade: loadsave_prefs::loadsave_prefs
-    checkbox_2 = new wxCheckBox(this, wxID_ANY, wxT("Create backup before saving"));
-    checkbox_3 = new wxCheckBox(this, wxID_ANY, wxT("Reload previously open HUD on startup"));
-
-    set_properties();
-    do_layout();
-    // end wxGlade
+// content of this block not found: did you rename this class?
 }
 
 
 void loadsave_prefs::set_properties()
 {
-    // begin wxGlade: loadsave_prefs::set_properties
-    SetTitle(wxT("loadsave_prefs"));
-    // end wxGlade
+// content of this block not found: did you rename this class?
 }
 
 
 void loadsave_prefs::do_layout()
 {
-    // begin wxGlade: loadsave_prefs::do_layout
-    wxBoxSizer* top_sizer = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer* container = new wxBoxSizer(wxVERTICAL);
-    container->Add(checkbox_2, 0, wxALL, 3);
-    container->Add(checkbox_3, 0, wxALL, 3);
-    top_sizer->Add(container, 1, wxEXPAND, 0);
-    SetSizer(top_sizer);
-    top_sizer->Fit(this);
-    Layout();
-    // end wxGlade
+// content of this block not found: did you rename this class?
 }
 
 
@@ -206,11 +195,14 @@ cpma_prefs::cpma_prefs(wxWindow* parent, int id, const wxString& title, const wx
     // begin wxGlade: cpma_prefs::cpma_prefs
     sizer_5_staticbox = new wxStaticBox(this, -1, wxT("Background image"));
     sizer_3_staticbox = new wxStaticBox(this, -1, wxT("Quake3 path"));
-    m_gamedir = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
-    button_2 = new wxButton(this, wxID_ANY, wxT("..."));
-    m_background = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
-    button_2_copy = new wxButton(this, wxID_ANY, wxT("..."));
-    m_background_usedefault = new wxCheckBox(this, wxID_ANY, wxT("Use default"));
+    cpma_title = new wxStaticText(this, wxID_ANY, wxT("CPMA"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
+    label_13 = new wxStaticText(this, wxID_ANY, wxT("Where you installed Quake3 at."));
+    m_q3_gamedir = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
+    button_2 = new wxButton(this, ID_BTN_Q3_GAMEDIR_BROWSE, wxT("..."));
+    label_12 = new wxStaticText(this, wxID_ANY, wxT("Preferrably of width and height as power of two."));
+    m_q3_background = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
+    button_2_copy = new wxButton(this, ID_BTN_Q3_BACKGROUND_BROWSE, wxT("..."));
+    m_q3_background_usedefault = new wxCheckBox(this, wxID_ANY, wxT("Use default"));
 
     set_properties();
     do_layout();
@@ -222,7 +214,12 @@ void cpma_prefs::set_properties()
 {
     // begin wxGlade: cpma_prefs::set_properties
     SetTitle(wxT("cpma_prefs"));
+    cpma_title->SetBackgroundColour(wxColour(0, 0, 85));
+    cpma_title->SetForegroundColour(wxColour(255, 255, 255));
+    cpma_title->SetFont(wxFont(12, wxDEFAULT, wxNORMAL, wxBOLD, 0, wxT("")));
+    label_13->SetForegroundColour(wxColour(0, 0, 85));
     button_2->SetMinSize(wxSize(40, -1));
+    label_12->SetForegroundColour(wxColour(0, 0, 85));
     button_2_copy->SetMinSize(wxSize(40, -1));
     // end wxGlade
 }
@@ -237,14 +234,19 @@ void cpma_prefs::do_layout()
     wxBoxSizer* sizer_6 = new wxBoxSizer(wxHORIZONTAL);
     wxStaticBoxSizer* sizer_3 = new wxStaticBoxSizer(sizer_3_staticbox, wxVERTICAL);
     wxBoxSizer* sizer_4 = new wxBoxSizer(wxHORIZONTAL);
-    sizer_4->Add(m_gamedir, 1, wxALL|wxEXPAND, 3);
+    wxBoxSizer* sizer_10 = new wxBoxSizer(wxVERTICAL);
+    sizer_10->Add(cpma_title, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 3);
+    container->Add(sizer_10, 0, wxEXPAND, 0);
+    sizer_3->Add(label_13, 0, wxALL, 3);
+    sizer_4->Add(m_q3_gamedir, 1, wxALL|wxEXPAND, 3);
     sizer_4->Add(button_2, 0, wxALL, 3);
     sizer_3->Add(sizer_4, 1, wxEXPAND, 0);
     container->Add(sizer_3, 0, wxALL|wxEXPAND, 3);
-    sizer_6->Add(m_background, 1, wxALL|wxEXPAND, 3);
+    sizer_5->Add(label_12, 0, wxALL, 3);
+    sizer_6->Add(m_q3_background, 1, wxALL|wxEXPAND, 3);
     sizer_6->Add(button_2_copy, 0, wxALL, 3);
     sizer_5->Add(sizer_6, 1, wxEXPAND, 0);
-    sizer_5->Add(m_background_usedefault, 0, wxALL, 3);
+    sizer_5->Add(m_q3_background_usedefault, 0, wxALL, 3);
     container->Add(sizer_5, 0, wxALL|wxEXPAND, 3);
     top_sizer->Add(container, 1, wxALL|wxEXPAND, 5);
     SetSizer(top_sizer);
@@ -252,6 +254,140 @@ void cpma_prefs::do_layout()
     Layout();
     // end wxGlade
 }
+
+
+
+
+
+
+misc_prefs::misc_prefs(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
+    wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE)
+{
+    // begin wxGlade: misc_prefs::misc_prefs
+    sizer_2_staticbox = new wxStaticBox(this, -1, wxT("Message dialogs"));
+    sizer_7_staticbox = new wxStaticBox(this, -1, wxT("Elements list"));
+    sizer_1_staticbox = new wxStaticBox(this, -1, wxT("Load / Save"));
+    misc_title = new wxStaticText(this, wxID_ANY, wxT("Misc"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
+    m_save_backup = new wxCheckBox(this, wxID_ANY, wxT("Create backup before saving"));
+    m_startup_load = new wxCheckBox(this, wxID_ANY, wxT("Reload previously open HUD on startup"));
+    label_14 = new wxStaticText(this, wxID_ANY, wxT("On several occassions you are prompted a message dialog that\nyou can disable popping up. If you want to enable them all\nagain, click the button below."));
+    button_1 = new wxButton(this, ID_BTN_RESETDIALOGS, wxT("Reset dialogs"));
+    m_elements_collections = new wxCheckBox(this, wxID_ANY, wxT("Use collections"));
+
+    set_properties();
+    do_layout();
+    // end wxGlade
+}
+
+
+void misc_prefs::set_properties()
+{
+    // begin wxGlade: misc_prefs::set_properties
+    SetTitle(wxT("misc_prefs"));
+    misc_title->SetBackgroundColour(wxColour(0, 0, 85));
+    misc_title->SetForegroundColour(wxColour(255, 255, 255));
+    misc_title->SetFont(wxFont(12, wxDEFAULT, wxNORMAL, wxBOLD, 0, wxT("")));
+    label_14->SetForegroundColour(wxColour(0, 0, 85));
+    // end wxGlade
+}
+
+
+void misc_prefs::do_layout()
+{
+    // begin wxGlade: misc_prefs::do_layout
+    wxBoxSizer* top_sizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* container = new wxBoxSizer(wxVERTICAL);
+    wxStaticBoxSizer* sizer_7 = new wxStaticBoxSizer(sizer_7_staticbox, wxVERTICAL);
+    wxStaticBoxSizer* sizer_2 = new wxStaticBoxSizer(sizer_2_staticbox, wxVERTICAL);
+    wxStaticBoxSizer* sizer_1 = new wxStaticBoxSizer(sizer_1_staticbox, wxVERTICAL);
+    wxBoxSizer* sizer_9 = new wxBoxSizer(wxVERTICAL);
+    sizer_9->Add(misc_title, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 3);
+    container->Add(sizer_9, 0, wxEXPAND, 0);
+    sizer_1->Add(m_save_backup, 0, wxALL, 3);
+    sizer_1->Add(m_startup_load, 0, wxALL, 3);
+    container->Add(sizer_1, 0, wxALL|wxEXPAND, 3);
+    sizer_2->Add(label_14, 0, wxALL, 3);
+    sizer_2->Add(button_1, 0, wxALL, 3);
+    container->Add(sizer_2, 0, wxALL|wxEXPAND, 3);
+    sizer_7->Add(m_elements_collections, 0, wxALL, 3);
+    container->Add(sizer_7, 0, wxALL|wxEXPAND, 3);
+    top_sizer->Add(container, 1, wxALL|wxEXPAND, 5);
+    SetSizer(top_sizer);
+    top_sizer->Fit(this);
+    Layout();
+    // end wxGlade
+}
+
+
+advanced_prefs::advanced_prefs(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
+    wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE)
+{
+    // begin wxGlade: advanced_prefs::advanced_prefs
+    advanced_title = new wxStaticText(this, wxID_ANY, wxT("Advanced"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
+    m_view_dragthreshold = new wxStaticText(this, wxID_ANY, wxT("Drag threshold:"));
+    spin_ctrl_1 = new wxSpinCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+    label_15 = new wxStaticText(this, wxID_ANY, wxT("Snap threshold:"));
+    m_view_snapthreshold = new wxSpinCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
+
+    set_properties();
+    do_layout();
+    // end wxGlade
+}
+
+
+void advanced_prefs::set_properties()
+{
+    // begin wxGlade: advanced_prefs::set_properties
+    SetTitle(wxT("advanced_prefs"));
+    advanced_title->SetBackgroundColour(wxColour(0, 0, 85));
+    advanced_title->SetForegroundColour(wxColour(255, 255, 255));
+    advanced_title->SetFont(wxFont(12, wxDEFAULT, wxNORMAL, wxBOLD, 0, wxT("")));
+    spin_ctrl_1->SetMinSize(wxSize(70, -1));
+    m_view_snapthreshold->SetMinSize(wxSize(70, -1));
+    // end wxGlade
+}
+
+
+void advanced_prefs::do_layout()
+{
+    // begin wxGlade: advanced_prefs::do_layout
+    wxBoxSizer* top_sizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* container = new wxBoxSizer(wxVERTICAL);
+    wxFlexGridSizer* grid_sizer_2 = new wxFlexGridSizer(5, 2, 0, 0);
+    wxBoxSizer* sizer_11 = new wxBoxSizer(wxVERTICAL);
+    sizer_11->Add(advanced_title, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 3);
+    container->Add(sizer_11, 0, wxEXPAND, 0);
+    grid_sizer_2->Add(m_view_dragthreshold, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
+    grid_sizer_2->Add(spin_ctrl_1, 0, wxALL, 3);
+    grid_sizer_2->Add(label_15, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
+    grid_sizer_2->Add(m_view_snapthreshold, 0, wxALL, 3);
+    container->Add(grid_sizer_2, 0, wxEXPAND, 0);
+    top_sizer->Add(container, 1, wxEXPAND, 0);
+    SetSizer(top_sizer);
+    top_sizer->Fit(this);
+    Layout();
+    // end wxGlade
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

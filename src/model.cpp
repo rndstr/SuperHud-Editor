@@ -3,6 +3,14 @@
 #include "common.h"
 #include "pakmanager.h"
 
+#ifdef __WXMAC__
+  #include "OpenGL/gl.h"
+  #include "OpenGL/glu.h" // checkcheck
+#else
+  #include <GL/gl.h>
+  #include <GL/glu.h>
+#endif
+
 #include <wx/sstream.h>
 #include <wx/mstream.h>
 #include <wx/txtstrm.h>

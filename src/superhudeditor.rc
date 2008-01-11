@@ -1,0 +1,3 @@
+aaaa            ICON "xpm/icons/superhudeditor.ico"
+superhudeditor  ICON "xpm/icons/superhudeditor.ico"
+//#include "E:\wxMSW-2.8.7\include\wx/msw/wx.rc"
