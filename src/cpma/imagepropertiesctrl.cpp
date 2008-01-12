@@ -133,10 +133,10 @@ void ImagePropertiesCtrl::from_element( const ElementBase *el )
 
   SetPropertyValue( wxT("use-model"), cel->usemodel() );
 
+  update_layout();
+
   Enable( cel->type() == E_T_USERICON );
   ExpandAll( cel->type() == E_T_USERICON );
-
-  update_layout();
 }
 
 

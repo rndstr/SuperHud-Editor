@@ -187,9 +187,6 @@ void FontPropertiesCtrl::from_element( const ElementBase *el )
 {
   const CPMAElement *cel = static_cast<const CPMAElement*>(el);
 
-  ExpandAll( cel->type() == E_T_TEXT || cel->type() == E_T_WEAPONLIST );
-  Enable( cel->type() == E_T_TEXT || cel->type() == E_T_WEAPONLIST );
-
   SetPropertyValue( wxT("font"), cel->iget_font() );
   SetPropertyValue( wxT("textalign"), textalign_element_to_ui(cel->iget_textalign()) );
   SetPropertyValue( wxT("monospace"), cel->iget_monospace() );
@@ -198,6 +195,9 @@ void FontPropertiesCtrl::from_element( const ElementBase *el )
   SetPropertyValue( wxT("fontsizetype"), fontsizetype_element_to_ui(cel->fontsizetype()) );
   
   update_layout();
+
+  ExpandAll( cel->type() == E_T_TEXT || cel->type() == E_T_WEAPONLIST );
+  Enable( cel->type() == E_T_TEXT || cel->type() == E_T_WEAPONLIST );
 }
 
 int FontPropertiesCtrl::fontsizetype_ui_to_element( const wxString& fs )

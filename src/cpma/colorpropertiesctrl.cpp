@@ -135,14 +135,6 @@ void ColorPropertiesCtrl::from_element( const ElementBase* el )
 {
   const CPMAElement* cel = static_cast<const CPMAElement*>(el);
 
-  EnableProperty(wxT("bgcolor-use"), cel->type() != E_T_BAR);
-  EnableProperty(wxT("bgcolor"), cel->type() != E_T_BAR);
-  EnableProperty(wxT("bgcolor-alpha"), cel->type() != E_T_BAR);
-  if( cel->type() == E_T_BAR )
-    Expand(wxT("cat-bgcolor"));
-  else
-    Collapse(wxT("cat-bgcolor"));
-
   SetPropertyValue( wxT("color-use"), (cel->has() & E_HAS_COLOR) != 0 );
 //  SetPropertyValue( wxT("color"), cel->iget_color().to_wxColour() );
   SetPropertyValue( wxT("color-alpha"), cel->iget_color().a100() );
@@ -156,6 +148,14 @@ void ColorPropertiesCtrl::from_element( const ElementBase* el )
   SetPropertyValue( wxT("fade-alpha"), cel->iget_fade().a100() );
   
   update_layout();
+
+  EnableProperty(wxT("bgcolor-use"), cel->type() != E_T_BAR);
+  EnableProperty(wxT("bgcolor"), cel->type() != E_T_BAR);
+  EnableProperty(wxT("bgcolor-alpha"), cel->type() != E_T_BAR);
+  if( cel->type() == E_T_BAR )
+    Expand(wxT("cat-bgcolor"));
+  else
+    Collapse(wxT("cat-bgcolor"));
 }
 
 

@@ -21,20 +21,16 @@
 
 class advanced2_prefs: public wxDialog {
 public:
-    // begin wxGlade: advanced2_prefs::ids
-    // end wxGlade
+// content of this block (ids) not found: did you rename this class?
 
     advanced2_prefs(wxWindow* parent, int id, const wxString& title, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxDEFAULT_DIALOG_STYLE);
 
 private:
-    // begin wxGlade: advanced2_prefs::methods
     void set_properties();
     void do_layout();
-    // end wxGlade
 
 protected:
-    // begin wxGlade: advanced2_prefs::attributes
-    // end wxGlade
+// content of this block (attributes) not found: did you rename this class?
 }; // wxGlade: end class
 
 class misc_prefs: public wxDialog {
@@ -80,11 +76,6 @@ private:
 
 protected:
     // begin wxGlade: advanced_prefs::attributes
-    wxStaticText* advanced_title;
-    wxStaticText* m_view_dragthreshold;
-    wxSpinCtrl* spin_ctrl_1;
-    wxStaticText* label_15;
-    wxSpinCtrl* m_view_snapthreshold;
     // end wxGlade
 }; // wxGlade: end class
 
@@ -132,7 +123,6 @@ private:
 
 protected:
     // begin wxGlade: display_prefs::attributes
-    wxStaticBox* helper_styler_staticbox;
     wxStaticBox* grid_styler_staticbox;
     wxStaticBox* ar_styler_staticbox;
     wxStaticText* display_title;
@@ -146,29 +136,6 @@ protected:
     wxSpinCtrl* m_view_gridX;
     wxStaticText* label_5;
     wxSpinCtrl* m_view_gridY;
-    wxStaticText* label_6;
-    wxButton* m_view_gridcolor;
-    wxStaticText* label_7;
-    wxSlider* m_view_gridcolor_alpha;
-    wxStaticText* label_10;
-    wxStaticText* label_8;
-    wxStaticText* label_9;
-    wxButton* m_view_fill_selected;
-    wxStaticText* labelfa;
-    wxSlider* m_view_fill_selected_alpha;
-    wxStaticText* label_11;
-    wxButton* m_view_border_selected;
-    wxStaticText* labeloa;
-    wxSlider* m_view_border_selected_alpha;
-    wxStaticText* label_8_copy;
-    wxStaticText* label_9_copy;
-    wxButton* m_view_fill;
-    wxStaticText* labelaeijfafe;
-    wxSlider* m_view_fill_alpha;
-    wxStaticText* label_11_copy;
-    wxButton* m_view_border;
-    wxStaticText* labelahosehjfija;
-    wxSlider* m_view_border_alpha;
     // end wxGlade
 }; // wxGlade: end class
 

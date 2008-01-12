@@ -112,15 +112,14 @@ void MiscPropertiesCtrl::from_element( const ElementBase *el )
 {
   const CPMAElement *cel = static_cast<const CPMAElement*>(el);
 
-
-  EnableProperty(wxT("draw3d"), cel->type() == E_T_ICON);
-  EnableProperty(wxT("doublebar"), cel->type() == E_T_BAR);
-
   SetPropertyValue( wxT("draw3d"), cel->iget_draw3d() );
   SetPropertyValue( wxT("doublebar"), cel->iget_doublebar() );
   SetPropertyValue( wxT("time"), cel->iget_time() );
 
   update_layout();
+
+  EnableProperty(wxT("draw3d"), cel->type() == E_T_ICON);
+  EnableProperty(wxT("doublebar"), cel->type() == E_T_BAR);
 }
 
 
