@@ -33,7 +33,9 @@ class DisplayCtrlBase : public wxGLCanvas
     /// this shouldn't be called too early. preferrably in the OnPaint() function
     /// at first call
     virtual void init();
+    /// you should call this in your child class' dtor
     virtual void cleanup();
+
 
 
     const fonts_type& fonts() const { return m_fonts; }

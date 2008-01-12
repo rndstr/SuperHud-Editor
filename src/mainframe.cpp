@@ -455,10 +455,7 @@ void MainFrame::OnClose( wxCloseEvent& ev )
   wxLogDebug(wxT("MainFrame::OnClose"));
 
   if( !confirm_saving() )
-  {
-    ev.Veto();
     return;
-  }
 
   if( m_model )
     wxDELETE( m_model );
@@ -469,9 +466,6 @@ void MainFrame::OnClose( wxCloseEvent& ev )
   Prefs::get().seti(wxT("app_height"), GetSize().GetHeight());
   Prefs::get().setb(wxT("app_maximized"), IsMaximized());
   Prefs::get().set(wxT("startup_loadfile"), wxGetApp().hudfile()->filename());
-
-  // cleanup
-  m_displayctrl->cleanup();
 
   ev.Skip();// this->Destroy()?!
     

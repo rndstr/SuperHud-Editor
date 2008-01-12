@@ -17,6 +17,11 @@ CPMADisplayCtrl::CPMADisplayCtrl( wxWindow *parent ) :
   
 }
 
+CPMADisplayCtrl::~CPMADisplayCtrl()
+{
+  cleanup();
+}
+
 void CPMADisplayCtrl::init()
 {
   DisplayCtrlBase::init();
@@ -192,10 +197,12 @@ void CPMADisplayCtrl::render()
   }
 }
 
+#include <iostream>
 void CPMADisplayCtrl::cleanup()
 {
   DisplayCtrlBase::cleanup();
 
+  wxLogDebug(wxT("CPMADisplayCtrl::cleanup"));
   if( m_background )
     wxDELETE(m_background);
   for( fonts_type::iterator it = m_fonts.begin(); it != m_fonts.end(); ++it )

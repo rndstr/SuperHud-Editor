@@ -14,6 +14,7 @@ class CPMADisplayCtrl : public DisplayCtrlBase
     
   public:
     CPMADisplayCtrl( wxWindow *parent );
+    ~CPMADisplayCtrl();
 
     void init();
     void cleanup();

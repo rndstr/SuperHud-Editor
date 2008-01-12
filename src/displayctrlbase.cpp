@@ -36,15 +36,14 @@ DisplayCtrlBase::DisplayCtrlBase( wxWindow *parent, wxWindowID id, const wxPoint
 {
 }
 
-
 void DisplayCtrlBase::cleanup()
 {
+  wxLogDebug(wxT("DisplayCtrlBase::cleanup"));
   if( m_texdefault )
     wxDELETE(m_texdefault);
   if( m_texmodel )
     wxDELETE(m_texmodel);
 }
-
 
 void DisplayCtrlBase::OnPaint( wxPaintEvent& )
 {
