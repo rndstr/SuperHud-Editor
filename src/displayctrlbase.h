@@ -75,6 +75,7 @@ class DisplayCtrlBase : public wxGLCanvas
     void OnEraseBackground( wxEraseEvent& );
     void OnMouse( wxMouseEvent& );
     void OnPaint( wxPaintEvent& );
+    void OnKeyDown( wxKeyEvent& );
 
     /// smallest distance (max view_snapthreshold) to other elements
     /// @returns The 2d vector we have to move the selection to snap or wxPoint(0,0) if it's disabled by prefs 

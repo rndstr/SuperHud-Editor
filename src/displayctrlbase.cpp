@@ -23,6 +23,7 @@ BEGIN_EVENT_TABLE(DisplayCtrlBase, wxGLCanvas)
   EVT_ERASE_BACKGROUND(DisplayCtrlBase::OnEraseBackground)
   EVT_MOUSE_EVENTS(DisplayCtrlBase::OnMouse)
   EVT_PAINT(DisplayCtrlBase::OnPaint)
+  EVT_KEY_DOWN(DisplayCtrlBase::OnKeyDown)
 END_EVENT_TABLE()
 
 
@@ -101,6 +102,12 @@ void DisplayCtrlBase::OnSize( wxSizeEvent& ev )
   wxGLCanvas::OnSize(ev);
   // Reset the OpenGL view aspect
   reset_projection_mode();
+}
+
+void DisplayCtrlBase::OnKeyDown( wxKeyEvent& ev )
+{
+  wxLogDebug(wxT("DisplayCtrlBase::OnKeyDown - %d"), ev.GetKeyCode());
+
 }
 
 void DisplayCtrlBase::OnIdle( wxIdleEvent& )
