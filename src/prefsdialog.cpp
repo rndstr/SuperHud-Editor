@@ -2,12 +2,14 @@
 
 #include "artprovider.h"
 #include "eventids.h"
+#include "prefs.h"
 
 #include <wx/wx.h>
 #include <wx/imaglist.h>
 #include <wx/spinctrl.h>
 #include <wx/bookctrl.h>
 #include <wx/propgrid/propgrid.h>
+#include <wx/propgrid/advprops.h>
 
 
 PrefsDialog::PrefsDialog(wxWindow *parent)
@@ -140,7 +142,7 @@ wxPanel* PrefsDialog::create_display(wxWindow *parent)
     grid_el_sizer->Add(label_6, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
     grid_el_sizer->Add(m_view_gridcolor, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
     grid_el_sizer->Add(label_7, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
-    grid_el_sizer->Add(m_view_gridcolor_alpha, 0, 0, 0);
+    grid_el_sizer->Add(m_view_gridcolor_alpha, 0, wxEXPAND, 0);
     grid_styler->Add(grid_el_sizer, 1, wxEXPAND, 0);
     container->Add(grid_styler, 0, wxALL|wxEXPAND, 3);
     helper_styler->Add(label_10, 0, wxALL, 3);
@@ -197,8 +199,8 @@ wxPanel* PrefsDialog::create_cpma(wxWindow *parent)
     // end wxGlade
     // begin wxGlade: cpma_prefs::set_properties
     cpma_title->SetBackgroundColour(wxColour(0, 0, 85));
-    cpma_title->SetForegroundColour(wxColour(255, 255, 255));
-    cpma_title->SetFont(wxFont(12, wxDEFAULT, wxNORMAL, wxBOLD, 0, wxT("")));
+//    cpma_title->SetForegroundColour(wxColour(255, 255, 255));
+    cpma_title->SetFont(wxFont(20, wxDEFAULT, wxNORMAL, wxBOLD, 0, wxT("")));
     SetTitle(wxT("cpma_prefs"));
     label_13->SetForegroundColour(wxColour(0, 0, 85));
     button_2->SetMinSize(wxSize(40, -1));
@@ -298,16 +300,41 @@ wxPanel* PrefsDialog::create_advanced2(wxWindow *parent)
     // end wxGlade
 
     m_pg = new wxPropertyGrid(
-            this, // parent
+            panel, // parent
             wxID_ANY, // id
             wxDefaultPosition, // position
             wxDefaultSize, // size
             // Some specific window styles - for all additional styles,
             // see Modules->PropertyGrid Window Styles
-            wxPG_SPLITTER_AUTO_CENTER | // Automatically center splitter until user manually adjusts it
+//            wxPG_SPLITTER_AUTO_CENTER | // Automatically center splitter until user manually adjusts it
             // Default style
             wxPG_DEFAULT_STYLE );
    m_pg->SetExtraStyle( wxPG_EX_HELP_AS_TOOLTIPS );
+
+
+   m_pg->Append( new wxPropertyCategory(_("Mouse handling")) );
+   m_pg->Append( new wxIntProperty(_("Drag threshold"), wxT("view-dragthreshold"), Prefs::get().var(wxT("view_dragthreshold")).ival()) );
+   m_pg->SetPropertyHelpString( wxT("view-dragthreshold"), _("How many pixel it takes till Drag&Drop begins") );
+   m_pg->Append( new wxIntProperty(_("Snap threshold"), wxT("view-snapthreshold"), Prefs::get().var(wxT("view_snapthreshold")).ival()) );
+   m_pg->SetPropertyHelpString( wxT("view-snapthreshold"), _("The distance needed to snap to items") );
+
+   m_pg->Append( new wxPropertyCategory(_("Grid")) );
+   m_pg->Append( new wxColourProperty(_("Color"), wxT("view-gridcolor"), Prefs::get().var(wxT("view_gridcolor")).wxcval()) );
+   m_pg->Append( new wxIntProperty(_("Opacity"), wxT("view-gridcolor-alpha"), Prefs::get().var(wxT("view_gridcolor")).cval().a100()) );
+
+   m_pg->Append( new wxPropertyCategory(_("Helpers")) );
+   wxPGId pid = m_pg->Append( new wxParentProperty(_("Selected elements")) );
+   m_pg->AppendIn( pid, new wxColourProperty(_("Fill"), wxT("view-helper-fill-selected"), Prefs::get().var(wxT("view_helper_fill_selected")).wxcval()) );
+   m_pg->AppendIn( pid, new wxIntProperty(_("Opacity"), wxT("view-helper-fill-selected-alpha"), Prefs::get().var(wxT("view_helper_fill_selected")).cval().a100()) );
+   m_pg->AppendIn( pid, new wxColourProperty(_("Border"), wxT("view-helper-border-selected"), Prefs::get().var(wxT("view_helper_border_selected")).wxcval()) );
+   m_pg->AppendIn( pid, new wxIntProperty(_("Opacity"), wxT("view-helper-border-selected-alpha"), Prefs::get().var(wxT("view_helper_border_selected")).cval().a100()) );
+   pid = m_pg->Append( new wxParentProperty(_("Deselected elements")) );
+   m_pg->AppendIn( pid, new wxColourProperty(_("Fill"), wxT("view-helper-fill"), Prefs::get().var(wxT("view_helper_fill")).wxcval()) );
+   m_pg->AppendIn( pid, new wxIntProperty(_("Opacity"), wxT("view-helper-fill-alpha"), Prefs::get().var(wxT("view_helper_fill")).cval().a100()) );
+   m_pg->AppendIn( pid, new wxColourProperty(_("Border"), wxT("view-helper-border"), Prefs::get().var(wxT("view_helper_border")).wxcval()) );
+   m_pg->AppendIn( pid, new wxIntProperty(_("Opacity"), wxT("view-helper-border-alpha"), Prefs::get().var(wxT("view_helper_border")).cval().a100()) );
+
+
    container->Add(m_pg, 1, wxALL|wxEXPAND, 3);
 
 
