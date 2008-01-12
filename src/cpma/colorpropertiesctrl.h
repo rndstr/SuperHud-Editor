@@ -15,7 +15,7 @@ class ColorPropertiesCtrl : public CPMAPropertyGridBase
   public:
     ColorPropertiesCtrl( wxWindow *parent );
 
-    void from_element( ElementBase *el );
+    void from_element( const ElementBase* const el );
     void update_layout();
 
   private:

@@ -37,7 +37,7 @@ void ImagePropertiesCtrl::OnItemChanging( wxPropertyGridEvent& ev )
   wxPGProperty *prop = ev.GetProperty();
   if( !prop ) return;
 
-  CPMAElement *el = current_element();
+  const CPMAElement * const el = current_element();
   if( !el ) return;
 
   wxString name = prop->GetName();
@@ -127,24 +127,25 @@ void ImagePropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   wxGetApp().mainframe()->OnPropertiesChanged();
 }
 
-void ImagePropertiesCtrl::from_element( ElementBase *el )
+void ImagePropertiesCtrl::from_element( const ElementBase * const el )
 {
-  CPMAElement *cel = static_cast<CPMAElement*>(el);
+  const CPMAElement * const cel = static_cast<const CPMAElement * const>(el);
 
   SetPropertyValue( wxT("use-model"), cel->usemodel() );
+
   update_layout();
 }
 
 
 
-void ImagePropertiesCtrl::append_picture_properties( CPMAElement *el /*=0*/ )
+void ImagePropertiesCtrl::append_picture_properties( const CPMAElement * const el /*=0*/ )
 {
   Append( new wxPropertyCategory(_("Picture"), wxT("cat-picture")) );
 
   Append( new PakFileProperty(_("File"), wxT("image"), el != 0 ? el->iget_image() : wxT(""), PFP_IMAGE) );
 }
 
-void ImagePropertiesCtrl::append_model_properties( CPMAElement *el /*=0*/ )
+void ImagePropertiesCtrl::append_model_properties( const CPMAElement * const el /*=0*/ )
 {
   Append( new wxPropertyCategory(_("Model"), wxT("cat-model")) );
 

@@ -56,7 +56,7 @@ void ColorPropertiesCtrl::OnItemChanging( wxPropertyGridEvent& ev )
   wxPGProperty *prop = ev.GetProperty();
   if( !prop ) return;
 
-  CPMAElement *el = current_element();
+  const CPMAElement* const el = current_element();
   if( !el ) return;
 
   wxString name = prop->GetName();
@@ -131,9 +131,9 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   wxGetApp().mainframe()->OnPropertiesChanged();
 }
 
-void ColorPropertiesCtrl::from_element( ElementBase *el )
+void ColorPropertiesCtrl::from_element( const ElementBase* const el )
 {
-  CPMAElement *cel = static_cast<CPMAElement*>(el);
+  const CPMAElement* const cel = static_cast<const CPMAElement* const>(el);
 
   SetPropertyValue( wxT("color-use"), (cel->has() & E_HAS_COLOR) != 0 );
 //  SetPropertyValue( wxT("color"), cel->iget_color().to_wxColour() );
@@ -153,7 +153,7 @@ void ColorPropertiesCtrl::from_element( ElementBase *el )
 
 void ColorPropertiesCtrl::update_layout()
 {
-  CPMAElement *el = current_element();
+  const CPMAElement* const el = current_element();
 
   property_defines(wxT("color"), (el->has() & E_HAS_COLOR) != 0);
   property_defines(wxT("color-alpha"), (el->has() & E_HAS_COLOR) != 0);
