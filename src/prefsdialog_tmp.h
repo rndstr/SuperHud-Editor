@@ -18,6 +18,25 @@
 
 
 
+
+class advanced2_prefs: public wxDialog {
+public:
+    // begin wxGlade: advanced2_prefs::ids
+    // end wxGlade
+
+    advanced2_prefs(wxWindow* parent, int id, const wxString& title, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxDEFAULT_DIALOG_STYLE);
+
+private:
+    // begin wxGlade: advanced2_prefs::methods
+    void set_properties();
+    void do_layout();
+    // end wxGlade
+
+protected:
+    // begin wxGlade: advanced2_prefs::attributes
+    // end wxGlade
+}; // wxGlade: end class
+
 class misc_prefs: public wxDialog {
 public:
     // begin wxGlade: misc_prefs::ids

@@ -7,6 +7,8 @@
 #include <wx/imaglist.h>
 #include <wx/spinctrl.h>
 #include <wx/bookctrl.h>
+#include <wx/propgrid/propgrid.h>
+
 
 PrefsDialog::PrefsDialog(wxWindow *parent)
 {
@@ -33,12 +35,12 @@ PrefsDialog::PrefsDialog(wxWindow *parent)
   wxPanel* display = create_display(ctrl);
   wxPanel* cpma = create_cpma(ctrl);
   wxPanel* misc = create_misc(ctrl);
-  wxPanel* advanced = create_advanced(ctrl);
+  wxPanel* advanced = create_advanced2(ctrl);
 
   ctrl->AddPage(display, _("Display"), true, 0);
   ctrl->AddPage(cpma, _("CPMA"), false, 1);
   ctrl->AddPage(misc, _("Misc"), false, 2);
-  ctrl->AddPage(advanced, _("Advanced"), false, 3);
+  ctrl->AddPage(advanced, _("Advanced2"), false, 3);
   
 
   LayoutDialog();
@@ -279,6 +281,38 @@ wxPanel* PrefsDialog::create_misc(wxWindow *parent)
 
 
   top_sizer->Add( container, 1, wxEXPAND|wxALIGN_CENTRE|wxALL, 5 );
+  //top_sizer->AddSpacer(5);
+
+  panel->SetSizer(top_sizer);
+  top_sizer->Fit(panel);
+
+  return panel;
+}
+
+wxPanel* PrefsDialog::create_advanced2(wxWindow *parent)
+{
+  wxPanel* panel = new wxPanel(parent, wxID_ANY);
+    // begin wxGlade: advanced2_prefs::do_layout
+    wxBoxSizer* top_sizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* container = new wxBoxSizer(wxVERTICAL);
+    // end wxGlade
+
+    m_pg = new wxPropertyGrid(
+            this, // parent
+            wxID_ANY, // id
+            wxDefaultPosition, // position
+            wxDefaultSize, // size
+            // Some specific window styles - for all additional styles,
+            // see Modules->PropertyGrid Window Styles
+            wxPG_SPLITTER_AUTO_CENTER | // Automatically center splitter until user manually adjusts it
+            // Default style
+            wxPG_DEFAULT_STYLE );
+   m_pg->SetExtraStyle( wxPG_EX_HELP_AS_TOOLTIPS );
+   container->Add(m_pg, 1, wxALL|wxEXPAND, 3);
+
+
+
+    top_sizer->Add( container, 1, wxEXPAND|wxALIGN_CENTRE|wxALL, 5 );
   //top_sizer->AddSpacer(5);
 
   panel->SetSizer(top_sizer);

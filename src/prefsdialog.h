@@ -5,11 +5,12 @@
 #include <wx/propdlg.h>
 #include <wx/generic/propdlg.h>
 #include <wx/image.h>
-#include <wx/spinctrl.h>
 
+class wxSpinCtrl;
 class wxPanel;
 class wxWindow;
 class wxImageList;
+class wxPropertyGrid;
 
 class PrefsDialog : public wxPropertySheetDialog
 {
@@ -23,10 +24,12 @@ class PrefsDialog : public wxPropertySheetDialog
     wxPanel* create_cpma(wxWindow *parent);
     wxPanel* create_misc(wxWindow *parent);
     wxPanel* create_advanced(wxWindow *parent);
+    wxPanel* create_advanced2(wxWindow *parent);
     wxPanel* create_sample(wxWindow *parent);
     wxPanel* create_old(wxWindow *parent);
 
   private:
+    wxPropertyGrid *m_pg;
     // --- display
         // begin wxGlade: display_prefs::attributes
     wxStaticBox* helper_styler_staticbox;
