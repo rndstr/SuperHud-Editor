@@ -443,7 +443,7 @@ void ElementsCtrlBase::OnItemActivated( wxListEvent& ev )
 void ElementsCtrlBase::OnKeyDown( wxListEvent& ev )
 {
   int kc = tolower(ev.GetKeyCode());
-  wxLogDebug(wxT("OnKeyDown - %d %c"), kc, kc);
+  wxLogDebug(wxT("ElementsCtrlBase::OnKeyDown - %d"), kc);
   if( kc >= 'a' && kc <= 'z' )
   {
     const long startidx = (m_selidx.size() == 0 ? 0 : m_selidx.front());
@@ -455,18 +455,42 @@ void ElementsCtrlBase::OnKeyDown( wxListEvent& ev )
       if( idx == -1 ) idx = 0;
       if( idx == startidx )
         break;
-      info.m_mask = wxLIST_MASK_TEXT|wxLIST_MASK_DATA;
+      info.m_mask = wxLIST_MASK_TEXT;
       info.m_col = 1;
       info.m_itemId = idx;
-      if( m_list->GetItem(info) )
+      // skip over collection titles and those that don't start with the pressed key
+      if( m_list->GetItem(info) && m_list->GetItemData(idx) != 0 && info.m_text.Lower().StartsWith(wxString::Format(wxT("%c"), kc)) )
       {
-        // skip over collection titles
-        if( info.m_data != 0 && info.m_text.Lower().StartsWith(wxString::Format(wxT("%c"), kc)) )
-        {
-          deselect_all();
-          select_item(idx);
-          break;
-        }
+        deselect_all();
+        select_item(idx);
+        break;
+      }
+    }
+  }
+}
+
+void ElementsCtrlBase::select_next()
+{
+  const long startidx = (m_selidx.size() == 0 ? 0 : m_selidx.front());
+  long idx = startidx;
+  wxListItem info;
+  for( ;; )
+  {
+    idx = m_list->GetNextItem(idx, wxLIST_NEXT_BELOW, wxLIST_STATE_DONTCARE);
+    if( idx == -1 ) idx = 0;
+    if( idx == startidx )
+      break; // only one element to choose from? shouldn't happen normally
+    info.m_mask = wxLIST_MASK_TEXT;
+    info.m_col = 1;
+    info.m_itemId = idx;
+    if( m_list->GetItem(info) )
+    {
+      // skip over collection titles
+      if( m_list->GetItemData(idx) != 0 )
+      {
+        deselect_all();
+        select_item(idx);
+        break;
       }
     }
   }
@@ -548,7 +572,6 @@ void ElementsCtrlBase::OnInsertNotuniq( wxCommandEvent& ev )
 void ElementsCtrlBase::OnBeginDrag( wxListEvent& ev )
 {
   ev.Allow();
-  wxGetApp().mainframe()->statusbar()->PushStatusText(_("Drag&Drop"), SB_MSG);
   wxTextDataObject my_data(wxT("ruelps"));
   wxDropSource dragSource( this );
 	dragSource.SetData( my_data );
@@ -566,7 +589,6 @@ void ElementsCtrlBase::OnBeginDrag( wxListEvent& ev )
   }
   wxLogDebug(pc);
   */
-  wxGetApp().mainframe()->statusbar()->PopStatusText(SB_MSG);
 }
 
 

@@ -8,7 +8,8 @@
 typedef enum {
   DRAG_NONE = 0,
   DRAG_START = 1,
-  DRAG_DRAGGING = 2
+  DRAG_DRAGGING = 2,
+  DRAG_ABORT
 } eDragMode;
 
 typedef std::map<wxString, IFont*> fonts_type;
@@ -69,7 +70,11 @@ class DisplayCtrlBase : public wxGLCanvas
     Texture       *m_texdefault;
     Texture       *m_texmodel; ///< what we display if user selected model (we can't render it (yet) ourselves : ((( 
 
+    virtual void render() {}
     virtual void load_background() = 0;
+
+
+
     virtual void OnIdle( wxIdleEvent& );
     void OnSize( wxSizeEvent& );
     void OnEraseBackground( wxEraseEvent& );
@@ -83,11 +88,8 @@ class DisplayCtrlBase : public wxGLCanvas
 
     Vec2 snap_to_grid() const;
 
-    virtual void render() {}
-    
-
-    
-
+    void move_selected_items( int x, int y );
+    void resize_selected_items( int x, int y );
     
 
     /// sets up the opengl view to use 2D

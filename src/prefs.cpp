@@ -156,6 +156,7 @@ void Prefs::load()
   addvar(wxT("view_snapthreshold"), wxT("3"), PVT_INT); ///< how many pixels we snap to snappable items
   addvar(wxT("view_snapelements"), wxT("true"), PVT_BOOL); ///< whether to snap to other elements
   addvar(wxT("view_snapgrid"), wxT("true"), PVT_BOOL); ///< whether to snap to grid
+  addvar(wxT("view_movestep"), wxT("12"), PVT_INT); ///< while moving/resizing with keys, how much to skip (by default same as grid)
 
 
     // -- game specific

@@ -108,7 +108,65 @@ void DisplayCtrlBase::OnKeyDown( wxKeyEvent& ev )
 {
   wxLogDebug(wxT("DisplayCtrlBase::OnKeyDown - %d"), ev.GetKeyCode());
 
+  int move = (ev.ShiftDown() ? 1 : Prefs::get().var(wxT("view_movestep")).ival());
+
+  switch( ev.GetKeyCode() )
+  {
+    case WXK_LEFT:
+      if( ev.ControlDown() )
+        resize_selected_items(-move,0);
+      else
+        move_selected_items(-move,0);
+      break;
+    case WXK_RIGHT:
+      if( ev.ControlDown() )
+        resize_selected_items(move,0);
+      else
+        move_selected_items(move,0);
+      break;
+    case WXK_UP:
+      if( ev.ControlDown() )
+        resize_selected_items(0,-move);
+      else
+        move_selected_items(0,-move);
+      break;
+    case WXK_DOWN:
+      if( ev.ControlDown() )
+        resize_selected_items(0,move);
+      else
+        move_selected_items(0,move);
+      break;
+    case WXK_TAB:
+      // select next item
+      wxGetApp().mainframe()->elementsctrl()->select_next();
+      break;
+    default:
+      ev.Skip();
+  }
 }
+
+void DisplayCtrlBase::move_selected_items( int x, int y )
+{
+  elements_type& els = wxGetApp().elementsctrl()->selected_elements();
+  for( it_elements it = els.begin(); it != els.end(); ++it )
+    (*it)->move(wxPoint(x, y));
+
+  wxGetApp().hudfile()->set_modified();
+  wxGetApp().mainframe()->update_displayctrl();
+  wxGetApp().mainframe()->update_propertiesctrl();
+}
+
+void DisplayCtrlBase::resize_selected_items( int x, int y )
+{
+  elements_type& els = wxGetApp().elementsctrl()->selected_elements();
+  for( it_elements it = els.begin(); it != els.end(); ++it )
+    (*it)->resize(wxSize(x, y));
+
+  wxGetApp().hudfile()->set_modified();
+  wxGetApp().mainframe()->update_displayctrl();
+  wxGetApp().mainframe()->update_propertiesctrl();
+}
+
 
 void DisplayCtrlBase::OnIdle( wxIdleEvent& )
 {
@@ -236,14 +294,14 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
             (*it)->set_rect((*it)->iget_rect());
             (*it)->add_has(E_HAS_RECT);
           }
-          //m_drag_el->set_rect(m_drag_el->iget_rect());
-          //m_drag_el->add_has(E_HAS_RECT);
           // update properties
           // FIXME that isn't entirely true.. it's rather OnElementPropertiesChanged but it does the trick for now :x
-          wxGetApp().mainframe()->OnElementSelectionChanged();
+    //      wxGetApp().mainframe()->OnElementSelectionChanged();
+          wxGetApp().mainframe()->update_displayctrl();
+          wxGetApp().mainframe()->update_propertiesctrl();
         }
       }
-      else if( m_drag_mode = DRAG_DRAGGING )
+      else if( DRAG_DRAGGING == m_drag_mode )
       {
         if( ev.ControlDown() )
         { // restrict to x/y axis
@@ -290,13 +348,27 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
         moved = move;
         wxGetApp().mainframe()->update_displayctrl();
         wxGetApp().mainframe()->update_propertiesctrl();
-        // this below does tooo much so it lags quite a bit
-//        wxGetApp().mainframe()->OnElementSelectionChanged();
+      }
+    }
+    else if( ev.RightDown() )
+    {
+      if( m_drag_mode == DRAG_DRAGGING )
+      {
+        m_drag_mode = DRAG_ABORT;
+        // move all back to initial
+        elements_type& els = wxGetApp().elementsctrl()->selected_elements();
+        for( it_elements it = els.begin(); it != els.end(); ++it )
+          (*it)->move(-moved);
+        wxGetApp().mainframe()->update_displayctrl();
+        wxGetApp().mainframe()->update_propertiesctrl();
       }
     }
     else if( ev.LeftUp() )
     {
-      if( m_drag_mode != DRAG_DRAGGING )
+      if( m_drag_mode == DRAG_ABORT )
+      {
+      }
+      else if( m_drag_mode != DRAG_DRAGGING )
       {
         // only toggle if it was already selected previously
         ElementBase *el = element_hittest( clientpos, selected_on_ldown );
@@ -308,8 +380,9 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
       }
       else if( m_drag_mode == DRAG_DRAGGING )
       { // drop!
+        wxGetApp().hudfile()->set_modified();
+        // NOTE that this below (probably?) isn't necessary as we will have received a OnMouse move event previously
         /*
-        // NOTE that this (probably?) isn't necessary as we will have received a OnMouse move event previously
         elements_type& els = wxGetApp().elementsctrl()->selected_elements();
         wxPoint move(clientpos - m_drag_start);
         for( it_elements it = els.begin(); it != els.end(); ++it )

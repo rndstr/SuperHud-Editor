@@ -114,8 +114,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   tools_menu->Check( ID_MENU_TOOLS_SNAPELEMENTS, Prefs::get().var(wxT("view_snapelements")).bval() );
   tools_menu->Check( ID_MENU_TOOLS_SNAPGRID, Prefs::get().var(wxT("view_snapgrid")).bval() );
 
-  //wxMenu *elements_menu = new wxMenu;
-  //menu_bar->Append( elements_menu, _("&Elements") );
+//  wxMenu *elements_menu = new wxMenu;
+//  menu_bar->Append( elements_menu, _("&Elements") );
 
   m_view_menu = new wxMenu;
   wxMenu *view_layout_submenu = new wxMenu;
@@ -455,7 +455,10 @@ void MainFrame::OnClose( wxCloseEvent& ev )
   wxLogDebug(wxT("MainFrame::OnClose"));
 
   if( !confirm_saving() )
+  {
+    ev.Veto();
     return;
+  }
 
   if( m_model )
     wxDELETE( m_model );
@@ -485,7 +488,13 @@ void MainFrame::OnMenuViewDefaultPerspective( wxCommandEvent& )
 void MainFrame::OnMenuViewConfigPreview( wxCommandEvent& )
 {
   wxAuiPaneInfo& info = m_mgr.GetPane(wxT("configpreview"));
-  info.Show( m_view_menu->IsChecked(ID_MENU_VIEW_CONFIGPREVIEW) );
+  if( m_view_menu->IsChecked(ID_MENU_VIEW_CONFIGPREVIEW) )
+  {
+    info.Show(true);
+    update_configpreview();
+  }
+  else
+    info.Show(false);
   DoUpdate();
 }
 
@@ -657,6 +666,8 @@ void MainFrame::OnPropertiesChanged()
 
 void MainFrame::update_configpreview()
 {
+  if( !m_configpreview->IsShown() )
+    return;
   wxASSERT(m_elementsctrl);
   elements_type& els = m_elementsctrl->selected_elements();
   // -- update config preview

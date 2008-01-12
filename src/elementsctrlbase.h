@@ -54,6 +54,9 @@ class ElementsCtrlBase: public wxPanel
     void          deselect_all();
     bool          is_selected( const ElementBase* const el) const;
 
+    /// moves the selection to the next item (disregarding collection titles)
+    void          select_next();
+
     
     void          OnCopy( wxCommandEvent& );
     void          OnPaste( wxCommandEvent& );

@@ -113,6 +113,10 @@ class ElementBase
     /// moving by offset
     void            move( const wxPoint& p ) { m_rect.x += p.x; m_rect.y += p.y; }
 
+    void            resize_to( const wxSize& s ) { m_rect.SetSize(s); }
+    /// resizing by offset
+    void            resize( const wxSize& s ) { m_rect.width += s.GetWidth(); m_rect.height += s.GetHeight(); }
+
     // get&set
     const wxString& name() const { return m_name; }
     int             flags() const { return m_flags; }
