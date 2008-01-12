@@ -54,7 +54,6 @@ FontPropertiesCtrl::FontPropertiesCtrl( wxWindow *parent ) :
   size_type.Add(wxEmptyString);
   size_type.Add(fontsizetype_element_to_ui(E_FST_POINT));
   size_type.Add(fontsizetype_element_to_ui(E_FST_COORD));
-//  static const wxChar* size_type[] = {fontsizetype_element_to_ui(E_FST_POINT), fontsizetype_element_to_ui(E_FST_COORD), (const wxChar*)0};
   Append( new wxEnumProperty(_("Type"), wxT("fontsizetype"), size_type) );
 }
 
@@ -63,7 +62,7 @@ void FontPropertiesCtrl::OnItemChanging( wxPropertyGridEvent& ev )
   wxPGProperty *prop = ev.GetProperty();
   if( !prop ) return;
 
-  CPMAElement *el = current_element();
+  const CPMAElement *el = current_element();
   if( !el ) return;
 
   wxString name = prop->GetName();
@@ -184,9 +183,12 @@ void FontPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   wxGetApp().mainframe()->OnPropertiesChanged();
 }
 
-void FontPropertiesCtrl::from_element( ElementBase *el )
+void FontPropertiesCtrl::from_element( const ElementBase *el )
 {
-  CPMAElement *cel = static_cast<CPMAElement*>(el);
+  const CPMAElement *cel = static_cast<const CPMAElement*>(el);
+
+  ExpandAll( cel->type() == E_T_TEXT || cel->type() == E_T_WEAPONLIST );
+  Enable( cel->type() == E_T_TEXT || cel->type() == E_T_WEAPONLIST );
 
   SetPropertyValue( wxT("font"), cel->iget_font() );
   SetPropertyValue( wxT("textalign"), textalign_element_to_ui(cel->iget_textalign()) );
@@ -195,9 +197,6 @@ void FontPropertiesCtrl::from_element( ElementBase *el )
   SetPropertyValue( wxT("style-shadow"), cel->iget_textstyle() == E_TEXTSTYLE_SHADOW );
   SetPropertyValue( wxT("fontsizetype"), fontsizetype_element_to_ui(cel->fontsizetype()) );
   
-
-  //SetPropertyValue( wxT("style-none"), cel->has() & E_HAS_TEXTSTYLE && cel->textstyle() == E_TEXTSTYLE_NONE );
-  //SetPropertyValue( wxT("style-shadow"), cel->has() & E_HAS_TEXTSTYLE && cel->textstyle() & E_TEXTSTYLE_SHADOW );
   update_layout();
 }
 

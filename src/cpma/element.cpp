@@ -308,7 +308,18 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
   {
     for( list<wxString>::const_iterator cit = lines.begin(); cit != lines.end(); ++cit )
       stream << wxT("\n  ") << *cit;
-  }   
+  }
+#ifndef NDEBUG
+  switch(m_type)
+  {
+    case E_T_UNKNOWN: stream << wxT("\nUNKNOWN"); break;
+    case E_T_TEXT: stream << wxT("\nTEXT"); break;
+    case E_T_ICON: stream << wxT("\nICON"); break;
+    case E_T_USERICON: stream << wxT("\nUSERICON"); break;
+    case E_T_BAR: stream << wxT("\nBAR"); break;
+    case E_T_WEAPONLIST: stream << wxT("\nWEAPONLIST"); break;
+  }
+#endif
 }
 
 int CPMAElement::iget_time() const

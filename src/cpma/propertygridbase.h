@@ -69,7 +69,7 @@ class CPMAPropertyGridBase : public wxPropertyGridManager
 
     /// returns the currently selected element (as stored in CPMAPropertiesNotebook::update_from_element)
     /// @returns The current element or 0 if none selected
-    const CPMAElement * const current_element() const
+    const CPMAElement* current_element() const
     {
       PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesctrl();
       if( !p )
@@ -77,7 +77,7 @@ class CPMAPropertyGridBase : public wxPropertyGridManager
         wxLogDebug(wxT("CPMAPropertyGridBase::curel() - PropertiesNotebook is not yet available"));
         return 0;
       }
-      const CPMAElement* const el = static_cast<const CPMAElement* const>(p->curel());
+      const CPMAElement* el = static_cast<const CPMAElement*>(p->curel());
       if( !el ) 
       {
         wxLogDebug(wxT("CPMAPropertyGridBase::curel() - there is no element selected"));

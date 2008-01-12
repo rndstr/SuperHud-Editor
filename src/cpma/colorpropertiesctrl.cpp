@@ -33,7 +33,7 @@ ColorPropertiesCtrl::ColorPropertiesCtrl( wxWindow *parent ) :
 //  SetPropertyValidator( wxT("color-alpha"), alpha_validator );
   
 
-  Append( new wxPropertyCategory(_("Background")) );
+  Append( new wxPropertyCategory(_("Background"), wxT("cat-bgcolor")) );
   Append( new wxBoolProperty( _("Use"), wxT("bgcolor-use"), false) );
   SetPropertyAttribute(wxT("bgcolor-use"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
   Append( new wxColourProperty(_("Color"), wxT("bgcolor")) );
@@ -56,7 +56,7 @@ void ColorPropertiesCtrl::OnItemChanging( wxPropertyGridEvent& ev )
   wxPGProperty *prop = ev.GetProperty();
   if( !prop ) return;
 
-  const CPMAElement* const el = current_element();
+  const CPMAElement* el = current_element();
   if( !el ) return;
 
   wxString name = prop->GetName();
@@ -131,9 +131,17 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   wxGetApp().mainframe()->OnPropertiesChanged();
 }
 
-void ColorPropertiesCtrl::from_element( const ElementBase* const el )
+void ColorPropertiesCtrl::from_element( const ElementBase* el )
 {
-  const CPMAElement* const cel = static_cast<const CPMAElement* const>(el);
+  const CPMAElement* cel = static_cast<const CPMAElement*>(el);
+
+  EnableProperty(wxT("bgcolor-use"), cel->type() != E_T_BAR);
+  EnableProperty(wxT("bgcolor"), cel->type() != E_T_BAR);
+  EnableProperty(wxT("bgcolor-alpha"), cel->type() != E_T_BAR);
+  if( cel->type() == E_T_BAR )
+    Expand(wxT("cat-bgcolor"));
+  else
+    Collapse(wxT("cat-bgcolor"));
 
   SetPropertyValue( wxT("color-use"), (cel->has() & E_HAS_COLOR) != 0 );
 //  SetPropertyValue( wxT("color"), cel->iget_color().to_wxColour() );

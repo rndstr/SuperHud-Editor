@@ -14,7 +14,7 @@ class FontPropertiesCtrl : public CPMAPropertyGridBase
   public:
     FontPropertiesCtrl( wxWindow *parent );
 
-    void from_element( ElementBase *el );
+    void from_element( const ElementBase *el );
     void update_layout();
 
   private:

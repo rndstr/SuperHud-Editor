@@ -20,7 +20,7 @@ class PropertiesNotebookBase : public wxAuiNotebook
     virtual void update_from_element( const elements_type& els ) = 0;
 
     ElementBase*       curel() { return m_curel; }
-    const ElementBase* const curel() const { return m_curel; }
+    const ElementBase* curel() const { return m_curel; }
 
   protected:
     ElementBase   *m_curel;///< element that is currently being displayed

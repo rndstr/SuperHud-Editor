@@ -134,6 +134,8 @@ class CPMAElement : public ElementBase
 
     const Properties&  properties() const { return m_props; }
 
+    int         type() const { return m_type; }
+
     bool        iget_has(int what) const;
 
     int         iget_time() const;

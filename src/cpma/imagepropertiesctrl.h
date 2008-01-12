@@ -14,15 +14,15 @@ class ImagePropertiesCtrl : public CPMAPropertyGridBase
   public:
     ImagePropertiesCtrl( wxWindow *parent );
 
-    void from_element( const ElementBase * const el );
+    void from_element( const ElementBase *el );
     void update_layout();
 
   private:
     static bool use_model( CPMAElement *el );
     void OnItemChanged( wxPropertyGridEvent& ev );
     void OnItemChanging( wxPropertyGridEvent& ev );
-    void append_picture_properties( const CPMAElement * const el =0 );
-    void append_model_properties( const CPMAElement * const el =0 );
+    void append_picture_properties( const CPMAElement *el =0 );
+    void append_model_properties( const CPMAElement *el =0 );
 
 
 

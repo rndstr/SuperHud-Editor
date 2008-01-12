@@ -42,7 +42,7 @@ void MiscPropertiesCtrl::OnItemChanging( wxPropertyGridEvent& ev )
   wxPGProperty *prop = ev.GetProperty();
   if( !prop ) return;
 
-  CPMAElement *el = current_element();
+  const CPMAElement *el = current_element();
   if( !el ) return;
 
   wxString name = prop->GetName();
@@ -108,9 +108,13 @@ void MiscPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   wxGetApp().mainframe()->OnPropertiesChanged();
 }
 
-void MiscPropertiesCtrl::from_element( ElementBase *el )
+void MiscPropertiesCtrl::from_element( const ElementBase *el )
 {
-  CPMAElement *cel = static_cast<CPMAElement*>(el);
+  const CPMAElement *cel = static_cast<const CPMAElement*>(el);
+
+
+  EnableProperty(wxT("draw3d"), cel->type() == E_T_ICON);
+  EnableProperty(wxT("doublebar"), cel->type() == E_T_BAR);
 
   SetPropertyValue( wxT("draw3d"), cel->iget_draw3d() );
   SetPropertyValue( wxT("doublebar"), cel->iget_doublebar() );
@@ -122,7 +126,7 @@ void MiscPropertiesCtrl::from_element( ElementBase *el )
 
 void MiscPropertiesCtrl::update_layout()
 {
-  CPMAElement *el = current_element();
+  const CPMAElement *el = current_element();
   property_defines(wxT("doublebar"), el->doublebar() );
   property_defines(wxT("draw3d"), el->draw3d() );
   property_defines(wxT("time"), (el->has() & E_HAS_TIME) != 0 );
