@@ -5,6 +5,11 @@
 #define ENABLE_Q4MAX 0
 #define ENABLE_CPMA 1
 
+#ifdef WIN32
+  #define HAS_WEBUPDATER 1
+#else
+  #define HAS_WEBUPDATER 0
+#endif
 
 #if ENABLE_Q4MAX && ENABLE_CPMA
   #define HAS_MULTIPLE_GAMES 1

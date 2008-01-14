@@ -9,6 +9,10 @@
 const wxString APP_NAME = wxT("SuperHud Editor");
 const wxString APP_NAME_UNIX = wxT("superhudeditor");
 const wxString APP_VERSION = wxT("0.3.0");
+const int APP_MAJOR_VERSION = 0;
+const int APP_MINOR_VERSION = 3;
+const int APP_RELEASE_NUMBER = 0;
+const wxString APP_RELEASE_TYPE = wxT("");
 const wxString APP_VENDOR = wxEmptyString;
 #ifndef NDEBUG
   const wxString APP_CAPTION = APP_NAME + wxT(" v") + APP_VERSION + wxT(" DEBUG BUILD");
@@ -17,7 +21,8 @@ const wxString APP_VENDOR = wxEmptyString;
 #endif
 const wxString APP_CONFIG = wxT("superhudeditor.conf");
 const wxString APP_URL = wxT("http://plrf.org/superhudeditor");
-
+const wxString APP_URL_VERSIONCHECK = APP_URL + wxT("/versioncheck.php");
+const wxString APP_BUILDTIME = wxString(wxT(__DATE__)) + wxT(" ") + wxT(__TIME__);
 
 class wxCommandProcessor;
 class FactoryBase;

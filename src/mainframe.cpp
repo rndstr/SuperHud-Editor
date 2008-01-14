@@ -3,23 +3,27 @@
 
 #include "common.h"
 
-#include <wx/artprov.h>
-#include <wx/menu.h>
-#include <wx/stdpaths.h>
-#include <wx/file.h>
-#include <wx/tipdlg.h>
-#include <wx/cmdproc.h>
 
 #include "factorybase.h"
 #include "model.h"
 #include "prefs.h"
 #include "prefsdialog.h"
 #include "convertdialog.h"
+#include "downloadtext.h"
+
 
 #include "cpma/elementsctrl.h"
 #include "cpma/propertiesnotebook.h"
 #include "cpma/displayctrl.h"
 #include "cpma/hudfile.h"
+
+#include <wx/artprov.h>
+#include <wx/menu.h>
+#include <wx/stdpaths.h>
+#include <wx/file.h>
+#include <wx/tipdlg.h>
+#include <wx/cmdproc.h>
+#include <wx/tokenzr.h>
 
 #if !defined(__WXMSW__) && !defined(__WXPM__)
     #include "xpm/icons/superhudeditor.xpm"
@@ -48,9 +52,12 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_MENU(ID_MENU_VIEW_TOOLBAR_FILE, MainFrame::OnMenuViewToolbarFile)
   EVT_MENU(ID_MENU_VIEW_GRID, MainFrame::OnMenuViewGrid)
   EVT_MENU(ID_MENU_VIEW_HELPER, MainFrame::OnMenuViewHelper)
+#if HAS_WEBUPDATER
   EVT_MENU(ID_MENU_HELP_UPDATE, MainFrame::OnMenuHelpUpdate)
+#endif
   EVT_MENU(ID_MENU_HELP_TIP, MainFrame::OnMenuHelpTip)
   
+  EVT_DOWNLOAD(MainFrame::OnDownload)
   EVT_UPDATE_UI_RANGE(ID_MENU_VIEW_CONFIGPREVIEW, ID_MENU_VIEW_TOOLBAR_FILE, MainFrame::OnUpdateViewPanes)
 END_EVENT_TABLE()
 
@@ -134,7 +141,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   menu_bar->Append( m_view_menu, _("&View") );
 
   wxMenu *help_menu = new wxMenu;
-#ifdef WIN32
+#if HAS_WEBUPDATER
   // so far only win32 :x
   help_menu->Append( ID_MENU_HELP_UPDATE, _("Check for &updates...") );
 #endif
@@ -246,6 +253,102 @@ void MainFrame::set_floating_hint( wxAuiManagerOption hint )
   m_mgr.SetFlags(f);
 }
 
+void MainFrame::check_for_updates()
+{
+  wxDownloadText *dl = new wxDownloadText( this, APP_URL_VERSIONCHECK );
+}
+
+
+void MainFrame::OnDownload( wxDownloadEvent& event )
+{
+  bool invalid_response = false;
+  int status = event.GetDownLoadStatus();
+  if( status == wxDownloadEvent::DOWNLOAD_FAIL )
+  {
+    wxString msg = _("Version check failed, try again later or\ncheck your network settings in Tools->Preferences|Misc.");
+    /*  
+    this won't work due to .... ? the mainapp not yet started? 
+    if( event.GetDownloadAutoupdate() )
+    { // let user disable the message...
+      OptionalMessageDialog dlg(wxT("versioncheck_failed_startup"));
+      dlg.add_button( wxT("Okay"), wxID_OK );
+      dlg.Create(
+        reinterpret_cast<wxWindow*>( wxGetApp().get_frame() ),
+        msg
+      );
+      dlg.ShowModal();
+    }
+    else
+    */
+      wxLogError(msg);
+  }
+  else if( status == wxDownloadEvent::DOWNLOAD_COMPLETE )
+  {
+    wxString *txt = event.GetDownLoadedText();
+    wxLogDebug(wxT("Received from server:\n") + *txt);
+    wxStringTokenizer tok(*txt, wxT("\n"));
+    if( tok.CountTokens() == 0 ) 
+    { invalid_response = true; goto mofo; }
+
+    wxString version = tok.GetNextToken();
+    wxStringTokenizer vtok(version, wxT(" "));
+    if( vtok.CountTokens() != 3 && vtok.CountTokens() != 4 ) 
+    { invalid_response = true; goto mofo; }
+    long major, minor, release;
+    wxString releasetype = wxT("");
+    if( !vtok.GetNextToken().ToLong(&major, 10) )
+    { invalid_response = true; goto mofo; }
+    if( !vtok.GetNextToken().ToLong(&minor, 10) )                                                                                                         
+    { invalid_response = true; goto mofo; }
+    if( !vtok.GetNextToken().ToLong(&release, 10) )
+    { invalid_response = true; goto mofo; }
+    if( vtok.HasMoreTokens() )
+      releasetype = vtok.GetNextToken();
+
+    int check = she::versioncheck( major, minor, release, releasetype );
+    wxLogDebug(wxT("versioncheck returned: %d"), check);
+    wxString msg = wxT("");
+    long flags = 0;
+    if( check < 0 ) // new version!
+    {
+      msg = _("\\o/ There is a new version available: ");
+      msg += wxString::Format( wxT("%i.%i.%i"), major, minor, release) + (!releasetype.empty() ? wxT("_")+releasetype : wxT(""));
+      msg += wxT("\n\n");
+      msg += _("Do you want to visit ") + APP_URL + wxT(" ?\n");
+      while( tok.HasMoreTokens() )
+        msg += wxT("\n") + tok.GetNextToken();
+      flags = wxYES_DEFAULT|wxYES_NO|wxICON_INFORMATION;
+    }
+    else if( check == 0 )
+    { // is only displayed if manual update check.
+      msg = _("Your version is up to date.");
+      flags = wxOK|wxICON_INFORMATION;
+    }
+    else // check > 1
+    { // is only displayed if manual update check.
+      msg = _("You have a newer version than the versioncheck reported Oo");
+      flags = wxOK|wxICON_INFORMATION;
+    }
+//    if( event.GetDownloadAutoupdate() && !invalid_response && check >= 0 )
+//      return;
+    wxMessageDialog dlg(
+        0,
+        msg,
+        _("Version check"),
+        flags);                                                                                                                                           
+    if( wxID_YES == dlg.ShowModal() )
+    {
+      wxLaunchDefaultBrowser( APP_URL );
+    }
+  }
+
+mofo:
+  if( invalid_response )
+  {
+    wxString *txt = event.GetDownLoadedText();
+    wxLogWarning( _("The server response was invalid,\ntry again later:\n\n") +  *txt);
+  }
+}
 
 
 void MainFrame::OnMenuToolsPreferences( wxCommandEvent& )
@@ -590,6 +693,7 @@ void MainFrame::restart_app()
 }
 
 
+#if HAS_WEBUPDATER
 void MainFrame::OnMenuHelpUpdate( wxCommandEvent& )
 {
   // we only allow the updater to be called in release version.. otherwise there will be wrong versions executed etcetc.
@@ -605,6 +709,7 @@ void MainFrame::OnMenuHelpUpdate( wxCommandEvent& )
   wxLogMessage(wxT("Updater is not available in debug version"));
 #endif
 }
+#endif
 
 #include <wx/sstream.h>
 #include <wx/txtstrm.h>

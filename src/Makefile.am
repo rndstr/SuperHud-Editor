@@ -42,6 +42,8 @@ superhudeditor_SOURCES = \
                          command.cpp command.h \
                          convertdialog.cpp convertdialog.h \
                          displayctrlbase.cpp displayctrlbase.h \
+                         downloadevent.cpp downloadevent.h \
+                         downloadtext.cpp downloadtext.h \
                          elementbase.cpp elementbase.h \
                          elementsctrlbase.cpp elementsctrlbase.h \
                          elementslistctrl.cpp elementslistctrl.h \

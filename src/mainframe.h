@@ -15,6 +15,7 @@ class ElementsCtrlBase;
 class PropertiesNotebookBase;
 class DisplayCtrlBase;
 class Model;
+class wxDownloadEvent;
 
 class MainFrame : public wxFrame
 {
@@ -37,6 +38,7 @@ class MainFrame : public wxFrame
          			const wxString &uri = wxEmptyString);	// --uri option won't be given using wxEmptyString
     
 
+    void check_for_updates();
 
     ElementsCtrlBase*   elementsctrl() { return m_elementsctrl; }
     PropertiesNotebookBase* propertiesctrl() { return m_propertiesnotebook; }
@@ -109,12 +111,15 @@ class MainFrame : public wxFrame
     void OnMenuViewConfigPreview( wxCommandEvent& );
     void OnMenuViewToolbarFile( wxCommandEvent& );
     void OnMenuViewFocus( wxCommandEvent& );
+    void OnDownload( wxDownloadEvent& event );
     
     void OnMenuViewGrid( wxCommandEvent& );
     void OnMenuViewHelper( wxCommandEvent& );
     void OnUpdateViewPanes( wxUpdateUIEvent& );
 
+#if HAS_WEBUPDATER
     void OnMenuHelpUpdate( wxCommandEvent& );
+#endif
 
   private:
     wxAuiManager m_mgr;

@@ -12,9 +12,6 @@
 #include "displayctrlbase.h"
 #include "setupwizard.h"
 
-#include <wx/stdpaths.h>
-#include <wx/fs_arc.h>
-#include <wx/cmdproc.h>
 
 #include "factorybase.h"
 #include "hudfilebase.h"
@@ -26,6 +23,11 @@
   #include "cpma/hudspecs.h"
   #include "cpma/hudfile.h"
 #endif
+
+#include <wx/stdpaths.h>
+#include <wx/fs_arc.h>
+#include <wx/cmdproc.h>
+#include <wx/socket.h>
 
 
 IMPLEMENT_APP(SHEApp)
@@ -55,6 +57,7 @@ bool SHEApp::OnInit()
   wxArtProvider::Push( new ArtProvider );
   wxFileSystem::AddHandler(new wxArchiveFSHandler);
   wxInitAllImageHandlers();
+  wxSocketBase::Initialize();
 
   if( !wxApp::OnInit() )
     return false;
@@ -181,6 +184,7 @@ int SHEApp::OnRun()
     wxCommandEvent plaarfz;
     m_mainframe->OnMenuHelpTip(plaarfz);
   }
+  m_mainframe->check_for_updates();
 
   return wxApp::OnRun();
 }

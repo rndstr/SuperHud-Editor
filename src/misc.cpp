@@ -193,7 +193,6 @@ bool ratio_string2double( const wxString& ratio, double *val )
   return false;
 }
 
-/*
 /// Checks if the latest version is newer than our.
 /// @return <0 if our<latest, =0 if our=latest, >0 if our>latest.
 int versioncheck( int major, int minor, int release, const wxString& type ) 
@@ -210,5 +209,5 @@ int versioncheck( int major, int minor, int release, const wxString& type )
 
   return APP_RELEASE_TYPE.CmpNoCase(type);
 }
-*/
+
 };

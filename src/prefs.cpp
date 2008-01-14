@@ -186,6 +186,8 @@ void Prefs::load()
   addvar(wxT("startup_loadfile"), wxT(""), PVT_STRING);
   addvar(wxT("startup_tips"), wxT("true"), PVT_BOOL);
   addvar(wxT("startup_tipidx"), wxT("0"), PVT_INT);
+  addvar(wxT("net_proxy"), wxT(""), PVT_STRING);
+  addvar(wxT("startup_checkforupdates"), wxT("true"), PVT_BOOL);
 
   // -- saving
   addvar(wxT("save_writedisabled"), wxT("true"), PVT_BOOL);
