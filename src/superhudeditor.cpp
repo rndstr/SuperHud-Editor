@@ -56,6 +56,9 @@ bool SHEApp::OnInit()
   wxFileSystem::AddHandler(new wxArchiveFSHandler);
   wxInitAllImageHandlers();
 
+  if( !wxApp::OnInit() )
+    return false;
+
   // set up config file
   m_firststart = Prefs::get().init();
 
@@ -160,12 +163,17 @@ int SHEApp::OnRun()
 {
   wxLogDebug(wxT("SHEApp::OnRun"));
   m_mainframe->update_title();
-  if( Prefs::get().var(wxT("startup_load")) && !Prefs::get().var(wxT("startup_loadfile")).sval().empty() )
-    m_hudfile->OnOpen( Prefs::get().var(wxT("startup_loadfile")) );
+  if( m_cmdline_file.empty() )
+  {
+    if( Prefs::get().var(wxT("startup_load")) && !Prefs::get().var(wxT("startup_loadfile")).sval().empty() )
+      m_hudfile->OnOpen( Prefs::get().var(wxT("startup_loadfile")) );
+    else
+      m_hudfile->OnNew();
+  }
   else
-    m_hudfile->OnNew();
-  m_mainframe->update_title();
+    m_hudfile->OnOpen( m_cmdline_file );
 
+  m_mainframe->update_title();
   m_ready = true;
 
   if( Prefs::get().var(wxT("startup_tips")).bval() )
@@ -198,6 +206,25 @@ int SHEApp::OnExit()
   }
 
   return 0;
+}
+
+void SHEApp::OnInitCmdLine( wxCmdLineParser& parser )
+{
+  parser.SetDesc( g_cmdLineDesc );
+  parser.SetSwitchChars (wxT("-"));
+}
+bool SHEApp::OnCmdLineParsed(wxCmdLineParser& parser)
+{
+  if( !parser.GetParamCount() )
+    return true;
+
+  if( parser.GetParamCount() > 1 )
+  {
+    wxLogWarning(_("Too many parameters, only one allowed (a single HUD to open)"));
+    return false;
+  }
+  m_cmdline_file = parser.GetParam(0);
+  return true;
 }
 
 wxCommandProcessor* SHEApp::cmds()

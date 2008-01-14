@@ -1,5 +1,9 @@
 bin_PROGRAMS = superhudeditor
 
+#dist_noinst_DATA = \
+#                   src/wxpropgrid-1.3/README.txt \
+#                   src/wxpropgrid-1.3/CHANGES.txt
+
 
 xpm = \
                          xpm/bitmaps/setupwizard.xpm \

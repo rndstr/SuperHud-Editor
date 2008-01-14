@@ -1,14 +1,14 @@
 % move the enable/disable element buttons to the ElementsCtrlBase panel (orly?)
-? if hud is modified, SwitchGame behaves wrongly.. launches 2 instances
 + add second background image for 16:10
 ! toolbar file view is not properly updated with menu item
 + defaultdir for opening hudfiles
-+ add preferences to specify datadir (in case someone wants to overwrite it)
++ add preferences to specify datadir (in case someone wants to overwrite it) (orly?)
 + if imagepath cannot be found auto append .tga!
 ! properties dialog does not update title if detached
 t put an unknown elementname into the hud, code adds it anyway.. what happens then..? can we delete? write?
 t the global defined messages (common.h) are they translated?
-t what happens if startupfile is no longer available?
+t what happens if startuphud is no longer available?
++ add commandline for opening a hud
 % if several selected display only collection title in statusbar
 + autosave every X mins
 

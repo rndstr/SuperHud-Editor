@@ -34,6 +34,7 @@ class CPMAHudFile : public HudFileBase
     void load_default_elements();
     bool load( const wxString& filename );
     bool save( const wxString& filename );
+    wxString default_hudfilename() const { return wxT("hud/hud.cfg"); }
 
     const notuniqs_type& notuniq_elements() const;
     ElementBase*  create_element( const wxString& name ) const;

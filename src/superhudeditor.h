@@ -3,6 +3,7 @@
 
 #include <wx/app.h>
 #include <wx/intl.h>
+#include <wx/cmdline.h>
 
 
 const wxString APP_NAME = wxT("SuperHud Editor");
@@ -30,9 +31,11 @@ class SHEApp : public wxApp
   public:
     SHEApp();
 
-    bool OnInit();
-    int OnRun();
-    int OnExit();
+    virtual bool OnInit();
+    virtual int OnRun();
+    virtual int OnExit();
+    virtual void OnInitCmdLine( wxCmdLineParser& parser );
+    virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
 
     void store_config();
     bool is_cpma() const;
@@ -64,6 +67,13 @@ class SHEApp : public wxApp
     wxString    m_exec; ///< what command to execute after shutdown
     wxLocale    m_locale;
     wxCommandProcessor *m_commands;
+    wxString    m_cmdline_file;
+};
+
+static const wxCmdLineEntryDesc g_cmdLineDesc[] = 
+{
+  { wxCMD_LINE_PARAM, 0, 0, _("HUD file"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+  { wxCMD_LINE_NONE }
 };
 
 DECLARE_APP(SHEApp)

@@ -64,7 +64,15 @@ int HudFileBase::OnOpen( const wxString& filename /*=wxT("")*/, bool force_conve
   wxGetApp().mainframe()->statusbar()->PushStatusText(wxString::Format(_("Loading HUD: %s"), f.c_str()));
   wxBusyCursor wait0r;
   if( !load( f ) )
+  {
     wxLogError( _("Failed reading HUD from file `%s'"), f.c_str() ); // default elements have been loaded
+    // try again with default
+    if( f != default_hudfilename() )
+    {
+      OnNew();
+      return wxID_OK;
+    }
+  }
 
 
   // load icons for elements
@@ -201,7 +209,7 @@ void HudFileBase::OnNew()
 {
   clear();
   load_default_elements();
-  OnOpen(wxT("hud/hud.cfg"), false); // load default hud and force conversion
+  OnOpen(default_hudfilename(), false); // load default hud and force conversion
   m_filename = wxEmptyString;
   wxGetApp().elementsctrl()->list_refresh(m_els);
 }

@@ -56,14 +56,17 @@ class HudFileBase
     const ElementBase*    get_parent( const ElementBase * const from, int specifies = E_HAS_NONE ) const;
 
     /// Loads a hudfile
-    /// NOTE that you don't forget to read the (hud)options like m_opt_version&co
-    /// @arg wxString filename The full filename
+    /// NOTE make sure that you don't forget to read the (hud)options like m_opt_version&co
+    /// @arg wxString filename The filename
     virtual bool          load( const wxString& filename ) = 0;
+
     // clears all items and then loads default items
     virtual void          load_default_elements() = 0;
 
     virtual bool          save( const wxString& filename );
 
+    /// the default hud filename, return empty if none
+    virtual wxString      default_hudfilename() const = 0;
 
     /// create an element by name
     virtual ElementBase*  create_element( const wxString& name ) const = 0;

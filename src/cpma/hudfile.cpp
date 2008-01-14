@@ -120,8 +120,7 @@ bool CPMAHudFile::load( const wxString& filename )
     wxString str = wxString::Format(_("ERROR while parsing `%s'"), filename.c_str());
     str += wxString(err.what(), wxConvUTF8);
     wxLogError( str );
-    OnNew();
-//    load_default_elements();
+    load_default_elements();
     return false;
   }
   // removeo all non-unique elements that aren't enabled

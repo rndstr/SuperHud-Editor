@@ -22,6 +22,8 @@
 			huds from previous versions but it will be saved for >=cpma-1.44)
 	* add: a grid (of points) elements can snap to (defaults to 12x12)
 	* add: a pak file browser (with image preview)
+  * add: open the HUD file given on commandline
+
 
 	* chg: new highly modifiable user interface
 	* chg: properties now indicate if and which values they inherit (they have a
