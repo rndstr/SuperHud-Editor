@@ -114,7 +114,7 @@ int HudFileBase::OnOpen( const wxString& filename /*=wxT("")*/, bool force_conve
             Prefs::get().var(wxT("view_aspectratio")).sval().c_str()
             );
 
-      dlg.Create(0, msg);
+      dlg.Create(0, msg, f);
       int ret = dlg.ShowModal();
       if( ret == wxID_YES )
       { // convert
