@@ -22,7 +22,7 @@ ConvertDialog::ConvertDialog(wxWindow* parent):
         wxT("Widescreen (16:10)")
     };
     m_aspectratio_from = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 3, m_aspectratio_from_choices, 0);
-    label_6 = new wxStaticText(this, wxID_ANY, wxT("What the HUD was built for"));
+    label_6 = new wxStaticText(this, wxID_ANY, wxT("(what the HUD was built for)"));
     label_4 = new wxStaticText(this, wxID_ANY, wxT("To aspect ratio:"));
     const wxString m_aspectratio_to_choices[] = {
         wxT("Current"),
@@ -30,7 +30,7 @@ ConvertDialog::ConvertDialog(wxWindow* parent):
         wxT("Widescreen (16:10)")
     };
     m_aspectratio_to = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 3, m_aspectratio_to_choices, 0);
-    label_7 = new wxStaticText(this, wxID_ANY, wxT("What you want it to be"));
+    label_7 = new wxStaticText(this, wxID_ANY, wxT("(what you want it to be)"));
     m_size = new wxCheckBox(this, wxID_ANY, wxT("Size (keep element width:height ratio)"));
     m_stretchposition = new wxCheckBox(this, wxID_ANY, wxT("Stretch position (\"keep corner elements in the corner\")"));
     m_fontsize = new wxCheckBox(this, wxID_ANY, wxT("Fontsize (keep font width:height ratio)"));
@@ -170,14 +170,14 @@ void ConvertDialog::do_layout()
     grid_sizer_1->Add(label_7, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
     sizer_4->Add(grid_sizer_1, 1, wxEXPAND, 0);
     sizer_3->Add(sizer_4, 0, wxEXPAND, 0);
-    sizer_6->Add(m_size, 0, wxALL|wxEXPAND|wxADJUST_MINSIZE, 3);
-    sizer_6->Add(m_stretchposition, 0, wxALL|wxEXPAND|wxADJUST_MINSIZE, 3);
-    sizer_6->Add(m_fontsize, 0, wxALL|wxEXPAND|wxADJUST_MINSIZE, 3);
+    sizer_6->Add(m_size, 0, wxALL|wxEXPAND, 3);
+    sizer_6->Add(m_stretchposition, 0, wxALL|wxEXPAND, 3);
+    sizer_6->Add(m_fontsize, 0, wxALL|wxEXPAND, 3);
     sizer_6->Add(label_5, 0, wxLEFT|wxEXPAND, 20);
     sizer_3->Add(sizer_6, 0, wxALL|wxEXPAND, 5);
-    sizer_7->Add(20, 20, 1, wxEXPAND|wxADJUST_MINSIZE, 0);
-    sizer_7->Add(button_1, 0, wxALL|wxADJUST_MINSIZE, 3);
-    sizer_7->Add(button_2, 0, wxALL|wxADJUST_MINSIZE, 3);
+    sizer_7->Add(20, 20, 1, wxEXPAND, 0);
+    sizer_7->Add(button_1, 0, wxALL, 3);
+    sizer_7->Add(button_2, 0, wxALL, 3);
     sizer_3->Add(sizer_7, 0, wxALL|wxEXPAND, 5);
     sizer_2->Add(sizer_3, 1, wxALL|wxEXPAND, 5);
     SetSizer(sizer_2);
@@ -185,6 +185,8 @@ void ConvertDialog::do_layout()
     Layout();
     // end wxGlade
 }
+
+
 
 
 

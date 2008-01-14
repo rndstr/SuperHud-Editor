@@ -5,6 +5,7 @@
 #define ENABLE_Q4MAX 0
 #define ENABLE_CPMA 1
 
+
 #if ENABLE_Q4MAX && ENABLE_CPMA
   #define HAS_MULTIPLE_GAMES 1
 #else

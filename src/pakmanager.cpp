@@ -38,7 +38,7 @@ void PakManager::cleanup()
       wxLogDebug(wxT("PakManager::cleanup - Deleting cache data: ") + it->first);
       delete [] it->second.buffer;
       it->second.buffer = 0;
-      it->second.bufsize = 0;
+      //it->second.bufsize = 0;
     }
   }
   m_pakcontent.clear();
@@ -48,7 +48,7 @@ void PakManager::cleanup_lastloaded()
 {
   if( m_lastloaded != m_pakcontent.end() )
   {
-      wxLogDebug(wxT("PakManager::cleanup - Deleting cache data (justloaded): ") + m_lastloaded->first);
+    wxLogDebug(wxT("PakManager::cleanup - Deleting cache data (justloaded): ") + m_lastloaded->first);
     delete [] m_lastloaded->second.buffer;
     m_lastloaded->second.buffer = 0;
     m_lastloaded = m_pakcontent.end();

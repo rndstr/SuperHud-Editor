@@ -306,6 +306,8 @@ void MainFrame::OnMenuAbout( wxCommandEvent& )
   info.SetWebSite(APP_URL, APP_NAME + wxT(" website"));
   wxAboutBox(info);
 
+  
+
   /*
   m_model = new Model();
   m_model->load_mde(wxT("model/dfegg.mde"), PM_SEARCH_APPFILE);

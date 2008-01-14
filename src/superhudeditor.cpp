@@ -194,7 +194,6 @@ int SHEApp::OnExit()
 
   if( !m_exec.empty() )
   {
-    
     wxExecute( m_exec, wxEXEC_ASYNC );
   }
 
