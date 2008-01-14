@@ -105,7 +105,7 @@ int HudFileBase::OnOpen( const wxString& filename /*=wxT("")*/, bool force_conve
 
       OptionalMessageDialog dlg(wxT("dlg_convertonload"), wxID_ANY, wxID_CANCEL); 
       dlg.add_button(_("Convert HUD..."), wxID_YES);
-      dlg.add_button(_("Modify Preferences"), wxID_NO);
+      dlg.add_button(_("Modify preferences"), wxID_NO);
       dlg.add_button(_("Continue"), wxID_CANCEL);
       wxString msg =  
         wxString::Format(

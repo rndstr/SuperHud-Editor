@@ -305,7 +305,6 @@ void MainFrame::OnMenuAbout( wxCommandEvent& )
   info.SetCopyright(wxT("(C) 2006-2008 Roland Schilter <rolansch@ethz.ch>"));
   info.SetWebSite(APP_URL, APP_NAME + wxT(" website"));
   wxAboutBox(info);
-
   
 
   /*

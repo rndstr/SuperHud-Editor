@@ -411,13 +411,13 @@ void ElementsCtrlBase::OnDelete( wxCommandEvent& )
 
 void ElementsCtrlBase::OnItemDeselected( wxListEvent& ev )
 {
-  wxLogDebug(wxT("ElementsCtrlBase::OnItemDeselected"));
+//  wxLogDebug(wxT("ElementsCtrlBase::OnItemDeselected"));
   OnSelectionChanged();
 }
 
 void ElementsCtrlBase::OnItemSelected( wxListEvent& ev )
 {
-  wxLogDebug(wxT("ElementsCtrlBase::OnItemSelected"));
+//  wxLogDebug(wxT("ElementsCtrlBase::OnItemSelected"));
   OnSelectionChanged();
   m_list->EnsureVisible( ev.GetIndex() );
 }
