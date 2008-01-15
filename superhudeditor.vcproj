@@ -185,7 +185,7 @@
 				>
 			</File>
 			<Filter
-				Name="wxPropertyGrid"
+				Name="propertygrid"
 				>
 				<File
 					RelativePath=".\src\wxpropgrid-1.3\src\advprops.cpp"
@@ -259,6 +259,10 @@
 					RelativePath=".\src\wxpropgrid-1.3\include\wx\propgrid\props.h"
 					>
 				</File>
+			</Filter>
+			<Filter
+				Name="webupdater"
+				>
 			</Filter>
 		</Filter>
 		<Filter
