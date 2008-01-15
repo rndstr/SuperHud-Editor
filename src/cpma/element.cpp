@@ -765,9 +765,14 @@ void CPMAElement::prerender()
     {
       wxGetApp().mainframe()->displayctrl()->SetCurrent();
       if( !m_ptex )
+      {
         m_ptex = new Texture( m_props.image, PM_SEARCH_HUDFILE );
+      }
       else if( m_props.image.Cmp(m_ptex->name()) != 0 )
+      {
         m_ptex->load( m_props.image, PM_SEARCH_HUDFILE );
+      }
+      
     }
     break;
   }

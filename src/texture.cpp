@@ -32,9 +32,13 @@ void Texture::load( const wxString& fpath, int search_where, bool mipmap /*=fals
   size_t size;
   if( !PakManager::get().load( &buf, fpath, search_where, &size ) )
   {
-    wxLogError(_("Couldn't find/load file: %s"), fpath.c_str());
-    wxGetApp().mainframe()->statusbar()->PopStatusText();
-    return;
+    // if it hasn't an extension we try .tga (CPMA does this as well)
+    if( !she::file_ext(fpath).empty() || !PakManager::get().load(&buf, fpath + wxT(".tga"), search_where, &size) )
+    {
+      wxLogError(_("Couldn't find/load file: %s"), fpath.c_str());
+      wxGetApp().mainframe()->statusbar()->PopStatusText();
+      return;
+    }
   }
   
   

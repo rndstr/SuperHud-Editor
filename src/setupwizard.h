@@ -24,14 +24,18 @@ private:
   DECLARE_EVENT_TABLE()
 };
 
-class DisplayPage : public wxWizardPageSimple
+class MiscPage : public wxWizardPageSimple
 {
   public:
-    DisplayPage( wxWizard *parent );
+    MiscPage( wxWizard *parent );
 
-    wxString aspectratio() const;
+    wxString  aspectratio() const;
+    bool      checkforupdate() const;
+    wxString  proxy() const;
   private:
     wxComboBox  *m_aspectratio;
+    wxCheckBox  *m_checkforupdate;
+    wxTextCtrl  *m_proxy;
 };
 
 class SetupWizard : public wxWizard
@@ -41,13 +45,13 @@ class SetupWizard : public wxWizard
 
     wxWizardPage *GetFirstPage() const { return m_two; }
 
-    wxString    gamedir() const { return m_two->gamedir(); }
-    wxString    aspectratio() const { return m_three->aspectratio(); }
+    const MiscPage*     miscpage() const { return m_three; }
+    const GameDirPage*  gamedirpage() const { return m_two; }
 
   private:
     wxWizardPageSimple  *m_one;
     GameDirPage         *m_two;
-    DisplayPage         *m_three;
+    MiscPage            *m_three;
 };
 
 

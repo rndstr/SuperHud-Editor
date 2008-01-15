@@ -184,8 +184,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
       MinSize(wxSize(200,100))
       );
   m_configpreview = new wxTextCtrl(this, ID_TEXTCTRL_CONFIGPREVIEW, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
-  wxFont sysfont = wxSystemSettings::GetFont(wxSYS_SYSTEM_FONT);
-  sysfont.SetFaceName( wxT("Courier New") );
+  wxFont sysfont = wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT);
   m_configpreview->SetFont( sysfont );
   m_mgr.AddPane( m_configpreview, wxAuiPaneInfo().Name(wxT("configpreview")).Caption(_("Config Preview")).
     CloseButton(true).MaximizeButton(true)
@@ -269,22 +268,8 @@ void MainFrame::OnDownload( wxDownloadEvent& event )
   int status = event.status();
   if( status == wxDownloadEvent::DOWNLOAD_FAIL )
   {
-    wxString msg = _("Version check failed, try again later or\ncheck your network settings in Tools->Preferences|Misc.");
-    /*  
-    this won't work due to .... ? the mainapp not yet started? 
-    if( event.GetDownloadAutoupdate() )
-    { // let user disable the message...
-      OptionalMessageDialog dlg(wxT("versioncheck_failed_startup"));
-      dlg.add_button( wxT("Okay"), wxID_OK );
-      dlg.Create(
-        reinterpret_cast<wxWindow*>( wxGetApp().get_frame() ),
-        msg
-      );
-      dlg.ShowModal();
-    }
-    else
-    */
-      wxLogError(msg);
+    wxString msg = _("Version check failed, try again later or\ncheck your proxy settings in Tools->Preferences|Misc.");
+    wxLogError(msg);
   }
   else if( status == wxDownloadEvent::DOWNLOAD_COMPLETE )
   {
@@ -313,11 +298,8 @@ void MainFrame::OnDownload( wxDownloadEvent& event )
     wxLogDebug(wxT("versioncheck returned: %d"), check);
     if( check < 0 ) // new version!
     {
-#if HAS_WEBUPDATER
-      ScrolledMessageDialog dlg(wxID_NO);
-#else
-      ScrolledMessageDialog dlg(wxID_YES);
-#endif
+      ScrolledMessageDialog dlg(wxID_CANCEL);
+
       dlg.add_button(_("&Later"), wxID_CANCEL);
       dlg.add_button(_("&Visit website"), wxID_YES);
 #if HAS_WEBUPDATER
@@ -361,8 +343,8 @@ void MainFrame::OnDownload( wxDownloadEvent& event )
 mofo:
   if( invalid_response )
   {
-    wxString txt = event.text();//GetDownLoadedText();
-    wxLogWarning( _("The server response was invalid,\ntry again later:\n\n") +  txt);
+    wxString txt = event.text();
+    wxLogWarning( _("Version check failed, the server response was invalid,\ntry again later:\n\n") +  txt);
   }
 }
 

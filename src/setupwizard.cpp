@@ -1,6 +1,7 @@
 #include "setupwizard.h"
 
 #include "factorybase.h"
+#include "artprovider.h"
 
 #include <wx/file.h>
 
@@ -25,38 +26,63 @@ SetupWizard::SetupWizard( wxFrame *frame ) :
   // gamedir is missing
   if( wxGetApp().is_firststart() )
   {
-    m_three = new DisplayPage(this);
+    m_three = new MiscPage(this);
 //  wxWizardPageSimple::Chain(m_one, m_two);
     wxWizardPageSimple::Chain(m_two, m_three);
   }
 }
 
-DisplayPage::DisplayPage(wxWizard *parent) : wxWizardPageSimple(parent)
+MiscPage::MiscPage(wxWizard *parent) : wxWizardPageSimple(parent)
 {
   wxBoxSizer *mainsizer = new wxBoxSizer(wxVERTICAL);
-  wxStaticText *title = new wxStaticText(this, wxID_ANY, _("Display"));
+  wxStaticText *title_display = new wxStaticText(this, wxID_ANY, _("Display"));
   wxStaticText *saspectratio = new wxStaticText(this, wxID_ANY, _("Select your ingame aspect ratio"));
   wxArrayString aspectratio_choices;
   aspectratio_choices.Add(_("Standard (4:3)"));
   aspectratio_choices.Add(_("Widescreen (16:10)"));
   //aspectratio_choices.Add(_("Custom"));
   m_aspectratio = new wxComboBox(this, wxID_ANY, _("Standard (4:3)"), wxDefaultPosition, wxDefaultSize, aspectratio_choices, wxCB_DROPDOWN|wxCB_READONLY);
+  wxStaticText *title_startup = new wxStaticText(this, wxID_ANY, _("Startup"));
+  m_checkforupdate = new wxCheckBox(this, wxID_ANY, _("Check for new version"));
+  m_checkforupdate->SetValue(true);
+  wxStaticText *proxylabel = new wxStaticText(this, wxID_ANY, _("Proxy:"));
+  m_proxy = new wxTextCtrl(this, wxID_ANY);
+  wxStaticText *proxyhelp = new wxStaticText( this, wxID_ANY, _("host:port") );
 
-  mainsizer->Add(title, 0, wxALL, 5);
+  mainsizer->Add(title_display, 0, wxALL, 5);
   mainsizer->Add(saspectratio, 0, wxALL, 5);
   mainsizer->Add(m_aspectratio, 0, wxALL, 5);
+  mainsizer->Add(title_startup, 0, wxALL, 5);
+  mainsizer->Add(m_checkforupdate, 0, wxALL, 5);
+  mainsizer->Add(proxylabel, 0, wxLEFT|wxTOP|wxRIGHT, 5);
+  mainsizer->Add(m_proxy, 0, wxEXPAND|wxLEFT|wxRIGHT, 5);
+  mainsizer->Add(proxyhelp, 0, wxLEFT|wxRIGHT|wxBOTTOM, 5);
+
 
   // design
   wxFont ftitle( 18, wxDEFAULT, wxFONTSTYLE_NORMAL, wxBOLD );
-  title->SetFont( ftitle );
-  title->SetForegroundColour(wxColour(100, 100, 100));
+  title_display->SetFont( ftitle );
+  title_display->SetForegroundColour(wxColour(100, 100, 100));
+  title_startup->SetFont( ftitle );
+  title_startup->SetForegroundColour(wxColour(100, 100, 100));
+  proxyhelp->SetForegroundColour(wxColour(0,0,85));
 
 
   SetSizer(mainsizer);
   mainsizer->Fit(this);
 }
 
-wxString DisplayPage::aspectratio() const
+bool MiscPage::checkforupdate() const
+{
+  return m_checkforupdate->GetValue();
+}
+
+wxString MiscPage::proxy() const
+{
+  return m_proxy->GetValue();
+}
+
+wxString MiscPage::aspectratio() const
 {
   switch( m_aspectratio->GetCurrentSelection() )
   {

@@ -5,6 +5,7 @@
 #include "../hudfilebase.h"
 #include "../elementsctrlbase.h"
 #include "../propertiesnotebookbase.h"
+#include "../artprovider.h"
 
 #include "element.h"
 

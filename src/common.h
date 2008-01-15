@@ -23,7 +23,6 @@
 #include "eventids.h"
 #include "mainframe.h"
 
-#include "artprovider.h"
 #include "exceptions.h"
 #include "misc.h"
 

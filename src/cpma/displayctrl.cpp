@@ -52,7 +52,8 @@ void CPMADisplayCtrl::init()
   // load fonts
   for( fonts_type::iterator it = m_fonts.begin(); it != m_fonts.end(); ++it )
     if( !it->second->load() )
-      wxLogError( _("Cannot find font: ") + it->first + wxT("\n\n") + _("You probably have an outdated CPMA version installed, make sure you got at least 1.44") );
+      wxLogError( _("Cannot find font: ") + it->first + wxT("\n\n") + 
+      _("Either the game directory is wrong or you have an outdated CPMA version installed,\nmake sure you got at least 1.44") );
 
   PakManager::get().debug();
 }

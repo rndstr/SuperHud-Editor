@@ -15,6 +15,7 @@
 #include "hudfilebase.h"
 #include "pakmanager.h"
 #include "GameSelectionDialog.h"
+#include "artprovider.h"
 
 #if ENABLE_CPMA
   #include "cpma/factory.h"
@@ -124,14 +125,15 @@ bool SHEApp::OnInit()
     return false;
   }
 
-
   if( wxGetApp().is_firststart() )
   {
     SetupWizard wizard(0);
     if( wizard.RunWizard(wizard.GetFirstPage()) )
     {
-      wxGetApp().factory()->set_dir_game(wizard.gamedir());
-      Prefs::get().set(wxT("view_aspectratio"), wizard.aspectratio());
+      wxGetApp().factory()->set_dir_game(wizard.gamedirpage()->gamedir());
+      Prefs::get().set(wxT("view_aspectratio"), wizard.miscpage()->aspectratio());
+      Prefs::get().set(wxT("net_proxy"), wizard.miscpage()->proxy());
+      Prefs::get().setb(wxT("startup_checkforupdate"), wizard.miscpage()->checkforupdate());
       Prefs::get().save(); // just save to make sure.. if we crash at least this we don't have to go through again
     }
   }
@@ -139,7 +141,7 @@ bool SHEApp::OnInit()
   {
     SetupWizard wizard(0);
     if( wizard.RunWizard(wizard.GetFirstPage()) )
-      wxGetApp().factory()->set_dir_game(wizard.gamedir());
+      wxGetApp().factory()->set_dir_game(wizard.gamedirpage()->gamedir());
   }
 
   PakManager::get().init();

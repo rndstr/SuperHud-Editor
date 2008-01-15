@@ -3,6 +3,7 @@
 #include "pakfiledialog.h"
 
 #include "common.h"
+#include "artprovider.h"
 
 #include <wx/mstream.h>
 

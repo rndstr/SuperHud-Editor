@@ -6,6 +6,7 @@ t put an unknown elementname into the hud, code adds it anyway.. what happens th
 t what happens if startuphud is no longer available?
 % if several selected display only collection title in statusbar
 + read proxy in webupdater from superhudeditor.conf
+! change a pointsize fontsize to pixel, then edit X, upon click on Y it will crash
 
 [UNIX] make APPRELATIVE and APPPAK also look in ~/.superhudeditor/
 

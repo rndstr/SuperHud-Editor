@@ -2,6 +2,7 @@
 #include "common.h"
 #include "mainframe.h"
 #include "elementsctrlbase.h"
+#include "artprovider.h"
 
 
 

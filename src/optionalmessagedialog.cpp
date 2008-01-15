@@ -5,6 +5,7 @@
 #include "superhudeditor.h"
 #include "mainframe.h"
 
+
 OptionalMessageDialog::OptionalMessageDialog( const wxString& name, int saveid /*= wxID_ANY*/, int default_button /*=wxID_ANY*/, wxArtID bitmapid /*= wxART_QUESTION*/ ) :
   wxDialog(),
   m_saveid(saveid),
@@ -20,6 +21,8 @@ bool OptionalMessageDialog::Create(wxWindow* parent,
   const wxString& msg, const wxString& title /*=wxT("")*/, 
   int id /*=wxID_ANY*/, const wxPoint& pos /*=wxDefaultPosition*/, const wxSize& size /*=wxDefaultSize*/ )
 {
+  wxWindow *defaultitem = 0;
+
   if( m_storedid != -1 || m_created )
     return true;
 
@@ -36,8 +39,8 @@ bool OptionalMessageDialog::Create(wxWindow* parent,
   for( std::vector<buttoninfo_s>::const_iterator cit = m_buttoninfos.begin(); cit != m_buttoninfos.end(); ++cit )
   {
     wxButton *but = new wxButton(this, cit->id, cit->label);
-    if( cit->id == m_default_button )
-      but->SetDefault();
+    if( wxID_CANCEL == cit->id && m_default_button != wxID_CANCEL )
+      wxASSERT_MSG(false, wxT("button with id wxID_CANCEL found that is not the default action"));
     m_buttons.push_back( but );
   }
   m_horiz_line = new wxStaticLine(this, wxID_ANY);
@@ -51,11 +54,12 @@ bool OptionalMessageDialog::Create(wxWindow* parent,
 //  SetTitle(title);
 
   // -- layout
+  wxBoxSizer* top_sizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer* sizer_dlg = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer* sizer_buttons = new wxBoxSizer(wxHORIZONTAL);
   wxBoxSizer* sizer_msg = new wxBoxSizer(wxHORIZONTAL);
-  sizer_msg->Add(icon, 0, wxALL, 10);
-  sizer_msg->Add(m_message, 1, wxEXPAND|wxADJUST_MINSIZE|wxALL, 10);
+  sizer_msg->Add(icon, 0, wxALL, 5);
+  sizer_msg->Add(m_message, 1, wxEXPAND|wxADJUST_MINSIZE|wxALL, 5);
   sizer_dlg->Add(sizer_msg);
 
   // expanding invisible item to make buttons align right.
@@ -63,17 +67,26 @@ bool OptionalMessageDialog::Create(wxWindow* parent,
 
   for( std::vector<wxButton*>::const_iterator it = m_buttons.begin(); it != m_buttons.end(); ++it )
   {
-    sizer_buttons->Add( *it, 0, wxALL, 10 );
+    sizer_buttons->Add( *it, 0, wxALL, 3 );
+    if( (*it)->GetId() == m_default_button )
+      defaultitem = *it;
     Connect( (*it)->GetId(), wxID_ANY, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(OptionalMessageDialog::OnButton) );
   }
   
-  sizer_dlg->Add(sizer_buttons, 0, wxEXPAND, 0);
+  if( defaultitem )
+  {
+    SetDefaultItem(defaultitem); // this doesn't look like it does something on win32
+    defaultitem->SetFocus(); // this works yay
+  }
+
+  sizer_dlg->Add(sizer_buttons, 0, wxEXPAND|wxALL, 5);
   sizer_dlg->Add(m_horiz_line, 0, wxEXPAND, 0);
   sizer_dlg->Add(m_shownomore, 0, wxALL, 3);
+  top_sizer->Add(sizer_dlg, 0, wxALL, 10);
   SetAutoLayout(true);
-  SetSizer(sizer_dlg);
-  sizer_dlg->Fit(this);
-  sizer_dlg->SetSizeHints(this);
+  SetSizer(top_sizer);
+  top_sizer->Fit(this);
+  top_sizer->SetSizeHints(this);
   Layout();
 
   m_created = true;
@@ -81,6 +94,10 @@ bool OptionalMessageDialog::Create(wxWindow* parent,
 }
 
 
+void OptionalMessageDialog::EndModal(int retCode)
+{
+  wxDialog::EndModal( retCode == wxID_CANCEL ? m_default_button : retCode );
+}
 void OptionalMessageDialog::OnButton( wxCommandEvent& ev )
 {
   EndModal(ev.GetId());

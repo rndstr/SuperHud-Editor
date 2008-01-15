@@ -144,7 +144,9 @@ bool load_from_zip( char **buf, const wxString& filepath, const wxString& entryp
 
 wxString file_ext( const wxString& fp )
 {
-  size_t pos = fp.find_last_of( wxT(".") );
+  size_t pos = fp.find_last_of( wxT("/\\.") );
+  if( fp[pos] != '.' )
+    return wxT(""); // no extension
   return (pos == wxString::npos ? 
       wxT("") 
       :

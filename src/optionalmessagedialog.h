@@ -12,10 +12,10 @@
 #include <map>
 #include <vector>
 
-/// Order of use:
-///  - ctor
-///  - add_button
-///  -
+/// NOTE that you shouldn't misuse wxID_CANCEl because if a user
+/// closes with wxCLOSE_BOX wxID_CANCEL is sent and we catch this
+/// in EVT_CLOSE and return default button!
+/// ALSO make sure you select an aborting default button....
 class OptionalMessageDialog: public wxDialog
 {
   struct buttoninfo_s
@@ -44,6 +44,7 @@ class OptionalMessageDialog: public wxDialog
 
   protected:
     void OnButton( wxCommandEvent& ev );
+    void EndModal(int retCode);
 
 
   private:

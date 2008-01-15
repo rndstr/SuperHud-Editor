@@ -13,10 +13,12 @@
 #include <map>
 #include <vector>
 
-/// Order of use:
-///  - ctor
-///  - add_button
-///  -
+/// NOTE that you shouldn't misuse wxID_CANCEL because if a user
+/// closes with wxCLOSE_BOX wxID_CANCEL is sent and we catch this
+/// in EVT_CLOSE and return default button!
+/// -> you should only use wxID_CANCEL if that is the default
+/// action..
+/// ALSO make sure you select an aborting default button....
 class ScrolledMessageDialog : public wxDialog
 {
   struct buttoninfo_s
@@ -46,6 +48,7 @@ class ScrolledMessageDialog : public wxDialog
 
   protected:
     void OnButton( wxCommandEvent& ev );
+    void EndModal(int retCode);
 
   private:
     void set_properties();

@@ -29,7 +29,6 @@ const wxString INVALIDGAME_MSG = _("No valid game selected?");
 const wxString CHECKBOXWARNING_MSG = _("Be aware that you won't be able to disable that property on subsequents element!");
 
 
-
 /// get hidden and files (and don't recurse into dirs)
 const int GETALLFILES_FLAGS = wxDIR_FILES|wxDIR_HIDDEN;
 const wxString PATH_SEP = wxFileName::GetPathSeparator();
