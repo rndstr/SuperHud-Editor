@@ -1,6 +1,8 @@
 #ifndef PREFS_H
 #define PREFS_H
 
+#include "common.h"
+
 #include <wx/string.h>
 #include "color4.h"
 

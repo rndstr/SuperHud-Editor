@@ -2,6 +2,8 @@
 #define HUDFILEBASE_H
 
 #include "common.h"
+
+#include "common.h"
 #include "elementbase.h"
 #include <vector>
 

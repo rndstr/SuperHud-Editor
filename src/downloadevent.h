@@ -32,11 +32,8 @@ class wxOutputStream;
 class wxDownloadEvent : public wxNotifyEvent
 {
 public:
-	/**
-	 * \enum DownloadSTATUS
-	 * \brief Download current status.
-	 */
-	enum DownloadSTATUS
+	/// Current status of download
+	enum eDownloadStatus
 	{
 		DOWNLOAD_NONE = -2,				/// No Status, yet to be initialized
 		DOWNLOAD_FAIL = -1,				/// Failed to download the file
@@ -46,13 +43,12 @@ public:
 	};
 
 private:
-	DownloadSTATUS m_downloadStatus;	/// download current status value from the DownloadSTATUS enum
-	wxString m_strURL;					/// URL from where to download the file
-	wxString m_strFILE;					/// local file name where the downloaded file would be saved (wxT("") if no file).
-  wxString *m_strCONTENT; /// the content of the downloaded stream.
-	wxInt64 m_nBytesDownloaded;			///< Number of bytes downloaded.
-	wxInt64 m_nFileSize;				///< The size of the downloading file.
-  bool m_autoupdate; ///< if true, we only display a message if a new version is available or an error occurred.
+	eDownloadStatus m_status;	/// download current status value from the DownloadSTATUS enum
+	wxString m_url;					/// URL from where to download the file
+	wxString m_localfname;					/// local file name where the downloaded file would be saved (wxT("") if no file).
+	wxInt64 m_bytesdownloaded;			///< Number of bytes downloaded.
+	wxInt64 m_filesize;				///< The size of the downloading file.
+  wxString m_text;
 
 	friend class wxDownloadFile;
   friend class wxDownloadText;
@@ -95,30 +91,27 @@ public:
 	 * \param void 
 	 * \return 
 	 */
-	int GetDownLoadStatus(void);
+    int status() const { return m_status; }
 
 	/**
 	 * Returns the download URL, from where the file has to be downloaded.
 	 * \param void 
 	 * \return 
 	 */
-	wxString GetDownLoadURL(void);
+    wxString url() const { return m_url; }
 
 	/**
 	 * Returns the local file name, of the downloaded file.
 	 * \param void 
 	 * \return 
 	 */
-	wxString GetDownLoadedFile(void);
+    wxString localfname() const { return m_localfname; }
 
 
   /**
    * Returns the stream the downloaded file is written to.
    */
-  wxString *GetDownLoadedText(void);
-
-
-  bool GetDownloadAutoupdate();
+    wxString text() const { return m_text; }
 
 
 	/**
@@ -126,52 +119,51 @@ public:
 	 * \param void 
 	 * \return Number of bytes downloaded.
 	 */
-	wxInt64 GetDownLoadedBytesCount(void);
+    wxInt64 bytesdownloaded() const { return m_bytesdownloaded; }
 
 	/**
 	 * Returns the size of the downloading file.
 	 * \param void 
 	 * \return The size of the downloading file.
 	 */
-	wxInt64 GetFileSize(void);
+    wxInt64 filesize() const { return m_filesize; }
 
 private:
 
-  void SetDownloadAutoupdate(bool);
 	/**
 	 * Sets the current download status.
 	 * \param int DownloadSTATUS enum value
 	 */
-	void SetDownLoadStatus(int);
+  void set_status(int status) { m_status = (eDownloadStatus)status; }
 
 	/**
 	 * Sets the download URL, from where the file has to be downloaded.
 	 * \param wxString Download URL
 	 */
-	void SetDownLoadURL(wxString);
+  void set_url( const wxString& url ) { m_url = url; }
 
 	/**
 	 * Sets the local file name, of the downloaded file.
 	 * \param wxString Local file name, where to download the file.
 	 */
-	void SetDownLoadedFile(wxString);
+  void set_localfname( const wxString& lfname ) { m_localfname = lfname; }
 
   /**
    * Sets the stream we write the downloaded file to.
    */
-  void SetDownLoadedText(wxString*);
+  void set_text( const wxString& text ) { m_text = text; }
 
 	/**
 	 * Sets the number of bytes downloaded; not to be called by the user.
 	 * \param wxInt64 Number of bytes downloaded.
 	 */
-	void SetDownLoadedBytesCount(wxInt64);
+  void set_bytesdownloaded(wxInt64 b) { m_bytesdownloaded = b; }
 
 	/**
 	 * Sets the size of the downloading file.
 	 * \param nSize Size of the downloading file
 	 */
-	void SetFileSize(wxInt64 nSize);
+  void set_filesize(wxInt64 fsize) { m_filesize = fsize; }
 
 private:
 	/**

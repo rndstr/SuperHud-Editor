@@ -1,6 +1,8 @@
 #ifndef FACTORYBASE_H
 #define FACTORYBASE_H
 
+#include "common.h"
+
 #include <wx/string.h>
 
 class ElementsCtrlBase;

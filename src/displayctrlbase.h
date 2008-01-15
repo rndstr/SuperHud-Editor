@@ -1,6 +1,8 @@
 #ifndef DISPLAYCTRLBASE_H
 #define DISPLAYCTRLBASE_H
 
+#include "common.h"
+
 #include "font.h"
 #include <wx/gdicmn.h>
 #include <map>

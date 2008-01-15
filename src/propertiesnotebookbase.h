@@ -1,6 +1,8 @@
 #ifndef PROPERTIESNOTEBOOKBASE_H
 #define PROPERTIESNOTEBOOKBASE_H
 
+#include "common.h"
+
 #include "superhudeditor.h"
 #include "hudfilebase.h"
 #include <wx/aui/auibook.h>

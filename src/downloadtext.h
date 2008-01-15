@@ -31,13 +31,11 @@
 class wxDownloadText : public wxThread
 {
 private:
-	wxWindow *m_pParent;		/// parent window pointer
-	wxString m_strURL;			/// URL from where to download the file
-  wxString m_strContent; /// The downloaded content.
-	bool m_bIsDownload;			/// boolean value to stop the download, when user cancels the download
-	wxInt64 m_nFileSize;		/// size of the file downloading; may be wrong also, depends on the server.
-	bool m_bNotifyDownloading;	/// Enable or disable the downloading in progress notification.
-	wxInt64 m_nNotifyBytes;		/// After how many number of bytes downloaded, to send the notification.
+	wxWindow *m_parent;		/// parent window pointer
+	wxString m_url;			/// URL from where to download the file
+	bool m_downloading;			/// boolean value to stop the download, when user cancels the download
+	bool m_notify;	/// Enable or disable the downloading in progress notification.
+	wxInt64 m_notifybytes;		/// After how many number of bytes downloaded, to send the notification.
   bool m_autoupdate;
 
 public:
@@ -50,13 +48,13 @@ public:
 	 * \param nBytes After how many number of bytes downloaded, to send the notification.
 	 * \return 
 	 */
-	wxDownloadText(wxWindow *pParent, wxString strURL, bool autoupdate = false, bool bNotify = false, wxInt64 nBytes = 1000);
+	wxDownloadText(wxWindow *pParent, const wxString& strURL, bool bNotify = false, wxInt64 nBytes = 1000);
 	/**
 	 * Virtual destructor
 	 * \param void 
 	 * \return 
 	 */
-	virtual ~wxDownloadText(void);
+	virtual ~wxDownloadText();
 
 public:
     /// thread execution starts here
@@ -72,13 +70,6 @@ public:
 	 * \param void 
 	 */
 	void CancelDownload(void);
-
-	/**
-	 * Returns the size of the downloading file; may be wrong also, it depends on the server.
-	 * \param void 
-	 * \return Size of the file downloading.
-	 */
-	wxInt64 GetFileSize(void);
 
 	/**
 	 * Sends an DOWNLOAD_INPROGRESS event after the specified number of bytes downloaded.

@@ -1,7 +1,6 @@
-
 #include "mainframe.h"
 
-#include "common.h"
+#include "misc.h"
 
 
 #include "factorybase.h"
@@ -10,6 +9,7 @@
 #include "prefsdialog.h"
 #include "convertdialog.h"
 #include "downloadtext.h"
+#include "scrolledmessagedialog.h"
 
 
 #include "cpma/elementsctrl.h"
@@ -143,7 +143,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   wxMenu *help_menu = new wxMenu;
 #if HAS_WEBUPDATER
   // so far only win32 :x
-  help_menu->Append( ID_MENU_HELP_UPDATE, _("Check for &updates...") );
+  help_menu->Append( ID_MENU_HELP_UPDATE, _("&Update...") );
 #endif
   help_menu->Append( ID_MENU_HELP_TIP, _("&Tip of the Day") );
   help_menu->Append( wxID_ABOUT, _("&About\tCtrl+A") );
@@ -255,14 +255,16 @@ void MainFrame::set_floating_hint( wxAuiManagerOption hint )
 
 void MainFrame::check_for_updates()
 {
+  m_statusbar->PushStatusText(_("Version check..."), SB_MSG);
   wxDownloadText *dl = new wxDownloadText( this, APP_URL_VERSIONCHECK );
 }
 
 
 void MainFrame::OnDownload( wxDownloadEvent& event )
 {
+  m_statusbar->PopStatusText(SB_MSG);
   bool invalid_response = false;
-  int status = event.GetDownLoadStatus();
+  int status = event.status();
   if( status == wxDownloadEvent::DOWNLOAD_FAIL )
   {
     wxString msg = _("Version check failed, try again later or\ncheck your network settings in Tools->Preferences|Misc.");
@@ -284,9 +286,9 @@ void MainFrame::OnDownload( wxDownloadEvent& event )
   }
   else if( status == wxDownloadEvent::DOWNLOAD_COMPLETE )
   {
-    wxString *txt = event.GetDownLoadedText();
-    wxLogDebug(wxT("Received from server:\n") + *txt);
-    wxStringTokenizer tok(*txt, wxT("\n"));
+    wxString txt = event.text();
+    wxLogDebug(wxT("Received from server:\n") + txt);
+    wxStringTokenizer tok(txt, wxT("\n"));
     if( tok.CountTokens() == 0 ) 
     { invalid_response = true; goto mofo; }
 
@@ -307,46 +309,54 @@ void MainFrame::OnDownload( wxDownloadEvent& event )
 
     int check = she::versioncheck( major, minor, release, releasetype );
     wxLogDebug(wxT("versioncheck returned: %d"), check);
-    wxString msg = wxT("");
-    long flags = 0;
     if( check < 0 ) // new version!
     {
-      msg = _("\\o/ There is a new version available: ");
+      ScrolledMessageDialog dlg;
+      dlg.add_button(_("&Ignore"), wxID_CANCEL);
+      dlg.add_button(_("&Visit website"), wxID_YES);
+#if HAS_WEBUPDATER
+      dlg.add_button(_("&Launch webupdater"), wxID_NO);
+#endif
+      
+
+      wxString msg = _("\\o/ There is a new version available: ");
       msg += wxString::Format( wxT("%i.%i.%i"), major, minor, release) + (!releasetype.empty() ? wxT("_")+releasetype : wxT(""));
       msg += wxT("\n\n");
-      msg += _("Do you want to visit ") + APP_URL + wxT(" ?\n");
+#if HAS_WEBUPDATER
+      msg += _("Go to Help->Update.. or visit the website: ") + APP_URL;
+#else
+      msg += _("Visit the website: ") + APP_URL;
+#endif
+
+      wxString text;
+      //text += _("Do you want to visit ") + APP_URL + wxT(" ?\n");
       while( tok.HasMoreTokens() )
-        msg += wxT("\n") + tok.GetNextToken();
-      flags = wxYES_DEFAULT|wxYES_NO|wxICON_INFORMATION;
+        text +=  tok.GetNextToken() + wxT("\n");
+
+      dlg.Create(0, msg, text, _("Version check"));
+      int ret = dlg.ShowModal();
+      if( wxID_YES == ret )
+        wxLaunchDefaultBrowser( APP_URL );
+      else if( wxID_NO == ret )
+      {
+        launch_webupdater();
+      }
     }
     else if( check == 0 )
     { // is only displayed if manual update check.
-      msg = _("Your version is up to date.");
-      flags = wxOK|wxICON_INFORMATION;
+      wxMessageDialog dlg(this, _("Your version is up to date."), _("Version check"), wxICON_INFORMATION);
     }
     else // check > 1
     { // is only displayed if manual update check.
-      msg = _("You have a newer version than the versioncheck reported Oo");
-      flags = wxOK|wxICON_INFORMATION;
-    }
-//    if( event.GetDownloadAutoupdate() && !invalid_response && check >= 0 )
-//      return;
-    wxMessageDialog dlg(
-        0,
-        msg,
-        _("Version check"),
-        flags);                                                                                                                                           
-    if( wxID_YES == dlg.ShowModal() )
-    {
-      wxLaunchDefaultBrowser( APP_URL );
+      wxMessageDialog dlg(this, _("You have a newer version than the versioncheck reported Oo"), _("Version check"), wxICON_INFORMATION);
     }
   }
 
 mofo:
   if( invalid_response )
   {
-    wxString *txt = event.GetDownLoadedText();
-    wxLogWarning( _("The server response was invalid,\ntry again later:\n\n") +  *txt);
+    wxString txt = event.text();//GetDownLoadedText();
+    wxLogWarning( _("The server response was invalid,\ntry again later:\n\n") +  txt);
   }
 }
 
@@ -692,9 +702,8 @@ void MainFrame::restart_app()
 	Close(true);
 }
 
-
 #if HAS_WEBUPDATER
-void MainFrame::OnMenuHelpUpdate( wxCommandEvent& )
+void MainFrame::launch_webupdater()
 {
   // we only allow the updater to be called in release version.. otherwise there will be wrong versions executed etcetc.
   // saves some confusion.
@@ -708,6 +717,12 @@ void MainFrame::OnMenuHelpUpdate( wxCommandEvent& )
 #else
   wxLogMessage(wxT("Updater is not available in debug version"));
 #endif
+}
+
+
+void MainFrame::OnMenuHelpUpdate( wxCommandEvent& )
+{
+  launch_webupdater();
 }
 #endif
 

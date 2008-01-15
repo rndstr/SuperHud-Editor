@@ -1,6 +1,8 @@
 #ifndef __SUPERHUDEDITOR_H__
 #define __SUPERHUDEDITOR_H__
 
+#include "common.h"
+
 #include <wx/app.h>
 #include <wx/intl.h>
 #include <wx/cmdline.h>

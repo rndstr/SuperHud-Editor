@@ -368,7 +368,7 @@ void ElementsCtrlBase::OnReset( wxCommandEvent& )
 
   OptionalMessageDialog dlg(wxT("dlg_reset"), wxID_YES, wxID_YES); 
   dlg.add_button_yesno();
-  wxString msg =  _("This fills default values on all properties of selected elements:\n\n");
+  wxString msg =  _("This fills default values on all properties except visibility of selected elements:\n\n");
   for( cit_elements cit = m_selels.begin(); cit != m_selels.end(); ++cit )
     msg += (*cit)->name() + wxT("\n");
 

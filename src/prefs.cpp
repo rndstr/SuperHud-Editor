@@ -1,5 +1,6 @@
 #include "prefs.h"
-#include "common.h"
+
+#include "misc.h"
 
 #include <wx/stdpaths.h>
 #include <wx/dir.h>
@@ -171,14 +172,16 @@ void Prefs::load()
   addvar(wxT("q3_pakfiles"), prefs_q3_pakfiles_default, PVT_STRING);
   addvar(wxT("q3_hudspecs"), wxT("cpma/hudspecs.dat"), PVT_STRING);
   addvar(wxT("q3_background"), wxT("cpma/texture/background.jpg"), PVT_STRING);
+  // q4max
+  addvar(wxT("q4_gamedir"), wxT(""), PVT_STRING);
 
-  // optional message dialogs
+  // -- optional message dialogs
   addvar(wxT("dlg_reset"), wxT("-1"), PVT_INT);
   addvar(wxT("dlg_convertonload"), wxT("-1"), PVT_INT);
 
-  // q4max
-  addvar(wxT("q4_gamedir"), wxT(""), PVT_STRING);
+  
   // -- misc
+  addvar(wxT("path_fileopen"), wxT(""), PVT_STRING);
 
   // -- startup
   addvar(wxT("startup_gameselection"), wxT("true"), PVT_BOOL);

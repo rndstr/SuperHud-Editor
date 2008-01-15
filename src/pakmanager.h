@@ -1,8 +1,8 @@
 #ifndef PAKMANAGER_H
 #define PAKMANAGER_H
 
-#include <wx/wx.h>
-#include <wx/arrstr.h>
+#include "common.h"
+
 #include <map>
 #include <list>
 

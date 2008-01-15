@@ -6,19 +6,17 @@
 #endif
 
 #include "superhudeditor.h"
-#include "mainframe.h"
-#include "common.h"
+
 #include "elementsctrlbase.h"
 #include "displayctrlbase.h"
 #include "setupwizard.h"
-
 
 #include "factorybase.h"
 #include "hudfilebase.h"
 #include "pakmanager.h"
 #include "GameSelectionDialog.h"
 
-#ifndef DISABLE_CPMA
+#if ENABLE_CPMA
   #include "cpma/factory.h"
   #include "cpma/hudspecs.h"
   #include "cpma/hudfile.h"
@@ -57,7 +55,7 @@ bool SHEApp::OnInit()
   wxArtProvider::Push( new ArtProvider );
   wxFileSystem::AddHandler(new wxArchiveFSHandler);
   wxInitAllImageHandlers();
-  wxSocketBase::Initialize();
+  
 
   if( !wxApp::OnInit() )
     return false;
@@ -157,7 +155,7 @@ bool SHEApp::OnInit()
   m_commands->Initialize();
 
   m_mainframe->elementsctrl()->OnSelectionChanged();
-
+  wxSocketBase::Initialize();
   return true;
 }
 
@@ -184,6 +182,7 @@ int SHEApp::OnRun()
     wxCommandEvent plaarfz;
     m_mainframe->OnMenuHelpTip(plaarfz);
   }
+  
   m_mainframe->check_for_updates();
 
   return wxApp::OnRun();

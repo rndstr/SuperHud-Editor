@@ -1,11 +1,9 @@
 #include "setupwizard.h"
-#include "common.h"
 
-#include <wx/textctrl.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/button.h>
+#include "factorybase.h"
+
 #include <wx/file.h>
+
 
 
 SetupWizard::SetupWizard( wxFrame *frame ) :

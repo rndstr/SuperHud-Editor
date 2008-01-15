@@ -1,6 +1,7 @@
 #ifndef MAINFRAME_H
 #define MAINFRAME_H
 
+#include "common.h"
 
 #include <wx/frame.h>
 #include <wx/aui/aui.h>
@@ -60,6 +61,8 @@ class MainFrame : public wxFrame
     void                update_elementsctrl();
     void                update_propertiesctrl();
     /// @}
+
+    void                launch_webupdater();
 
     
     void OnMenuHelpTip( wxCommandEvent& );

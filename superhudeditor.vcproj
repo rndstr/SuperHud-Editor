@@ -309,6 +309,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\downloadevent.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\downloadevent.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\downloadtext.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\downloadtext.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\elementbase.cpp"
 				>
 			</File>
@@ -434,6 +450,14 @@
 			</File>
 			<File
 				RelativePath=".\src\propertiesnotebookbase.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\scrolledmessagedialog.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\scrolledmessagedialog.h"
 				>
 			</File>
 			<File

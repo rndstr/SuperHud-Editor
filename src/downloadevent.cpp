@@ -28,12 +28,11 @@ IMPLEMENT_DYNAMIC_CLASS(wxDownloadEvent, wxNotifyEvent)
 
 wxDownloadEvent::wxDownloadEvent(wxEventType commandType, int id)
 : wxNotifyEvent(commandType, id)
-, m_downloadStatus(DOWNLOAD_NONE)
-, m_strURL(wxT(""))
-, m_strFILE(wxT(""))
-, m_strCONTENT(0)
-, m_nBytesDownloaded(0)
-, m_nFileSize(0)
+, m_status(DOWNLOAD_NONE)
+, m_url(wxT(""))
+, m_localfname(wxT(""))
+, m_bytesdownloaded(0)
+, m_filesize(0)
 
 {
 }
@@ -41,85 +40,15 @@ wxDownloadEvent::wxDownloadEvent(wxEventType commandType, int id)
 wxDownloadEvent::wxDownloadEvent(const wxDownloadEvent& event)
 : wxNotifyEvent(event)
 {
-	m_downloadStatus = (wxDownloadEvent::DownloadSTATUS)((wxDownloadEvent&)event).GetDownLoadStatus();
-	m_nFileSize = ((wxDownloadEvent&)event).GetFileSize();
-	m_nBytesDownloaded = ((wxDownloadEvent&)event).GetDownLoadedBytesCount();
-	m_strURL = ((wxDownloadEvent&)event).GetDownLoadURL();
-	m_strFILE = ((wxDownloadEvent&)event).GetDownLoadedFile();
-  m_strCONTENT = ((wxDownloadEvent&)event).GetDownLoadedText();
+	m_status = (wxDownloadEvent::eDownloadStatus)((wxDownloadEvent&)event).status();
+	m_filesize = ((wxDownloadEvent&)event).filesize();
+	m_bytesdownloaded = ((wxDownloadEvent&)event).bytesdownloaded();
+	m_url = ((wxDownloadEvent&)event).url();
+	m_localfname = ((wxDownloadEvent&)event).localfname();
+  m_text = ((wxDownloadEvent&)event).text();
 }
 
 wxDownloadEvent::~wxDownloadEvent(void)
 {
 }
 
-int wxDownloadEvent::GetDownLoadStatus(void)
-{
-	return (int)m_downloadStatus;
-}
-
-void wxDownloadEvent::SetDownLoadStatus(int status)
-{
-	m_downloadStatus = (DownloadSTATUS)status;
-}
-
-wxString wxDownloadEvent::GetDownLoadURL(void)
-{
-	return m_strURL;
-}
-
-void wxDownloadEvent::SetDownLoadURL(wxString strURL)
-{
-	m_strURL = strURL;
-}
-
-wxString wxDownloadEvent::GetDownLoadedFile(void)
-{
-	return m_strFILE;
-}
-
-void wxDownloadEvent::SetDownLoadedFile(wxString strFILE)
-{
-	m_strFILE = strFILE;
-}
-
-wxString* wxDownloadEvent::GetDownLoadedText(void)
-{
-  return m_strCONTENT;
-}
-
-
-void wxDownloadEvent::SetDownLoadedText( wxString *strCONTENT )
-{
-  m_strCONTENT = strCONTENT;
-}
-
-bool wxDownloadEvent::GetDownloadAutoupdate()
-{
-  return m_autoupdate;
-}
-
-void wxDownloadEvent::SetDownloadAutoupdate( bool au )
-{
-  m_autoupdate = au;
-}
-
-wxInt64 wxDownloadEvent::GetDownLoadedBytesCount(void)
-{
-	return m_nBytesDownloaded;
-}
-
-void wxDownloadEvent::SetDownLoadedBytesCount(wxInt64 nBytes)
-{
-	m_nBytesDownloaded = nBytes;
-}
-
-wxInt64 wxDownloadEvent::GetFileSize(void)
-{
-	return m_nFileSize;
-}
-
-void wxDownloadEvent::SetFileSize(wxInt64 nSize)
-{
-	m_nFileSize = nSize;
-}

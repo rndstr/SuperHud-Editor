@@ -1,6 +1,8 @@
 #ifndef ELEMENTSLISTCTRL_H
 #define ELEMENTSLISTCTRL_H
 
+#include "common.h"
+
 #include "elementbase.h"
 
 #include <wx/listctrl.h>

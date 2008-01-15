@@ -1,16 +1,15 @@
 #include "pakmanager.h"
 
-#include "common.h"
-
-#include <algorithm>
+#include "factorybase.h"
 
 #include <wx/filesys.h>
 #include <wx/file.h>
 #include <wx/tokenzr.h>
 #include <wx/dir.h>
 #include <wx/stdpaths.h>
-#include <wx/arrstr.h>
+
 #include <iostream>
+#include <algorithm>
 
 
 PakManager& PakManager::get()

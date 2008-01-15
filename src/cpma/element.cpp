@@ -312,12 +312,12 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
 #ifndef NDEBUG
   switch(m_type)
   {
-    case E_T_UNKNOWN: stream << wxT("\nUNKNOWN"); break;
-    case E_T_TEXT: stream << wxT("\nTEXT"); break;
-    case E_T_ICON: stream << wxT("\nICON"); break;
-    case E_T_USERICON: stream << wxT("\nUSERICON"); break;
-    case E_T_BAR: stream << wxT("\nBAR"); break;
-    case E_T_WEAPONLIST: stream << wxT("\nWEAPONLIST"); break;
+  case E_T_UNKNOWN: stream << wxT("\n#UNKNOWN"); break;
+  case E_T_TEXT: stream << wxT("\n#TEXT"); break;
+  case E_T_ICON: stream << wxT("\n#ICON"); break;
+  case E_T_USERICON: stream << wxT("\n#USERICON"); break;
+  case E_T_BAR: stream << wxT("\n#BAR"); break;
+  case E_T_WEAPONLIST: stream << wxT("\n#WEAPONLIST"); break;
   }
 #endif
 }

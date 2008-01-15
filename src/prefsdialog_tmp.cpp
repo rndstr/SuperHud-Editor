@@ -211,7 +211,7 @@ misc_prefs::misc_prefs(wxWindow* parent, int id, const wxString& title, const wx
     m_save_backup = new wxCheckBox(this, wxID_ANY, wxT("Create backup before saving"));
     m_startup_load = new wxCheckBox(this, wxID_ANY, wxT("Reload previously open HUD on startup"));
     label_14 = new wxStaticText(this, wxID_ANY, wxT("On several occassions you are prompted a message dialog that\nyou can disable to pop up. If you want to enable them all\nagain, click the button below."));
-    button_1 = new wxButton(this, ID_BTN_RESETDIALOGS, wxT("Reset dialogs"));
+    button_1 = new wxButton(this, wxID_PASTE, wxEmptyString);
     m_elements_collections = new wxCheckBox(this, wxID_ANY, wxT("Use collections"));
 
     set_properties();
@@ -334,6 +334,10 @@ void advanced2_prefs::do_layout()
 {
 // content of this block not found: did you rename this class?
 }
+
+
+
+
 
 
 

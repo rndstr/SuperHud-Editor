@@ -18,6 +18,8 @@
 #ifndef FONT_H
 #define FONT_H
 
+#include "common.h"
+
 #include <wx/string.h>
 #include <wx/bitmap.h>
 

@@ -1,7 +1,6 @@
 #include "prefsdialog.h"
 
 #include "artprovider.h"
-#include "eventids.h"
 #include "prefs.h"
 
 #include <wx/wx.h>

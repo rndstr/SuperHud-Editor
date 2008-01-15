@@ -1,6 +1,8 @@
 #ifndef ELEMENTBASE_H
 #define ELEMENTBASE_H
 
+#include "common.h"
+
 #include <wx/string.h>
 #include <wx/txtstrm.h>
 #include <wx/gdicmn.h>

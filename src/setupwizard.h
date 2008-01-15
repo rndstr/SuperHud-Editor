@@ -1,6 +1,8 @@
 #ifndef SETUPWIZARD_H
 #define SETUPWIZARD_H
 
+#include "common.h"
+
 #include <wx/wizard.h>
 #include <wx/textctrl.h>
 #include <wx/combobox.h>

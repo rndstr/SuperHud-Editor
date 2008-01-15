@@ -32,15 +32,13 @@
 #include <wx/stream.h>
 #include "prefs.h"
 
-wxDownloadText::wxDownloadText(wxWindow *pParent, wxString strURL, bool autoupdate, bool bNotify, wxInt64 nBytes)
+wxDownloadText::wxDownloadText(wxWindow *pParent, const wxString& strURL, bool bNotify, wxInt64 nBytes)
 : wxThread(wxTHREAD_DETACHED)
-, m_pParent(pParent)
-, m_strURL(strURL)
-, m_bIsDownload(true)
-, m_nFileSize(0)
-, m_bNotifyDownloading(bNotify)
-, m_nNotifyBytes(nBytes)
-, m_autoupdate(autoupdate)                        
+, m_parent(pParent)
+, m_url(strURL)
+, m_downloading(true)
+, m_notify(bNotify)
+, m_notifybytes(nBytes)
 {
 	if ( this->Create() != wxTHREAD_NO_ERROR )
 	{
@@ -57,31 +55,29 @@ wxDownloadText::wxDownloadText(wxWindow *pParent, wxString strURL, bool autoupda
 
 wxDownloadText::~wxDownloadText(void)
 {
+  wxLogDebug(wxT("DESTROY"));
 }
 
 void* wxDownloadText::Entry()
 {
     char c = 0;
     int bytesread = 0;
-	m_bIsDownload = true;
-  m_strContent = wxT("");
+	m_downloading = true;
 	wxDownloadEvent event( wxEVT_DOWNLOAD, GetId() );
 	event.SetEventObject( (wxObject *)this->This() );
-	event.SetDownLoadURL( m_strURL);
-	event.SetDownLoadedText( &m_strContent );
-	event.SetDownLoadStatus(wxDownloadEvent::DOWNLOAD_RUNNING);
-  event.SetDownloadAutoupdate(m_autoupdate);
+	event.set_url( m_url);
+	event.set_status(wxDownloadEvent::DOWNLOAD_RUNNING);
 	
 #if 0
   // -- according to docs this is the way to go but i couldn't figure out
   // how to set the proxy...
   wxFileSystem fs;
-  wxFSFile *file = fs.OpenFile( m_strURL );
+  wxFSFile *file = fs.OpenFile( m_url );
   if( 0 == file )
   {
     event.SetDownLoadStatus(wxDownloadEvent::DOWNLOAD_FAIL);
-		if(m_pParent)
-      m_pParent->GetEventHandler()->ProcessEvent( event );
+		if(m_parent)
+      m_parent->GetEventHandler()->ProcessEvent( event );
     return 0;
   }
   
@@ -91,8 +87,8 @@ void* wxDownloadText::Entry()
   if( !size )
   { // empty file received
     event.SetDownLoadStatus(wxDownloadEvent::DOWNLOAD_COMPLETE);
-    if(m_pParent)
-      m_pParent->GetEventHandler()->ProcessEvent( event );
+    if(m_parent)
+      m_parent->GetEventHandler()->ProcessEvent( event );
     return 0;
   }
  
@@ -110,12 +106,12 @@ void* wxDownloadText::Entry()
   delete [] buf;
 
   event.SetDownLoadStatus(wxDownloadEvent::DOWNLOAD_COMPLETE);
-  if(m_pParent)
-    m_pParent->GetEventHandler()->ProcessEvent( event );
+  if(m_parent)
+    m_parent->GetEventHandler()->ProcessEvent( event );
   return 0;
 #else
 
-	wxURL Url(m_strURL);
+	wxURL Url(m_url);
 	((wxProtocol &)Url.GetProtocol()).SetTimeout(100);
 	if (Url.GetError() == wxURL_NOERR)
 	{
@@ -148,39 +144,44 @@ void* wxDownloadText::Entry()
       wxLogDebug(wxT("Cannot get a stream!"));
 		if(pIn_Stream)
 		{
-			m_nFileSize = pIn_Stream->GetSize();
-			if(m_nFileSize != 0xFFFFFFFF)
-				event.SetFileSize(m_nFileSize);
+			if(pIn_Stream->GetSize() != 0xFFFFFFFF)
+				event.set_filesize(pIn_Stream->GetSize());
 			wxInt64 nCount = 0;
-			while ((bytesread = (int)(pIn_Stream->Read(&c, 1)).LastRead()) > 0 && m_bIsDownload && !TestDestroy() )
+			while ((bytesread = (int)(pIn_Stream->Read(&c, 1)).LastRead()) > 0 && m_downloading && !TestDestroy() )
 			{
         wxString add((char)c, (size_t)1);
-        m_strContent += add;
+        event.m_text += add;
+        //m_strContent += add;
 				nCount += bytesread;
-				if (m_bNotifyDownloading && (nCount%m_nNotifyBytes) == 0 && nCount>=m_nNotifyBytes) 
+				if (m_notify && (nCount%m_notifybytes) == 0 && nCount>=m_notifybytes) 
 				{
-					event.SetDownLoadStatus(wxDownloadEvent::DOWNLOAD_INPROGRESS);
-					event.SetDownLoadedBytesCount(nCount);
-					m_pParent->GetEventHandler()->ProcessEvent( event );
+					event.set_status(wxDownloadEvent::DOWNLOAD_INPROGRESS);
+					event.set_bytesdownloaded(nCount);
+          m_parent->AddPendingEvent(event);
+
+					//m_parent->GetEventHandler()->ProcessEvent( event );
 				}
 			}
 			delete pIn_Stream;
-			event.SetDownLoadStatus(wxDownloadEvent::DOWNLOAD_COMPLETE);
-			if(m_pParent)
-				m_pParent->GetEventHandler()->ProcessEvent( event );
+			event.set_status(wxDownloadEvent::DOWNLOAD_COMPLETE);
+			if(m_parent)
+        m_parent->AddPendingEvent(event);
+				//m_parent->GetEventHandler()->ProcessEvent( event );
 		}
 		else
 		{
-			event.SetDownLoadStatus(wxDownloadEvent::DOWNLOAD_FAIL);
-			if(m_pParent)
-				m_pParent->GetEventHandler()->ProcessEvent( event );
+			event.set_status(wxDownloadEvent::DOWNLOAD_FAIL);
+			if(m_parent)
+        m_parent->AddPendingEvent(event);
+				//m_parent->GetEventHandler()->ProcessEvent( event );
 		}
 	}
 	else
 	{
-		event.SetDownLoadStatus(wxDownloadEvent::DOWNLOAD_FAIL);
-		if(m_pParent)
-			m_pParent->GetEventHandler()->ProcessEvent( event );
+		event.set_status(wxDownloadEvent::DOWNLOAD_FAIL);
+		if(m_parent)
+      m_parent->AddPendingEvent(event);
+			//m_parent->GetEventHandler()->ProcessEvent( event );
 	}
 	return 0;
 #endif
@@ -192,17 +193,12 @@ void wxDownloadText::OnExit()
 
 void wxDownloadText::CancelDownload(void)
 {
-	m_bIsDownload = false;
-	m_pParent = NULL;
-}
-
-wxInt64 wxDownloadText::GetFileSize(void)
-{
-	return m_nFileSize;
+	m_downloading = false;
+	m_parent = NULL;
 }
 
 void wxDownloadText::SetDownloadingNotification(bool bEnable, wxInt64 nBytes)
 {
-	m_bNotifyDownloading = bEnable;
-	m_nNotifyBytes = nBytes;
+	m_notify = bEnable;
+	m_notifybytes = nBytes;
 }
