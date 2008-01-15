@@ -313,7 +313,11 @@ void MainFrame::OnDownload( wxDownloadEvent& event )
     wxLogDebug(wxT("versioncheck returned: %d"), check);
     if( check < 0 ) // new version!
     {
-      ScrolledMessageDialog dlg;
+#if HAS_WEBUPDATER
+      ScrolledMessageDialog dlg(wxID_NO);
+#else
+      ScrolledMessageDialog dlg(wxID_YES);
+#endif
       dlg.add_button(_("&Later"), wxID_CANCEL);
       dlg.add_button(_("&Visit website"), wxID_YES);
 #if HAS_WEBUPDATER

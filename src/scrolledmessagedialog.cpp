@@ -35,6 +35,8 @@ bool ScrolledMessageDialog::Create(wxWindow* parent,
   wxFont sysfont = wxSystemSettings::GetFont(wxSYS_SYSTEM_FONT);
   sysfont.SetFaceName( wxT("Courier New") );
   m_text->SetFont( sysfont );
+  wxStaticText *stitle = new wxStaticText(this, wxID_ANY, _("Information"));
+  stitle->SetFont(wxFont(10, wxDEFAULT, wxNORMAL, wxBOLD, 0, wxT("")));
 
   for( std::vector<buttoninfo_s>::const_iterator cit = m_buttoninfos.begin(); cit != m_buttoninfos.end(); ++cit )
   {
@@ -52,13 +54,15 @@ bool ScrolledMessageDialog::Create(wxWindow* parent,
 //  SetTitle(title);
 
   // -- layout
+  wxBoxSizer* top_sizer = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer* sizer_dlg = new wxBoxSizer(wxVERTICAL);
   wxBoxSizer* sizer_buttons = new wxBoxSizer(wxHORIZONTAL);
   wxBoxSizer* sizer_msg = new wxBoxSizer(wxHORIZONTAL);
-  sizer_msg->Add(icon, 0, wxALL, 10);
-  sizer_msg->Add(m_message, 1, wxEXPAND|wxADJUST_MINSIZE|wxALL, 10);
+  sizer_msg->Add(icon, 0, wxALL, 3);
+  sizer_msg->Add(m_message, 1, wxEXPAND|wxADJUST_MINSIZE|wxALL, 3);
   sizer_dlg->Add(sizer_msg);
-  sizer_dlg->Add(m_text, 1, wxEXPAND|wxALL, 10);
+  sizer_dlg->Add(stitle, 0, wxALL, 3);
+  sizer_dlg->Add(m_text, 1, wxEXPAND|wxALL, 3);
 
   // expanding invisible item to make buttons align right.
   sizer_buttons->Add(20, 20, 1, wxADJUST_MINSIZE, 0);
@@ -70,10 +74,11 @@ bool ScrolledMessageDialog::Create(wxWindow* parent,
   }
   
   sizer_dlg->Add(sizer_buttons, 0, wxEXPAND, 0);
+  top_sizer->Add(sizer_dlg, 0, wxALL, 10);
   SetAutoLayout(true);
-  SetSizer(sizer_dlg);
-  sizer_dlg->Fit(this);
-  sizer_dlg->SetSizeHints(this);
+  SetSizer(top_sizer);
+  top_sizer->Fit(this);
+  top_sizer->SetSizeHints(this);
   Layout();
 
   m_created = true;

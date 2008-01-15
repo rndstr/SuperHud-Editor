@@ -222,6 +222,7 @@ wxString Prefs::filedialog_path() const
   const wxString dir_game = wxGetApp().factory()->dir_game();
   if( path.empty() && !dir_game.empty() )
     path = dir_game + PATH_SEP + wxGetApp().factory()->dirname_moddata() + PATH_SEP + wxT("hud");
+  return path;
 }
 
 
