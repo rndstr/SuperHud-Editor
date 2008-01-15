@@ -337,10 +337,10 @@ void MainFrame::OnDownload( wxDownloadEvent& event )
       int ret = dlg.ShowModal();
       if( wxID_YES == ret )
         wxLaunchDefaultBrowser( APP_URL );
+#if HAS_WEBUPDATER
       else if( wxID_NO == ret )
-      {
         launch_webupdater();
-      }
+#endif
     }
     else if( check == 0 )
     { // is only displayed if manual update check.

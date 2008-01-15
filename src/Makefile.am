@@ -63,6 +63,7 @@ superhudeditor_SOURCES = \
                          prefsdialog.cpp prefsdialog.h \
                          propertiesnotebookbase.h \
                          setupwizard.cpp setupwizard.h \
+                         scrolledmessagedialog.cpp scrolledmessagedialog.h \
                          superhudeditor.cpp superhudeditor.h \
                          texture.cpp texture.h \
                          GameSelectionDialog.cpp GameSelectionDialog.h \
