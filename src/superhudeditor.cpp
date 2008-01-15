@@ -183,7 +183,8 @@ int SHEApp::OnRun()
     m_mainframe->OnMenuHelpTip(plaarfz);
   }
   
-  m_mainframe->check_for_updates();
+  if( Prefs::get().var(wxT("startup_checkforupdate")).bval() )
+    m_mainframe->check_for_updates();
 
   return wxApp::OnRun();
 }

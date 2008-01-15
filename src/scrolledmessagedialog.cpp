@@ -69,7 +69,7 @@ bool ScrolledMessageDialog::Create(wxWindow* parent,
 
   for( std::vector<wxButton*>::const_iterator it = m_buttons.begin(); it != m_buttons.end(); ++it )
   {
-    sizer_buttons->Add( *it, 0, wxALL, 10 );
+    sizer_buttons->Add( *it, 0, wxALL, 3 );
     Connect( (*it)->GetId(), wxID_ANY, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ScrolledMessageDialog::OnButton) );
   }
   
@@ -117,8 +117,8 @@ void ScrolledMessageDialog::add_button( const wxString& text, int id )
 
 void ScrolledMessageDialog::add_button_yesno()
 {
-  add_button(_("Yes"), wxID_YES);
-  add_button(_("No"), wxID_NO);
+  add_button(_("&Yes"), wxID_YES);
+  add_button(_("&No"), wxID_NO);
 }
 
 

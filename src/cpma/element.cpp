@@ -741,6 +741,7 @@ void CPMAElement::postparse()
   if( usemodel() )
   { // we have a model, weeeeh.
     remove_has(E_HAS_IMAGE); // just make sure
+//    m_image = wxT(""); // or is this already?
     if( !m_props.image.empty() )
     {
       m_props.skin = m_props.image; // hence the image is actually the skin    
@@ -762,7 +763,7 @@ void CPMAElement::prerender()
   case E_T_USERICON:
     if( !m_props.image.empty() && !usemodel() )
     {
-    wxGetApp().mainframe()->displayctrl()->SetCurrent();
+      wxGetApp().mainframe()->displayctrl()->SetCurrent();
       if( !m_ptex )
         m_ptex = new Texture( m_props.image, PM_SEARCH_HUDFILE );
       else if( m_props.image.Cmp(m_ptex->name()) != 0 )

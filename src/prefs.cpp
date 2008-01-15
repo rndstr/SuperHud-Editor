@@ -180,6 +180,7 @@ void Prefs::load()
 
   // -- optional message dialogs
   addvar(wxT("dlg_reset"), wxT("-1"), PVT_INT);
+  addvar(wxT("dlg_delete"), wxT("-1"), PVT_INT);
   addvar(wxT("dlg_convertonload"), wxT("-1"), PVT_INT);
 
   
@@ -192,7 +193,7 @@ void Prefs::load()
   addvar(wxT("startup_tips"), wxT("true"), PVT_BOOL);
   addvar(wxT("startup_tipidx"), wxT("0"), PVT_INT);
   addvar(wxT("net_proxy"), wxT(""), PVT_STRING);
-  addvar(wxT("startup_checkforupdates"), wxT("true"), PVT_BOOL);
+  addvar(wxT("startup_checkforupdate"), wxT("true"), PVT_BOOL);
 
   // -- saving
   addvar(wxT("save_writedisabled"), wxT("true"), PVT_BOOL);
