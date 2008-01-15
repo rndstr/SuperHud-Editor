@@ -1,10 +1,10 @@
 dnl rerun autoreconf -fvi -Wall after modifying this.
 
 dnl AC_PREREQ(2.60)
-AC_INIT(superhudeditor)
-AM_INIT_AUTOMAKE(superhudeditor, 0.3.0)
+AC_INIT([superhudeditor], [0.3.0], [rolansch@ethz.ch])
+AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/superhudeditor.cpp])
-AC_CONFIG_HEADER([config.h])
+AM_CONFIG_HEADER([config.h])
 
 dnl checks for programs.
 AC_PROG_CXX

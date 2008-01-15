@@ -128,7 +128,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   wxMenu *view_layout_submenu = new wxMenu;
   view_layout_submenu->Append( ID_MENU_VIEW_DEFAULTPERSPECTIVE, _("&Default Layout") );
   view_layout_submenu->AppendSeparator();
-  view_layout_submenu->AppendCheckItem( ID_MENU_VIEW_CONFIGPREVIEW, _("Config &Preview\tCtrl+O"), _("Display the config preview panel") );
+  view_layout_submenu->AppendCheckItem( ID_MENU_VIEW_CONFIGPREVIEW, _("Config &Preview\tCtrl+T"), _("Display the config preview panel") );
   view_layout_submenu->AppendCheckItem( ID_MENU_VIEW_TOOLBAR_FILE, _("Toolbar &File"), _("Display the file toolbar") );
   m_view_menu->AppendSubMenu(view_layout_submenu, _("&Layout"), _("Select which panes you would like to be visible or not"));
   m_view_menu->AppendSeparator();
@@ -184,7 +184,9 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
       MinSize(wxSize(200,100))
       );
   m_configpreview = new wxTextCtrl(this, ID_TEXTCTRL_CONFIGPREVIEW, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
-  m_configpreview->SetFont(wxFont(8, wxMODERN, wxNORMAL, wxNORMAL, 0, wxT("")));
+  wxFont sysfont = wxSystemSettings::GetFont(wxSYS_SYSTEM_FONT);
+  sysfont.SetFaceName( wxT("Courier New") );
+  m_configpreview->SetFont( sysfont );
   m_mgr.AddPane( m_configpreview, wxAuiPaneInfo().Name(wxT("configpreview")).Caption(_("Config Preview")).
     CloseButton(true).MaximizeButton(true)
     );
@@ -312,10 +314,10 @@ void MainFrame::OnDownload( wxDownloadEvent& event )
     if( check < 0 ) // new version!
     {
       ScrolledMessageDialog dlg;
-      dlg.add_button(_("&Ignore"), wxID_CANCEL);
+      dlg.add_button(_("&Later"), wxID_CANCEL);
       dlg.add_button(_("&Visit website"), wxID_YES);
 #if HAS_WEBUPDATER
-      dlg.add_button(_("&Launch webupdater"), wxID_NO);
+      dlg.add_button(_("Launch &Webupdater"), wxID_NO);
 #endif
       
 
@@ -414,9 +416,9 @@ void MainFrame::OnMenuAbout( wxCommandEvent& )
   wxAboutDialogInfo info;
   info.SetName(APP_NAME);
   info.SetVersion(APP_VERSION);
-  info.SetDescription(wxT("Head-Up Display Editor for CPMA(q3) and Q4MAX(q4) under GPL Licence"));
+  info.SetDescription(wxT("Head-Up Display Editor for Quake3 CPMA under GPL Licence"));
   info.SetCopyright(wxT("(C) 2006-2008 Roland Schilter <rolansch@ethz.ch>"));
-  info.SetWebSite(APP_URL, APP_NAME + wxT(" website"));
+  info.SetWebSite(APP_URL, APP_URL);
   wxAboutBox(info);
   
 

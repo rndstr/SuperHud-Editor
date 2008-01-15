@@ -29,8 +29,13 @@ bool ScrolledMessageDialog::Create(wxWindow* parent,
 
   // -- create objects
   m_message = new wxStaticText(this, wxID_ANY, msg);
-  m_text = new wxTextCtrl(this, wxID_ANY, text, wxDefaultPosition, wxDefaultSize, 
+  m_text = new wxTextCtrl(this, wxID_ANY, text, wxDefaultPosition, wxSize(500,250), 
     wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH | wxTE_AUTO_URL);
+
+  wxFont sysfont = wxSystemSettings::GetFont(wxSYS_SYSTEM_FONT);
+  sysfont.SetFaceName( wxT("Courier New") );
+  m_text->SetFont( sysfont );
+
   for( std::vector<buttoninfo_s>::const_iterator cit = m_buttoninfos.begin(); cit != m_buttoninfos.end(); ++cit )
   {
     wxButton *but = new wxButton(this, cit->id, cit->label);

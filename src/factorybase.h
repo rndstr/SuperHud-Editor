@@ -35,17 +35,23 @@ class FactoryBase
     /// e.g. 'cpma'
     virtual wxString dirname_moddata() const = 0;
     /// e.g. 'c:\\games\quake3'
+    /// `GAME_gamedir' from prefs
     virtual wxString dir_game() const = 0;
     virtual void set_dir_game( const wxString& dir ) const = 0;
     /// semicolon separated, relative to gamedir, wildcards (?*) allowed
+    /// `GAME_pakfiles' from prefs
     virtual wxString pakfiles() const = 0;
+    /// `GAME_filedialog_path' from prefs
+    virtual wxString filedialog_path() const = 0;
+    virtual void     set_filedialog_path( const wxString& path ) = 0;
 
     /// e.g. 'quake3.exe' or 'quake3.x86'
     /// is used to determine if we have a valid game directory
     virtual wxString filename_gamebin() const = 0;
 
-    /// e.g. '.q3a' only used on unix systems
 #ifndef WIN32
+    /// e.g. '.q3a' only used on unix systems
+    /// `GAME_homedirname' from prefs
     virtual wxString unixdirname_userdata() const = 0;
 #endif
 

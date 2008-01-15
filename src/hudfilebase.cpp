@@ -5,6 +5,7 @@
 #include "prefs.h"
 #include "optionalmessagedialog.h"
 #include "convertdialog.h"
+#include "factorybase.h"
 
 #include <wx/txtstrm.h>
 #include <wx/wfstream.h>
@@ -45,7 +46,7 @@ int HudFileBase::OnOpen( const wxString& filename /*=wxT("")*/, bool force_conve
     wxFileDialog dlg(
         wxGetApp().mainframe(),
         _("Open..."),
-        wxT(""),
+        Prefs::get().filedialog_path(),
         wxT(""),
         wxT("HUD Files (*.cfg)|*.cfg|All Files (*.*)|*.*"),
   #if wxCHECK_VERSION(2,7,0)
@@ -57,6 +58,7 @@ int HudFileBase::OnOpen( const wxString& filename /*=wxT("")*/, bool force_conve
     if( wxID_OK != (ret = dlg.ShowModal()) )
       return ret;
     f = dlg.GetPath();
+    wxGetApp().factory()->set_filedialog_path( dlg.GetDirectory() );
   }
 
   wxASSERT( !f.empty() );
@@ -159,7 +161,7 @@ int HudFileBase::OnSave( )
     wxFileDialog dlg(
         wxGetApp().mainframe(),
         _("Save..."),
-        wxT(""),
+        Prefs::get().filedialog_path(),
         wxT(""),
         wxT("Hud Files (*.cfg)|*.cfg|All Files (*.*)|*.*"),
   #if wxCHECK_VERSION(2,7,0)
@@ -169,7 +171,10 @@ int HudFileBase::OnSave( )
   #endif
         );
     if( wxID_OK == (ret = dlg.ShowModal()) )
+    {
+      wxGetApp().factory()->set_filedialog_path( dlg.GetDirectory() );
       m_filename = dlg.GetPath();
+    }
     else
       return wxID_CANCEL;
   }

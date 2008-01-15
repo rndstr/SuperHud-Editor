@@ -8,6 +8,7 @@ nobase_dist_pkgdata_DATA = data/cpma/hudspecs.dat data/cpma/texture/background.j
                            data/texture/*.tga \
                            data/tips.txt
 
+# EXTRA_DIST
 # we aren't using the webupdater on linux..
 dist_noinst_DATA =  \
                     superhudeditor.sln \

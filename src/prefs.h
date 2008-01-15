@@ -122,6 +122,9 @@ class Prefs
     void seti( const wxString& name, int ival );
 
 
+    /// returns the initial path to be used in a filedialog for the current game
+    wxString filedialog_path() const;
+
   protected:
     variables_type  m_vars;
 

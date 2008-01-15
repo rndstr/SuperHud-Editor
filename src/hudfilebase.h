@@ -3,8 +3,8 @@
 
 #include "common.h"
 
-#include "common.h"
 #include "elementbase.h"
+
 #include <vector>
 
 typedef std::vector<ElementBase*>           elements_type;
