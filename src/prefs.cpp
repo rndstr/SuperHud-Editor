@@ -90,6 +90,13 @@ void Prefs::set( const wxString& name, const wxString& val )
   var->second.set(val);
 }
 
+void Prefs::set_default( const wxString& name )
+{
+  variables_type::iterator var = m_vars.find(name);
+  wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
+  var->second.set(var->second.def());
+}
+
 void Prefs::setb( const wxString& name, bool bval )
 {
   variables_type::iterator var = m_vars.find(name);
@@ -159,6 +166,7 @@ void Prefs::load()
   addvar(wxT("view_snapelements"), wxT("true"), PVT_BOOL); ///< whether to snap to other elements
   addvar(wxT("view_snapgrid"), wxT("true"), PVT_BOOL); ///< whether to snap to grid
   addvar(wxT("view_movestep"), wxT("12"), PVT_INT); ///< while moving/resizing with keys, how much to skip (by default same as grid)
+  addvar(wxT("props_neverdisable"), wxT("false"), PVT_BOOL); ///< only if something is wrong, this quick hack can be used to not disable stuff at all in properties pane
 
 
     // -- game specific

@@ -40,7 +40,9 @@ bool OptionalMessageDialog::Create(wxWindow* parent,
   {
     wxButton *but = new wxButton(this, cit->id, cit->label);
     if( wxID_CANCEL == cit->id && m_default_button != wxID_CANCEL )
+    {
       wxASSERT_MSG(false, wxT("button with id wxID_CANCEL found that is not the default action"));
+    }
     m_buttons.push_back( but );
   }
   m_horiz_line = new wxStaticLine(this, wxID_ANY);

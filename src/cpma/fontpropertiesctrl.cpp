@@ -6,6 +6,7 @@
 #include "../elementbase.h"
 #include "../propertiesnotebookbase.h"
 #include "../displayctrlbase.h"
+#include "../prefs.h"
 
 #include "element.h"
 
@@ -177,7 +178,7 @@ void FontPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   else
     return; // nothing changed
 
-  update_layout();
+  update_layout( name == wxT("fontsizetype") );
 
   // propagate
   wxGetApp().mainframe()->OnPropertiesChanged();
@@ -196,8 +197,11 @@ void FontPropertiesCtrl::from_element( const ElementBase *el )
   
   update_layout();
 
-  ExpandAll( cel->type() == E_T_TEXT || cel->type() == E_T_WEAPONLIST );
-  Enable( cel->type() == E_T_TEXT || cel->type() == E_T_WEAPONLIST );
+  if( !Prefs::get().var(wxT("props_neverdisable")).bval() )
+  {
+    ExpandAll( cel->type() == E_T_TEXT || cel->type() == E_T_WEAPONLIST || cel->type() == E_T_UNKNOWN);
+    Enable( cel->type() == E_T_TEXT || cel->type() == E_T_WEAPONLIST || cel->type() == E_T_UNKNOWN );
+  }
 }
 
 int FontPropertiesCtrl::fontsizetype_ui_to_element( const wxString& fs )
@@ -243,7 +247,7 @@ wxChar FontPropertiesCtrl::textalign_ui_to_element( const wxString& ta )
   return 'L';
 }
 
-void FontPropertiesCtrl::update_layout()
+void FontPropertiesCtrl::update_layout( bool reset /*=true*/ )
 {
   CPMAElement *el = current_element();
   
@@ -257,23 +261,31 @@ void FontPropertiesCtrl::update_layout()
 
   int type = el->iget_fontsizetype();
   SetPropertyValue( wxT("fontsizetype"), FontPropertiesCtrl::fontsizetype_element_to_ui(type) );
-  // remove propertyrows and re-add those we are looking for
-  wxPGId id = GetPropertyByName(wxT("fontsize_pt"));
-  if( id ) DeleteProperty(wxT("fontsize_pt"));
-  id = GetPropertyByName(wxT("fontsize_x"));
-  if( id ) DeleteProperty(wxT("fontsize_x"));
-  id = GetPropertyByName(wxT("fontsize_y"));
-  if( id ) DeleteProperty(wxT("fontsize_y"));
+    // remove propertyrows and re-add those we are looking for
+  if( reset )
+  {
+    wxPGId id = GetPropertyByName(wxT("fontsize_pt"));
+    if( id ) DeleteProperty(wxT("fontsize_pt"));
+    id = GetPropertyByName(wxT("fontsize_x"));
+    if( id ) DeleteProperty(wxT("fontsize_x"));
+    id = GetPropertyByName(wxT("fontsize_y"));
+    if( id ) DeleteProperty(wxT("fontsize_y"));
+    if( type == E_FST_POINT )
+    {
+      Append( new wxIntProperty(_("Size"), wxT("fontsize_pt"), el->iget_fontsizept()) );
+    }
+    else if( type == E_FST_COORD )
+    {
+      Append( new wxIntProperty(_("Width"), wxT("fontsize_x"), el->iget_fontsizex()) );
+      Append( new wxIntProperty(_("Height"), wxT("fontsize_y"), el->iget_fontsizey()) );
+    }
+  }
   if( type == E_FST_POINT )
   {
-    Append( new wxIntProperty(_("Size"), wxT("fontsize_pt"), el->iget_fontsizept()) );
-//    HideProperty(wxT("fontsize_pt"));
     property_defines( wxT("fontsize_pt"), (el->has() & E_HAS_FONTSIZE) != 0 );
   }
   else if( type == E_FST_COORD )
   {
-    Append( new wxIntProperty(_("X Size"), wxT("fontsize_x"), el->iget_fontsizex()) );
-    Append( new wxIntProperty(_("Y Size"), wxT("fontsize_y"), el->iget_fontsizey()) );
     property_defines( wxT("fontsize_x"), (el->has() & E_HAS_FONTSIZE) != 0 );
     property_defines( wxT("fontsize_y"), (el->has() & E_HAS_FONTSIZE) != 0 );
   }

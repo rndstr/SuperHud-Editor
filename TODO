@@ -1,12 +1,11 @@
-+ add second background image for 16:10
+
 ! toolbar file view is not properly updated with menu item
-+ if imagepath cannot be found auto append .tga!
 ! properties dialog does not update title if detached
 t put an unknown elementname into the hud, code adds it anyway.. what happens then..? can we delete? write?
-t what happens if startuphud is no longer available?
-% if several selected display only collection title in statusbar
 + read proxy in webupdater from superhudeditor.conf
 ! change a pointsize fontsize to pixel, then edit X, upon click on Y it will crash
++ set_modified where due
++ add second background image for 16:10
 
 [UNIX] make APPRELATIVE and APPPAK also look in ~/.superhudeditor/
 
@@ -18,3 +17,5 @@ t what happens if startuphud is no longer available?
 % move the enable/disable element buttons to the ElementsCtrlBase panel (orly?)
 t the global defined messages (common.h) are they translated?
 + translate to other languages
++ backspace key should reset item @ elementlist
++ delete key should remove item @ elementlist

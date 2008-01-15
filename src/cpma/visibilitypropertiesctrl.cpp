@@ -21,24 +21,29 @@ VisibilityPropertiesCtrl::VisibilityPropertiesCtrl( wxWindow *parent ) :
   CPMAPropertyGridBase( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
             wxDefaultSize, wxPG_BOLD_MODIFIED|wxPG_SPLITTER_AUTO_CENTER|wxPG_DESCRIPTION|wxPG_TOOLBAR|wxPGMAN_DEFAULT_STYLE )
 {
-  //SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES);
+  // needed for `time' (duration) to give the user possibility to revert back to inherital value
+  // TODO we could also add a [x] button that goes back to inherited!
+  SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES); 
+
   AddPage(_("Visibility"));
 
-  
+  // a value of 0 (=disable) isn't the same as unspecified (=inherit)
+  Append( new wxIntProperty( _("Duration"), wxT("time"), 0) );
+  SetPropertyHelpString( wxT("time"), _("How long the element will be displayed for if it doesn't update again. Generally used for item pickups, frag messages, chat, etc.\n\nClear to disable.") );
+
+
+  Append( new wxPropertyCategory( _("Rectangle")) );
 
   Append( new wxBoolProperty( _("Use"), wxT("overwrite-rect"), false) );
   SetPropertyHelpString( wxT("overwrite-rect"), _("By default an element is drawn at position (0,0) with width 64 and height 32. Check this box to specify your own values.") );
-
-  Append( new wxPropertyCategory( _("Position")) );
 
   Append( new wxIntProperty( wxT("X"), wxPG_LABEL, 0) );
   SetPropertyHelpString( wxT("X"), _("This sets where the element is drawn, how many pixels from left") );
   SetPropertyEditor(wxT("X"),wxPG_EDITOR(TextCtrl));
 
-  Append( new wxIntProperty( _("Y"), wxPG_LABEL, 0) );
+  Append( new wxIntProperty( wxT("Y"), wxPG_LABEL, 0) );
   SetPropertyHelpString( wxT("Y"), _("This sets where the element is drawn, how many pixels from top") );
 
-  Append( new wxPropertyCategory( _("Size")) );
   Append( new wxIntProperty( _("Width"), wxT("width"), 64) );
 
   Append( new wxIntProperty( _("Height"), wxT("height"), 32) );
@@ -79,6 +84,7 @@ void VisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
     wxLogDebug(wxT("VisibilityPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
     return;
   }
+
   CPMAElement *el = static_cast<CPMAElement*>(p->curel());
   wxString name = ev.GetPropertyName();
   wxVariant val = ev.GetPropertyValue();
@@ -108,7 +114,13 @@ void VisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
     else if( name == wxT("height") )
       el->m_rect.height = ev.GetPropertyValueAsInt();
   }
-  
+  else if( name == wxT("time") )
+  {
+    el->add_has( E_HAS_TIME, !ev.GetProperty()->IsValueUnspecified() );
+    if( !ev.GetProperty()->IsValueUnspecified() )
+      el->set_time(val.GetInteger());
+    SetPropertyValue( wxT("time"), el->iget_time() );
+  }
   else
     return; // nothing changed
 
@@ -117,8 +129,10 @@ void VisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   // propagate
   wxGetApp().mainframe()->OnPropertiesChanged();
 }
-void VisibilityPropertiesCtrl::from_element( ElementBase *el )
+void VisibilityPropertiesCtrl::from_element( const ElementBase *el )
 {
+  const CPMAElement *cel = static_cast<const CPMAElement*>(el);
+
   SetPropertyValue( wxT("overwrite-rect"), el->has() & E_HAS_RECT );
 
   wxToolBar *tb = GetToolBar();
@@ -131,6 +145,8 @@ void VisibilityPropertiesCtrl::from_element( ElementBase *el )
   SetPropertyValue( wxT("Y"), r.GetY() );
   SetPropertyValue( wxT("width"), r.GetWidth() );
   SetPropertyValue( wxT("height"), r.GetHeight() );
+
+  SetPropertyValue( wxT("time"), cel->iget_time() );
 
   update_layout();
 }
@@ -149,6 +165,8 @@ void VisibilityPropertiesCtrl::update_layout()
   property_defines( wxT("Y"), (el->has() & E_HAS_RECT)!=0 );
   property_defines( wxT("width"), (el->has() & E_HAS_RECT)!=0 );
   property_defines( wxT("height"), (el->has() & E_HAS_RECT)!=0 );
+
+  property_defines(wxT("time"), (el->has() & E_HAS_TIME) != 0 );
 }
 
 void VisibilityPropertiesCtrl::OnElementVisibility( wxCommandEvent& ev )

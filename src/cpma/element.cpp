@@ -451,11 +451,11 @@ Color4 CPMAElement::iget_color() const
 Color4 CPMAElement::iget_bgcolor() const
 {
   Color4 c = m_props.bgcolor;
-  if( !(m_has & E_HAS_COLOR) )
+  if( !(m_has & E_HAS_BGCOLOR) )
   {
     const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_BGCOLOR ));
     if( parent == 0 ) c = E_BGCOLOR_DEFAULT;
-    else c = parent->iget_color();
+    else c = parent->iget_bgcolor();
   }
   return c;
 }
@@ -690,7 +690,7 @@ void CPMAElement::render() const
         
         break;
       case E_FST_COORD:
-        sx = iget_fontsizept();
+        sx = iget_fontsizex();
         sy = iget_fontsizey();
         break;
       }
@@ -727,6 +727,7 @@ void CPMAElement::render() const
           break;
 
         case E_FST_COORD:
+          // sx is always 12!
           font->print( r, sx, sy, text, monospace, iget_textalign() );
           break;
         }
@@ -740,12 +741,12 @@ void CPMAElement::postparse()
 {
   if( usemodel() )
   { // we have a model, weeeeh.
-    remove_has(E_HAS_IMAGE); // just make sure
-//    m_image = wxT(""); // or is this already?
+    remove_has(E_HAS_IMAGE);
     if( !m_props.image.empty() )
     {
-      m_props.skin = m_props.image; // hence the image is actually the skin    
       add_has(E_HAS_SKIN); 
+      m_props.skin = m_props.image; // hence the image is actually the skin    
+      m_props.image = wxT(""); // and no longer an image.. :x
     }
   }
 }

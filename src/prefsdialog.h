@@ -24,9 +24,10 @@ class PrefsDialog : public wxPropertySheetDialog
     wxPanel* create_cpma(wxWindow *parent);
     wxPanel* create_misc(wxWindow *parent);
     wxPanel* create_advanced(wxWindow *parent);
-    wxPanel* create_advanced2(wxWindow *parent);
     wxPanel* create_sample(wxWindow *parent);
     wxPanel* create_old(wxWindow *parent);
+
+    void OnDefault( wxCommandEvent& );
 
   private:
     wxPropertyGrid *m_pg;
@@ -106,6 +107,8 @@ class PrefsDialog : public wxPropertySheetDialog
     wxStaticText* label_15;
     wxSpinCtrl* m_view_snapthreshold;
     // end wxGlade
+
+    DECLARE_EVENT_TABLE()
 };
 
 

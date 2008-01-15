@@ -6,6 +6,7 @@
 #include "../elementbase.h"
 #include "../propertiesnotebookbase.h"
 #include "../pakfileproperty.h"
+#include "../prefs.h"
 
 #include "element.h"
 
@@ -121,7 +122,7 @@ void ImagePropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   else
     return; // nothing changed
 
-  update_layout();
+  update_layout( name == wxT("use-model") );
 
   // propagate
   wxGetApp().mainframe()->OnPropertiesChanged();
@@ -135,8 +136,11 @@ void ImagePropertiesCtrl::from_element( const ElementBase *el )
 
   update_layout();
 
-  Enable( cel->type() == E_T_USERICON );
-  ExpandAll( cel->type() == E_T_USERICON );
+  if( !Prefs::get().var(wxT("props_neverdisable")).bval() )
+  {
+    Enable( cel->type() == E_T_USERICON || cel->type() == E_T_UNKNOWN );
+    ExpandAll( cel->type() == E_T_USERICON || cel->type() == E_T_UNKNOWN );
+  }
 }
 
 
@@ -160,6 +164,7 @@ void ImagePropertiesCtrl::append_model_properties( const CPMAElement *el /*=0*/ 
   Append( new wxPropertyCategory(_("Rotation"), wxT("cat-angles")) );
   SetPropertyHelpString( wxT("cat-angles"), _("Alters the display of MODEL. Note that most Q3 models do not work properly if r_vertexlight is on.") );
   Append( new wxBoolProperty(_("Use"), wxT("use-angles"), el ? (el->has() & E_HAS_ANGLES) != 0 : false) );
+  SetPropertyAttribute(wxT("use-angles"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
   Append( new wxIntProperty(_("Pitch"), wxT("pitch"), el ? el->iget_angle(E_ANGLE_PITCH) : 0) );
   SetPropertyHelpString( wxT("pitch"), _("Rotation around axis pointing right (horizontal, X).") ); 
   Append( new wxIntProperty(_("Yaw"), wxT("yaw"), el ? el->iget_angle(E_ANGLE_YAW) : 0) );
@@ -172,55 +177,61 @@ void ImagePropertiesCtrl::append_model_properties( const CPMAElement *el /*=0*/ 
   Append( new wxPropertyCategory(_("Offset"), wxT("cat-offset")) );
   SetPropertyHelpString( wxT("cat-offset"), _("Moves the model along the X/Y/Z axis.") );
   Append( new wxBoolProperty(_("Use"), wxT("use-offset"), el ? (el->has() & E_HAS_OFFSET) != 0 : false) );
+  SetPropertyAttribute(wxT("use-offset"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
   Append( new wxIntProperty(wxT("X"), wxT("x"), el ? (int)el->iget_offset(E_OFFSET_X) : 0) );
   Append( new wxIntProperty(wxT("y"), wxT("y"), el ? (int)el->iget_offset(E_OFFSET_Y) : 0) );
   Append( new wxIntProperty(wxT("z"), wxT("z"), el ? (int)el->iget_offset(E_OFFSET_Z) : 0) );
 }
 
-void ImagePropertiesCtrl::update_layout()
+void ImagePropertiesCtrl::update_layout( bool reset /*=true*/)
 {
   const CPMAElement *el = current_element();
   
 
   // remove propertyrows and re-add those we are looking for
-  wxPGId id = GetPropertyByName(wxT("cat-picture"));
-  if( id ) DeleteProperty(wxT("cat-picture"));
-  id = GetPropertyByName(wxT("image"));
-  if( id ) DeleteProperty(wxT("image"));
+  if( reset )
+  {
+    wxPGId id = GetPropertyByName(wxT("cat-picture"));
+    if( id ) DeleteProperty(wxT("cat-picture"));
+    id = GetPropertyByName(wxT("image"));
+    if( id ) DeleteProperty(wxT("image"));
 
-  id = GetPropertyByName(wxT("cat-model"));
-  if( id ) DeleteProperty(wxT("cat-model"));
-  id = GetPropertyByName(wxT("model"));
-  if( id ) DeleteProperty(wxT("model"));
-  id = GetPropertyByName(wxT("skin"));
-  if( id ) DeleteProperty(wxT("skin"));
-  id = GetPropertyByName(wxT("cat-angles"));
-  if( id ) DeleteProperty(wxT("cat-angles"));
-  id = GetPropertyByName(wxT("use-angles"));
-  if( id ) DeleteProperty(wxT("use-angles"));
-  id = GetPropertyByName(wxT("pitch"));
-  if( id ) DeleteProperty(wxT("pitch"));
-  id = GetPropertyByName(wxT("yaw"));
-  if( id ) DeleteProperty(wxT("yaw"));
-  id = GetPropertyByName(wxT("roll"));
-  if( id ) DeleteProperty(wxT("roll"));
-  id = GetPropertyByName(wxT("pan"));
-  if( id ) DeleteProperty(wxT("pan"));
-  id = GetPropertyByName(wxT("cat-offset"));
-  if( id ) DeleteProperty(wxT("cat-offset"));
-  id = GetPropertyByName(wxT("use-offset"));
-  if( id ) DeleteProperty(wxT("use-offset"));
-  id = GetPropertyByName(wxT("x"));
-  if( id ) DeleteProperty(wxT("x"));
-  id = GetPropertyByName(wxT("y"));
-  if( id ) DeleteProperty(wxT("y"));
-  id = GetPropertyByName(wxT("z"));
-  if( id ) DeleteProperty(wxT("z"));
+    id = GetPropertyByName(wxT("cat-model"));
+    if( id ) DeleteProperty(wxT("cat-model"));
+    id = GetPropertyByName(wxT("model"));
+    if( id ) DeleteProperty(wxT("model"));
+    id = GetPropertyByName(wxT("skin"));
+    if( id ) DeleteProperty(wxT("skin"));
+    id = GetPropertyByName(wxT("cat-angles"));
+    if( id ) DeleteProperty(wxT("cat-angles"));
+    id = GetPropertyByName(wxT("use-angles"));
+    if( id ) DeleteProperty(wxT("use-angles"));
+    id = GetPropertyByName(wxT("pitch"));
+    if( id ) DeleteProperty(wxT("pitch"));
+    id = GetPropertyByName(wxT("yaw"));
+    if( id ) DeleteProperty(wxT("yaw"));
+    id = GetPropertyByName(wxT("roll"));
+    if( id ) DeleteProperty(wxT("roll"));
+    id = GetPropertyByName(wxT("pan"));
+    if( id ) DeleteProperty(wxT("pan"));
+    id = GetPropertyByName(wxT("cat-offset"));
+    if( id ) DeleteProperty(wxT("cat-offset"));
+    id = GetPropertyByName(wxT("use-offset"));
+    if( id ) DeleteProperty(wxT("use-offset"));
+    id = GetPropertyByName(wxT("x"));
+    if( id ) DeleteProperty(wxT("x"));
+    id = GetPropertyByName(wxT("y"));
+    if( id ) DeleteProperty(wxT("y"));
+    id = GetPropertyByName(wxT("z"));
+    if( id ) DeleteProperty(wxT("z"));
 
+    if( el->usemodel() )
+      append_model_properties(el);
+    else
+      append_picture_properties(el);
+  }
   if( el->usemodel() )
   {
-    
-    append_model_properties(el);
     property_defines( wxT("model"), (el->has() & E_HAS_MODEL) != 0 );
     property_defines( wxT("skin"), (el->has() & E_HAS_SKIN) != 0 );
     property_defines( wxT("yaw"), (el->has() & E_HAS_ANGLES) != 0 );
@@ -233,9 +244,6 @@ void ImagePropertiesCtrl::update_layout()
 
   }
   else
-  {
-    append_picture_properties(el);
     property_defines( wxT("image"), (el->has() & E_HAS_IMAGE) != 0 );
-  }
 }
 

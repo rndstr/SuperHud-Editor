@@ -153,6 +153,7 @@ void DisplayCtrlBase::move_selected_items( int x, int y )
   wxGetApp().hudfile()->set_modified();
   wxGetApp().mainframe()->update_displayctrl();
   wxGetApp().mainframe()->update_propertiesctrl();
+  wxGetApp().mainframe()->update_configpreview();
 }
 
 void DisplayCtrlBase::resize_selected_items( int x, int y )
@@ -164,6 +165,7 @@ void DisplayCtrlBase::resize_selected_items( int x, int y )
   wxGetApp().hudfile()->set_modified();
   wxGetApp().mainframe()->update_displayctrl();
   wxGetApp().mainframe()->update_propertiesctrl();
+  wxGetApp().mainframe()->update_configpreview();
 }
 
 
@@ -282,7 +284,7 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
             abs(m_drag_start.y - clientpos.y) <= Prefs::get().var(wxT("view_dragthreshold")).ival() )
           return;
         m_drag_mode = DRAG_DRAGGING;
-        // fix m_drag_start to point lefttop
+        // fix m_drag_start to point lefttop <-- ? ;)
         if( ~m_drag_el->has() & E_HAS_RECT )
         {
           // if we drag it around then we modify the inherited value...
@@ -298,6 +300,7 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
     //      wxGetApp().mainframe()->OnElementSelectionChanged();
           wxGetApp().mainframe()->update_displayctrl();
           wxGetApp().mainframe()->update_propertiesctrl();
+          wxGetApp().mainframe()->update_configpreview();
         }
       }
       else if( DRAG_DRAGGING == m_drag_mode )
@@ -347,6 +350,7 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
         moved = move;
         wxGetApp().mainframe()->update_displayctrl();
         wxGetApp().mainframe()->update_propertiesctrl();
+        wxGetApp().mainframe()->update_configpreview();
       }
     }
     else if( ev.RightDown() )
@@ -360,6 +364,7 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
           (*it)->move(-moved);
         wxGetApp().mainframe()->update_displayctrl();
         wxGetApp().mainframe()->update_propertiesctrl();
+        wxGetApp().mainframe()->update_configpreview();
       }
     }
     else if( ev.LeftUp() )

@@ -10,6 +10,9 @@
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/advprops.h>
 
+BEGIN_EVENT_TABLE(PrefsDialog, wxPropertySheetDialog)
+  EVT_BUTTON(wxID_DEFAULT, PrefsDialog::OnDefault)
+END_EVENT_TABLE()
 
 PrefsDialog::PrefsDialog(wxWindow *parent)
 {
@@ -36,12 +39,12 @@ PrefsDialog::PrefsDialog(wxWindow *parent)
   wxPanel* display = create_display(ctrl);
   wxPanel* cpma = create_cpma(ctrl);
   wxPanel* misc = create_misc(ctrl);
-  wxPanel* advanced = create_advanced2(ctrl);
+  wxPanel* advanced = create_advanced(ctrl);
 
   ctrl->AddPage(display, _("Display"), true, 0);
   ctrl->AddPage(cpma, _("CPMA"), false, 1);
   ctrl->AddPage(misc, _("Misc"), false, 2);
-  ctrl->AddPage(advanced, _("Advanced2"), false, 3);
+  ctrl->AddPage(advanced, _("Advanced"), false, 3);
   
 
   LayoutDialog();
@@ -51,6 +54,8 @@ PrefsDialog::~PrefsDialog()
 {
   delete m_imglist;
 }
+
+
 
 wxPanel* PrefsDialog::create_display(wxWindow *parent)
 {
@@ -290,13 +295,11 @@ wxPanel* PrefsDialog::create_misc(wxWindow *parent)
   return panel;
 }
 
-wxPanel* PrefsDialog::create_advanced2(wxWindow *parent)
+wxPanel* PrefsDialog::create_advanced(wxWindow *parent)
 {
   wxPanel* panel = new wxPanel(parent, wxID_ANY);
-    // begin wxGlade: advanced2_prefs::do_layout
     wxBoxSizer* top_sizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* container = new wxBoxSizer(wxVERTICAL);
-    // end wxGlade
 
     m_pg = new wxPropertyGrid(
             panel, // parent
@@ -305,23 +308,25 @@ wxPanel* PrefsDialog::create_advanced2(wxWindow *parent)
             wxDefaultSize, // size
             // Some specific window styles - for all additional styles,
             // see Modules->PropertyGrid Window Styles
-//            wxPG_SPLITTER_AUTO_CENTER | // Automatically center splitter until user manually adjusts it
+            wxPG_SPLITTER_AUTO_CENTER | // Automatically center splitter until user manually adjusts it
             // Default style
             wxPG_DEFAULT_STYLE );
    m_pg->SetExtraStyle( wxPG_EX_HELP_AS_TOOLTIPS );
 
 
-   m_pg->Append( new wxPropertyCategory(_("Mouse handling")) );
+   m_pg->Append( new wxPropertyCategory(_("Mouse/key behaviour")) );
    m_pg->Append( new wxIntProperty(_("Drag threshold"), wxT("view-dragthreshold"), Prefs::get().var(wxT("view_dragthreshold")).ival()) );
    m_pg->SetPropertyHelpString( wxT("view-dragthreshold"), _("How many pixel it takes till drag&drop begins") );
    m_pg->Append( new wxIntProperty(_("Snap threshold"), wxT("view-snapthreshold"), Prefs::get().var(wxT("view_snapthreshold")).ival()) );
    m_pg->SetPropertyHelpString( wxT("view-snapthreshold"), _("The distance needed to snap to items") );
+   m_pg->Append( new wxIntProperty(_("Move step"), wxT("view-movestep"), Prefs::get().var(wxT("view_movestep")).ival()) );
+   m_pg->SetPropertyHelpString( wxT("view-movestep"), _("How many pixels to move upon pressing arrow keys") );
 
-   m_pg->Append( new wxPropertyCategory(_("Grid")) );
+   m_pg->Append( new wxPropertyCategory(_("Grid color")) );
    m_pg->Append( new wxColourProperty(_("Color"), wxT("view-gridcolor"), Prefs::get().var(wxT("view_gridcolor")).wxcval()) );
    m_pg->Append( new wxIntProperty(_("Opacity"), wxT("view-gridcolor-alpha"), Prefs::get().var(wxT("view_gridcolor")).cval().a100()) );
 
-   m_pg->Append( new wxPropertyCategory(_("Helpers")) );
+   m_pg->Append( new wxPropertyCategory(_("Helpers color")) );
    wxPGId pid = m_pg->Append( new wxParentProperty(_("Selected elements")) );
    m_pg->AppendIn( pid, new wxColourProperty(_("Fill"), wxT("view-helper-fill-selected"), Prefs::get().var(wxT("view_helper_fill_selected")).wxcval()) );
    m_pg->AppendIn( pid, new wxIntProperty(_("Opacity"), wxT("view-helper-fill-selected-alpha"), Prefs::get().var(wxT("view_helper_fill_selected")).cval().a100()) );
@@ -333,9 +338,40 @@ wxPanel* PrefsDialog::create_advanced2(wxWindow *parent)
    m_pg->AppendIn( pid, new wxColourProperty(_("Border"), wxT("view-helper-border"), Prefs::get().var(wxT("view_helper_border")).wxcval()) );
    m_pg->AppendIn( pid, new wxIntProperty(_("Opacity"), wxT("view-helper-border-alpha"), Prefs::get().var(wxT("view_helper_border")).cval().a100()) );
 
+   m_pg->Append( new wxPropertyCategory(_("Properties pane cell color")) );
+   pid = m_pg->Append( new wxParentProperty(_("Default")) );
+   m_pg->AppendIn( pid, new wxColourProperty(_("Foreground"), wxT("props-color"), Prefs::get().var(wxT("props_color")).wxcval()) );
+   m_pg->AppendIn( pid, new wxColourProperty(_("Background"), wxT("props-bgcolor"), Prefs::get().var(wxT("props_bgcolor")).wxcval()) );
+   pid = m_pg->Append( new wxParentProperty(_("Inherited")) );
+   m_pg->AppendIn( pid, new wxColourProperty(_("Foreground"), wxT("props-inheritcolor"), Prefs::get().var(wxT("props_inheritcolor")).wxcval()) );
+   m_pg->AppendIn( pid, new wxColourProperty(_("Background"), wxT("props-inheritbgcolor"), Prefs::get().var(wxT("props_inheritbgcolor")).wxcval()) );
+
+
+   m_pg->Append( new wxPropertyCategory(_("Expert")) );
+
+   pid = m_pg->Append( new wxParentProperty(_("Elements list")) );
+   wxPGProperty *child = m_pg->AppendIn( pid, new wxIntProperty(_("Collection chars match"), wxT("elements-collnamecount"), Prefs::get().var(wxT("elements_collnamecount")).ival()) );
+   child->SetHelpString( _("How many characters of consecutive element names have to match for a collection to be created (Default: 3)") );
+   
+   pid = m_pg->Append( new wxParentProperty(_("Properties pane")) );
+   child = m_pg->AppendIn( pid, new wxBoolProperty(_("Never disable properties"), wxT("props-neverdisable"), Prefs::get().var(wxT("props_neverdisable")).bval()) );
+   child->SetHelpString( _("Never disable any propertes even if they would be ignored ingame (Default: NO)") );
+
+   pid = m_pg->Append( new wxParentProperty(_("Saving")) );
+   child = m_pg->AppendIn( pid, new wxBoolProperty(_("Write hidden elements"), wxT("save-writedisabled"), Prefs::get().var(wxT("save_writedisabled")).bval()) );
+   child->SetHelpString( _("Not used elements are written to file but commented out (Default: YES)") );
+
+   wxPGVIterator it;
+   for( it = m_pg->GetVIterator(wxPG_ITERATE_ALL); !it.AtEnd(); it.Next() )
+   {
+     wxPGPropertyWithChildren* pwc = (wxPGPropertyWithChildren*) it.GetProperty();
+     if( pwc->GetParentingType() != 0 ) /*PT_NONE*/
+       pwc->SetExpanded( true );
+   }
+   m_pg->SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX,(long)1);
 
    container->Add(m_pg, 1, wxALL|wxEXPAND, 3);
-
+   container->Add( new wxButton(panel, wxID_DEFAULT, _("&Reset to Defaults")), 0, wxALL|wxEXPAND, 3 );
 
 
     top_sizer->Add( container, 1, wxEXPAND|wxALIGN_CENTRE|wxALL, 5 );
@@ -347,46 +383,21 @@ wxPanel* PrefsDialog::create_advanced2(wxWindow *parent)
   return panel;
 }
 
-wxPanel* PrefsDialog::create_advanced(wxWindow *parent)
+void PrefsDialog::OnDefault( wxCommandEvent& )
 {
-  wxPanel* panel = new wxPanel(parent, wxID_ANY);
+  if( wxYES == wxMessageBox(_("Are you sure to reset all Advanced settings?"), _("Reset Advanced settings?"), wxYES_NO|wxICON_QUESTION) )
+  {
+    Prefs::get().set_default(wxT("save_writedisabled"));
 
-    // begin wxGlade: advanced_prefs::advanced_prefs
-    advanced_title = new wxStaticText(panel, wxID_ANY, wxT("Advanced"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
-    m_view_dragthreshold = new wxStaticText(panel, wxID_ANY, wxT("Drag threshold:"));
-    spin_ctrl_1 = new wxSpinCtrl(panel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
-    label_15 = new wxStaticText(panel, wxID_ANY, wxT("Snap threshold:"));
-    m_view_snapthreshold = new wxSpinCtrl(panel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
-    // end wxGlade
-    // begin wxGlade: advanced_prefs::set_properties
-    SetTitle(wxT("advanced_prefs"));
-    spin_ctrl_1->SetMinSize(wxSize(70, -1));
-    m_view_snapthreshold->SetMinSize(wxSize(70, -1));
-    advanced_title->SetBackgroundColour(wxColour(0, 0, 85));
-    advanced_title->SetForegroundColour(wxColour(255, 255, 255));
-    advanced_title->SetFont(wxFont(12, wxDEFAULT, wxNORMAL, wxBOLD, 0, wxT("")));
-    // end wxGlade
-    // begin wxGlade: advanced_prefs::do_layout
-    wxBoxSizer* top_sizer = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer* container = new wxBoxSizer(wxVERTICAL);
-    wxFlexGridSizer* grid_sizer_2 = new wxFlexGridSizer(5, 2, 0, 0);
-    wxBoxSizer* sizer_11 = new wxBoxSizer(wxVERTICAL);
-    sizer_11->Add(advanced_title, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 3);
-    container->Add(sizer_11, 0, wxEXPAND, 0);
-    grid_sizer_2->Add(m_view_dragthreshold, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
-    grid_sizer_2->Add(spin_ctrl_1, 0, wxALL, 3);
-    grid_sizer_2->Add(label_15, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
-    grid_sizer_2->Add(m_view_snapthreshold, 0, wxALL, 3);
-    container->Add(grid_sizer_2, 0, wxEXPAND, 0);
-    // end wxGlade
+    // recreate page :x (woohooh lazy)
+    wxBookCtrlBase *ctrl = GetBookCtrl();
+    ctrl->SetSelection(0);
+    ctrl->DeletePage(3);
+    wxPanel* advanced = create_advanced(ctrl);
+    ctrl->AddPage(advanced, _("Advanced"), false, 3);
+    ctrl->SetSelection(3);
 
-  top_sizer->Add( container, 1, wxEXPAND|wxALIGN_CENTRE|wxALL, 5 );
-  //top_sizer->AddSpacer(5);
-
-  panel->SetSizer(top_sizer);
-  top_sizer->Fit(panel);
-
-  return panel;
+  }
 }
 
 wxPanel* PrefsDialog::create_sample(wxWindow *parent)

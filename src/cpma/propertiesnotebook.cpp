@@ -55,6 +55,14 @@ void CPMAPropertiesNotebook::update_from_element( const elements_type& els )
     m_color->CollapseAll();
     m_image->CollapseAll();
     m_misc->CollapseAll();
+
+    m_vis->ClearSelection();
+    m_font->ClearSelection();
+    m_color->ClearSelection();
+    m_image->ClearSelection();
+    m_misc->ClearSelection();
+
+
     m_vis->GetToolBar()->ToggleTool( ID_BTN_ELEMENT_ENABLE, false );
     m_vis->GetToolBar()->ToggleTool( ID_BTN_ELEMENT_DISABLE, false );
     Disable();

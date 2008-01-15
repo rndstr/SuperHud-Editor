@@ -740,13 +740,12 @@ void MainFrame::OnElementSelectionChanged()
   else
   {
     caption = _("Properties");
-    caption += wxT(": ") + wxString(_("(multiple)"));
-    wxString sb;
-    for( cit_elements cit = els.begin(); cit != els.end(); ++cit )
-      sb += wxT(" ") + (*cit)->name();
-    m_statusbar->SetStatusText( sb, SB_ELEMENT );
+    caption += wxT(": ");
+    caption += _("(multiple)");
+    m_statusbar->SetStatusText( _("(multiple)"), SB_ELEMENT );
   }
   propsinfo.Caption( caption );
+  m_propertiesnotebook->SetLabel(caption);
   DoUpdate();
 
   // -- render view

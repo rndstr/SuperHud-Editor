@@ -15,7 +15,8 @@ class FontPropertiesCtrl : public CPMAPropertyGridBase
     FontPropertiesCtrl( wxWindow *parent );
 
     void from_element( const ElementBase *el );
-    void update_layout();
+    /// @arg reset Whether to reset the items (delete&append)
+    void update_layout( bool reset = true );
 
   private:
     void OnItemChanged( wxPropertyGridEvent& ev );

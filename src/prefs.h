@@ -70,6 +70,8 @@ class Variable
     void write();
     void set( const wxString& str, bool isset = true );
 
+    wxString def() const { return m_def; }
+
     operator bool() const { return bval(); }
     operator Color4() const { return cval(); }
     operator double() const { return dval(); }
@@ -120,6 +122,7 @@ class Prefs
     void set( const wxString& name, const wxString& val );
     void setb( const wxString& name, bool bval );
     void seti( const wxString& name, int ival );
+    void set_default( const wxString& name );
 
 
     /// returns the initial path to be used in a filedialog for the current game

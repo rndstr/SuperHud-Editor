@@ -188,10 +188,15 @@ class CPMAElement : public ElementBase
     void        set_color( const Color4& c ) { m_props.color.set(c); }
     void        set_color_a100( int a100 ) { m_props.color.set_a100(a100); }
     Color4      iget_color() const;
+
     void        set_bgcolor( const wxColour& c ) { m_props.bgcolor.set(c); }
     Color4      iget_bgcolor() const;
+    void        set_bgcolor_a100( int a100 ) { m_props.bgcolor.set_a100(a100); }
+
     void        set_fade( const wxColour& c ) { m_props.fade.set(c); }
     Color4      iget_fade() const;
+    void        set_fade_a100( int a100 ) { m_props.fade.set_a100(a100); }
+
     void        set_fill( bool fill = true ) { add_has( E_HAS_FILL, fill ); }
     bool        fill() const { return (m_has & E_HAS_FILL) != 0; }
     bool        iget_fill() const;

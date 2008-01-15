@@ -5,6 +5,7 @@
 #include "../hudfilebase.h"
 #include "../elementbase.h"
 #include "../propertiesnotebookbase.h"
+#include "../prefs.h"
 
 #include "element.h"
 
@@ -19,7 +20,9 @@ MiscPropertiesCtrl::MiscPropertiesCtrl( wxWindow *parent ) :
 {
   // needed for `time' to give the user possibility to revert back to inherital value
   // TODO we could also add a [x] button that goes back to inherited!
-  SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES); 
+  // -> NOTE this is now in visbilityproperties
+  //SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES); 
+
   AddPage(_("Misc"));
   
   Append( new wxBoolProperty( _("Double line bar"), wxT("doublebar"), false) );
@@ -28,13 +31,11 @@ MiscPropertiesCtrl::MiscPropertiesCtrl( wxWindow *parent ) :
   Append( new wxBoolProperty( _("Draw 3D model"), wxT("draw3d"), false) );
   SetPropertyHelpString( wxT("draw3d"), _("If both a model and an icon are present, use the model (irrelevant for most stuff).") );
 
+  //SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX,(long)1);
 
   // a value of 0 (=disable) isn't the same as unspecified (=inherit)
-  Append( new wxIntProperty( _("Duration"), wxT("time"), 0) );
-  SetPropertyHelpString( wxT("time"), _("How long the element will be displayed for if it doesn't update again. Generally used for item pickups, frag messages, chat, etc.\n\nClear to disable.") );
-
-  // the CheckBox editor does not obey the SetPropertyReadOnly? event vetoing doesn't work, neither. so stick to ComboBox.
-  //SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX,(long)1);
+  //Append( new wxIntProperty( _("Duration"), wxT("time"), 0) );
+  //SetPropertyHelpString( wxT("time"), _("How long the element will be displayed for if it doesn't update again. Generally used for item pickups, frag messages, chat, etc.\n\nClear to disable.") );
 }
 
 void MiscPropertiesCtrl::OnItemChanging( wxPropertyGridEvent& ev )
@@ -74,7 +75,7 @@ void MiscPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   if( name == wxT("doublebar") )
   {
     if( el->flags() & E_PARENT && val.GetBool() )
-      wxMessageBox( _("Be aware that the `DOUBLEBAR' you just ticked cannot be disabled on subsequent elements!") );
+      wxMessageBox( CHECKBOXWARNING_MSG );
     // first update current element value
     el->set_doublebar(val.GetBool());
     // if we are disabling, we still want a parental value to be active (i.e. this only changes cell color)
@@ -84,13 +85,14 @@ void MiscPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   else if( name == wxT("draw3d") )
   {
     if( el->flags() & E_PARENT && val.GetBool() )
-      wxMessageBox( _("Be aware that the `DRAW3D' you just ticked cannot be disabled on subsequent elements!") );
+      wxMessageBox( CHECKBOXWARNING_MSG );
     // first update current element value
     el->set_draw3d(val.GetBool());
     // if we are disabling, we still want a parental value to be active (i.e. this only changes cell color)
     if( !val.GetBool() )
       SetPropertyValue( wxT("draw3d"), el->iget_draw3d() );
   }
+  /*
   else if( name == wxT("time") )
   {
     el->add_has( E_HAS_TIME, !prop->IsValueUnspecified() );
@@ -98,6 +100,7 @@ void MiscPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
       el->set_time(val.GetInteger());
     SetPropertyValue( wxT("time"), el->iget_time() );
   }
+  */
   
   else
     return; // nothing changed
@@ -114,12 +117,15 @@ void MiscPropertiesCtrl::from_element( const ElementBase *el )
 
   SetPropertyValue( wxT("draw3d"), cel->iget_draw3d() );
   SetPropertyValue( wxT("doublebar"), cel->iget_doublebar() );
-  SetPropertyValue( wxT("time"), cel->iget_time() );
+  //SetPropertyValue( wxT("time"), cel->iget_time() );
 
   update_layout();
 
-  EnableProperty(wxT("draw3d"), cel->type() == E_T_ICON);
-  EnableProperty(wxT("doublebar"), cel->type() == E_T_BAR);
+  if( !Prefs::get().var(wxT("props_neverdisable")).bval() )
+  {
+    EnableProperty(wxT("draw3d"), cel->type() == E_T_ICON || cel->type() == E_T_USERICON || cel->type() == E_T_UNKNOWN );
+    EnableProperty(wxT("doublebar"), cel->type() == E_T_BAR || cel->type() == E_T_UNKNOWN );
+  }
 }
 
 
@@ -128,6 +134,6 @@ void MiscPropertiesCtrl::update_layout()
   const CPMAElement *el = current_element();
   property_defines(wxT("doublebar"), el->doublebar() );
   property_defines(wxT("draw3d"), el->draw3d() );
-  property_defines(wxT("time"), (el->has() & E_HAS_TIME) != 0 );
+  //property_defines(wxT("time"), (el->has() & E_HAS_TIME) != 0 );
 }
 

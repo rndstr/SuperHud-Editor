@@ -300,7 +300,7 @@ void HudFileBase::write_header( wxTextOutputStream& stream )
   stream << wxT("# ") << APP_URL << wxT("\n");
   stream << wxT("#\n");
   stream << wxT("# -- DO NOT EDIT THE NEXT FEW LINES --\n");
-  stream << wxT("# version =") << APP_VERSION << wxT("\n");
+  stream << wxT("# version = ") << APP_VERSION << wxT("\n");
   stream << wxT("# view_aspectratio = ") << Prefs::get().var(wxT("view_aspectratio")).sval() << wxT("\n");
   stream << wxT("# -----------------------------------\n");
 }
