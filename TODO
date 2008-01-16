@@ -6,6 +6,7 @@ t put an unknown elementname into the hud, code adds it anyway.. what happens th
 ! change a pointsize fontsize to pixel, then edit X, upon click on Y it will crash
 + set_modified where due
 + add second background image for 16:10
+t set white background and yellow font and check if correct blendfunc
 
 [UNIX] make APPRELATIVE and APPPAK also look in ~/.superhudeditor/
 
