@@ -55,7 +55,6 @@ wxDownloadText::wxDownloadText(wxWindow *pParent, const wxString& strURL, bool b
 
 wxDownloadText::~wxDownloadText(void)
 {
-  wxLogDebug(wxT("DESTROY"));
 }
 
 void* wxDownloadText::Entry()

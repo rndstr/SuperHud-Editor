@@ -32,7 +32,7 @@ VisibilityPropertiesCtrl::VisibilityPropertiesCtrl( wxWindow *parent ) :
   SetPropertyHelpString( wxT("time"), _("How long the element will be displayed for if it doesn't update again. Generally used for item pickups, frag messages, chat, etc.\n\nClear to disable.") );
 
 
-  Append( new wxPropertyCategory( _("Rectangle")) );
+  Append( new wxPropertyCategory( _("Rectangle"), wxT("cat-rect")) );
 
   Append( new wxBoolProperty( _("Use"), wxT("overwrite-rect"), false) );
   SetPropertyHelpString( wxT("overwrite-rect"), _("By default an element is drawn at position (0,0) with width 64 and height 32. Check this box to specify your own values.") );
@@ -75,6 +75,10 @@ VisibilityPropertiesCtrl::VisibilityPropertiesCtrl( wxWindow *parent ) :
   tb->Realize();
 }
 
+bool VisibilityPropertiesCtrl::ExpandAll( bool expand /*=true*/ )
+{
+  Expand(wxT("cat-rect"), expand);
+}
 
 void VisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
 {

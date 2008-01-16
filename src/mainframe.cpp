@@ -112,8 +112,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
 #endif
   tools_menu->Append( ID_MENU_TOOLS_CONVERT, _("Convert &HUD") );
   tools_menu->AppendSeparator();
-  tools_menu->AppendCheckItem( ID_MENU_TOOLS_SNAPELEMENTS, _("&Snap to &Elements") );
-  tools_menu->AppendCheckItem( ID_MENU_TOOLS_SNAPGRID, _("Snap to &Grid") );
+  tools_menu->AppendCheckItem( ID_MENU_TOOLS_SNAPELEMENTS, _("&Snap to &Elements\tCtrl+E") );
+  tools_menu->AppendCheckItem( ID_MENU_TOOLS_SNAPGRID, _("Snap to &Grid\tCtrl+R") );
   tools_menu->AppendSeparator();
   item = tools_menu->Append( ID_MENU_TOOLS_PREFERENCES, _("&Preferences\tCtrl+P") );
   item->SetBitmap(wxArtProvider::GetBitmap(wxART_HELP_SETTINGS, wxART_MENU));

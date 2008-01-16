@@ -20,6 +20,7 @@
 #include <wx/gdicmn.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
+#include <wx/variant.h>
 #include <string>
 
 // some general messages
@@ -76,6 +77,8 @@ namespace she
   /// convert a ratiovalue (a:b) to a real double
   /// @returns True if successfull otherwise false
   bool ratio_string2double( const wxString& ratio, double *val );
+
+  wxVariant colour2variant( const wxColour& col );
 
 
   /// Checks if the latest version is newer than our.

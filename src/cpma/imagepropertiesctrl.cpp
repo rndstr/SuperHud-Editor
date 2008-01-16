@@ -32,6 +32,17 @@ ImagePropertiesCtrl::ImagePropertiesCtrl( wxWindow *parent ) :
 
 
 
+bool ImagePropertiesCtrl::ExpandAll( bool expand /*=true*/ )
+{
+  wxPGId id = GetPropertyByName(wxT("cat-image"));
+  if(id) Expand(id, expand);
+  id = GetPropertyByName(wxT("cat-model"));
+  if(id) Expand(id, expand);
+  id = GetPropertyByName(wxT("cat-angles"));
+  if(id) Expand(id, expand);
+  id = GetPropertyByName(wxT("cat-offset"));
+  if(id) Expand(id, expand);
+}
 
 void ImagePropertiesCtrl::OnItemChanging( wxPropertyGridEvent& ev )
 {
@@ -147,7 +158,7 @@ void ImagePropertiesCtrl::from_element( const ElementBase *el )
 
 void ImagePropertiesCtrl::append_picture_properties( const CPMAElement *el /*=0*/ )
 {
-  Append( new wxPropertyCategory(_("Picture"), wxT("cat-picture")) );
+  Append( new wxPropertyCategory(_("Picture"), wxT("cat-image")) );
 
   Append( new PakFileProperty(_("File"), wxT("image"), el != 0 ? el->iget_image() : wxT(""), PFP_IMAGE) );
 }
@@ -191,8 +202,8 @@ void ImagePropertiesCtrl::update_layout( bool reset /*=true*/)
   // remove propertyrows and re-add those we are looking for
   if( reset )
   {
-    wxPGId id = GetPropertyByName(wxT("cat-picture"));
-    if( id ) DeleteProperty(wxT("cat-picture"));
+    wxPGId id = GetPropertyByName(wxT("cat-image"));
+    if( id ) DeleteProperty(wxT("cat-image"));
     id = GetPropertyByName(wxT("image"));
     if( id ) DeleteProperty(wxT("image"));
 

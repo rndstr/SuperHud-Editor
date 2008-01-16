@@ -4,6 +4,7 @@
 #include "element.h"
 #include "../mainframe.h"
 #include "../propertiesnotebookbase.h"
+#include <wx/variant.h>
 
 const wxColour PROPS_COLOR_INHERITED_DEFAULT = wxColour(100, 100, 150);
 const wxColour PROPS_BGCOLOR_INHERITED_DEFAULT = wxColour(240, 240, 255);
@@ -40,31 +41,49 @@ class CPMAPropertyGridBase : public wxPropertyGridManager
       m_bgcol = bgcol;
     }
 
+
+    /*
     /// reimplement ExpandAll  which was removed in wxpropgrid 1.3
-    void ExpandAll( bool expand = true )
+    // FIXME this crashes upon leaving item->noitem :| so use selective Expand/Collapse(propid) which seems to work
+    bool ExpandAll( bool expand = true )
     {
       wxPGVIterator it;
       for( it = GetVIterator(wxPG_ITERATE_ALL); !it.AtEnd(); it.Next() )
       {
         wxPGPropertyWithChildren* pwc = (wxPGPropertyWithChildren*) it.GetProperty();
-        if( pwc->GetParentingType() != 0 ) /*PT_NONE*/
+        if( pwc->GetParentingType() != 0 ) //PT_NONE
           pwc->SetExpanded( expand );
       }
       RefreshGrid();
+      return true;
     }
+    */
 
-    /// reimplement CollapseAll  which was removed in wxpropgrid 1.3
-    void CollapseAll( bool collapse = true )
+    virtual bool ExpandAll( bool expand = true )
     {
-      ExpandAll(!collapse);
+      return true;
     }
 
+    virtual bool CollapseAll( bool collapse = true )
+    {
+      return ExpandAll(!collapse);
+    }
+
+    /// as wxPropGrid does not support the additional bool we implement that here
+    bool Expand( wxPGPropArg id, bool expand = true )
+    {
+      if( expand )
+        Expand(id);
+      else
+        Collapse(id);
+    }
 
   protected:
     wxColour m_icol; ///< text color for inherited values
     wxColour m_ibgcol; ///< background color for inherited values
     wxColour m_col; ///< text color for own values
     wxColour m_bgcol; ///< background color for own values
+
 
 
     /// returns the currently selected element (as stored in CPMAPropertiesNotebook::update_from_element)

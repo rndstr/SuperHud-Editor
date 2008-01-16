@@ -22,7 +22,7 @@ FontPropertiesCtrl::FontPropertiesCtrl( wxWindow *parent ) :
   //SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES);
   AddPage(_("Font"));
 
-  Append( new wxPropertyCategory( _("Font")) );
+  Append( new wxPropertyCategory( _("Font"), wxT("cat-font")) );
   
   static const wxChar* font_type[] = {wxEmptyString, wxT("cpma"), wxT("id"), wxT("threewave"), wxT("idblock"), wxT("sansman"), (const wxChar*)0};
   /*
@@ -42,20 +42,27 @@ FontPropertiesCtrl::FontPropertiesCtrl( wxWindow *parent ) :
   Append( new wxBoolProperty( _("Monospace"), wxT("monospace"), false) );
   SetPropertyHelpString( wxT("monospace"), _("Displays all characters of the font with the same width") );
 
-  Append( new wxPropertyCategory( _("Style") ) );
+  Append( new wxPropertyCategory( _("Style"), wxT("cat-textstyle") ) );
   // valid combos: no|no (not defined), no|yes (textstyle 1), yes|no (textstyle 0)
   Append( new wxBoolProperty(_("Force none"), wxT("style-none"), false) );
   Append( new wxBoolProperty(_("Shadow"), wxT("style-shadow"), false) );
   SetPropertyHelpString( wxT("style-none"), _("By default there is no `textstyle' set but if a parent item defines one you can reset the style here") );
   SetPropertyHelpString( wxT("style-shadow"), _("Dropshadowed text") );
 
-  Append( new wxPropertyCategory( _("Size") ) );
+  Append( new wxPropertyCategory( _("Size"), wxT("cat-fontsize") ) );
 
   wxArrayString size_type;
   size_type.Add(wxEmptyString);
   size_type.Add(fontsizetype_element_to_ui(E_FST_POINT));
   size_type.Add(fontsizetype_element_to_ui(E_FST_COORD));
   Append( new wxEnumProperty(_("Type"), wxT("fontsizetype"), size_type) );
+}
+
+bool FontPropertiesCtrl::ExpandAll( bool expand /*=true*/ )
+{
+  Expand(wxT("cat-font"), expand);
+  Expand(wxT("cat-textstyle"), expand);
+  Expand(wxT("cat-fontsize"), expand);
 }
 
 void FontPropertiesCtrl::OnItemChanging( wxPropertyGridEvent& ev )

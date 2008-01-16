@@ -195,6 +195,13 @@ bool ratio_string2double( const wxString& ratio, double *val )
   return false;
 }
 
+wxVariant colour2variant( const wxColour& col )
+{
+  wxVariant var;
+  var << col;
+  return var;
+}
+
 /// Checks if the latest version is newer than our.
 /// @return <0 if our<latest, =0 if our=latest, >0 if our>latest.
 int versioncheck( int major, int minor, int release, const wxString& type ) 

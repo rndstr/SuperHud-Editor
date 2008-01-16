@@ -18,6 +18,8 @@ class ImagePropertiesCtrl : public CPMAPropertyGridBase
     /// @arg reset Whether to reset the items (delete&append)
     void update_layout( bool reset = true );
 
+    bool ExpandAll( bool expand = true );
+
   private:
     static bool use_model( CPMAElement *el );
     void OnItemChanged( wxPropertyGridEvent& ev );
