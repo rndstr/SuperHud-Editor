@@ -18,7 +18,7 @@ class ColorPropertiesCtrl : public CPMAPropertyGridBase
     void from_element( const ElementBase *el );
     void update_layout();
 
-    bool ExpandAll( bool expand = true );
+    void ExpandAll( bool expand = true );
 
   private:
     wxColourProperty *m_color;

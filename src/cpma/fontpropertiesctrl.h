@@ -18,7 +18,7 @@ class FontPropertiesCtrl : public CPMAPropertyGridBase
     /// @arg reset Whether to reset the items (delete&append)
     void update_layout( bool reset = true );
 
-    bool ExpandAll( bool expand = true );
+    void ExpandAll( bool expand = true );
 
   private:
     void OnItemChanged( wxPropertyGridEvent& ev );

@@ -32,7 +32,7 @@ ImagePropertiesCtrl::ImagePropertiesCtrl( wxWindow *parent ) :
 
 
 
-bool ImagePropertiesCtrl::ExpandAll( bool expand /*=true*/ )
+void ImagePropertiesCtrl::ExpandAll( bool expand /*=true*/ )
 {
   wxPGId id = GetPropertyByName(wxT("cat-image"));
   if(id) Expand(id, expand);

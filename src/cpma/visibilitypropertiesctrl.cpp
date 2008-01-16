@@ -75,7 +75,7 @@ VisibilityPropertiesCtrl::VisibilityPropertiesCtrl( wxWindow *parent ) :
   tb->Realize();
 }
 
-bool VisibilityPropertiesCtrl::ExpandAll( bool expand /*=true*/ )
+void VisibilityPropertiesCtrl::ExpandAll( bool expand /*=true*/ )
 {
   Expand(wxT("cat-rect"), expand);
 }

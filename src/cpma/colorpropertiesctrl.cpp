@@ -52,7 +52,7 @@ ColorPropertiesCtrl::ColorPropertiesCtrl( wxWindow *parent ) :
   //SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX,(long)1);
 }
 
-bool ColorPropertiesCtrl::ExpandAll( bool expand /*= true*/ )
+void ColorPropertiesCtrl::ExpandAll( bool expand /*= true*/ )
 {
   Expand(wxT("cat-color"), expand);
   Expand(wxT("cat-bgcolor"), expand);

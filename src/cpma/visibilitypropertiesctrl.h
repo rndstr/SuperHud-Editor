@@ -18,7 +18,7 @@ class VisibilityPropertiesCtrl : public CPMAPropertyGridBase
     void from_element( const ElementBase *el );
     void update_layout();
 
-    bool ExpandAll( bool expand = true );
+    void ExpandAll( bool expand = true );
 
   private:
     void OnRightClick( wxPropertyGridEvent& ev );

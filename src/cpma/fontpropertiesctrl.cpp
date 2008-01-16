@@ -58,7 +58,7 @@ FontPropertiesCtrl::FontPropertiesCtrl( wxWindow *parent ) :
   Append( new wxEnumProperty(_("Type"), wxT("fontsizetype"), size_type) );
 }
 
-bool FontPropertiesCtrl::ExpandAll( bool expand /*=true*/ )
+void FontPropertiesCtrl::ExpandAll( bool expand /*=true*/ )
 {
   Expand(wxT("cat-font"), expand);
   Expand(wxT("cat-textstyle"), expand);

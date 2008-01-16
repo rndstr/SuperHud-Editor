@@ -59,23 +59,21 @@ class CPMAPropertyGridBase : public wxPropertyGridManager
     }
     */
 
-    virtual bool ExpandAll( bool expand = true )
+    virtual void ExpandAll( bool expand = true )
     {
-      return true;
     }
 
-    virtual bool CollapseAll( bool collapse = true )
+    virtual void CollapseAll( bool collapse = true )
     {
-      return ExpandAll(!collapse);
+      ExpandAll(!collapse);
     }
 
     /// as wxPropGrid does not support the additional bool we implement that here
     bool Expand( wxPGPropArg id, bool expand = true )
     {
       if( expand )
-        Expand(id);
-      else
-        Collapse(id);
+        return wxPropertyGridManager::Expand(id);
+      return wxPropertyGridManager::Collapse(id);
     }
 
   protected:
