@@ -128,16 +128,17 @@ void CPMAFont::print( const wxRect& r, int sizex, int sizey, const wxString& msg
     break;
   }
   
-  m_tex->glBind();
   
   
   float width_ratio = sizex/(float)F_CHAR_WIDTH;
   float cx, cy;
   
 
-  glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-  // looks much better, needs alpha channel
-  //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+  glEnable(GL_TEXTURE_2D);
+  m_tex->glBind();
+  // glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+  // looks much better and i think that's also correct, needs alpha channel
+  glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
   
   float one_div_x = 1/(float)F_COUNT_X;
   float one_div_y = 1/(float)F_COUNT_Y;
@@ -207,7 +208,7 @@ void CPMAFont::print( const wxRect& r, int sizex, int sizey, const wxString& msg
   //glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 
   
-  //glDisable( GL_TEXTURE_2D );
+  glDisable( GL_TEXTURE_2D );
   glPopMatrix();
 }
 

@@ -622,18 +622,22 @@ void CPMAElement::render() const
       {
         color.glBind();
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        glEnable(GL_TEXTURE_2D);
         if( m_ptex && m_ptex->is_ok() )
           m_ptex->glBind();
         else
           wxGetApp().mainframe()->displayctrl()->texture_default()->glBind();
         she::draw_rect( r, true );
+        glDisable(GL_TEXTURE_2D);
       }
       else // usemodel
       {
         color.glBind();
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        glEnable(GL_TEXTURE_2D);
         wxGetApp().mainframe()->displayctrl()->texture_model()->glBind();
         she::draw_rect( r, true );
+        glDisable(GL_TEXTURE_2D);
       }
     }
     break;
@@ -657,8 +661,10 @@ void CPMAElement::render() const
       if( m_ptex && m_ptex->is_ok() )
       {
         color.glBind();
+        glEnable(GL_TEXTURE_2D);
         m_ptex->glBind();
         she::draw_rect( r, true );
+        glDisable(GL_TEXTURE_2D);
       }
     }
     break;

@@ -1,11 +1,6 @@
 #ifndef __CPMA_COLORPROPERTIESCTRL_H__
 #define __CPMA_COLORPROPERTIESCTRL_H__
 
-#include <wx/wx.h>
-#include <wx/propgrid/propgrid.h>
-#include <wx/propgrid/manager.h>
-#include <wx/propgrid/advprops.h>
-
 #include "propertygridbase.h"
 
 class ElementBase;

@@ -269,7 +269,7 @@ enum
 #define CLEAR_PROPERTY_UNSPECIFIED_FLAG(p) if ( p->GetValueRef().IsNull() ) p->SetValue(p->GetDefaultValue())
 
 #define __INTENSE_DEBUGGING__       0
-#define __PAINT_DEBUGGING__         1
+#define __PAINT_DEBUGGING__         0
 #define __MOUSE_DEBUGGING__         0
 
 

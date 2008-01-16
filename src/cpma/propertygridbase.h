@@ -6,6 +6,10 @@
 #include "../propertiesnotebookbase.h"
 #include <wx/variant.h>
 
+#include <wx/propgrid/propgrid.h>
+#include <wx/propgrid/advprops.h>
+#include <wx/propgrid/manager.h>
+
 const wxColour PROPS_COLOR_INHERITED_DEFAULT = wxColour(100, 100, 150);
 const wxColour PROPS_BGCOLOR_INHERITED_DEFAULT = wxColour(240, 240, 255);
 const wxColour PROPS_COLOR_NORMAL_DEFAULT = wxColour(0, 0, 0);

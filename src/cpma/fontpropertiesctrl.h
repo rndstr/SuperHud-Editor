@@ -1,10 +1,6 @@
 #ifndef __CPMA_FONTPROPERTIESCTRL_H__
 #define __CPMA_FONTPROPERTIESCTRL_H__
 
-#include <wx/wx.h>
-#include <wx/propgrid/propgrid.h>
-#include <wx/propgrid/manager.h>
-
 #include "propertygridbase.h"
 
 class ElementBase;

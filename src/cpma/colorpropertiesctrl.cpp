@@ -31,8 +31,9 @@ ColorPropertiesCtrl::ColorPropertiesCtrl( wxWindow *parent ) :
   Append( m_color );
   SetPropertyHelpString( wxT("color"), _("Sets the foreground color for the element.") );
   Append( new wxIntProperty(_("Opacity"), wxT("color-alpha"), -1) );
-//  SetPropertyValidator( wxT("color-alpha"), alpha_validator );
-  
+  SetPropertyEditor(wxT("color-alpha"),wxPG_EDITOR(SpinCtrl));
+  SetPropertyAttribute( wxT("color-alpha"), wxT("Min"), (long)0 );
+  SetPropertyAttribute( wxT("color-alpha"), wxT("Max"), (long)100 );
 
   Append( new wxPropertyCategory(_("Background"), wxT("cat-bgcolor")) );
   Append( new wxBoolProperty( _("Use"), wxT("bgcolor-use"), false) );

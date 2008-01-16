@@ -50,13 +50,12 @@ void CPMAPropertiesNotebook::update_from_element( const elements_type& els )
     // CollapseAll/ExpandAll trigger EVT_PG_CHANGING/CHANGED if we have been editing
     // a value that wasn't yet saved. so we have to make sure that we set
     // m_curel _afterwards_*
-    /*
+
     m_vis->CollapseAll();
     m_font->CollapseAll();
     m_color->CollapseAll();
     m_image->CollapseAll();
     m_misc->CollapseAll();
-    */
 
     m_vis->ClearSelection();
     m_font->ClearSelection();
@@ -67,19 +66,19 @@ void CPMAPropertiesNotebook::update_from_element( const elements_type& els )
 
     m_vis->GetToolBar()->ToggleTool( ID_BTN_ELEMENT_ENABLE, false );
     m_vis->GetToolBar()->ToggleTool( ID_BTN_ELEMENT_DISABLE, false );
-//    Disable();
+    Disable();
     m_curel = 0; // *
   }
   else
   {
     Enable();
-    /*
+
     m_vis->ExpandAll();
     m_font->ExpandAll();
     m_color->ExpandAll();
     m_image->ExpandAll();
     m_misc->ExpandAll();
-    */
+
     m_curel = els.front();
 
     m_vis->from_element(m_curel);

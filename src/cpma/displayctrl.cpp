@@ -112,9 +112,7 @@ void CPMADisplayCtrl::render()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     glColor4f(1.f, 1.f, 1.f, 1.f);
-    glDisable(GL_TEXTURE_2D);
     wxGetApp().mainframe()->model()->render();
-    glEnable(GL_TEXTURE_2D);
 
     /*
     glBegin(GL_QUADS);
@@ -139,10 +137,12 @@ void CPMADisplayCtrl::render()
     //if( !m_background )
 //      load_background();
 
+    glEnable(GL_TEXTURE_2D);
     m_background->glBind();
     // background
     glColor4f(1.f, 1.f, 1.f, 1.f);
     she::draw_rect(wxRect(0, 0, WIDTH, HEIGHT), true);
+    glDisable(GL_TEXTURE_2D);
     /*
     glBegin(GL_QUADS);
       glColor4f(1.f, 1.f, 1.f, 1.f);
@@ -159,7 +159,6 @@ void CPMADisplayCtrl::render()
     
     if( Prefs::get().var(wxT("view_grid")) )
     {
-      glDisable(GL_TEXTURE_2D);
       // grid
       Prefs::get().var(wxT("view_gridcolor")).cval().glBind();
       glBegin(GL_POINTS);
@@ -167,7 +166,6 @@ void CPMADisplayCtrl::render()
         for( int y=0; y < HEIGHT; y += Prefs::get().var(wxT("view_gridY")).ival() )
           glVertex2i(x, y);
       glEnd();
-      glEnable(GL_TEXTURE_2D);
     }
     // draw itemz0r
     elements_type els = wxGetApp().hudfile()->elements();
@@ -210,3 +208,4 @@ void CPMADisplayCtrl::cleanup()
     delete it->second;
   m_fonts.clear();
 }
+

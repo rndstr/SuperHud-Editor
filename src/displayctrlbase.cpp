@@ -349,7 +349,7 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
         }
         moved = move;
         wxGetApp().mainframe()->update_displayctrl();
-        wxGetApp().mainframe()->update_propertiesctrl();
+//        wxGetApp().mainframe()->update_propertiesctrl();
         wxGetApp().mainframe()->update_configpreview();
       }
     }

@@ -804,3 +804,4 @@ void MainFrame::update_propertiesctrl()
   elements_type& els = wxGetApp().elementsctrl()->selected_elements();
   m_propertiesnotebook->update_from_element(els);
 }
+

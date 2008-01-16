@@ -280,11 +280,14 @@ void FontPropertiesCtrl::update_layout( bool reset /*=true*/ )
     if( type == E_FST_POINT )
     {
       Append( new wxIntProperty(_("Size"), wxT("fontsize_pt"), el->iget_fontsizept()) );
+      SetPropertyEditor(wxT("fontsize_pt"),wxPG_EDITOR(SpinCtrl));
     }
     else if( type == E_FST_COORD )
     {
       Append( new wxIntProperty(_("Width"), wxT("fontsize_x"), el->iget_fontsizex()) );
+      SetPropertyEditor(wxT("fontsize_x"),wxPG_EDITOR(SpinCtrl));
       Append( new wxIntProperty(_("Height"), wxT("fontsize_y"), el->iget_fontsizey()) );
+      SetPropertyEditor(wxT("fontsize_y"),wxPG_EDITOR(SpinCtrl));
     }
   }
   if( type == E_FST_POINT )

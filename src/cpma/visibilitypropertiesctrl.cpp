@@ -6,8 +6,9 @@
 #include "../elementsctrlbase.h"
 #include "../propertiesnotebookbase.h"
 #include "../artprovider.h"
-
 #include "element.h"
+
+
 
 BEGIN_EVENT_TABLE(VisibilityPropertiesCtrl, CPMAPropertyGridBase)
   EVT_PG_CHANGED(ID_NOTEBOOK_PROPERTIES, VisibilityPropertiesCtrl::OnItemChanged)
@@ -29,6 +30,7 @@ VisibilityPropertiesCtrl::VisibilityPropertiesCtrl( wxWindow *parent ) :
 
   // a value of 0 (=disable) isn't the same as unspecified (=inherit)
   Append( new wxIntProperty( _("Duration"), wxT("time"), 0) );
+  SetPropertyEditor(wxT("time"),wxPG_EDITOR(SpinCtrl));
   SetPropertyHelpString( wxT("time"), _("How long the element will be displayed for if it doesn't update again. Generally used for item pickups, frag messages, chat, etc.\n\nClear to disable.") );
 
 
@@ -39,14 +41,17 @@ VisibilityPropertiesCtrl::VisibilityPropertiesCtrl( wxWindow *parent ) :
 
   Append( new wxIntProperty( wxT("X"), wxPG_LABEL, 0) );
   SetPropertyHelpString( wxT("X"), _("This sets where the element is drawn, how many pixels from left") );
-  SetPropertyEditor(wxT("X"),wxPG_EDITOR(TextCtrl));
+  SetPropertyEditor(wxT("X"),wxPG_EDITOR(SpinCtrl));
 
   Append( new wxIntProperty( wxT("Y"), wxPG_LABEL, 0) );
   SetPropertyHelpString( wxT("Y"), _("This sets where the element is drawn, how many pixels from top") );
+  SetPropertyEditor(wxT("Y"),wxPG_EDITOR(SpinCtrl));
 
   Append( new wxIntProperty( _("Width"), wxT("width"), 64) );
+  SetPropertyEditor(wxT("width"),wxPG_EDITOR(SpinCtrl));
 
   Append( new wxIntProperty( _("Height"), wxT("height"), 32) );
+  SetPropertyEditor(wxT("height"),wxPG_EDITOR(SpinCtrl));
 
   SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX,(long)1);
 
