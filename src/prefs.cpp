@@ -126,6 +126,13 @@ void Prefs::seti( const wxString& name, int ival )
   var->second.set( wxString::Format(wxT("%i"), ival) );
 }
 
+void Prefs::setv( const wxString& name, const wxVariant& variant )
+{
+  variables_type::iterator var = m_vars.find(name);
+  wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
+  var->second.set( variant.MakeString() );
+}
+
 bool Prefs::init()
 {
   if( !wxDir::Exists( wxStandardPaths::Get().GetUserDataDir() ) )
@@ -195,7 +202,7 @@ void Prefs::load()
   prefs_q3_pakfiles_default.Replace(wxT("/"), PATH_SEP);
   addvar(wxT("q3_pakfiles"), prefs_q3_pakfiles_default, PVT_STRING);
   addvar(wxT("q3_hudspecs"), wxT("cpma/hudspecs.dat"), PVT_STRING);
-  addvar(wxT("q3_background"), wxT("cpma/texture/background.jpg"), PVT_STRING);
+  addvar(wxT("q3_background"), wxT(""), PVT_STRING);
   addvar(wxT("q3_filedialog_path"), wxT(""), PVT_STRING);
 
   // q4max

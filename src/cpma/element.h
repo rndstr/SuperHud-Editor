@@ -151,6 +151,7 @@ class CPMAElement : public ElementBase
     virtual void copy_from( const ElementBase * const el );
     virtual void reset();
     virtual void convert( double from, double to, bool size, bool stretchposition, bool fontsize);
+    virtual bool is_removable() const { return ElementBase::is_removable() || (m_type == E_T_UNKNOWN); }
 
     const Properties&  properties() const { return m_props; }
 

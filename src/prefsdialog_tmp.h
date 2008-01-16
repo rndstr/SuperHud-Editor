@@ -19,18 +19,30 @@
 
 
 
-class advanced2_prefs: public wxDialog {
-public:
-// content of this block (ids) not found: did you rename this class?
 
-    advanced2_prefs(wxWindow* parent, int id, const wxString& title, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxDEFAULT_DIALOG_STYLE);
+
+class network_prefs: public wxDialog {
+public:
+    // begin wxGlade: network_prefs::ids
+    // end wxGlade
+
+    network_prefs(wxWindow* parent, int id, const wxString& title, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=wxDEFAULT_DIALOG_STYLE);
 
 private:
+    // begin wxGlade: network_prefs::methods
     void set_properties();
     void do_layout();
+    // end wxGlade
 
 protected:
-// content of this block (attributes) not found: did you rename this class?
+    // begin wxGlade: network_prefs::attributes
+    wxStaticBox* sizer_13_staticbox;
+    wxStaticBox* sizer_12_staticbox;
+    wxStaticText* network_title;
+    wxCheckBox* m_startup_checkforupdate;
+    wxTextCtrl* m_net_proxy;
+    wxStaticText* label_8;
+    // end wxGlade
 }; // wxGlade: end class
 
 class misc_prefs: public wxDialog {
@@ -57,6 +69,7 @@ protected:
     wxStaticText* label_14;
     wxButton* button_1;
     wxCheckBox* m_elements_collections;
+    wxStaticText* label_6;
     // end wxGlade
 }; // wxGlade: end class
 
@@ -129,29 +142,14 @@ protected:
     wxStaticText* label_3;
     wxChoice* m_view_aspectratio;
     wxStaticText* label_1;
-    wxTextCtrl* m_view_aspectratioX;
+    wxTextCtrl* m_view_aspectratio_custom;
     wxStaticText* label_2;
-    wxTextCtrl* m_view_aspectratioY;
+    wxStaticText* label_7;
     wxStaticText* label_4;
     wxSpinCtrl* m_view_gridX;
     wxStaticText* label_5;
     wxSpinCtrl* m_view_gridY;
     // end wxGlade
 }; // wxGlade: end class
-
-class test_prefs: public wxPanel {
-public:
-// content of this block (ids) not found: did you rename this class?
-
-    test_prefs(wxWindow* parent, int id, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
-
-private:
-    void set_properties();
-    void do_layout();
-
-protected:
-// content of this block (attributes) not found: did you rename this class?
-}; // wxGlade: end class
-
 
 #endif // PREFSDIALOG_TMP_H

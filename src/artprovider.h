@@ -41,6 +41,7 @@
 #include "xpm/icons/clear.xpm"
 
 #include "xpm/icons/prefs_display.xpm"
+#include "xpm/icons/prefs_network.xpm"
 #include "xpm/icons/prefs_misc.xpm"
 #include "xpm/icons/prefs_advanced.xpm"
 
@@ -63,6 +64,7 @@ const wxArtID ART_BMP_SETUPWIZARD = _T("ART_BMP_SETUPWIZARD");
 const wxArtID ART_CLEAR = _T("ART_CLEAR");
 
 const wxArtID ART_PREFS_DISPLAY = _T("ART_PREFS_DISPLAY");
+const wxArtID ART_PREFS_NETWORK = _T("ART_PREFS_NETWORK");
 const wxArtID ART_PREFS_MISC = _T("ART_PREFS_MISC");
 const wxArtID ART_PREFS_ADVANCED = _T("ART_PREFS_ADVANCED");
 const wxArtID ART_PREFS_CPMA = ART_CPMA;
@@ -109,6 +111,8 @@ class ArtProvider : public wxArtProvider
 
       else if( id == ART_PREFS_DISPLAY )
         return wxBitmap(prefs_display_xpm);
+      else if( id == ART_PREFS_NETWORK )
+        return wxBitmap(prefs_network_xpm);
       else if( id == ART_PREFS_MISC )
         return wxBitmap(prefs_misc_xpm);
       else if( id == ART_PREFS_ADVANCED )

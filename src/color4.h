@@ -19,6 +19,8 @@
 #ifndef COLOR4_H
 #define COLOR4_H
 
+#include "misc.h"
+
 #include <wx/colour.h>
 #include <wx/txtstrm.h>
 #include <wx/glcanvas.h>
@@ -37,7 +39,10 @@ class Color4
 {
   public:
     explicit Color4( float _r, float _g, float _b, float _a_percent=100 ) :
-        r(_r), g(_g), b(_b), a(_a_percent), type(COLOR_RGBA) {a = (a>100 ? 100:a);}
+        r(_r), g(_g), b(_b), a(_a_percent), type(COLOR_RGBA)
+    {
+      set_a100(_a_percent);
+    }
     explicit Color4( const wxColour& col ) :
         r(col.Red()/255.f), g(col.Green()/255.f), b(col.Blue()/255.f), a(1.f), type(COLOR_RGBA) {}
     Color4() :
@@ -53,13 +58,13 @@ class Color4
     bool is_special_e() const { return (type == COLOR_E); }
     bool is_rgba() const { return (type == COLOR_RGBA); }
 
-    unsigned char a255() const
+    int a255() const
     {
-      return static_cast<unsigned char>( a*255.f );
+      return static_cast<int>( a*255.f );
     }
-    unsigned char a100() const
+    int a100() const
     {
-      return static_cast<unsigned char>(a*100.f);
+      return static_cast<int>(a*100.f);
     }
 
     float r1() const { return r; }
@@ -84,7 +89,11 @@ class Color4
       from_string(str);
     }
 
-    void set_a100( unsigned char _a_percent ) { a = (_a_percent>100 ? 1.f:_a_percent/100.f); }
+    void set_a100( int _a_percent )
+    { 
+      she::clamp(_a_percent, 0, 100);
+      a = _a_percent/100.f;
+    }
 
     void glBind() const
     {

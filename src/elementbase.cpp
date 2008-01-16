@@ -40,20 +40,20 @@ bool ElementBase::parse_property( const wxString& cmd, wxString args )
 }
 void ElementBase::copy_from( const ElementBase * const el )
 { 
-  // NOTE we do not copy visibility (position, size, enabled/disabled)
+  // NOTE we do not copy rectangle and whether enabled/disabled
   wxLogDebug(wxT("COPY FROM %s TO %s"), el->name().c_str(), name().c_str()); 
   int prevhas = m_has;
   m_has = el->has();
   add_has( E_HAS_RECT, (prevhas & E_HAS_RECT) != 0 ); 
 
   //m_enabled = el->is_enabled();
-  // we do not copy position... would just confuse
+  // we do not copy rectangle... would just confuse
   //m_rect.width = el->rect().width;
   //m_rect.height = el->rect().height;
 }
 void ElementBase::reset()
 { 
-  // NOTE we do not reset visibility
+  // NOTE we do not reset rectangle and whether enabled/disabled
   wxLogDebug(wxT("RESET %s"), name().c_str()); 
   m_has = (m_has & E_HAS_RECT); // keep the rectangle if we have it already
   //m_rect.width = E_RECT_DEFAULT.width;

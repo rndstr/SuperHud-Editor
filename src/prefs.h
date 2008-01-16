@@ -137,6 +137,7 @@ class Prefs
     void set( const wxString& name, const wxString& val );
     void setb( const wxString& name, bool bval );
     void seti( const wxString& name, int ival );
+    void setv( const wxString& name, const wxVariant& variant );
     void set_default( const wxString& name );
 
 

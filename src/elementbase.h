@@ -155,7 +155,7 @@ class ElementBase
     virtual wxRect  iget_hudrect() const { return iget_rect(); }
     wxRect          iget_rect() const;
     bool            is_rendered() const;
-    bool            is_removable() const { return (flags() & E_NOTUNIQ) != 0; }
+    virtual bool    is_removable() const { return (flags() & E_NOTUNIQ) != 0; }
 
   protected:
     wxString  m_name; ///< is not unique

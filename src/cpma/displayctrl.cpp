@@ -77,7 +77,10 @@ void CPMADisplayCtrl::load_background()
 {
   if( m_background )
     wxDELETE(m_background);
-  m_background = new Texture(Prefs::get().var(wxT("q3_background")), PM_SEARCH_APPFILE, true);
+  wxString sbg = Prefs::get().var(wxT("q3_background"));
+  if( sbg.empty() )
+    sbg = wxT("cpma/texture/background.jpg");
+  m_background = new Texture(sbg, PM_SEARCH_APPFILE, true);
 }
 
 void CPMADisplayCtrl::OnIdle( wxIdleEvent& )

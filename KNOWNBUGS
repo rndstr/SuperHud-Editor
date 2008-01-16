@@ -1,3 +1,8 @@
 * [wxGTK-2.8.7.1] - a corrupted zipfile reports to contain any file so we won't look any further and load rubbish (wxFileSystem::FindFileInPath returns falsely true)
 * if a pane is detached the caption does not update (wxAui bug?)
 * [wxGTK-2.8.7.1] wxPropGrid, if a row is selected, text cannot be read (white on white?)
+
+* [SuperHud] for certain elements of type ICON (game gives us an image) $color is ignored in CPMA.
+  ignoring: ItemPickupIcon, StatusBar_AmmoIcon in particular
+  Not ignored: AttackerIcon
+  but we apply the color to all of those

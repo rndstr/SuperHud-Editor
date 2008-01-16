@@ -80,6 +80,13 @@ namespace she
 
   wxVariant colour2variant( const wxColour& col );
 
+  template < typename T >
+  void clamp( T& val, const T& min, const T& max )
+  {
+    val = std::min<T>(max, val);
+    val = std::max<T>(min, val);
+  }
+
 
   /// Checks if the latest version is newer than our.
   /// @return <0 if our<latest, =0 if our=latest, >0 if our>latest.

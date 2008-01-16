@@ -332,6 +332,7 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
     for( list<wxString>::const_iterator cit = lines.begin(); cit != lines.end(); ++cit )
       stream << wxT("\n  ") << *cit;
   }
+  
   /*
 #ifndef NDEBUG
   switch(m_type)
@@ -855,8 +856,8 @@ void CPMAElement::render() const
         }
         if( !font )
           wxLogDebug(wxT("Font not found: ") + iget_font());
-        else
-          font->print(textr, iconr.width, iconr.height, wxString::Format(wxT("%d"),((i*17)%10+20)*3),  monospace, textalign);
+        else 
+          font->print(textr, iconr.width, iconr.height, wxString::Format(wxT("%d"),100),  monospace, textalign); // rnadom nr ((i*17)%10+20)*3)
 
         if( textalign == 'C' )
           x += rr.width + WEAPONLIST_SPACE;
@@ -883,6 +884,7 @@ void CPMAElement::postparse()
   else if( m_type == E_T_WEAPONLIST )
   {
     wxGetApp().mainframe()->displayctrl()->SetCurrent();
+    // these give a small memleak
     m_weaponlist_tex.push_back( new Texture(wxT("icons/iconw_gauntlet.tga"), PM_SEARCH_HUDFILE) );
     m_weaponlist_tex.push_back( new Texture(wxT("icons/iconw_machinegun.tga"), PM_SEARCH_HUDFILE) );
     m_weaponlist_tex.push_back( new Texture(wxT("icons/iconw_shotgun.tga"), PM_SEARCH_HUDFILE) );

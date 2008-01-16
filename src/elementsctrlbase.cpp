@@ -235,9 +235,9 @@ void ElementsCtrlBase::set_properties()
     m_btn_delete->SetSize(m_btn_delete->GetBestSize());
     m_btn_copy->SetToolTip(wxT("Copy element properties"));
     m_btn_copy->SetSize(m_btn_copy->GetBestSize());
-    m_btn_paste->SetToolTip(wxT("Paste properties to selected elements (except position)"));
+    m_btn_paste->SetToolTip(wxT("Paste properties to selected elements (except rectangle)"));
     m_btn_paste->SetSize(m_btn_paste->GetBestSize());
-    m_btn_reset->SetToolTip(wxT("Reset element properties to defaults (except visibility)"));
+    m_btn_reset->SetToolTip(wxT("Reset element properties to defaults (except rectangle)"));
     m_btn_reset->SetSize(m_btn_reset->GetBestSize());
     // end wxGlade
     m_btn_paste->Disable();
@@ -388,7 +388,7 @@ void ElementsCtrlBase::OnReset( wxCommandEvent& )
 
   OptionalMessageDialog dlg(wxT("dlg_reset"), wxID_YES, wxID_NO); 
   dlg.add_button_yesno();
-  wxString msg =  _("This fills default values on all properties except visibility of selected elements:\n\n");
+  wxString msg =  _("This fills default values on all properties (except rectangle) of selected elements:\n\n");
   for( cit_elements cit = m_selels.begin(); cit != m_selels.end(); ++cit )
     msg += (*cit)->name() + wxT("\n");
 

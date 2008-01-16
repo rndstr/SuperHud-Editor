@@ -75,6 +75,10 @@ class DisplayCtrlBase : public wxGLCanvas
     /// @arg toggle If true and we click on a point where several items underlay then we switch to next one, otherwise we keep it.
     ElementBase*    element_hittest( const wxPoint& p, bool toggle = true );
 
+    /// deletes the old background and loads new one (according to prefs)
+    /// only call this from outside if it has changed
+    virtual void load_background() = 0;
+
   protected:
     bool          m_initialized;
     Texture       *m_background;
@@ -90,7 +94,7 @@ class DisplayCtrlBase : public wxGLCanvas
     Texture       *m_texmodel; ///< what we display if user selected model (we can't render it (yet) ourselves : ((( 
 
     virtual void render() {}
-    virtual void load_background() = 0;
+    
 
 
 

@@ -129,12 +129,12 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   tools_menu->Append( ID_MENU_TOOLS_SWITCHGAME, _("&Switch Game") );
   tools_menu->AppendSeparator();
 #endif
-  tools_menu->Append( ID_MENU_TOOLS_CONVERT, _("Convert &HUD") );
+  tools_menu->Append( ID_MENU_TOOLS_CONVERT, _("Convert &HUD...") );
   tools_menu->AppendSeparator();
   tools_menu->AppendCheckItem( ID_MENU_TOOLS_SNAPELEMENTS, _("&Snap to &Elements\tCtrl+E") );
   tools_menu->AppendCheckItem( ID_MENU_TOOLS_SNAPGRID, _("Snap to &Grid\tCtrl+R") );
   tools_menu->AppendSeparator();
-  item = tools_menu->Append( ID_MENU_TOOLS_PREFERENCES, _("&Preferences\tCtrl+P") );
+  item = tools_menu->Append( ID_MENU_TOOLS_PREFERENCES, _("&Preferences...\tCtrl+P") );
   item->SetBitmap(wxArtProvider::GetBitmap(wxART_HELP_SETTINGS, wxART_MENU));
   menu_bar->Append( tools_menu, _("&Tools") );
   tools_menu->Check( ID_MENU_TOOLS_SNAPELEMENTS, Prefs::get().var(wxT("view_snapelements")).bval() );
@@ -156,7 +156,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_view_menu->AppendSeparator();
   //m_view_menu->Append( ID_MENU_VIEW_FOCUSPROPERTIES, _("Focus Properties\tF6") );
   m_view_menu->Append( ID_MENU_VIEW_FOCUSELEMENTS, _("Focus Elementlist\tF7") );
-  m_view_menu->Append( ID_MENU_VIEW_FOCUSHUD, _("Focus Hud\tF8") );
+  m_view_menu->Append( ID_MENU_VIEW_FOCUSHUD, _("Focus HUD View\tF8") );
   menu_bar->Append( m_view_menu, _("&View") );
 
   wxMenu *help_menu = new wxMenu;
@@ -287,7 +287,7 @@ void MainFrame::OnDownload( wxDownloadEvent& event )
   int status = event.status();
   if( status == wxDownloadEvent::DOWNLOAD_FAIL )
   {
-    wxString msg = _("Version check failed, try again later or\ncheck your proxy settings in Tools->Preferences|Misc.");
+    wxString msg = _("Version check failed, try again later or\ncheck your proxy settings in Tools->Preferences|Network.");
     wxLogError(msg);
   }
   else if( status == wxDownloadEvent::DOWNLOAD_COMPLETE )
@@ -372,7 +372,20 @@ mofo:
 void MainFrame::OnMenuToolsPreferences( wxCommandEvent& )
 {
   PrefsDialog dlg(this);
-  dlg.ShowModal();
+  wxString gamedir = wxGetApp().factory()->dir_game();
+  if( wxID_OK == dlg.ShowModal() )
+  {
+    Prefs::get().save(true);
+    m_displayctrl->reset_projection_mode();
+    m_displayctrl->load_background();
+    update_displayctrl();
+    update_elementsctrl();
+    update_propertiesctrl();
+
+    // FIXME props_color/props_bgcolor/props_inheritcolor/propsinheritbgcolor all need a restart as well
+    if( wxGetApp().factory()->dir_game().Cmp(gamedir) != 0 )
+      wxMessageBox( _("Please restart for certain changes to take effect") );
+  }
 //  wxMessageBox(wxT("Not yet available, edit config file directly:\n") + wxStandardPaths::Get().GetUserDataDir() + wxT("/") + APP_CONFIG );
 }
 

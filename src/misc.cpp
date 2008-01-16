@@ -202,6 +202,7 @@ wxVariant colour2variant( const wxColour& col )
   return var;
 }
 
+
 /// Checks if the latest version is newer than our.
 /// @return <0 if our<latest, =0 if our=latest, >0 if our>latest.
 int versioncheck( int major, int minor, int release, const wxString& type ) 

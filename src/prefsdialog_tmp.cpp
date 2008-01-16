@@ -7,26 +7,6 @@
 
 
 
-test_prefs::test_prefs(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long style):
-    wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL)
-{
-// content of this block not found: did you rename this class?
-}
-
-
-void test_prefs::set_properties()
-{
-// content of this block not found: did you rename this class?
-}
-
-
-void test_prefs::do_layout()
-{
-// content of this block not found: did you rename this class?
-}
-
-
-
 
 display_prefs::display_prefs(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long style):
     wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL)
@@ -35,17 +15,17 @@ display_prefs::display_prefs(wxWindow* parent, int id, const wxPoint& pos, const
     grid_styler_staticbox = new wxStaticBox(this, -1, wxT("Grid"));
     ar_styler_staticbox = new wxStaticBox(this, -1, wxT("Aspect ratio"));
     display_title = new wxStaticText(this, wxID_ANY, wxT("Display"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
-    label_3 = new wxStaticText(this, wxID_ANY, wxT("Proportion of your ingame resolution, width:height."));
+    label_3 = new wxStaticText(this, wxID_ANY, wxT("Proportion of your ingame resolution."));
     const wxString m_view_aspectratio_choices[] = {
         wxT("Standard (4:3)"),
         wxT("Widescreen (16:10)"),
         wxT("Custom")
     };
-    m_view_aspectratio = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 3, m_view_aspectratio_choices, 0);
+    m_view_aspectratio = new wxChoice(this, ID_COMBO_ASPECTRATIO, wxDefaultPosition, wxDefaultSize, 3, m_view_aspectratio_choices, 0);
     label_1 = new wxStaticText(this, wxID_ANY, wxT("Custom:"));
-    m_view_aspectratioX = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
-    label_2 = new wxStaticText(this, wxID_ANY, wxT(":"));
-    m_view_aspectratioY = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
+    m_view_aspectratio_custom = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
+    label_2 = new wxStaticText(this, wxID_ANY, wxT("width:height"));
+    label_7 = new wxStaticText(this, wxID_ANY, wxT("NOTE: If you want to convert the current HUD to this new ratio as well\nyou shouldn't change it here but convert the hud in Tools->Convert HUD..."));
     label_4 = new wxStaticText(this, wxID_ANY, wxT("Distance X:"));
     m_view_gridX = new wxSpinCtrl(this, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
     label_5 = new wxStaticText(this, wxID_ANY, wxT("Distance Y:"));
@@ -63,8 +43,9 @@ void display_prefs::set_properties()
     display_title->SetFont(wxFont(20, wxDEFAULT, wxNORMAL, wxBOLD, 0, wxT("")));
     label_3->SetForegroundColour(wxColour(0, 0, 85));
     m_view_aspectratio->SetSelection(0);
-    m_view_aspectratioX->SetMinSize(wxSize(40, -1));
-    m_view_aspectratioY->SetMinSize(wxSize(40, -1));
+    m_view_aspectratio_custom->SetMinSize(wxSize(70, -1));
+    label_2->SetForegroundColour(wxColour(0, 0, 85));
+    label_7->SetForegroundColour(wxColour(0, 0, 85));
     m_view_gridX->SetMinSize(wxSize(70, -1));
     m_view_gridY->SetMinSize(wxSize(70, -1));
     // end wxGlade
@@ -86,10 +67,10 @@ void display_prefs::do_layout()
     ar_styler->Add(label_3, 0, wxALL|wxEXPAND, 3);
     ar_el_sizer->Add(m_view_aspectratio, 0, wxALL, 3);
     ar_el_sizer->Add(label_1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
-    ar_el_sizer->Add(m_view_aspectratioX, 0, wxALL, 3);
-    ar_el_sizer->Add(label_2, 0, wxTOP|wxBOTTOM|wxALIGN_CENTER_VERTICAL, 3);
-    ar_el_sizer->Add(m_view_aspectratioY, 0, wxALL, 3);
+    ar_el_sizer->Add(m_view_aspectratio_custom, 0, wxALL, 3);
+    ar_el_sizer->Add(label_2, 0, wxALL|wxALIGN_CENTER_VERTICAL, 3);
     ar_styler->Add(ar_el_sizer, 1, wxALL|wxEXPAND, 0);
+    ar_styler->Add(label_7, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 3);
     container->Add(ar_styler, 0, wxALL|wxEXPAND, 3);
     grid_el_sizer->Add(label_4, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 3);
     grid_el_sizer->Add(m_view_gridX, 0, wxALL, 3);
@@ -112,25 +93,6 @@ void display_prefs::do_layout()
 
 
 
-loadsave_prefs::loadsave_prefs(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
-    wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE)
-{
-// content of this block not found: did you rename this class?
-}
-
-
-void loadsave_prefs::set_properties()
-{
-// content of this block not found: did you rename this class?
-}
-
-
-void loadsave_prefs::do_layout()
-{
-// content of this block not found: did you rename this class?
-}
-
-
 cpma_prefs::cpma_prefs(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
     wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE)
 {
@@ -144,7 +106,7 @@ cpma_prefs::cpma_prefs(wxWindow* parent, int id, const wxString& title, const wx
     label_12 = new wxStaticText(this, wxID_ANY, wxT("Preferrably of width and height as power of two."));
     m_q3_background = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
     button_2_copy = new wxButton(this, ID_BTN_Q3_BACKGROUND_BROWSE, wxT("..."));
-    m_q3_background_usedefault = new wxCheckBox(this, wxID_ANY, wxT("Use default"));
+    m_q3_background_usedefault = new wxCheckBox(this, ID_CHECK_Q3_BACKGROUND_USEDEFAULT, wxT("Use default"));
 
     set_properties();
     do_layout();
@@ -211,8 +173,9 @@ misc_prefs::misc_prefs(wxWindow* parent, int id, const wxString& title, const wx
     m_save_backup = new wxCheckBox(this, wxID_ANY, wxT("Create backup before saving"));
     m_startup_load = new wxCheckBox(this, wxID_ANY, wxT("Reload previously open HUD on startup"));
     label_14 = new wxStaticText(this, wxID_ANY, wxT("On several occassions you are prompted a message dialog that\nyou can disable to pop up. If you want to enable them all\nagain, click the button below."));
-    button_1 = new wxButton(this, wxID_PASTE, wxEmptyString);
+    button_1 = new wxButton(this, ID_BTN_RESETDIALOGS, wxT("Reset dialogs"));
     m_elements_collections = new wxCheckBox(this, wxID_ANY, wxT("Use collections"));
+    label_6 = new wxStaticText(this, wxID_ANY, wxT("Collections are a mean to gather similar named elements together."));
 
     set_properties();
     do_layout();
@@ -226,6 +189,7 @@ void misc_prefs::set_properties()
     SetTitle(wxT("misc_prefs"));
     misc_title->SetFont(wxFont(20, wxDEFAULT, wxNORMAL, wxBOLD, 0, wxT("")));
     label_14->SetForegroundColour(wxColour(0, 0, 85));
+    label_6->SetForegroundColour(wxColour(0, 0, 85));
     // end wxGlade
 }
 
@@ -248,6 +212,7 @@ void misc_prefs::do_layout()
     sizer_2->Add(button_1, 0, wxALL, 3);
     container->Add(sizer_2, 0, wxALL|wxEXPAND, 3);
     sizer_7->Add(m_elements_collections, 0, wxALL, 3);
+    sizer_7->Add(label_6, 0, wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND, 5);
     container->Add(sizer_7, 0, wxALL|wxEXPAND, 3);
     top_sizer->Add(container, 1, wxALL|wxEXPAND, 5);
     SetSizer(top_sizer);
@@ -340,4 +305,62 @@ void advanced2_prefs::do_layout()
 
 
 
+
+
+
+
+
+
+
+
+
+
+network_prefs::network_prefs(wxWindow* parent, int id, const wxString& title, const wxPoint& pos, const wxSize& size, long style):
+    wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE)
+{
+    // begin wxGlade: network_prefs::network_prefs
+    sizer_13_staticbox = new wxStaticBox(this, -1, wxT("Proxy"));
+    sizer_12_staticbox = new wxStaticBox(this, -1, wxT("Startup"));
+    network_title = new wxStaticText(this, wxID_ANY, wxT("Network"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
+    m_startup_checkforupdate = new wxCheckBox(this, wxID_ANY, wxT("Check for new version"));
+    m_net_proxy = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
+    label_8 = new wxStaticText(this, wxID_ANY, wxT("host:port"));
+
+    set_properties();
+    do_layout();
+    // end wxGlade
+}
+
+
+void network_prefs::set_properties()
+{
+    // begin wxGlade: network_prefs::set_properties
+    SetTitle(wxT("network_prefs"));
+    network_title->SetFont(wxFont(20, wxDEFAULT, wxNORMAL, wxBOLD, 0, wxT("")));
+    label_8->SetForegroundColour(wxColour(0, 0, 85));
+    // end wxGlade
+}
+
+
+void network_prefs::do_layout()
+{
+    // begin wxGlade: network_prefs::do_layout
+    wxBoxSizer* top_sizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* container = new wxBoxSizer(wxVERTICAL);
+    wxStaticBoxSizer* sizer_13 = new wxStaticBoxSizer(sizer_13_staticbox, wxVERTICAL);
+    wxStaticBoxSizer* sizer_12 = new wxStaticBoxSizer(sizer_12_staticbox, wxVERTICAL);
+    wxBoxSizer* sizer_11 = new wxBoxSizer(wxVERTICAL);
+    sizer_11->Add(network_title, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL, 3);
+    container->Add(sizer_11, 0, wxEXPAND, 0);
+    sizer_12->Add(m_startup_checkforupdate, 0, wxALL, 3);
+    container->Add(sizer_12, 0, wxALL|wxEXPAND, 3);
+    sizer_13->Add(m_net_proxy, 0, wxALL|wxEXPAND, 3);
+    sizer_13->Add(label_8, 0, wxLEFT|wxRIGHT|wxBOTTOM, 5);
+    container->Add(sizer_13, 0, wxALL|wxEXPAND, 3);
+    top_sizer->Add(container, 0, wxALL|wxEXPAND, 5);
+    SetSizer(top_sizer);
+    top_sizer->Fit(this);
+    Layout();
+    // end wxGlade
+}
 
