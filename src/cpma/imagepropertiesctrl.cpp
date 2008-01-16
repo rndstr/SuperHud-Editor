@@ -178,20 +178,27 @@ void ImagePropertiesCtrl::append_model_properties( const CPMAElement *el /*=0*/ 
   SetPropertyAttribute(wxT("use-angles"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
   Append( new wxIntProperty(_("Pitch"), wxT("pitch"), el ? el->iget_angle(E_ANGLE_PITCH) : 0) );
   SetPropertyHelpString( wxT("pitch"), _("Rotation around axis pointing right (horizontal, X).") ); 
+  SetPropertyEditor(wxT("pitch"),wxPG_EDITOR(SpinCtrl));
   Append( new wxIntProperty(_("Yaw"), wxT("yaw"), el ? el->iget_angle(E_ANGLE_YAW) : 0) );
   SetPropertyHelpString( wxT("yaw"), _("Rotation around axis pointing up axis (vertical, Y).") ); 
+  SetPropertyEditor(wxT("yaw"),wxPG_EDITOR(SpinCtrl));
   Append( new wxIntProperty(_("Roll"), wxT("roll"), el ? el->iget_angle(E_ANGLE_ROLL) : 0) );
   SetPropertyHelpString( wxT("roll"), _("Rotation around axis pointing ahead (Z).") ); 
+  SetPropertyEditor(wxT("roll"),wxPG_EDITOR(SpinCtrl));
   Append( new wxIntProperty(_("Pan+/Rotate-"), wxT("pan"), el ? el->iget_angle(E_ANGLE_PAN) : 0) );
   SetPropertyHelpString( wxT("pan"), _("Use a positive value for left/right panning, a negative value for continuous rotation.") ); 
+  SetPropertyEditor(wxT("pan"),wxPG_EDITOR(SpinCtrl));
 
   Append( new wxPropertyCategory(_("Offset"), wxT("cat-offset")) );
   SetPropertyHelpString( wxT("cat-offset"), _("Moves the model along the X/Y/Z axis.") );
   Append( new wxBoolProperty(_("Use"), wxT("use-offset"), el ? (el->has() & E_HAS_OFFSET) != 0 : false) );
   SetPropertyAttribute(wxT("use-offset"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
   Append( new wxIntProperty(wxT("X"), wxT("x"), el ? (int)el->iget_offset(E_OFFSET_X) : 0) );
+  SetPropertyEditor(wxT("x"),wxPG_EDITOR(SpinCtrl));
   Append( new wxIntProperty(wxT("y"), wxT("y"), el ? (int)el->iget_offset(E_OFFSET_Y) : 0) );
+  SetPropertyEditor(wxT("y"),wxPG_EDITOR(SpinCtrl));
   Append( new wxIntProperty(wxT("z"), wxT("z"), el ? (int)el->iget_offset(E_OFFSET_Z) : 0) );
+  SetPropertyEditor(wxT("z"),wxPG_EDITOR(SpinCtrl));
 }
 
 void ImagePropertiesCtrl::update_layout( bool reset /*=true*/)

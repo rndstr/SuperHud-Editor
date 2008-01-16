@@ -30,9 +30,12 @@ ColorPropertiesCtrl::ColorPropertiesCtrl( wxWindow *parent ) :
   m_color = new wxColourProperty(_("Color"), wxT("color"), *wxRED);
   Append( m_color );
   SetPropertyHelpString( wxT("color"), _("Sets the foreground color for the element.") );
-  Append( new wxIntProperty(_("Opacity"), wxT("color-alpha"), -1) );
+  Append( new wxIntProperty(_("Opacity"), wxT("color-alpha"), 0) );
   SetPropertyEditor(wxT("color-alpha"),wxPG_EDITOR(SpinCtrl));
+#ifdef WIN32
+  // this does stupid things in wxGTK (not allowing to keep buttondown pressed.. stops somewhere)
   SetPropertyAttribute( wxT("color-alpha"), wxT("Min"), (long)0 );
+#endif
   SetPropertyAttribute( wxT("color-alpha"), wxT("Max"), (long)100 );
 
   Append( new wxPropertyCategory(_("Background"), wxT("cat-bgcolor")) );
@@ -40,7 +43,12 @@ ColorPropertiesCtrl::ColorPropertiesCtrl( wxWindow *parent ) :
   SetPropertyAttribute(wxT("bgcolor-use"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
   Append( new wxColourProperty(_("Color"), wxT("bgcolor")) );
   SetPropertyHelpString( wxT("bgcolor"), _("Sets the background color for the element. The element must have a width and height.") );
-  Append( new wxIntProperty(_("Opacity"), wxT("bgcolor-alpha"), -1) );
+  Append( new wxIntProperty(_("Opacity"), wxT("bgcolor-alpha"), 0) );
+  SetPropertyEditor(wxT("bgcolor-alpha"),wxPG_EDITOR(SpinCtrl));
+#ifdef WIN32
+  SetPropertyAttribute( wxT("bgcolor-alpha"), wxT("Min"), (long)0 );
+#endif
+  SetPropertyAttribute( wxT("bgcolor-alpha"), wxT("Max"), (long)100 );
   Append( new wxBoolProperty( _("Fill"), wxT("fill"), false) );
   SetPropertyHelpString( wxT("fill"), _("If the element has a background color, this fills the area it occupies with that color. The element must have a width and height.") );
 
@@ -49,6 +57,11 @@ ColorPropertiesCtrl::ColorPropertiesCtrl( wxWindow *parent ) :
   SetPropertyAttribute(wxT("fade-use"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
   Append( new wxColourProperty(_("Color"), wxT("fade")) );
   Append( new wxIntProperty(_("Opacity"), wxT("fade-alpha"), -1) );
+  SetPropertyEditor(wxT("fade-alpha"),wxPG_EDITOR(SpinCtrl));
+#ifdef WIN32
+  SetPropertyAttribute( wxT("fade-alpha"), wxT("Min"), (long)0 );
+#endif
+  SetPropertyAttribute( wxT("bgcolor-alpha"), wxT("Max"), (long)100 );
 
   //SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX,(long)1);
 }

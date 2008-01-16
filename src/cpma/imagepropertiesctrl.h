@@ -1,10 +1,6 @@
 #ifndef __CPMA_IMAGEPROPERTIESCTRL_H__
 #define __CPMA_IMAGEPROPERTIESCTRL_H__
 
-#include <wx/wx.h>
-#include <wx/propgrid/propgrid.h>
-#include <wx/propgrid/manager.h>
-
 #include "propertygridbase.h"
 
 class ElementBase;
