@@ -132,8 +132,8 @@ void ScrolledMessageDialog::add_button( const wxString& text, int id )
 
 void ScrolledMessageDialog::add_button_yesno()
 {
-  add_button(_("&Yes"), wxID_YES);
-  add_button(_("&No"), wxID_NO);
+  add_button(wxEmptyString, wxID_YES);
+  add_button(wxEmptyString, wxID_NO);
 }
 
 
