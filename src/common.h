@@ -21,6 +21,8 @@
 #define ENABLE_Q4MAX 0
 #define ENABLE_CPMA 1
 
+#define HAS_CMDPROC 0
+
 #ifdef WIN32
   #define HAS_WEBUPDATER 1
 #else

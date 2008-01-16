@@ -100,7 +100,9 @@ int HudFileBase::OnOpen( const wxString& filename /*=wxT("")*/, bool force_conve
     for( it_elements it = m_els.begin(); it != m_els.end(); ++it, ++i )
     {
       dlg.Update(i, (*it)->name());
-      (*it)->prerender();
+      // only preload if it's gonna be drawn afterwards.. 
+      if( (*it)->is_rendered() )
+        (*it)->prerender();
     }
   }
 
@@ -168,14 +170,14 @@ int HudFileBase::OnOpen( const wxString& filename /*=wxT("")*/, bool force_conve
   return ret;
 }
 
-int HudFileBase::OnSave( )
+int HudFileBase::OnSave( bool saveas /*=false*/)
 {
   int ret = wxID_OK;
-  if( m_filename.empty() )
+  if( saveas || m_filename.empty() )
   {
     wxFileDialog dlg(
         wxGetApp().mainframe(),
-        _("Save..."),
+        (saveas ? _("Save As...") : _("Save...")),
         Prefs::get().filedialog_path(),
         wxT(""),
         wxT("Hud Files (*.cfg)|*.cfg|All Files (*.*)|*.*"),
@@ -196,7 +198,7 @@ int HudFileBase::OnSave( )
   if( m_filename.empty() )
     return wxID_CANCEL; // this shouldn't reach here.. but make sure anyway
 
-  if( Prefs::get().var(wxT("save_backup")) && wxFile::Exists(m_filename)  )
+  if( !saveas && Prefs::get().var(wxT("save_backup")) && wxFile::Exists(m_filename)  )
   {
     wxString target = m_filename + wxT(".bak");
     wxGetApp().mainframe()->statusbar()->PushStatusText(wxString::Format(_("Copying backup HUD: %s"), target.c_str()));
@@ -217,12 +219,17 @@ int HudFileBase::OnSave( )
 
 }
 
-void HudFileBase::clear()
+void HudFileBase::cleanup()
 {
-  set_modified();
   for( cit_elements cit = m_els.begin(); cit != m_els.end(); ++cit )
     delete (*cit);
   m_els.clear();
+}
+
+void HudFileBase::clear()
+{
+  set_modified();
+  cleanup();  
 }
 
 

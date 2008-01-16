@@ -61,6 +61,9 @@ enum
 
 
 const int E_PROPERTIES_DEFAULT = E_HAS_NONE;
+const int WEAPONLIST_ITEMCOUNT = 9; ///, how many items there are
+const int WEAPONLIST_SPACE = 4; ///< how many pixels between items
+const int WEAPONLIST_SELECTEDIDX = 6; ///< which item do we highlight? should be same as ammo icon! (6=rail)
 
 
 /// Defaults
@@ -138,6 +141,8 @@ class CPMAElement : public ElementBase
       const wxString& icon =wxT(""), const wxRect& rect = E_RECT_DEFAULT);
     virtual ~CPMAElement();
 
+    
+
     virtual void  write_properties( wxTextOutputStream& stream ) const;
     virtual bool  parse_property( const wxString& cmd, wxString args );
     virtual void  postparse();
@@ -152,6 +157,8 @@ class CPMAElement : public ElementBase
     int         type() const { return m_type; }
 
     bool        iget_has(int what) const;
+
+    virtual wxRect  iget_hudrect() const;
 
     int         iget_time() const;
     void        set_time( int time ) { m_props.time = time; }
@@ -230,6 +237,8 @@ class CPMAElement : public ElementBase
     void        set_usemodel( bool um = true ) { m_props.usemodel = um; }
 
   protected:
+    void        cleanup();
+
     int           m_type ; ///< eElementType    
     Properties    m_props;
 
@@ -243,8 +252,8 @@ class CPMAElement : public ElementBase
     // so we use this for all the images
     Texture     *m_ptex;
 
-    //bool        m_modelfound;
-    //bool        m_skinfound;
+    /// all the textures needed by the WEAPONLIST item
+    std::vector<Texture*> m_weaponlist_tex;
 };
 
 #endif

@@ -78,14 +78,17 @@ class ListDrop : public wxTextDropTarget
         return false; // the drop wasn't over an existing item
 
       wxASSERT( m_list->GetItemData(hit) );
-
+#if HAS_CMDPROC
       ReorderCommand *s = new ReorderCommand(_("Reorder elements"));
+#endif
       ElementBase *after = reinterpret_cast<ElementBase*>(m_list->GetItemData(hit));
       // move all selected items after the one the cursor is over
       for( size_t rev = els.size(); rev != 0; --rev )
         wxGetApp().hudfile()->move_element_after( els[rev-1], after );
+#if HAS_CMDPROC
       s->takepost();
       wxGetApp().cmds()->Submit(s);
+#endif
 
       // TODO simple but expensive ;) hooray (doesn't flicker on MSW, checkcheck for GTK)
       // Note this is already done in ReorderCommand::Do

@@ -230,6 +230,11 @@ void ColorPropertiesCtrl::from_element( const ElementBase* el )
   SetPropertyValue( wxT("fade-use"), (cel->has() & E_HAS_FADE) != 0 );
   SetPropertyValue( wxT("fade"), she::colour2variant(cel->iget_fade().to_wxColour()) );
   SetPropertyValue( wxT("fade-alpha"), cel->iget_fade().a100() );
+
+  if( cel->type() == E_T_WEAPONLIST )
+    SetPropertyLabel(wxT("fill"), _("Show weapons w/o ammo"));
+  else
+    SetPropertyLabel(wxT("fill"), _("Fill"));
   
   update_layout();
 

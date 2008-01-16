@@ -76,7 +76,9 @@ class SHEApp : public wxApp
     void set_exec( const wxString& exec ) { m_exec = exec; }
     wxString exec() const { return m_exec; }
 
+#if HAS_CMDPROC
     wxCommandProcessor* cmds();
+#endif
 
   protected:
     void load_config();
@@ -88,7 +90,9 @@ class SHEApp : public wxApp
     bool        m_ready;
     wxString    m_exec; ///< what command to execute after shutdown
     wxLocale    m_locale;
+#if HAS_CMDPROC
     wxCommandProcessor *m_commands;
+#endif
     wxString    m_cmdline_file;
 };
 

@@ -61,6 +61,7 @@ PakFileDialog::PakFileDialog(wxWindow* parent, int id, const wxString& title, co
     m_list->SetImageList( &m_imglist, wxIMAGE_LIST_SMALL );
     m_imglist.Add(wxArtProvider::GetBitmap(wxART_FOLDER, wxART_OTHER, wxSize(16,16)));
     m_imglist.Add(wxArtProvider::GetBitmap(wxART_NORMAL_FILE, wxART_OTHER, wxSize(16,16)));
+    m_list->Connect( ID_LISTCTRL_PAKFILEDIALOG, wxID_ANY, wxEVT_KEY_DOWN, wxKeyEventHandler(PakFileDialog::OnKeyDown) );
 }
 
 
@@ -237,7 +238,7 @@ void PakFileDialog::open_dir( const wxString& name )
   { // so it must be a file?
     pakbrowser_files_type::iterator fit = m_files.find(name);
 #ifdef NDEBUG
-    // but still check in release
+    // but still check in release1
     if( fit != m_files.end() )
 #endif
     wxLogDebug( name + wxT(" -> ") + fit->second);
@@ -256,6 +257,16 @@ void PakFileDialog::OnBtnGodirup( wxCommandEvent& )
     changepath = m_curpath.SubString(0, pos);
   update_pakpath(changepath);
 }
+
+void PakFileDialog::OnKeyDown( wxKeyEvent& ev )
+{
+  if( ev.GetKeyCode() == WXK_BACK )
+  {
+    wxCommandEvent fump(wxEVT_COMMAND_BUTTON_CLICKED, ID_BTN_PAKFILEDLG_GODIRUP);
+    AddPendingEvent(fump);
+  }
+}
+
 bool PakFileDialog::is_valid_ext( const wxString& ext ) const
 {
   if( m_exts.Count() == 0 )
@@ -295,71 +306,5 @@ void PakFileDialog::update_pakpath( const wxString& pakpath )
   m_curpathlabel->SetLabel( wxT("/") + pakpath);
   m_gauge->SetValue(0);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

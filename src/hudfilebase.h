@@ -36,7 +36,7 @@ class HudFileBase
     friend class ListDrop;
   public:
     HudFileBase();
-    virtual ~HudFileBase() { clear(); }
+    virtual ~HudFileBase() { cleanup(); }
 
     void set_modified( bool modified = true );
     bool is_modified() const { return m_modified; }
@@ -52,9 +52,9 @@ class HudFileBase
 
     /// save the current hudfile (will display save filedialog if no filename is set)
     /// @return wxID_OK or wxID_CANCEL (if user pressed cancel)
-    int                   OnSave();
+    int                   OnSave( bool saveas = false );
 
-    /// clears all items
+    /// clears all items (and sets modified flag)
     void                  clear(); 
     /// adds an element
     void                  append( ElementBase *el );
@@ -117,6 +117,8 @@ class HudFileBase
     /// @arg after Item will be removed and inserted after this (if it's 0 we insert at beginning)
     /// @return True if successfully moved otherwise false;
     bool                  move_element_after( ElementBase *item, ElementBase *after );
+
+    void                  cleanup();
 
   protected:
     elements_type         m_els;

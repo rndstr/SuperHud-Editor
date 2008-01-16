@@ -168,9 +168,11 @@ bool SHEApp::OnInit()
 
   m_hudfile = m_factory->create_hudfile();
 
+#if HAS_UNDO
   m_commands = new wxCommandProcessor();
   m_commands->SetEditMenu(m_mainframe->edit_menu());
   m_commands->Initialize();
+#endif
 
   m_mainframe->elementsctrl()->OnSelectionChanged();
   wxSocketBase::Initialize();
@@ -215,8 +217,10 @@ int SHEApp::OnExit()
   Prefs::get().save();
   Prefs::get().shutdown();
 
+#if HAS_UNDO
   m_commands->SetEditMenu(0);
   wxDELETE(m_commands);
+#endif
 
   m_factory->shutdown();
   wxDELETE(m_factory);
@@ -248,10 +252,12 @@ bool SHEApp::OnCmdLineParsed(wxCmdLineParser& parser)
   return true;
 }
 
+#if HAS_CMDPROC
 wxCommandProcessor* SHEApp::cmds()
 { 
   return m_commands; 
 }
+#endif
 
 
 bool SHEApp::is_cpma() const

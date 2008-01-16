@@ -8,11 +8,11 @@ after some investigating when is what rendered how:
 - WeaponList: has space of 4pixels between each weaponitem.
 - for old red/blue coloring ($color == T or E) we need a $bgcolor (which isn't used tho):
 			 Score_OWN/NME, FlagStatus_OWN/NME, etc.
-- for colorTE and FILL there is a border (which texture?) drawn.
+- for colorTE and FILL there is a border (which texture?) drawn. (TODO all elements?)
 - last (optional) value for $angles means: >0 pan degrees left/right, <0 constant rotation, speed
 - if $image is not found, .tga is appended automatically (but not for .skin or .md3)
   
-		several different classes: TEXT, USERICON, ICON, BAR
+		several different classes: TEXT, USERICON, ICON, BAR, WEAPONLIST
 		
 		BAR: not used = $model($angle $offset) $image $bgcolor $fill (whole font)
 		 +rect: filled rectangle drawn in $color (default 1 1 1 1);
@@ -42,6 +42,14 @@ after some investigating when is what rendered how:
       (NB color fixation not implemented...)
      +draw3d: says we would prefer a 3d image (example: StatusBar_AmmoIcon $draw3d = model, otherwise simpleitem image)
      +model: same as $draw3d
+
+    WEAPONLIST not used = ?
+     iconsize is the same as fontsize!
+     $bgcolor: background of each item
+     $color  : backaground of selected item
+     $fill   : also show weapons without ammo
+     $textalign: R = draw icon right and text on the left of it, L = draw icon left and then text, C = same as L but items aligned differently
+     
 
 
 elements belonging to which classes (quite obvious and only those listed

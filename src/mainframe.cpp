@@ -53,8 +53,10 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_MENU(wxID_NEW, MainFrame::OnMenuNew)
   EVT_MENU(wxID_COPY, MainFrame::OnMenuCopy)
   EVT_MENU(wxID_PASTE, MainFrame::OnMenuPaste)
+#if HAS_CMDPROC
   EVT_MENU(wxID_UNDO, MainFrame::OnMenuUndo)
   EVT_MENU(wxID_REDO, MainFrame::OnMenuRedo)
+#endif
   EVT_MENU(ID_MENU_TOOLS_SWITCHGAME, MainFrame::OnMenuToolsSwitchGame)
   EVT_MENU(ID_MENU_TOOLS_CONVERT, MainFrame::OnMenuToolsConvert)
   EVT_MENU(ID_MENU_TOOLS_SNAPELEMENTS, MainFrame::OnMenuToolsSnapElements)
@@ -113,9 +115,11 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   menu_bar->Append( file_menu, _("&File") );
 
   m_edit_menu = new wxMenu;
+#if HAS_CMDPROC
   m_edit_menu->Append(wxID_UNDO, _("&Undo\tCtrl+Z"));
   m_edit_menu->Append(wxID_REDO, _("&Redo\tCtrl+Y"));
   m_edit_menu->AppendSeparator();
+#endif
   m_edit_menu->Append( wxID_COPY, _("&Copy\tCtrl+C") );
   m_edit_menu->Append( wxID_PASTE, _("&Paste\tCtrl+V") );
   menu_bar->Append( m_edit_menu, _("&Edit") );
@@ -324,6 +328,7 @@ void MainFrame::OnDownload( wxDownloadEvent& event )
 
       wxString msg = _("\\o/ There is a new version available: ");
       msg += wxString::Format( wxT("%i.%i.%i"), major, minor, release) + (!releasetype.empty() ? wxT("_")+releasetype : wxT(""));
+      msg += wxString::Format(_("(you have %s installed)"), APP_VERSION.c_str());
       msg += wxT("\n\n");
 #if HAS_WEBUPDATER
       msg += _("Go to Help->Update.. or visit the website: ") + APP_URL;
@@ -456,6 +461,9 @@ void MainFrame::OnMenuSave( wxCommandEvent& )
 
 void MainFrame::OnMenuSaveAs( wxCommandEvent& )
 {
+  wxGetApp().hudfile()->OnSave(true);
+  update_title();
+  /*
   int ret = wxID_OK;
   wxFileDialog dlg(
       this,
@@ -479,6 +487,7 @@ void MainFrame::OnMenuSaveAs( wxCommandEvent& )
     wxLogError( _("Failed writing HUD to `%s'"), filename.c_str() );
   update_title();
   wxEndBusyCursor();
+  */
 }
 
 void MainFrame::OnMenuCopy( wxCommandEvent& ev )
@@ -491,6 +500,7 @@ void MainFrame::OnMenuPaste( wxCommandEvent& ev )
   m_elementsctrl->OnPaste(ev);
 }
 
+#if HAS_CMDPROC
 void MainFrame::OnMenuUndo( wxCommandEvent& )
 {
   wxGetApp().cmds()->Undo();
@@ -500,6 +510,7 @@ void MainFrame::OnMenuRedo( wxCommandEvent& )
 {
   wxGetApp().cmds()->Redo();
 }
+#endif
 
 
 MainFrame::~MainFrame()

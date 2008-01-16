@@ -66,6 +66,7 @@ void Texture::load( const wxString& fpath, int search_where, bool mipmap /*=fals
     return;
   }
   m_texid = Texture::create_texture( img, mipmap );
+  wxLogDebug(wxT("`- texid = %d"), m_texid);
   // we no longer need teh buffa
   PakManager::get().cleanup_lastloaded();
   wxGetApp().mainframe()->statusbar()->PopStatusText();

@@ -196,9 +196,9 @@ ElementBase* DisplayCtrlBase::element_hittest( const wxPoint& p, bool toggle /*=
   for( cit_elements cit = els.begin(); cit != els.end(); ++cit )
   {
 #if wxCHECK_VERSION(2,8,0)
-    if( (*cit)->is_rendered() && (*cit)->iget_rect().Contains( p.x, p.y ) )
+    if( (*cit)->is_rendered() && (*cit)->iget_hudrect().Contains( p.x, p.y ) )
 #else // 2.7 2.6
-    if( (*cit)->is_rendered() && (*cit)->iget_rect().Inside( p.x, p.y ) )
+    if( (*cit)->is_rendered() && (*cit)->iget_hudrect().Inside( p.x, p.y ) )
 #endif
       inside.push_back( *cit );
   }
@@ -364,7 +364,7 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
         }
         moved = move;
         wxGetApp().mainframe()->update_displayctrl();
-//        wxGetApp().mainframe()->update_propertiesctrl();
+        wxGetApp().mainframe()->update_propertiesctrl();
         wxGetApp().mainframe()->update_configpreview();
       }
     }

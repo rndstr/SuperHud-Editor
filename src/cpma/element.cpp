@@ -74,8 +74,16 @@ CPMAElement::CPMAElement( const hsitem_s& def ) :
 
 CPMAElement::~CPMAElement()
 {
+  cleanup();
+}
+
+void CPMAElement::cleanup()
+{
   if( m_ptex )
     wxDELETE(m_ptex);
+  for( std::vector<Texture*>::iterator it = m_weaponlist_tex.begin(); it != m_weaponlist_tex.end(); ++it )
+    delete (*it);
+  m_weaponlist_tex.clear();
 }
 
 
@@ -324,6 +332,7 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
     for( list<wxString>::const_iterator cit = lines.begin(); cit != lines.end(); ++cit )
       stream << wxT("\n  ") << *cit;
   }
+  /*
 #ifndef NDEBUG
   switch(m_type)
   {
@@ -335,6 +344,7 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
   case E_T_WEAPONLIST: stream << wxT("\n#WEAPONLIST"); break;
   }
 #endif
+  */
 }
 
 int CPMAElement::iget_time() const
@@ -504,6 +514,28 @@ bool CPMAElement::iget_has(int what) const
     has = (parent != 0);
   }
   return has;
+}
+wxRect CPMAElement::iget_hudrect() const
+{
+  wxRect r = ElementBase::iget_rect(); 
+  if( m_type == E_T_WEAPONLIST )
+  {
+    const wxChar ta = iget_textalign();
+    switch( toupper(ta) )
+    {
+    case 'C':
+      r.width = (r.width+WEAPONLIST_SPACE) * WEAPONLIST_ITEMCOUNT - WEAPONLIST_SPACE;
+      r.x -= r.width/2;
+      r.y -= r.height/2;
+      break;
+    case 'L':
+    case 'R':
+    default:
+      r.height = (r.height+WEAPONLIST_SPACE) * WEAPONLIST_ITEMCOUNT - WEAPONLIST_SPACE;
+      break;
+    }
+  }
+  return r;
 }
 
 wxString CPMAElement::iget_image() const
@@ -755,6 +787,84 @@ void CPMAElement::render() const
       }
     }
     break;
+  case E_T_WEAPONLIST:
+    {
+      // te
+      // we need the real rectangle, not adapted..
+      wxRect rr = iget_rect();
+      wxRect startr = iget_hudrect();
+      
+      IFont *font = wxGetApp().mainframe()->displayctrl()->font( iget_font() );
+      Color4 bgcolor = iget_bgcolor();
+      Color4 color = iget_color();
+      bool monospace = iget_monospace();
+      wxChar textalign = toupper(iget_textalign());
+
+      int x = startr.x;
+      int y = startr.y;
+      wxRect itemr; // the rect of the current item
+      wxRect iconr; // the rect of the current icon
+      wxRect textr; // the rect of the text to print
+      for( size_t i=0; i < WEAPONLIST_ITEMCOUNT && i < m_weaponlist_tex.size(); ++i )
+      {
+        itemr = rr; // w&h
+        itemr.x = x;
+        itemr.y = y;
+        if( WEAPONLIST_SELECTEDIDX == i )
+          color.glBind();
+        else
+          bgcolor.glBind();
+        she::draw_rect(itemr);
+
+        glColor4f(1.f, 1.f, 1.f, 1.f);
+        
+        iconr = itemr;
+        switch(iget_fontsizetype())
+        {
+        case E_FST_COORD:
+          iconr.width = iget_fontsizex();
+          iconr.height = iget_fontsizey();
+          break;
+        case E_FST_POINT: 
+        default:
+          iconr.width = iget_fontsizept();
+          iconr.height = iconr.width;
+          break;
+        }
+        if( textalign == 'R' )
+          iconr.x = itemr.x + itemr.width - iconr.width;
+
+        if( m_weaponlist_tex[i]->is_ok() )
+        {
+          glEnable(GL_TEXTURE_2D);
+          m_weaponlist_tex[i]->glBind();
+          she::draw_rect(iconr, true);
+          glDisable(GL_TEXTURE_2D);
+        }
+        
+        if( textalign == 'R' )
+        {
+          textr = itemr;
+          textr.width = textr.width - iconr.width - WEAPONLIST_SPACE;
+        }
+        else // ta == 'C' || ta == 'L'
+        {
+          textr = itemr;
+          textr.x = itemr.x + iconr.width + WEAPONLIST_SPACE;
+          textr.width = itemr.x + itemr.width - textr.x;
+        }
+        if( !font )
+          wxLogDebug(wxT("Font not found: ") + iget_font());
+        else
+          font->print(textr, iconr.width, iconr.height, wxString::Format(wxT("%d"),((i*17)%10+20)*3),  monospace, textalign);
+
+        if( textalign == 'C' )
+          x += rr.width + WEAPONLIST_SPACE;
+        else
+          y += rr.height + WEAPONLIST_SPACE;
+      }
+    }
+    break;
   }
 }
 
@@ -769,6 +879,19 @@ void CPMAElement::postparse()
       m_props.skin = m_props.image; // hence the image is actually the skin    
       m_props.image = wxT(""); // and no longer an image.. :x
     }
+  }
+  else if( m_type == E_T_WEAPONLIST )
+  {
+    wxGetApp().mainframe()->displayctrl()->SetCurrent();
+    m_weaponlist_tex.push_back( new Texture(wxT("icons/iconw_gauntlet.tga"), PM_SEARCH_HUDFILE) );
+    m_weaponlist_tex.push_back( new Texture(wxT("icons/iconw_machinegun.tga"), PM_SEARCH_HUDFILE) );
+    m_weaponlist_tex.push_back( new Texture(wxT("icons/iconw_shotgun.tga"), PM_SEARCH_HUDFILE) );
+    m_weaponlist_tex.push_back( new Texture(wxT("icons/iconw_grenade.tga"), PM_SEARCH_HUDFILE) );
+    m_weaponlist_tex.push_back( new Texture(wxT("icons/iconw_rocket.tga"), PM_SEARCH_HUDFILE) );
+    m_weaponlist_tex.push_back( new Texture(wxT("icons/iconw_lightning.tga"), PM_SEARCH_HUDFILE) );
+    m_weaponlist_tex.push_back( new Texture(wxT("icons/iconw_railgun.tga"), PM_SEARCH_HUDFILE) );
+    m_weaponlist_tex.push_back( new Texture(wxT("icons/iconw_plasma.tga"), PM_SEARCH_HUDFILE) );
+    m_weaponlist_tex.push_back( new Texture(wxT("icons/iconw_bfg.tga"), PM_SEARCH_HUDFILE) );
   }
 }
 

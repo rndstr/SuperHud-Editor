@@ -198,14 +198,14 @@ void CPMADisplayCtrl::render()
     {
       if( !(*cit)->is_rendered() || (*cit)->is_selected() )
         continue;
-      render_helper( (*cit)->iget_rect(), false );
+      render_helper( (*cit)->iget_hudrect(), false );
     }
     // draw selected
     for( cit_elements cit  = els.begin(); cit != els.end(); ++cit )
     {
       if( !(*cit)->is_rendered() || !(*cit)->is_selected() )
         continue;
-      render_helper( (*cit)->iget_rect(), true );
+      render_helper( (*cit)->iget_hudrect(), true );
     }
 
   }

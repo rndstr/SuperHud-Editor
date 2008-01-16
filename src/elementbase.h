@@ -149,6 +149,10 @@ class ElementBase
     void            set_rect( const wxRect& r ) { m_rect = r; }
 
     // get&set properties (with regard to `i'nheritance)
+    /// this gives back the space the element occupies on the hud, shouldn't be confused with
+    /// the one displayed in properties or written to hudfile (for most it's the same but for
+    /// example WeaponList it isn't
+    virtual wxRect  iget_hudrect() const { return iget_rect(); }
     wxRect          iget_rect() const;
     bool            is_rendered() const;
     bool            is_removable() const { return (flags() & E_NOTUNIQ) != 0; }

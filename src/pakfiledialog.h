@@ -70,6 +70,7 @@ public:
     void          OnListItemSelected( wxListEvent& );
     void          OnListItemDeselected( wxListEvent& );
     void          OnBtnGodirup( wxCommandEvent& );
+    void          OnKeyDown( wxKeyEvent& );
 
     virtual bool  Validate();
 

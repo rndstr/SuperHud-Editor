@@ -21,7 +21,7 @@ _desc=Ping
 NetGraphPing=type=text:text=12ms
 # supply number of weapons for multwidth and multheight
 _desc=Use FILL to show ammo for weapons you dont have, useful for tdm. Weaponlist wraps at the bottom of the screen so you can sneak a multi-column one in.
-WeaponList=multheight=9:multwidth=9:multdependalign:type=weaponlist
+WeaponList=type=weaponlist
 
 
 _desc=Numeric health level

@@ -12,6 +12,7 @@ t set white background and yellow font and check if correct blendfunc
 
 
 -- later --
++ add prefs, always use correct hud path in filedialogs (aka quake3/cpma/hud/)
 + autosave every X mins
 + undo/redo ffs
 + add preferences to specify datadir (in case someone wants to overwrite it) (orly?)
@@ -21,3 +22,4 @@ t the global defined messages (common.h) are they translated?
 + backspace key should reset item @ elementlist
 + delete key should remove item @ elementlist
 + make use of scrollwheel?
+cpma/docs/README.hudspecs - for colorTE and FILL there is a border (which texture?) drawn. (TODO all elements?)

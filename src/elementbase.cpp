@@ -21,6 +21,7 @@
 #include <wx/tokenzr.h>
 
 
+
 bool ElementBase::parse_property( const wxString& cmd, wxString args )
 {
   if (cmd.CmpNoCase(wxT("rect")) == 0)
