@@ -50,8 +50,8 @@ ColorPropertiesCtrl::ColorPropertiesCtrl( wxWindow *parent ) :
 #ifdef WIN32
   // this does stupid things in wxGTK (not allowing to keep buttondown pressed.. stops somewhere)
   SetPropertyAttribute( wxT("color-alpha"), wxT("Min"), (long)0 );
-#endif
   SetPropertyAttribute( wxT("color-alpha"), wxT("Max"), (long)100 );
+#endif
 
   Append( new wxPropertyCategory(_("Background"), wxT("cat-bgcolor")) );
   Append( new wxBoolProperty( _("Use"), wxT("bgcolor-use"), false) );
@@ -62,8 +62,8 @@ ColorPropertiesCtrl::ColorPropertiesCtrl( wxWindow *parent ) :
   SetPropertyEditor(wxT("bgcolor-alpha"),wxPG_EDITOR(SpinCtrl));
 #ifdef WIN32
   SetPropertyAttribute( wxT("bgcolor-alpha"), wxT("Min"), (long)0 );
-#endif
   SetPropertyAttribute( wxT("bgcolor-alpha"), wxT("Max"), (long)100 );
+#endif
   Append( new wxBoolProperty( _("Fill"), wxT("fill"), false) );
   SetPropertyHelpString( wxT("fill"), _("If the element has a background color, this fills the area it occupies with that color. The element must have a width and height.") );
 
@@ -75,8 +75,8 @@ ColorPropertiesCtrl::ColorPropertiesCtrl( wxWindow *parent ) :
   SetPropertyEditor(wxT("fade-alpha"),wxPG_EDITOR(SpinCtrl));
 #ifdef WIN32
   SetPropertyAttribute( wxT("fade-alpha"), wxT("Min"), (long)0 );
+  SetPropertyAttribute( wxT("fade-alpha"), wxT("Max"), (long)100 );
 #endif
-  SetPropertyAttribute( wxT("bgcolor-alpha"), wxT("Max"), (long)100 );
 
   //SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX,(long)1);
 }
@@ -208,6 +208,7 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   else
     return; // nothing changed
 
+  wxGetApp().hudfile()->set_modified();
   update_layout();
 
   // propagate

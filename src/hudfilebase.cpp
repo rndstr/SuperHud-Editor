@@ -219,6 +219,7 @@ int HudFileBase::OnSave( )
 
 void HudFileBase::clear()
 {
+  set_modified();
   for( cit_elements cit = m_els.begin(); cit != m_els.end(); ++cit )
     delete (*cit);
   m_els.clear();
@@ -263,6 +264,7 @@ void HudFileBase::insert( const ElementBase * const after, ElementBase *el )
 
 bool HudFileBase::remove( ElementBase *el )
 {
+  set_modified();
   for( it_elements it = m_els.begin(); it != m_els.end(); ++it )
   {
     if( *it == el )
@@ -384,4 +386,15 @@ void HudFileBase::convert_all( double from, double to, bool size, bool stretchpo
   for( it_elements it = m_els.begin(); it != m_els.end(); ++it )
     (*it)->convert( from, to, size, stretchposition, fontsize);
 }
+
+#ifndef NDEBUG
+void HudFileBase::debug() const
+{
+  for( cit_elements it = m_els.begin(); it != m_els.end(); ++it )
+  {
+    wxLogDebug(wxT("0x%x %s"), (*it), (*it)->name().c_str());
+  }
+
+}
+#endif // NDEBUG
 

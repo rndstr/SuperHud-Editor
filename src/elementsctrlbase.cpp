@@ -396,6 +396,8 @@ void ElementsCtrlBase::OnReset( wxCommandEvent& )
   if( dlg.ShowModal() != wxID_YES )
     return;
 
+  wxGetApp().hudfile()->set_modified();
+
   std::for_each(m_selels.begin(), m_selels.end(), std::mem_fun(&ElementBase::reset));
 
   wxGetApp().mainframe()->update_displayctrl();
@@ -425,6 +427,8 @@ void ElementsCtrlBase::OnDelete( wxCommandEvent& )
 
   if( dlg.ShowModal() != wxID_YES )
     return;
+
+  wxGetApp().hudfile()->set_modified();
 
   // delete all notuniq elements
   for( it_elements it = m_selels.begin(); it != m_selels.end(); ++it )

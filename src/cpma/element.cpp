@@ -609,7 +609,7 @@ void CPMAElement::render() const
         bottom.height = top.height;
         bottom.y += bottom.height+4;
         she::draw_rect(top);
-        she::draw_rect(top);(bottom);
+        she::draw_rect(bottom);
       }
       else
         she::draw_rect(r);

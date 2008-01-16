@@ -148,6 +148,8 @@ void VisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   else
     return; // nothing changed
 
+
+  wxGetApp().hudfile()->set_modified();
   update_layout();
 
   // propagate

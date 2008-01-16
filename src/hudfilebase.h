@@ -103,6 +103,11 @@ class HudFileBase
     wxString              opt_version() const { return m_opt_version; }
     wxString              opt_aspectratio() const { return m_opt_aspectratio; }
 
+#ifndef NDEBUG
+    /// prints some information
+    void                  debug() const;
+#endif
+
   protected:
     /// looks for an element in the element list (m_els)
     ElementBase*          find_element( const wxString& name );

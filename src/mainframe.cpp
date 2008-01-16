@@ -5,12 +5,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-
+//
 // SuperHud Editor is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-
+//
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include "mainframe.h"
@@ -248,8 +248,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   
 #ifndef WIN32
   // default transparency hints on linux throw assertions all over the place
-  // orly?
-  //set_floating_hint( wxAUI_MGR_RECTANGLE_HINT );
+  // orly? yarly
+  set_floating_hint( wxAUI_MGR_RECTANGLE_HINT );
 #endif
   m_mgr.Update();
 
@@ -347,11 +347,11 @@ void MainFrame::OnDownload( wxDownloadEvent& event )
     }
     else if( check == 0 )
     { // is only displayed if manual update check.
-      wxMessageDialog dlg(this, _("Your version is up to date."), _("Version check"), wxICON_INFORMATION);
+      wxMessageDialog dlg(0, _("Your version is up to date."), _("Version check"), wxICON_INFORMATION);
     }
     else // check > 1
     { // is only displayed if manual update check.
-      wxMessageDialog dlg(this, _("You have a newer version than the versioncheck reported Oo"), _("Version check"), wxICON_INFORMATION);
+      wxMessageDialog dlg(0, _("You have a newer version than the versioncheck reported Oo"), _("Version check"), wxICON_INFORMATION);
     }
   }
 

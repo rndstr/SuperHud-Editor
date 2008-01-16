@@ -49,8 +49,8 @@ PakFileDialog::PakFileDialog(wxWindow* parent, int id, const wxString& title, co
     m_infolabel = new wxStaticText(this, wxID_ANY, wxEmptyString);
     static_line_1 = new wxStaticLine(this, wxID_ANY);
     m_gauge = new wxGauge(this, wxID_ANY, 10, wxDefaultPosition, wxDefaultSize, wxGA_HORIZONTAL|wxGA_SMOOTH);
-    button_2 = new wxButton(this, wxID_CANCEL, wxT("&Cancel"));
-    button_1 = new wxButton(this, wxID_OK, wxT("&Ok"));
+    button_2 = new wxButton(this, wxID_CANCEL, wxEmptyString);
+    button_1 = new wxButton(this, wxID_OK, wxEmptyString);
 
     set_properties();
     do_layout();

@@ -200,6 +200,7 @@ void FontPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   else
     return; // nothing changed
 
+  wxGetApp().hudfile()->set_modified();
   update_layout( name == wxT("fontsizetype") );
 
   // propagate

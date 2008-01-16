@@ -148,6 +148,7 @@ void ImagePropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   else
     return; // nothing changed
 
+  wxGetApp().hudfile()->set_modified();
   update_layout( name == wxT("use-model") );
 
   // propagate

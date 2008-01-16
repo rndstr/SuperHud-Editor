@@ -44,6 +44,7 @@ class CPMAHudFile : public HudFileBase
 {
   public:
     CPMAHudFile();
+    virtual ~CPMAHudFile() {}
 
 
     void load_default_elements();

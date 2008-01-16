@@ -1,12 +1,12 @@
-
-! toolbar file view is not properly updated with menu item
-! properties dialog does not update title if detached
 t put an unknown elementname into the hud, code adds it anyway.. what happens then..? can we delete? write?
 + read proxy in webupdater from superhudeditor.conf
-! change a pointsize fontsize to pixel, then edit X, upon click on Y it will crash
-+ set_modified where due
+
+? toolbar file view is not properly updated with menu item (->debug win)
+? [wxGTK] starting, doing nothing, press closebox -> sesgfault during shutdown (->debug win)
 + add second background image for 16:10
 t set white background and yellow font and check if correct blendfunc
+? properties dialog does not update title if detached
+? E_T_ICON and color with alpha, check if correctly rendered
 
 [UNIX] make APPRELATIVE and APPPAK also look in ~/.superhudeditor/
 
@@ -20,3 +20,4 @@ t the global defined messages (common.h) are they translated?
 + translate to other languages
 + backspace key should reset item @ elementlist
 + delete key should remove item @ elementlist
++ make use of scrollwheel?

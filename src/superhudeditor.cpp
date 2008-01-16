@@ -192,6 +192,7 @@ int SHEApp::OnRun()
   else
     m_hudfile->OnOpen( m_cmdline_file );
 
+
   m_mainframe->update_title();
   m_ready = true;
 
@@ -219,13 +220,11 @@ int SHEApp::OnExit()
 
   m_factory->shutdown();
   wxDELETE(m_factory);
-  wxDELETE(m_hudfile);
+  wxDELETE(m_hudfile); // this is segfaulting if nothing is being done
   PakManager::get().shutdown();
 
   if( !m_exec.empty() )
-  {
     wxExecute( m_exec, wxEXEC_ASYNC );
-  }
 
   return 0;
 }
