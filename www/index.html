@@ -3,34 +3,71 @@
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
+  <!--<base id="baseuri" href="http://plrf.org/superhudeditor/" />-->
+  <base id="baseuri" href="file:///home/veal/projects/cpp/superhudeditor/www/" />
   <title>SuperHud Editor</title>
-  <link rel="start" href="/superhudeditor" />
-  <link rel="stylesheet" href="/superhudeditor/style.css" type="text/css" />
+  <link rel="start" href="" />
+  <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 <body>
-  <h1>SuperHud Editor</h1>
-   <div class="content">
-  <h2>what?</h2>
-  <p>Is a rewritten <a href="http://plrf.org/q3cpmahudeditor">q3cpma hud editor</a> also supporting 
-  <a href="http://q4max.com">q4max</a> in the near future. With improved user interface and new features.</p>
-  <h2>when?</h2>
-  <p>When it's done :p You should be notified through the <em>q3cpma hud editor</em> update notification (make sure it's enabled in options)</p>
-  <h2>screenies</h2>
-  <h3>pre-alpha</h3>
-  <ul>
-    <li><a href="/superhudeditor/screens/pre-alpha/superhudeditor0.png">Game selection</a>
-      <p></p>
-    </li>
-    <li><a href="/superhudeditor/screens/pre-alpha/superhudeditor1.png">Default layout</a>
-      <p>grid; inherited values colored with lightblue background</p>
-    </li>
-    <li><a href="/superhudeditor/screens/pre-alpha/superhudeditor2.png">Modified layout</a>
-      <p>select several grouped items at once</p>
-    </li>
-    <li><a href="/superhudeditor/screens/pre-alpha/superhudeditor3.png">Webupdater</a>
-      <p></p>
-    </li>
-  </ul>
-</div>
+  <div id="container">
+    <div id="header">
+      <h1>SuperHud Editor</h1>
+      <div id="sf"><a href="http://sourceforge.net/projects/superhudeditor">SourceForge</a></div>
+    </div>
+    <div id="emphasis">
+      <div id="screens">
+        <h2>Screenshots</h2>
+        <ul>
+          <li><a href="screens/0.3.0/pakfilebrowser.png"><img src="screens/0.3.0/pakfilebrowser.thumb.png" width="64" height="64" /></a><br />Pak browser</li>
+        </ul>
+      </div>
+      <div id="files">
+        <h2>Files</h2>
+        <a style="float:right" href="http://sourceforge.net/project/showfiles.php?group_id=214890">view all</a>
+        <!--<ul>
+          <li><a href="">SuperHud Editor v0.3.0 win32 zip</a></li>
+          <li><a href="">SuperHud Editor v0.3.0 win32 installer</a></li>
+          <li><a href="">SuperHud Editor v0.3.0 src tarball</a></li>
+        </ul-->
+      </div>
+    </div>
+    <br style="clear:both" />
+    <div id="content">
+      <h2>About</h2>
+        <p>
+        <em>SuperHud Editor</em> is a rewritten <a href="http://plrf.org/q3cpmahudeditor">q3cpma hud editor</a> also supporting 
+        <a href="http://q4max.com">q4max</a> in the near future. With improved user interface and new features.
+        </p>
+      <h2>Latest</h2>
+        <h3>2008-01-17</h3><p>Release of SuperHud Editor v0.3.0</p>
+        </p>
+      <h2>Contact</h2>
+        <h3>IRC</h3> <em><a href="irc://irc.quakenet.org/promode">irc.quakenet.org #promode</a></em> nick something starting with ve... probably :) or just type <em>superhudeditor</em> in the channel, it will highlight.
+        <h3>E-Mail</h3>rolansch at ethz . ch
+      <h2>Help</h2>
+        <h3>Using ebuild in gentoo</h3>
+        <div class="answer">
+          Since it hasn't been added to the gentoo portage tree, you have to add it yourself. first you have to create a directory where you put all your own ebuilds. (they won't be touched by rsync updates) usually it's /usr/local/portage
+          <div class="code">mkdir /usr/local/portage</div>
+
+          After that, drop a line in your /etc/make.conf file
+          <div class="code">PORTDIR_OVERLAY="/usr/local/portage"</div>
+
+          Then put the ebuild in /usr/local/portage/games-util/superhudeditor/ and type
+          <div class="code">ebuild superhudeditor-&lt;ver&gt;.ebuild digest</div>
+
+          If you are running on stable x86 (and not on ~x86) then you additionally have to add the package to /etc/portage/package.keywords
+          <div class="code">echo "games-util/q3cpmahudeditor" &gt;&gt; /etc/portage/package.keywords</div>
+
+          We have a dependency of &gt;=wxGTK-2.8.7 whose ebuild isn't yet marked stable at the time of this writing, so you might need to add that too
+          <div class="code">echo "x11-libs/wxGTK" &gt;&gt; /etc/portage/package.keywords</div>
+
+          and you are ready to emerge it..
+          <div class="code">emerge superhudeditor -uva</div>
+        </div>
+
+    </div>
+  </div>
 </body>
 

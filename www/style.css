@@ -1,101 +1,139 @@
-body {
-  background-color:#fff;
-  font-family: verdana;
-  margin:0;
-  padding:0;
+/*
+Reworked Reset by Eric Mayer
+http://meyerweb.com/eric/thoughts/2007/04/14/reworked-reset/
+------------------------------------------------------------
+*/
+/* Don't forget to set a foreground and background color 
+   on the 'html' or 'body' element! */
+html, body, div, span,
+applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dd, dl, dt, li, ol, ul,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: 100%;
+  line-height: 1.3; /* 1 */
+  font-family: inherit;
+  text-align: left;
+  vertical-align: baseline;
+}
+a img, :link img, :visited img {
+  border: 0;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+ol, ul {
+  list-style: none;
+}
+q:before, q:after,
+blockquote:before, blockquote:after {
+  content: "";
 }
 
-a { color:#0b2bfe; text-decoration:underline; margin:2px}
+/* ------------------------------------------------------------ */
+
+
+html { height:100%; }
+body {
+  background-color:#fff;
+  margin:0 0;
+  padding:0;
+  font: normal 62.5% "Verdana","Arial",sans-serif;
+  color: #000003;
+  height:100%;
+}
+
+a { color:#3E3E9C; text-decoration:underline; margin:2px}
 a:link { text-decoration:underline; }
 a:visited { text-decoration:underline; }
 a:hover { background-color:#eef; color:#002; text-decoration:underline; }
 a:active {text-decoration:underline; }
 
-ul li {
-  margin:3px;
+em { font-family:"Courier New"; }
+
+
+#container {
+  width:800px;
+  margin:0 auto;
 }
 
-
-div.header {
-  border-bottom:15px solid #eee;
+#header { position:relative; }
+#sf {
+  position:absolute;
+  top:0;
+  right:0;
 }
-
-div#google {
-  text-align:center;
-}
-
-h1 {
-  font-size:64px;
-  margin:0;
-  padding:20px 20px 20px 60px;
+#header h1 {
   font-style:italic;
-  border-bottom:20px solid #002;
+  border-bottom:10px solid #000;
+  font-weight:bold;
+  font-size:4em;
+  color:#000055;
 }
 
 h2 {
-  padding-left:10px;
-  text-transform:uppercase;
-  background-color:#eee;
+  color:#777;
+  font-weight:bold;
+  font-size:1.8em;
 }
 
-h2 a,
-h2 a:link,
-h2 a:visited,
-h2 a:hover,
-h2 a:active
-{
-  color:#000;
-  text-decoration:none;
-  background-color:#eee;
-  padding-left:2em;
+#emphasis {
+  margin:10px;
 }
 
-#nav ul {
+#emphasis div {
+  width:360px;
+  padding:10px;
 }
-
-#nav ul li {
-  display:inline;
-}
-
-div.content {
-  padding:1em;
-}
-
-div.newsitem {
-}
-
-div.newsitem h3 {
-}
-
-div.newsitem div.newstext {
-}
-
-div.newsitem a.newstoggle {
-  margin-left:1em;
-}
-
-div.infobox {
-  background-color:#ddd;
+#screens {
   border:1px solid #000;
-  margin:1em 1em 1em 50px;
-  padding:0.5em;
+  float:right;
 }
+#screens img {
+  padding:3px;
+  border:1px solid #aaa;
+}
+#screens img:hover {
+  border:1px solid #000;
+}
+
+#files {
+  border:1px solid #000;
+}
+
+#files h2 { display:inline; }
+
+#content {
+  margin:10px;
+  font-size:1.2em;
+}
+#content h2 {
+  margin-top:1em;
+}
+#content h3 {
+  margin-top:0.7em;
+  font-weight:bold;
+  border-bottom:1px solid #aaa;
+}
+
 div.code {
   font-family:"Courier New";
-  background-color:#efeff8;
+  background-color:#aaa;
+  color:#fff;
   border:1px dotted #000;
   margin:1em 1em 1em 20px;
   padding:3px 3px 3px 30px;
 }
 
 
-div.question {
-  font-weight:bold;
-  font-style:italic;
-}
-
-div.answer {
-  margin:1em;
-}
-  
 
