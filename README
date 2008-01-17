@@ -68,6 +68,10 @@ at the cpma wiki [2].
 Known bugs can be found in the source distribution in file KNOWNBUGS
 Limitations of SuperHud itself can be read at [3].
 
+If drag&drop is laggy you might add the following in the configfile (see -3-)
+
+  view_updatewhiledragging=false
+
 
 -7- UPDATING
 By default, at each start the app checks in the background if a new version 

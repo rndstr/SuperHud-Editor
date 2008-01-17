@@ -1,12 +1,11 @@
 ? toolbar file view is not properly updated with menu item (->debug win)
 + add second background image for 16:10
 ? E_T_ICON and color with alpha, check if correctly rendered (->PowerUp3_Icon e.g.) looks like alpha is ignored @she
-+ dragging is too slow
 
-[UNIX] make APPRELATIVE and APPPAK also look in ~/.superhudeditor/
 
 
 -- later --
++ [UNIX] make APPRELATIVE and APPPAK also look in ~/.superhudeditor/
 + add preferences for `view_updatewhiledragging'
 + snapping outside of hudview (black borders) is b0rked i think
 + read proxy in webupdater from superhudeditor.conf
@@ -16,7 +15,6 @@
 + autosave every X mins
 + undo/redo ffs
 + add preferences to specify datadir (in case someone wants to overwrite it) (orly?)
-% move the enable/disable element buttons to the ElementsCtrlBase panel (orly?)
 t the global defined messages (common.h) are they translated?
 + translate to other languages
 + backspace key should reset item @ elementlist
@@ -25,4 +23,3 @@ t the global defined messages (common.h) are they translated?
 + cpma/docs/README.hudspecs - for colorTE and FILL there is a border (which texture?) drawn. (TODO all elements?)
 + if ICON and draw3d we could lay a texture over it like modeltexture but without the backgroundmodel..
 + add an accelerator to temporarily hide all other elements except selected
-? there is some fishy code with Colour4/wxColour conversion to not loose precision... 
