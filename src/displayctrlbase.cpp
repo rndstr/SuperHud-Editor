@@ -737,7 +737,7 @@ void DisplayCtrlBase::OnTimerAnim( wxTimerEvent& )
   m_fishrot += 0.9f;
   if( m_fishrot > 465 )
     m_fishrot = 0;
-  wxLogDebug(wxT("%.2f"), m_fishrot);
+//  wxLogDebug(wxT("%.2f"), m_fishrot);
   Refresh();
 }
 
@@ -746,6 +746,8 @@ void DisplayCtrlBase::render()
   if( !m_fish )
     return;
 
+  glClearColor(0.f, 0.f, 0.f, 1.f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLoadIdentity();
   if( m_fishrot > 425.f )
   {
@@ -756,8 +758,6 @@ void DisplayCtrlBase::render()
     glTranslatef(0.f, sin(m_fishrot/70.f)*15.f, -40.f);
     glRotatef(30.f*sin(m_fishrot/10.f), 0.f, 1.f, 0.f);
   }
-  glClearColor(0.f, 0.f, 0.f, 1.f);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
   glColor4f(1.f, 1.f, 1.f, 1.f);
   m_fish->render();

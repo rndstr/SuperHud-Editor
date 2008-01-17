@@ -240,7 +240,7 @@ class CPMAElement : public ElementBase
     void        set_usemodel( bool um = true ) { m_props.usemodel = um; }
 
 
-    static wxString CPMAElement::type2string( int type );
+    static wxString type2string( int type );
   protected:
     void        cleanup();
 

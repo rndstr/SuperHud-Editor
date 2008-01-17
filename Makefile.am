@@ -7,7 +7,7 @@ DOCS = AUTHORS ChangeLog COPYING INSTALL NEWS README KNOWNBUGS TODO
 # Data that needs to be distributed and won't be packed up.
 # Note that webupdater is not supported on non-win32 so we 
 # don't ship it!
-nobase_dist_pkgdata_DATA = data/data-$(VERSION).pke data/tips.txt
+nobase_dist_pkgdata_DATA = data/pak-$(VERSION).pke data/tips.txt
 
 
 
@@ -60,12 +60,17 @@ webupdater = \
                     webupdater/src/www.xpm
 
 dist_noinst_DATA =  \
-										data/data-$(VERSION).include \
+										data/pak-$(VERSION).include \
 										$(apppak) \
-										create-data-pke.sh \
+										create-pak.sh \
                     superhudeditor.sln \
                     superhudeditor.vcproj \
                     superhudeditor.cbp \
+										superhudeditor.nsi \
+										Microsoft.VC90.CRT/Microsoft.VC90.CRT.manifest \
+										Microsoft.VC90.CRT/msvcm90.dll \
+										Microsoft.VC90.CRT/msvcp90.dll \
+										Microsoft.VC90.CRT/msvcr90.dll \
 										$(webupdater) \
 										www/webupdater/remote.xml
 

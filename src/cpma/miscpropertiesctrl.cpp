@@ -137,7 +137,7 @@ void MiscPropertiesCtrl::from_element( const ElementBase *el )
   SetPropertyValue( wxT("doublebar"), cel->iget_doublebar() );
   //SetPropertyValue( wxT("time"), cel->iget_time() );
 #ifndef NDEBUG
-  SetPropertyHelpString( wxT("help"), wxString::Format(wxT("[%s] %s"), CPMAElement::type2string(cel->type()), el->desc()) );
+  SetPropertyHelpString( wxT("help"), wxString::Format(wxT("[%s] %s"), CPMAElement::type2string(cel->type()).c_str(), el->desc().c_str()) );
 #else
   SetPropertyHelpString( wxT("help"), el->desc() );
 #endif

@@ -254,7 +254,7 @@ void Prefs::load()
   for( variables_type::iterator it = m_vars.begin(); it != m_vars.end(); ++it )
     it->second.read();
 
-  if( APP_VERSION != var(wxT("app_version")) )
+  if( APP_VERSION != var(wxT("app_version")).sval() )
   { // different app version has written this config file.. we might need to do some conversion work
   }
   set(wxT("app_version"), APP_VERSION);

@@ -452,7 +452,7 @@ void MainFrame::OnMenuAbout( wxCommandEvent& )
   desc += wxT("\nBuildtime: ");
   desc += APP_BUILDTIME;
   info.SetDescription(desc);
-  info.SetCopyright(wxT("(C) 2006-2008 Roland Schilter <rolansch@ethz.ch>"));
+  info.SetCopyright(wxT("(C) 2006-2008 Roland Schilter / veal <rolansch@ethz.ch>"));
   info.SetWebSite(APP_URL, APP_URL);
   wxAboutBox(info);
 }

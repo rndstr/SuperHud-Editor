@@ -63,7 +63,6 @@ void PakManager::cleanup()
 
 void PakManager::cleanup_lastloaded()
 {
-  return;
   if( m_lastloaded != m_pakcontent.end() )
   {
     wxLogDebug(wxT("PakManager::cleanup - Deleting cache data (justloaded): ") + m_lastloaded->first);

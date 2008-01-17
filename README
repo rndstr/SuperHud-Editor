@@ -3,151 +3,97 @@ features:
 - save 1.43-
 
 ======
-q3cpmahudeditor v0.2.0
+SuperHud Editor v0.3.0
 -----------------------------------------------------------------------------
 -1- Introduction
--2- Using q3cpmahudeditor
+-2- Using SuperHud Editor
 -3- Config file
 -4- Images/Fonts from pk3 files
--5- SuperHUD
+-5- SuperHud
 -6- Bugs
+-7- Updating
 -7- Contact
 -8- Links
 -----------------------------------------------------------------------------
 
 -1- INTRODUCTION
-q3cpmahudeditor is an editor for the superHUD implementation by CPMA [1] 
-for the fps quake3.
+SuperHud Editor gives you a graphical interface to edit your HUD 
+(Head-up display) for CPMA [1] (a Quake3 modification) and possibly other 
+First-person shooter games in the future.
 
 
--2- USING Q3CPMAHUDEDITOR
-You either can start from scratch by creating your hud or you open an
-existing one and modify it (recommended). The cpma huds are placed in 
+-2- USING SUPERHUD EDITOR
+You start with a default HUD supplied by CPMA. Other HUDs are placed in 
 <quake3dir>/cpma/hud/
 Make sure you save it to that directory. Otherwise you cannot use
 them ingame.
 
 To tell cpma which hudfile you want to use set the cvar ch_file to
 the name of the hud (without the extension .cfg).
-For example if you want to use hud3.cfg, put in 
-<quake3dir>/cpma/autoexec.cfg: seta ch_file hud3
+For example if you want to use hud3.cfg, put in <quake3dir>/cpma/autoexec.cfg 
 
-The gui should be more or less self explanatory, here a few hints:
+  seta ch_file "hud3"
 
-
-Main Frame:
-That's where the hud "preview" is drawn.
-* There are (currently) three renderer available. OpenGL > Native,
-  Textrenderer displays preview of hudfile in text format.
-* You can drag&drop items around, they snap to eachother. You can 
-  disable it by unchecking 'Tools->Snap to neighbour items' in the
-  menu (or pressing Alt+S). Items also snap to the screen boundary. 
-  (Dragging and snapping thresholds can be changed in the 
-  preferences)
-* While dragging the element around you can click on right mousebutton
-  to abort.
-* You may also move the selected item with keys. left/right/up/down
-  arrow moves them with bigger step around whereas if you press SHIFT
-  during the moving they only take a small step. (Step widths can be
-  set in preferences, default is 10px and 1px.)
-* Resizing with arrow keys can be done while having the ALT key
-  pressed.
-* Check out 'Tools->Draw helpers' to quickly toggle the visual hints.
-* Keep Ctrl pressed while draggin an element around and it sticks to
-  the x/y-axis' where you started dragging.
-
-
-Properties Dialog:
-* The checkboxes on the very left have the purpose to override the
-  property which otherwise is inherited from !DEFAULT (or any other
-  item that can be inherited from, currently only !DEFAULT).
-* [ ] Enable: does enable this item. Mostly this means the item will
-  be written to the hudfile and also is visible on the hud. If it's
-  not enabled it isn't drawn in q3cpmahudeditor as well as not in
-  cpma. Certain items cannot be disabled. For example specialitems
-  like !DEFAULT but you can remove and insert them by rightclicking
-  on them in the elements dialog.
-  Other items cannot be disabled because the superHUD documentation
-  states: even if they aren't specified in the hudfile they are drawn!
-  So you must place them offscreen or set opaqueness to 0%.
-  (Read the description at the bottom. It is noted in there if this is
-  the case)
-* Foreground, Special: The foreground can have special colors like T
-  for your teamcolor or E for the enemy color.
-  Also check the description of the items (e.g. Score_NME/OWN and
-  FlagStatus_NME/OWN)
-* Description: Of each item is on the very bottom of the dialog.
-  Contains useful information. (mostly copied from the promode
-  wiki [2])
-
-Hud elements Dialog:
-* The ordering of the items in there will be the exact same in the
-  written hudfile. Only enabled items (green icon) will be written
-  though.
-* Rightclick on item: Displays item menu.
-* Button, Left: Displays item menu.
-* Button, Center: Moves the selected item one position up.
-* Button, Right: Moves the selected item one position down.
-* Doublick on item: toggles enable.
-* Item menu: You may insert or remove items which aren't unique
-  like !DEFAULT.
-* Copy&Paste: You can copy an item's properties to others. 
-  `Paste w/o position' means we paste everything except the position.
-* Elements can be reordered with drag&drop.
+The GUI should be more or less self explanatory, check the ChangeLog for
+a few features to look out for.
 
   
 -3- CONFIG FILE
 Will be automatically created at
 
 (Windows) 
-    C:\Documents and Settings\<username>\Application Data\q3cpmahudeditor\q3cpmahudeditor.conf
+    C:\Documents and Settings\<username>\Application Data\q3cpmahudeditor\superhudeditor.conf
 (Linux)   
-  ~/.q3cpmahudeditor/q3cpmahudeditor.conf
+  ~/.superhudeditor/superhudeditor.conf
 
 
 -4- IMAGES/FONTS FROM PK3 FILES
 In hud elements you may also specify which image to draw as background.
-Those are taken from the pk3s the game provides which are normally not
+Those are taken from the paks the game provides which are normally not
 subject to change but restricted which ones you can use. That restriction
-depends on the server you are on, you can only pick images from pk3s the
+depends on the server you are on, you can only pick images from paks the
 server has.
-Hence you should (normally) stick to those images that are in pk3s which are
-on _all_ servers. The default value for which pk3s we are looking in, specifies
-those should-have paks. (main pak, pointrelease pak, cpma pak, cpm-maps pak)
+Hence you should (normally) stick to those images that are in paks which are
+on _all_ servers. The pak browser only presents you those available files.
+A missing image (or from a non-standard pak) will be displayed as big red 
+cross.
   
-If you want to change it, feel free to do so ('Tools->Preferences, Expert').
-
-For q3cpmahudeditor to load files from the pk3s it must know where to find
-them. If you don't have a q3 installation you can still fake it by creating
-the following subdirs in a folder where you point q3cpmahudeditor at if it 
-asks for a quake3 installation directory: baseq3/ and cpma/
-
-Of course this will lead to missing pk3s (images, fonts). The fonts can
-solely be found in the cpma/z-cpma-pakXXX.pk3 though (you can get this from the 
-official cpma release [1], XXX = version)
-
 
 -5- SUPERHUD
-A (mostly) complete documentation about superHUD files can be found
+A (mostly) complete documentation about SuperHud files can be found
 at the cpma wiki [2].
 
 
 -6- BUGS
-Known bugs can be found in the file KNOWNISSUES
-Limitations of superHUD itself can be read at [3].
+Known bugs can be found in the source distribution in file KNOWNBUGS
+Limitations of SuperHud itself can be read at [3].
 
 
--7- CONTACT
-Check the app's website [4] for updates (or alternatively use the inbuilt
-updatecheck, Tools->Check for updates) or contact me on irc [5].
-You may also send me an e-mail [6].
+-7- UPDATING
+By default, at each start the app checks in the background if a new version 
+is available and prompts you what to do if it found an update. 
+SuperHud Editor now features a Web Updater which takes care of updating, no
+need to download and install the new version. At least on windows. For linux
+this feature is disabled as it probably requires superuser access with the 
+default installation routine. A notifcation about new versions is displayed 
+nevertheless.
 
 
--8- LINKS
+-8- CONTACT
+Check the app's website [4] for news&updates or make sure you enable the
+startup check for new versions (Tools->Preferences|Network)
+
+You might also contact me on irc [5] or send me an e-mail [6].
+Feel free to post in the forums on sourceforge [7].
+
+
+-9- LINKS
 
 [1] http://www.promode.org
 [2] http://www.promode.org/wiki/index.php/Custom_HUDs
 [3] http://www.promode.org/wiki/index.php/Custom_HUDs#Known_Issues
-[4] http://www.plrf.org/q3cpmahudeditor/
-[5] #promode on irc.quakenet.org with nick veal
-[6] veal@student.ethz.ch
+[4] http://plrf.org/superhudeditor
+[5] #promode on irc.quakenet.org
+[6] rolansch@ethz.ch
+[7] http://sourceforge.net/projects/superhudeditor
+

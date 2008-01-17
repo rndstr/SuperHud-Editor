@@ -1,4 +1,5 @@
-2008-01-xx release: 0.3.0 beta (rewrite)
+2008-01-xx release: 0.3.0
+  * complete rewrite
 	* add: elements can be reset (i.e. everything except visibility is put back to default)
 	*	add: copy&paste can be accessed everywhere with Ctrl+C/Ctrl+V
 	* add: you may now select multiple elements at once and apply an action
@@ -13,27 +14,27 @@
 	* add: in elements list: press a key (a-z) to select next element that
 			begins with that key.
 	* add: correct default hud loaded (directly from game pak)
-	* add: hud conversion - convert hudfiles to widescreen with various
+	* add: Tools->Convert HUD - convert hudfiles to widescreen with various
 			conversion options. also, prompt user to decide what to do if there is
 			discrepancy in HUD aspect ratio	and view aspect ratio.
 	* add: possibility to implement other games with SuperHud style Head-up
 			displays
 	* add: support for renamed Pre/PostDecorate in cpma-1.44 (you still can load
 			huds from previous versions but it will be saved for >=cpma-1.44)
-	* add: a grid (of points) elements can snap to (defaults to 12x12)
+	* add: a grid (of points), elements can snap to (defaults to 12x12)
 	* add: a pak file browser (with image preview)
   * add: commandline support for opening a hudfile (superhudeditor.exe [filename])
 	* add: correct rendering of WeaponList!
-	* add: wrapping at bottom of weaponlist
+	* add: wrapping at bottom of WeaponList
+  * add: new CPMA font `sansman' added
 
 
-	* chg: new highly modifiable user interface
+	* chg: changed to highly modifiable user interface
 	* chg: properties now indicate if and which values they inherit (they have a
-			different background color than white)
+			different background color than white, by default bright blue)
 	* chg: removed presets (might come again if enough requests)
 	* chg: no undo/redo at all as of yet
 	* chg: [linux] now needs at least wxWidgets-2.8 to compile 
-		 
 
 2007-01-04 release: 0.2.0
 2006-09-15 release: 0.1.0_beta1
