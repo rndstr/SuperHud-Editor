@@ -76,8 +76,7 @@ void CPMADisplayCtrl::init()
 
 void CPMADisplayCtrl::load_background()
 {
-  if( m_background )
-    wxDELETE(m_background);
+  wxDELETE(m_background);
   wxString sbg = Prefs::get().var(wxT("q3_background"));
   if( sbg.empty() )
     sbg = wxT("cpma/texture/background.jpg");
@@ -186,8 +185,7 @@ void CPMADisplayCtrl::cleanup()
   DisplayCtrlBase::cleanup();
 
   wxLogDebug(wxT("CPMADisplayCtrl::cleanup"));
-  if( m_background )
-    wxDELETE(m_background);
+  wxDELETE(m_background);
   for( fonts_type::iterator it = m_fonts.begin(); it != m_fonts.end(); ++it )
     delete it->second;
   m_fonts.clear();

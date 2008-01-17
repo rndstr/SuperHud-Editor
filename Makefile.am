@@ -13,8 +13,9 @@ nobase_dist_pkgdata_DATA = data/data-$(VERSION).pke data/tips.txt
 
 # EXTRA_DIST
 
-# those go into data-VERSION.pke but ship it into tarball nevertheless
-datapke = \
+# those go into pak-VERSION.pke but ship it into tarball nevertheless
+# this list should be equal to data/pak-VERSION.include
+apppak = \
 					data/cpma/hudspecs.dat \
 					data/cpma/docs/README.hudspecs \
 					data/cpma/docs/README.superhud \
@@ -60,7 +61,7 @@ webupdater = \
 
 dist_noinst_DATA =  \
 										data/data-$(VERSION).include \
-										$(datapke) \
+										$(apppak) \
 										create-data-pke.sh \
                     superhudeditor.sln \
                     superhudeditor.vcproj \

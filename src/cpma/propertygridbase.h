@@ -25,10 +25,7 @@
 #include <wx/propgrid/advprops.h>
 #include <wx/propgrid/manager.h>
 
-const wxColour PROPS_COLOR_INHERITED_DEFAULT = wxColour(100, 100, 150);
-const wxColour PROPS_BGCOLOR_INHERITED_DEFAULT = wxColour(240, 240, 255);
-const wxColour PROPS_COLOR_NORMAL_DEFAULT = wxColour(0, 0, 0);
-const wxColour PROPS_BGCOLOR_NORMAL_DEFAULT = wxColour(255, 255, 255);
+
 
 /// Provides a few functions that are in use on all
 /// the various grids
@@ -44,10 +41,10 @@ class CPMAPropertyGridBase : public wxPropertyGridManager
 		  const wxChar* name = wxPropertyGridManagerNameStr
       ) :
     wxPropertyGridManager(parent, id, pos, size, style, name),
-      m_icol(PROPS_COLOR_INHERITED_DEFAULT),
-      m_ibgcol(PROPS_BGCOLOR_INHERITED_DEFAULT),
-      m_col(PROPS_COLOR_NORMAL_DEFAULT),
-      m_bgcol(PROPS_BGCOLOR_NORMAL_DEFAULT)
+      m_icol(PROPS_INHERITCOLOR.to_wxColour()),
+      m_ibgcol(PROPS_INHERITBGCOLOR.to_wxColour()),
+      m_col(PROPS_COLOR.to_wxColour()),
+      m_bgcol(PROPS_BGCOLOR.to_wxColour())
 
     {
     }

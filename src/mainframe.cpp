@@ -172,7 +172,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   wxMenu *help_menu = new wxMenu;
 #if HAS_WEBUPDATER
   // so far only win32 :x
-  help_menu->Append( ID_MENU_HELP_UPDATE, _("&Update...") );
+  help_menu->Append( ID_MENU_HELP_UPDATE, _("&Web updater...") );
 #endif
   help_menu->Append( ID_MENU_HELP_TIP, _("&Tip of the Day") );
   help_menu->Append( wxID_ABOUT, _("&About\tCtrl+A") );
@@ -205,24 +205,24 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_displayctrl = wxGetApp().factory()->create_displayctrl(this);
   m_mgr.AddPane( m_displayctrl, 
       wxAuiPaneInfo().Name(wxT("display")).Caption(_("Display")).MaximizeButton(true).CloseButton(false).
-      CenterPane()
+      CenterPane().MinSize(320,240)
       );
   m_elementsctrl = wxGetApp().factory()->create_elementsctrl(this);
   m_mgr.AddPane( m_elementsctrl,
       wxAuiPaneInfo().Name(wxT("elements")).Caption(_("Elements")).MaximizeButton(true).CloseButton(false).
-      MinSize(wxSize(200,100))
+      MinSize(150,100).BestSize(200,-1)
       );
   m_configpreview = new wxTextCtrl(this, ID_TEXTCTRL_CONFIGPREVIEW, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
   wxFont sysfont = wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT);
   m_configpreview->SetFont( sysfont );
   m_mgr.AddPane( m_configpreview, wxAuiPaneInfo().Name(wxT("configpreview")).Caption(_("Config Preview")).
-    CloseButton(true).MaximizeButton(true)
+    CloseButton(true).MaximizeButton(true).MinSize(wxSize(150,100)).BestSize(200,100)
     );
 
   m_propertiesnotebook = wxGetApp().factory()->create_propertiesnotebook(this);
   m_mgr.AddPane( m_propertiesnotebook, 
       wxAuiPaneInfo().Name(wxT("properties")).Caption(_("Properties")).MaximizeButton(true).CloseButton(false).
-      Right().MinSize(wxSize(200,100))
+      Right().MinSize(150,100).BestSize(200,-1)
       );
 
   m_mgr.AddPane(m_toolbar_file, wxAuiPaneInfo().Name(wxT("tb-file")).Caption(_("File")).
@@ -230,6 +230,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
 	  );
   
   m_defaultperspective = m_mgr.SavePerspective();
+  
 
   GetDockArt()->SetColor(wxAUI_DOCKART_INACTIVE_CAPTION_COLOUR, wxColour(200, 200, 200));
   GetDockArt()->SetColor(wxAUI_DOCKART_INACTIVE_CAPTION_GRADIENT_COLOUR, wxColour(200, 200, 200));
@@ -254,7 +255,10 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
     SetIcon( wxArtProvider::GetIcon(ART_Q4MAX, wxART_FRAME_ICON, wxSize(16,16)) );
     */
 
-  SetMinSize(wxSize(1000,600));
+  if( wxGetApp().is_firststart() )
+    SetSize(wxSize(1000,500));
+
+  //SetMinSize(wxSize(1000,600));
   if( Prefs::get().var(wxT("app_maximized")) )
     Maximize();
   else if( Prefs::get().var(wxT("app_height")).ival() != -1 && Prefs::get().var(wxT("app_width")).ival() != -1 )

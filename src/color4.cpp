@@ -69,5 +69,6 @@ bool Color4::from_string( const wxString& str )
   b = _b;
   a = _a;
   type = COLOR_RGBA;
+  wxcolisvalid = false;
   return true;
 }

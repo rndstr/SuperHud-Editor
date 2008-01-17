@@ -35,11 +35,15 @@ typedef enum
 
 /// A color class including alpha channel (percentage!) and conversion function to wxColour.
 /// All color information (RGBA) is stored as float [0-1]
+///
+/// There is a conversion problem when we get it as wxColour and then set it again.
+/// So whenever we get the value we actually convert it, but only set it if it's different
+/// to the get oO
 class Color4
 {
   public:
     explicit Color4( float _r, float _g, float _b, int _a_percent=100 ) :
-        r(_r), g(_g), b(_b), a(_a_percent), type(COLOR_RGBA)
+        r(_r), g(_g), b(_b), a(_a_percent), type(COLOR_RGBA), wxcolisvalid(false)
     {
       set_a100(_a_percent);
     }
@@ -50,7 +54,7 @@ class Color4
       r(c4.r), g(c4.g), b(c4.b), type(c4.type) {}
       */
     Color4() :
-        r(1.f), g(1.f), b(1.f), a(1.f), type(COLOR_RGBA) {}
+        r(1.f), g(1.f), b(1.f), a(1.f), type(COLOR_RGBA), wxcolisvalid(false) {}
 
     ~Color4() {}
 
@@ -81,11 +85,20 @@ class Color4
     void set_a1(float _a) { a = _a; }
 
 
-    void set(const wxColour& col)
+    /// @return True if the color was different than already set
+    bool set(const wxColour& col)
     {
+      if( wxcolisvalid && col == tmpwxcol )
+      {
+        wxLogDebug(wxT("YES NO CONVERSION ERROR"));
+        return false; // it's already fine.. this is important to happen if there shouldn't be any conversion errors
+      }
+      wxcolisvalid = true;
+      tmpwxcol = col;
       r = col.Red()/255.f;
       g = col.Green()/255.f;
       b = col.Blue()/255.f;
+      return true;
     }
 
     void set(const wxString& str )
@@ -126,12 +139,22 @@ class Color4
     float a_norm() const { return a/100.f; }
     */
 
-    wxColour to_wxColour() const { return wxColour(static_cast<unsigned char>(r*255.f), static_cast<unsigned char>(g*255.f), static_cast<unsigned char>(b*255.f)); }
+    wxColour to_wxColour() const
+    { 
+      if( !wxcolisvalid )
+      {
+        wxcolisvalid = true;
+        tmpwxcol = wxColour(static_cast<unsigned char>(r*255.f), static_cast<unsigned char>(g*255.f), static_cast<unsigned char>(b*255.f));
+      }
+      return tmpwxcol;
+    }
 //    operator wxColour() const { return wxColour(static_cast<unsigned char>(r*255.f), static_cast<unsigned char>(g*255.f), static_cast<unsigned char>(b*255.f)); }
     
   protected:
     float         r, g, b, a;
     int           type;
+    mutable bool          wxcolisvalid;
+    mutable wxColour      tmpwxcol; ///< whenever 
 };
 
 wxTextOutputStream& operator<<( wxTextOutputStream& stream, const Color4& c );

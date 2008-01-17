@@ -16,7 +16,7 @@ _desc=Empty elements that can be used to draw separator bars etc. Will be drawn 
 PostDecorate=notuniq:nodefault:enable:enablealways:drawfront:type=usericon
 
 _desc=Lagometer
-NetGraph=type=icon
+NetGraph=type=icon:icon=gfx/2d/lag.jpg
 _desc=Ping
 NetGraphPing=type=text:text=12ms
 # supply number of weapons for multwidth and multheight

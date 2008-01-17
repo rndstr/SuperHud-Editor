@@ -23,6 +23,7 @@
 
 #include <wx/tokenzr.h>
 
+#include <cmath>
 #include <list>
 using namespace std;
 
@@ -79,8 +80,7 @@ CPMAElement::~CPMAElement()
 
 void CPMAElement::cleanup()
 {
-  if( m_ptex )
-    wxDELETE(m_ptex);
+  wxDELETE(m_ptex);
   for( std::vector<Texture*>::iterator it = m_weaponlist_tex.begin(); it != m_weaponlist_tex.end(); ++it )
     delete (*it);
   m_weaponlist_tex.clear();
@@ -331,20 +331,23 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
     for( list<wxString>::const_iterator cit = lines.begin(); cit != lines.end(); ++cit )
       stream << wxT("\n  ") << *cit;
   }
-  
-  /*
-#ifndef NDEBUG
-  switch(m_type)
+}
+
+
+wxString CPMAElement::type2string( int type )
+{
+  switch(type)
   {
-  case E_T_UNKNOWN: stream << wxT("\n#UNKNOWN"); break;
-  case E_T_TEXT: stream << wxT("\n#TEXT"); break;
-  case E_T_ICON: stream << wxT("\n#ICON"); break;
-  case E_T_USERICON: stream << wxT("\n#USERICON"); break;
-  case E_T_BAR: stream << wxT("\n#BAR"); break;
-  case E_T_WEAPONLIST: stream << wxT("\n#WEAPONLIST"); break;
+  case E_T_UNKNOWN: return wxT("UNKNOWN");
+  case E_T_TEXT: return wxT("TEXT");
+  case E_T_ICON: return wxT("ICON");
+  case E_T_USERICON: return wxT("USERICON");
+  case E_T_BAR: return wxT("BAR");
+  case E_T_WEAPONLIST: return wxT("WEAPONLIST");
+  default:
+    break;
   }
-#endif
-  */
+  return wxT("WTF?!");
 }
 
 int CPMAElement::iget_time() const
@@ -517,23 +520,39 @@ bool CPMAElement::iget_has(int what) const
 }
 wxRect CPMAElement::iget_hudrect() const
 {
-  wxRect r = ElementBase::iget_rect(); 
-  if( m_type == E_T_WEAPONLIST )
+  const wxRect baser = ElementBase::iget_rect();
+  if( E_T_WEAPONLIST != m_type )
+    return baser;
+
+  wxRect r = baser; 
+  
+  const wxChar ta = iget_textalign();
+  switch( toupper(ta) )
   {
-    const wxChar ta = iget_textalign();
-    switch( toupper(ta) )
+  case 'C':
+    r.width = (r.width+WEAPONLIST_SPACE) * WEAPONLIST_ITEMCOUNT - WEAPONLIST_SPACE;
+    r.x -= r.width/2;
+    r.y -= r.height/2;
+    break;
+  case 'L':
+  case 'R':
+  default:
     {
-    case 'C':
-      r.width = (r.width+WEAPONLIST_SPACE) * WEAPONLIST_ITEMCOUNT - WEAPONLIST_SPACE;
-      r.x -= r.width/2;
-      r.y -= r.height/2;
-      break;
-    case 'L':
-    case 'R':
-    default:
-      r.height = (r.height+WEAPONLIST_SPACE) * WEAPONLIST_ITEMCOUNT - WEAPONLIST_SPACE;
-      break;
+      int h = wxGetApp().mainframe()->displayctrl()->height();
+      r.height = (baser.height+WEAPONLIST_SPACE) * WEAPONLIST_ITEMCOUNT - WEAPONLIST_SPACE;
+      // check for wrapping at bottom
+      
+      if( r.y + r.height - baser.height >= h  && r.y < h )
+      {// wrapwrapwrap
+        // how many are invisible and have to be wrapped?
+        int outside = std::floor(((r.y + r.height + WEAPONLIST_SPACE)-h)/(double)(baser.height+WEAPONLIST_SPACE));
+        // height changes to (TOTAL - wrapcount)# items
+        // width multiplies by ceil(TOTAL/wrapcount)# itms
+        r.height = (WEAPONLIST_ITEMCOUNT - outside) * (baser.height + WEAPONLIST_SPACE) - WEAPONLIST_SPACE;
+        r.width = std::ceil(WEAPONLIST_ITEMCOUNT/(double)(WEAPONLIST_ITEMCOUNT - outside)) * (baser.width + WEAPONLIST_SPACE) - WEAPONLIST_SPACE;
+      }
     }
+    break;
   }
   return r;
 }
@@ -792,7 +811,7 @@ void CPMAElement::render() const
       // te
       // we need the real rectangle, not adapted..
       wxRect rr = iget_rect();
-      wxRect startr = iget_hudrect();
+      wxRect hudr = iget_hudrect();
       
       IFont *font = wxGetApp().mainframe()->displayctrl()->font( iget_font() );
       Color4 bgcolor = iget_bgcolor();
@@ -800,13 +819,23 @@ void CPMAElement::render() const
       bool monospace = iget_monospace();
       wxChar textalign = toupper(iget_textalign());
 
-      int x = startr.x;
-      int y = startr.y;
+      int x = hudr.x;
+      int y = hudr.y;
       wxRect itemr; // the rect of the current item
       wxRect iconr; // the rect of the current icon
       wxRect textr; // the rect of the text to print
       for( size_t i=0; i < WEAPONLIST_ITEMCOUNT && i < m_weaponlist_tex.size(); ++i )
       {
+        // no wrapping for center aligned or a weaponlist that is completely out of bounds (outside of hudview)
+        int h = wxGetApp().mainframe()->displayctrl()->height();
+        if( textalign != 'C' && hudr.y < h-1  )
+        { // need some wrapping?
+          if( y >= h )
+          {
+            y = hudr.y;
+            x += rr.width + WEAPONLIST_SPACE;
+          }
+        }
         itemr = rr; // w&h
         itemr.x = x;
         itemr.y = y;

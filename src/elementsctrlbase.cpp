@@ -224,8 +224,7 @@ ElementsCtrlBase::ElementsCtrlBase(wxWindow* parent, int id, const wxPoint& pos,
 
 ElementsCtrlBase::~ElementsCtrlBase()
 {
-  if( m_elpopup )
-    wxDELETE(m_elpopup);
+  wxDELETE(m_elpopup);
 }
 
 void ElementsCtrlBase::set_properties()
@@ -554,7 +553,7 @@ void ElementsCtrlBase::show_element_popup( bool only_insert /*=false*/, const wx
   if( m_selels.size() == 0 )
     return; 
 
-  if( m_elpopup ) wxDELETE(m_elpopup);
+  wxDELETE(m_elpopup);
   m_elpopup = new wxMenu();
 
   const notuniqs_type& notuniqs = wxGetApp().hudfile()->notuniq_elements();

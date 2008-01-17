@@ -17,6 +17,7 @@
 
 #include "misc.h"
 #include "factorybase.h"
+#include "propertiesnotebookbase.h"
 
 #include <wx/stdpaths.h>
 #include <wx/dir.h>
@@ -65,6 +66,10 @@ void Variable::write()
   }
   c->Write(m_name, m_value);
 }
+void Variable::set_default()
+{
+  set(m_def);
+}
 
 void Variable::set( const wxString& str, bool isset /*=true*/ )
 {
@@ -109,7 +114,7 @@ void Prefs::set_default( const wxString& name )
 {
   variables_type::iterator var = m_vars.find(name);
   wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
-  var->second.set(var->second.def());
+  var->second.set_default();
 }
 
 void Prefs::setb( const wxString& name, bool bval )
@@ -131,6 +136,20 @@ void Prefs::setv( const wxString& name, const wxVariant& variant )
   variables_type::iterator var = m_vars.find(name);
   wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
   var->second.set( variant.MakeString() );
+}
+
+void Prefs::setwxc( const wxString& name, const wxColour& wxcol, int alpha /*= -1*/ )
+{
+  variables_type::iterator var = m_vars.find(name);
+  wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
+  if( var->second.cval().set(wxcol) )
+  { // ok looks like the color changed.. so let's update
+    Color4 tmp;
+    tmp.set(wxcol);
+    if( -1 != alpha )
+      tmp.set_a100(alpha);
+    var->second.set( tmp.to_string() );
+  }
 }
 
 bool Prefs::init()
@@ -159,7 +178,7 @@ void Prefs::addvar( const wxString& name, const wxString& def /*= wxT("")*/, int
 void Prefs::load()
 {
   
-  
+  addvar(wxT("app_version"), APP_VERSION, PVT_STRING, PVF_ARCHIVEALWAYS);
 
   // -- display
   addvar(wxT("game"), wxT(""), PVT_STRING);
@@ -179,16 +198,18 @@ void Prefs::load()
   addvar(wxT("elements_collections"), wxT("true"), PVT_BOOL);
   addvar(wxT("elements_collnamecount"), wxT("3"), PVT_INT); ///< minimum matching starting chars for a collection to be created
   addvar(wxT("app_perspective"), wxT(""), PVT_STRING);
-  addvar(wxT("props_color"), wxT("0 0 0 1"), PVT_COLOR);
-  addvar(wxT("props_bgcolor"), wxT("1 1 1 1"), PVT_COLOR);
-  addvar(wxT("props_inheritcolor"), wxT("0.39 0.39 0.58 1"), PVT_COLOR);
-  addvar(wxT("props_inheritbgcolor"), wxT("0.94 0.94 1.0 1"), PVT_COLOR);
+  addvar(wxT("props_color"), PROPS_COLOR.to_string(), PVT_COLOR);
+  addvar(wxT("props_bgcolor"), PROPS_BGCOLOR.to_string(), PVT_COLOR);
+  addvar(wxT("props_inheritcolor"), PROPS_INHERITCOLOR.to_string(), PVT_COLOR);
+  addvar(wxT("props_inheritbgcolor"), PROPS_INHERITBGCOLOR.to_string(), PVT_COLOR);
+  
   addvar(wxT("view_dragthreshold"), wxT("1"), PVT_INT); ///< how many pixels till we start dragging
   addvar(wxT("view_snapthreshold"), wxT("3"), PVT_INT); ///< how many pixels we snap to snappable items
   addvar(wxT("view_snapelements"), wxT("true"), PVT_BOOL); ///< whether to snap to other elements
   addvar(wxT("view_snapgrid"), wxT("true"), PVT_BOOL); ///< whether to snap to grid
   addvar(wxT("view_movestep"), wxT("12"), PVT_INT); ///< while moving/resizing with keys, how much to skip (by default same as grid)
   addvar(wxT("props_neverdisable"), wxT("false"), PVT_BOOL); ///< only if something is wrong, this quick hack can be used to not disable stuff at all in properties pane
+  addvar(wxT("view_updatewhiledragging"), wxT("true"), PVT_BOOL); ///< should give smoother drag&drop if disable
 
 
     // -- game specific
@@ -232,6 +253,11 @@ void Prefs::load()
 
   for( variables_type::iterator it = m_vars.begin(); it != m_vars.end(); ++it )
     it->second.read();
+
+  if( APP_VERSION != var(wxT("app_version")) )
+  { // different app version has written this config file.. we might need to do some conversion work
+  }
+  set(wxT("app_version"), APP_VERSION);
 }
 
 void Prefs::save( bool from_prefs_dialog /*= false*/ )

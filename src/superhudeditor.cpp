@@ -91,6 +91,7 @@ bool SHEApp::OnInit()
     wxLogWarning(wxT("Cannot open logfile:\n\n") + logfilename);
 #endif
 
+  wxLogDebug(APP_CAPTION);
   /*
   wxLocale::AddCatalogLookupPathPrefix(wxT("./locale/"));
   wxLocale::AddCatalogLookupPathPrefix(wxT("../locale/"));

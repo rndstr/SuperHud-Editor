@@ -239,6 +239,8 @@ class CPMAElement : public ElementBase
     bool        usemodel() const { return m_props.usemodel; }
     void        set_usemodel( bool um = true ) { m_props.usemodel = um; }
 
+
+    static wxString CPMAElement::type2string( int type );
   protected:
     void        cleanup();
 

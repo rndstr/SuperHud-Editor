@@ -23,7 +23,8 @@
 	* add: a grid (of points) elements can snap to (defaults to 12x12)
 	* add: a pak file browser (with image preview)
   * add: commandline support for opening a hudfile (superhudeditor.exe [filename])
-	* add: rendering of WeaponList!
+	* add: correct rendering of WeaponList!
+	* add: wrapping at bottom of weaponlist
 
 
 	* chg: new highly modifiable user interface

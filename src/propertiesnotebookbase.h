@@ -20,7 +20,13 @@
 
 #include "superhudeditor.h"
 #include "hudfilebase.h"
+#include "color4.h"
 #include <wx/aui/auibook.h>
+
+const Color4 PROPS_INHERITCOLOR = Color4(0.f, 0.f, 0.f);
+const Color4 PROPS_INHERITBGCOLOR = Color4(0.937f, 0.937f, 1.f);
+const Color4 PROPS_COLOR = Color4(0.f, 0.f, 0.f);
+const Color4 PROPS_BGCOLOR = Color4(1.f, 1.f, 1.f);
 
 class ElementBase;
 

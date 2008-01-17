@@ -37,8 +37,8 @@ ElementsListCtrl::ElementsListCtrl( wxWindow *parent ) :
   m_imglist.Add(wxArtProvider::GetBitmap(ART_ELEMENTS_COLLECTION_TITLE, wxART_OTHER, wxSize(16,16)));
   m_imglist.Add(wxArtProvider::GetBitmap(ART_ELEMENTS_COLLECTION_ITEM, wxART_OTHER, wxSize(16,16)));
 
-  InsertColumn(0, wxEmptyString, wxLIST_FORMAT_LEFT, 20);
-  InsertColumn(1, _("Name"), wxLIST_FORMAT_LEFT, 200);
+  InsertColumn(0, wxEmptyString, wxLIST_FORMAT_LEFT, 18);
+  InsertColumn(1, _("Name"), wxLIST_FORMAT_LEFT, 150);
 }
   
 

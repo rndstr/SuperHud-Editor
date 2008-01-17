@@ -135,7 +135,7 @@ void PrefsDialog::OnOk( wxCommandEvent& ev )
   
   wxColour col;
   Color4 c4;
-
+/*
   col << m_pg->GetPropertyValue(wxT("view-gridcolor"));
   c4.set(col); c4.set_a100(m_pg->GetPropertyValueAsInt(wxT("view-gridcolor-alpha")));
   Prefs::get().set(wxT("view_gridcolor"), c4.to_string());
@@ -151,26 +151,23 @@ void PrefsDialog::OnOk( wxCommandEvent& ev )
   col << m_vhf->GetValue();
   c4.set(col); c4.set_a100(m_vhfa->GetValue().GetInteger());
   Prefs::get().set(wxT("view_helper_fill"), c4.to_string());
+  */
 
   col << m_vhb->GetValue();
-  c4.set(col); c4.set_a100(m_vhba->GetValue().GetInteger());
-  Prefs::get().set(wxT("view_helper_border"), c4.to_string());
+  Prefs::get().setwxc(wxT("view_helper_border"), col, m_vhba->GetValue().GetInteger());
+  
 
   col << m_pcol->GetValue();
-  c4.set(col);
-  Prefs::get().set(wxT("props_color"), c4.to_string());
+  Prefs::get().setwxc(wxT("props_color"), col);
 
   col << m_pbgcol->GetValue();
-  c4.set(col);
-  Prefs::get().set(wxT("props_bgcolor"), c4.to_string());
+  Prefs::get().setwxc(wxT("props_bgcolor"), col);
 
   col << m_picol->GetValue();
-  c4.set(col);
-  Prefs::get().set(wxT("props_inheritcolor"), c4.to_string());
+  Prefs::get().setwxc(wxT("props_inheritcolor"), col);
 
   col << m_pibgcol->GetValue();
-  c4.set(col);
-  Prefs::get().set(wxT("props_inheritbgcolor"), c4.to_string());
+  Prefs::get().setwxc(wxT("props_inheritbgcolor"), col);
 
   Prefs::get().seti(wxT("elements_collnamecount"), m_ec->GetValue().GetInteger());
   Prefs::get().setb(wxT("props_neverdisable"), m_pnd->GetValue().GetBool());
@@ -485,7 +482,7 @@ wxPanel* PrefsDialog::create_advanced(wxWindow *parent)
    m_pg->Append( new wxPropertyCategory(_("Grid color")) );
    m_pg->Append( new wxColourProperty(_("Color"), wxT("view-gridcolor"), Prefs::get().var(wxT("view_gridcolor")).wxcval()) );
    m_pg->Append( new wxIntProperty(_("Opacity"), wxT("view-gridcolor-alpha"), Prefs::get().var(wxT("view_gridcolor")).cval().a100()) );
-
+   
    m_pg->Append( new wxPropertyCategory(_("Helpers color")) );
    wxPGId pid = m_pg->Append( new wxParentProperty(_("Selected elements")) );
    m_vhfs = m_pg->AppendIn( pid, new wxColourProperty(_("Fill"), wxT("view-helper-fill-selected"), Prefs::get().var(wxT("view_helper_fill_selected")).wxcval()) );

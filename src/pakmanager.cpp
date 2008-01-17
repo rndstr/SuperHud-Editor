@@ -63,6 +63,7 @@ void PakManager::cleanup()
 
 void PakManager::cleanup_lastloaded()
 {
+  return;
   if( m_lastloaded != m_pakcontent.end() )
   {
     wxLogDebug(wxT("PakManager::cleanup - Deleting cache data (justloaded): ") + m_lastloaded->first);
@@ -217,7 +218,7 @@ bool PakManager::load( char **buf, const wxString& fpath, int search_where, size
   wxLogDebug(wxT("PakManager::load - Found file: %s [%s]"), fpath.c_str(), PakManager::searchwhere2string(found).c_str());
   wxLogDebug(wxT("PakManager::load -  > ") + location);
 
-  pakcontent_t::iterator cont = m_pakcontent.find( fpath );
+  pakcontent_t::iterator cont = m_pakcontent.find( location );
   if( cont == m_pakcontent.end() || cont->second.buffer == 0 )
   { // not found or cache not available
     // load

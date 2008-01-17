@@ -1,11 +1,13 @@
 ? toolbar file view is not properly updated with menu item (->debug win)
 + add second background image for 16:10
 ? E_T_ICON and color with alpha, check if correctly rendered (->PowerUp3_Icon e.g.) looks like alpha is ignored @she
++ dragging is too slow
 
 [UNIX] make APPRELATIVE and APPPAK also look in ~/.superhudeditor/
 
 
 -- later --
++ snapping outside of hudview (black borders) is b0rked
 + read proxy in webupdater from superhudeditor.conf
 + figure out (or rather: confirm?) onwhich elements `color T/E' changes something
 + add presets (in particular: oldschool-flagstatus, oldschool-score, ch_teamBackground hack, chat/team messages)
@@ -21,5 +23,5 @@ t the global defined messages (common.h) are they translated?
 + make use of scrollwheel?
 + cpma/docs/README.hudspecs - for colorTE and FILL there is a border (which texture?) drawn. (TODO all elements?)
 + if ICON and draw3d we could lay a texture over it like modeltexture but without the backgroundmodel..
-+ render lagometer icon (->E_T_ICON?)
 + add an accelerator to temporarily hide all other elements except selected
+? there is some fishy code with Colour4/wxColour conversion to not loose precision... 

@@ -47,6 +47,7 @@ enum
 // ugliest :x *careface*
 class Variable
 {
+  friend class Prefs;
   public:
     Variable( const wxString& name, const wxString& def = wxT(""), int type = PVT_ANY, int flags = PVF_NONE );
 
@@ -65,7 +66,12 @@ class Variable
       wxASSERT_MSG( m_type == PVT_ANY || m_type == PVT_BOOL, m_name );
       return boolval;
     }
-    Color4 cval() const
+    const Color4& cval() const
+    {
+      wxASSERT_MSG( m_type == PVT_ANY || m_type == PVT_COLOR, m_name );
+      return colorval;
+    }
+    Color4& cval()
     {
       wxASSERT_MSG( m_type == PVT_ANY || m_type == PVT_COLOR, m_name );
       return colorval;
@@ -84,6 +90,7 @@ class Variable
     void read();
     void write();
     void set( const wxString& str, bool isset = true );
+    void set_default();
 
     wxString def() const { return m_def; }
 
@@ -138,6 +145,7 @@ class Prefs
     void setb( const wxString& name, bool bval );
     void seti( const wxString& name, int ival );
     void setv( const wxString& name, const wxVariant& variant );
+    void setwxc( const wxString& name, const wxColour& wxcol, int alpha = -1 );
     void set_default( const wxString& name );
 
 

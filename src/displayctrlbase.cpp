@@ -32,6 +32,7 @@
 
 #include <cmath>
 #include <algorithm>
+#include <ctype.h>
 
 BEGIN_EVENT_TABLE(DisplayCtrlBase, wxGLCanvas)
   EVT_SIZE(DisplayCtrlBase::OnSize)
@@ -58,12 +59,9 @@ DisplayCtrlBase::DisplayCtrlBase( wxWindow *parent, wxWindowID id, const wxPoint
 void DisplayCtrlBase::cleanup()
 {
   wxLogDebug(wxT("DisplayCtrlBase::cleanup"));
-  if( m_texdefault )
-    wxDELETE(m_texdefault);
-  if( m_texmodel )
-    wxDELETE(m_texmodel);
-  if( m_fish )
-    wxDELETE(m_fish);
+  wxDELETE(m_texdefault);
+  wxDELETE(m_texmodel);
+  wxDELETE(m_fish);
 }
 
 void DisplayCtrlBase::OnPaint( wxPaintEvent& )
@@ -100,7 +98,6 @@ void DisplayCtrlBase::init()
   m_texmodel = new Texture( wxT("texture/model.tga"), PM_SEARCH_APPFILE );
 
   m_initialized = true;
-
 }
 
 IFont* DisplayCtrlBase::font( const wxString& name )
@@ -132,8 +129,8 @@ void DisplayCtrlBase::OnKeyDown( wxKeyEvent& ev )
 
   int move = (ev.ShiftDown() ? 1 : Prefs::get().var(wxT("view_movestep")).ival());
   int kc = ev.GetKeyCode();
-  if( std::isalpha(kc) )
-    kc = std::tolower(kc);
+  if( kc >= 'a' && kc <= 'z' || kc >= 'A' && kc <= 'Z' ) // msvc does not like isalpha which throws debug assertion due to kc having some invalid value
+    kc = tolower(kc);
 
   switch( kc )
   {
@@ -397,10 +394,14 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
         }
         moved = move;
         wxGetApp().mainframe()->update_displayctrl();
-        wxGetApp().mainframe()->update_propertiesctrl();
-        wxGetApp().mainframe()->update_configpreview();
+        if( Prefs::get().var(wxT("view_updatewhiledragging")).bval() )
+        {
+          wxGetApp().mainframe()->update_propertiesctrl();
+          wxGetApp().mainframe()->update_configpreview();
+        }
         wxRect r = m_drag_el->iget_hudrect();
         wxGetApp().mainframe()->statusbar()->SetStatusText( m_drag_el->name() + wxString::Format(wxT(" @ (%i,%i)-(%i,%i)"), r.GetLeft(), r.GetTop(), r.GetRight(), r.GetBottom()), SB_ELEMENT );
+        wxGetApp().mainframe()->statusbar()->SetStatusText( _("Click right mouse button to abort dragging"), SB_MSG );
       }
     }
     else if( ev.RightDown() )
@@ -435,6 +436,9 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
       else if( m_drag_mode == DRAG_DRAGGING )
       { // drop!
         wxGetApp().hudfile()->set_modified();
+        wxGetApp().mainframe()->update_displayctrl();
+        wxGetApp().mainframe()->update_propertiesctrl();
+        wxGetApp().mainframe()->update_configpreview();
         // NOTE that this below (probably?) isn't necessary as we will have received a OnMouse move event previously
         /*
         elements_type& els = wxGetApp().elementsctrl()->selected_elements();
@@ -619,6 +623,7 @@ void DisplayCtrlBase::prepare2d()
   //SetCurrent();
 
   glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Black Background
+  
   glEnable(GL_TEXTURE_2D);   // textures
   glEnable(GL_COLOR_MATERIAL);
   glEnable(GL_BLEND);
@@ -683,6 +688,7 @@ void DisplayCtrlBase::prepare3d()
   glDepthFunc(GL_LEQUAL); // The Type Of Depth Testing To Do
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
   glDisable( GL_CULL_FACE );
+  glDisable(GL_BLEND);
 
   glEnable( GL_LIGHTING );
   GLfloat global_ambient[] = { .2f, .2f, .2f, 1.f };
@@ -694,8 +700,9 @@ void DisplayCtrlBase::prepare3d()
   glEnable( GL_LIGHT0 );
   GLfloat lightpos[] = {0.f, 0.f, 50.f, 1.f };
   glLightfv( GL_LIGHT0, GL_POSITION, lightpos );
+  
 
-  //glEnable(GL_COLOR_MATERIAL);
+  glEnable(GL_COLOR_MATERIAL);
 
   wxRect hudrect(0, 0, GetSize().GetWidth(), GetSize().GetHeight());
 

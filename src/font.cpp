@@ -71,8 +71,7 @@ CPMAFont::CPMAFont( const wxString& name ) :
 
 void CPMAFont::cleanup()
 {
-  if( m_tex )
-    wxDELETE(m_tex);
+  wxDELETE(m_tex);
 }
 
 bool CPMAFont::load()

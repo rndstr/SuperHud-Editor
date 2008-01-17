@@ -136,7 +136,11 @@ void MiscPropertiesCtrl::from_element( const ElementBase *el )
   SetPropertyValue( wxT("draw3d"), cel->iget_draw3d() );
   SetPropertyValue( wxT("doublebar"), cel->iget_doublebar() );
   //SetPropertyValue( wxT("time"), cel->iget_time() );
+#ifndef NDEBUG
+  SetPropertyHelpString( wxT("help"), wxString::Format(wxT("[%s] %s"), CPMAElement::type2string(cel->type()), el->desc()) );
+#else
   SetPropertyHelpString( wxT("help"), el->desc() );
+#endif
 
   update_layout();
 

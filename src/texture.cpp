@@ -33,7 +33,7 @@ void Texture::cleanup()
   if( m_texid )
     glDeleteTextures(1, &m_texid);
   m_texid = 0;
-  m_name = wxEmptyString;
+  m_name = wxT("");
 }
 
 void Texture::load( const wxString& fpath, int search_where, bool mipmap /*=false*/ )
@@ -80,7 +80,6 @@ void Texture::glBind() const
 
 GLuint Texture::create_texture( wxImage& img, bool mipmap /*=false */ )
 {
-  
   GLuint texid;
 
   glGenTextures(1, &texid);
