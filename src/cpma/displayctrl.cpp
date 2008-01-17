@@ -163,14 +163,14 @@ void CPMADisplayCtrl::render()
     (*cit)->prerender();
     (*cit)->render();
   }
-  // draw nonselected
+  // draw nonselected helper
   for( cit_elements cit  = els.begin(); cit != els.end(); ++cit )
   {
     if( !(*cit)->is_rendered() || (*cit)->is_selected() )
       continue;
     render_helper( (*cit)->iget_hudrect(), false );
   }
-  // draw selected
+  // draw selected helper
   for( cit_elements cit  = els.begin(); cit != els.end(); ++cit )
   {
     if( !(*cit)->is_rendered() || !(*cit)->is_selected() )

@@ -686,15 +686,18 @@ void CPMAElement::render() const
       }
       if( !usemodel() )
       {
-        color.glBind();
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-        glEnable(GL_TEXTURE_2D);
-        if( m_ptex && m_ptex->is_ok() )
-          m_ptex->glBind();
-        else
-          wxGetApp().mainframe()->displayctrl()->texture_default()->glBind();
-        she::draw_rect( r, true );
-        glDisable(GL_TEXTURE_2D);
+        if( m_ptex )
+        {
+          color.glBind();
+          glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+          glEnable(GL_TEXTURE_2D);
+          if( m_ptex->is_ok() )
+            m_ptex->glBind();
+          else
+            wxGetApp().mainframe()->displayctrl()->texture_default()->glBind();
+          she::draw_rect( r, true );
+          glDisable(GL_TEXTURE_2D);
+        }
       }
       else // usemodel
       {
@@ -947,8 +950,9 @@ void CPMAElement::prerender()
       {
         m_ptex->load( m_props.image, PM_SEARCH_HUDFILE );
       }
-      
     }
+    if( m_props.image.empty() && m_ptex )
+      wxDELETE(m_ptex);
     break;
   }
 }

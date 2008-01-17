@@ -416,6 +416,7 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
         wxGetApp().mainframe()->update_displayctrl();
         wxGetApp().mainframe()->update_propertiesctrl();
         wxGetApp().mainframe()->update_configpreview();
+        wxGetApp().mainframe()->statusbar()->SetStatusText( _("Ready"), SB_MSG );
       }
     }
     else if( ev.LeftUp() )
@@ -465,6 +466,7 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
       m_drag_mode = DRAG_NONE;
       m_drag_el = 0;
       moved = Vec2(0,0);
+      wxGetApp().mainframe()->statusbar()->SetStatusText( _("Ready"), SB_MSG );
     }
   } // if ControlDown
 }

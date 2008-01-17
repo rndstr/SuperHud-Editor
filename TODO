@@ -1,10 +1,14 @@
-? toolbar file view is not properly updated with menu item (->debug win)
+! toolbar file view is not properly updated with menu item (->debug win)
 + add second background image for 16:10
-? E_T_ICON and color with alpha, check if correctly rendered (->PowerUp3_Icon e.g.) looks like alpha is ignored @she
+! E_T_ICON and color with alpha, check if correctly rendered (->PowerUp3_Icon e.g.) looks like alpha is ignored @she
+! clearing (in GUI) m_image for USERICON does not remove the currently loaded image
+! Pre/PostDecorate always get ugly texture-not-found
++ verify whether grey or red lagometer is used in cpma
 
 
 
 -- later --
++ create statusbar reset function that sets to `Ready'.. cba right now..
 + [UNIX] make APPRELATIVE and APPPAK also look in ~/.superhudeditor/
 + add preferences for `view_updatewhiledragging'
 + snapping outside of hudview (black borders) is b0rked i think
