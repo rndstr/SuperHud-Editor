@@ -5,12 +5,12 @@
 <webupdate version="1.0">
 
   <!-- our customized messages -->
-  <msg-update-available>Some updates for "$(appname)" are available; don't miss them !</msg-update-available>
+  <msg-update-available>There are updates for "$(appname)", make sure to install them!</msg-update-available>
   <msg-update-notavailable>You have the most updated version of "$(appname)"...</msg-update-notavailable>
 
   <!-- for an example of XML webupdate script with multiple packages see script2.xml -->
   <package id="superhudeditor">
-      <latest-version importance="high">1.9.9</latest-version>
+      <latest-version importance="high">0.3.0</latest-version>
 
       <!-- our downloads (1 per platform) -->
       <latest-download>
@@ -25,19 +25,8 @@
         </actions>
 
       </latest-download>
-      <latest-download>
-
-        <!-- on unix-based OS we would use .tar.gz archives but since wx currently has a built-in support only for ZIP archives,
-            we will use a ZIP also for unix-based OS -->
-        <uri>http://plrf.org/superhudeditor/download/webupdatertest/test.zip</uri>
-        <md5>890f3755f5f19a3c4ed74f7f8c0a9abb</md5>
-        <platform name="gtk"/>
-
-        <actions><run/></actions>
-      </latest-download>
-
           <!-- description for this package; don't break lines or you'll get some empty spaces in the final description string -->
-      <description>The package containing the binaries for the "$(appname)"... if you need to show to the user a link to your changelog, then the right place is this: URLs like http://wxcode.sourceforge.net are automatically highlighted and made clickable...</description>
+          <description>Full ChangeLog: http://plrf.org/superhudeditor</description>
   </package>
 
 </webupdate>

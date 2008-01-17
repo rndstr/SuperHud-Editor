@@ -7,7 +7,8 @@
 
 
 -- later --
-+ snapping outside of hudview (black borders) is b0rked
++ add preferences for `view_updatewhiledragging'
++ snapping outside of hudview (black borders) is b0rked i think
 + read proxy in webupdater from superhudeditor.conf
 + figure out (or rather: confirm?) onwhich elements `color T/E' changes something
 + add presets (in particular: oldschool-flagstatus, oldschool-score, ch_teamBackground hack, chat/team messages)

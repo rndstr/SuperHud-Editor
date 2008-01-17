@@ -172,7 +172,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   wxMenu *help_menu = new wxMenu;
 #if HAS_WEBUPDATER
   // so far only win32 :x
-  help_menu->Append( ID_MENU_HELP_UPDATE, _("&Web updater...") );
+  help_menu->Append( ID_MENU_HELP_UPDATE, _("&Web Updater...") );
 #endif
   help_menu->Append( ID_MENU_HELP_TIP, _("&Tip of the Day") );
   help_menu->Append( wxID_ABOUT, _("&About\tCtrl+A") );
@@ -341,11 +341,11 @@ void MainFrame::OnDownload( wxDownloadEvent& event )
       
 
       wxString msg = _("\\o/ There is a new version available: ");
-      msg += wxString::Format( wxT("%i.%i.%i"), major, minor, release) + (!releasetype.empty() ? wxT("_")+releasetype : wxT(""));
-      msg += wxString::Format(_(" (you have %s installed)"), APP_VERSION.c_str());
+      msg += wxString::Format( wxT("%i.%i.%i "), major, minor, release) + (!releasetype.empty() ? releasetype : wxT(""));
+      msg += wxString::Format(_("\n(you have %s installed)"), APP_VERSION.c_str());
       msg += wxT("\n\n");
 #if HAS_WEBUPDATER
-      msg += _("Go to Help->Update.. or visit the website: ") + APP_URL;
+      msg += _("Go to Help->Web Updater... or visit the website: ") + APP_URL;
 #else
       msg += _("Visit the website: ") + APP_URL;
 #endif
@@ -446,7 +446,12 @@ void MainFrame::OnMenuAbout( wxCommandEvent& )
   wxAboutDialogInfo info;
   info.SetName(APP_NAME);
   info.SetVersion(APP_VERSION);
-  info.SetDescription(wxT("Head-Up Display Editor for Quake3 CPMA under GPL Licence"));
+  wxString desc = wxT("Head-Up Display Editor for Quake3 CPMA under GPL License.");
+  desc += wxT("\n");
+  desc += wxVERSION_STRING;
+  desc += wxT("\nBuildtime: ");
+  desc += APP_BUILDTIME;
+  info.SetDescription(desc);
   info.SetCopyright(wxT("(C) 2006-2008 Roland Schilter <rolansch@ethz.ch>"));
   info.SetWebSite(APP_URL, APP_URL);
   wxAboutBox(info);

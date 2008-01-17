@@ -89,10 +89,7 @@ class Color4
     bool set(const wxColour& col)
     {
       if( wxcolisvalid && col == tmpwxcol )
-      {
-        wxLogDebug(wxT("YES NO CONVERSION ERROR"));
         return false; // it's already fine.. this is important to happen if there shouldn't be any conversion errors
-      }
       wxcolisvalid = true;
       tmpwxcol = col;
       r = col.Red()/255.f;
