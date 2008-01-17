@@ -5,12 +5,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-
+//
 // SuperHud Editor is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-
+//
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include "displayctrl.h"
@@ -23,6 +23,7 @@
 #include "../elementsctrlbase.h"
 #include "../font.h"
 #include "../texture.h"
+#include "../model.h"
 
 #include <algorithm>
 
@@ -85,15 +86,6 @@ void CPMADisplayCtrl::load_background()
 
 void CPMADisplayCtrl::OnIdle( wxIdleEvent& )
 {
-  if( !wxGetApp().mainframe() || !wxGetApp().mainframe()->model() )
-    return;
-
-  static wxLongLong last = 0;
-  if( wxGetLocalTimeMillis() - last > 100 )
-  {
-    Refresh();
-    last = wxGetLocalTimeMillis();
-  }
 }
 
 
@@ -112,105 +104,79 @@ bool render_sort( ElementBase *a, ElementBase *b )
 
 void CPMADisplayCtrl::render()
 {
-  static int count = 0;
   if( !IsShown() ) return;
   // that this is not yet ready only happens on wxGTK
   if( !wxGetApp().hudfile() ) return; 
   
   //wxLogDebug(wxT("CPMADisplayCtrl::render"));
 
- 
-  if( wxGetApp().mainframe() && wxGetApp().mainframe()->model() )
+  if( m_fish )
   {
-    count += 10;
-    glLoadIdentity();
-    glTranslatef(0.f, 0.f, -40.f);
-    glRotatef(30.f+count, 0.f, 1.f, 0.f);
-    glClearColor(0.f, 0.f, 0.f, 1.f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    glColor4f(1.f, 1.f, 1.f, 1.f);
-    wxGetApp().mainframe()->model()->render();
-
-    /*
-    glBegin(GL_QUADS);
-      glTexCoord2f(0.f, 0.f);
-      glVertex2i(0, 0);
-      glTexCoord2f(1.f, 0.f);
-      glVertex2i(WIDTH, 0);
-      glTexCoord2f(1.f, 1.f);
-      glVertex2i(WIDTH, HEIGHT);
-      glTexCoord2f(0.f, 1.f);
-      glVertex2i(0, HEIGHT);
-    glEnd();
-    */
+    DisplayCtrlBase::render();
+    return;
   }
-  else
-  {
+ 
+  glClearColor(0.f, 0.f, 0.f, 1.f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glClearColor(0.f, 0.f, 0.f, 1.f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // FIXME what if load_background fails... will it attempt to load every frame? ;) amg
-    //if( !m_background )
+  // FIXME what if load_background fails... will it attempt to load every frame? ;) amg
+  //if( !m_background )
 //      load_background();
 
-    glEnable(GL_TEXTURE_2D);
-    m_background->glBind();
-    // background
+  glEnable(GL_TEXTURE_2D);
+  m_background->glBind();
+  // background
+  glColor4f(1.f, 1.f, 1.f, 1.f);
+  she::draw_rect(wxRect(0, 0, WIDTH, HEIGHT), true);
+  glDisable(GL_TEXTURE_2D);
+  /*
+  glBegin(GL_QUADS);
     glColor4f(1.f, 1.f, 1.f, 1.f);
-    she::draw_rect(wxRect(0, 0, WIDTH, HEIGHT), true);
-    glDisable(GL_TEXTURE_2D);
-    /*
-    glBegin(GL_QUADS);
-      glColor4f(1.f, 1.f, 1.f, 1.f);
-      glTexCoord2f(0.f, 0.f);
-      glVertex2i(0, 0);
-      glTexCoord2f(1.f, 0.f);
-      glVertex2i(WIDTH, 0);
-      glTexCoord2f(1.f, 1.f);
-      glVertex2i(WIDTH, HEIGHT);
-      glTexCoord2f(0.f, 1.f);
-      glVertex2i(0, HEIGHT);
+    glTexCoord2f(0.f, 0.f);
+    glVertex2i(0, 0);
+    glTexCoord2f(1.f, 0.f);
+    glVertex2i(WIDTH, 0);
+    glTexCoord2f(1.f, 1.f);
+    glVertex2i(WIDTH, HEIGHT);
+    glTexCoord2f(0.f, 1.f);
+    glVertex2i(0, HEIGHT);
+  glEnd();
+  */
+  
+  if( Prefs::get().var(wxT("view_grid")) )
+  {
+    // grid
+    Prefs::get().var(wxT("view_gridcolor")).cval().glBind();
+    glBegin(GL_POINTS);
+    for( int x=0; x < WIDTH; x += Prefs::get().var(wxT("view_gridX")).ival() )
+      for( int y=0; y < HEIGHT; y += Prefs::get().var(wxT("view_gridY")).ival() )
+        glVertex2i(x, y);
     glEnd();
-    */
-    
-    if( Prefs::get().var(wxT("view_grid")) )
-    {
-      // grid
-      Prefs::get().var(wxT("view_gridcolor")).cval().glBind();
-      glBegin(GL_POINTS);
-      for( int x=0; x < WIDTH; x += Prefs::get().var(wxT("view_gridX")).ival() )
-        for( int y=0; y < HEIGHT; y += Prefs::get().var(wxT("view_gridY")).ival() )
-          glVertex2i(x, y);
-      glEnd();
-    }
-    // draw itemz0r
-    elements_type els = wxGetApp().hudfile()->elements();
-    // sort by: PreDecorate>Other>PostDecorate, Selected>NotSelected
-    std::sort(els.begin(), els.end(), render_sort);
-    for( cit_elements cit  = els.begin(); cit != els.end(); ++cit )
-    {
-      if( !(*cit)->is_rendered() )
-        continue;
-      (*cit)->prerender();
-      (*cit)->render();
-    }
-    // draw nonselected
-    for( cit_elements cit  = els.begin(); cit != els.end(); ++cit )
-    {
-      if( !(*cit)->is_rendered() || (*cit)->is_selected() )
-        continue;
-      render_helper( (*cit)->iget_hudrect(), false );
-    }
-    // draw selected
-    for( cit_elements cit  = els.begin(); cit != els.end(); ++cit )
-    {
-      if( !(*cit)->is_rendered() || !(*cit)->is_selected() )
-        continue;
-      render_helper( (*cit)->iget_hudrect(), true );
-    }
-
+  }
+  // draw itemz0r
+  elements_type els = wxGetApp().hudfile()->elements();
+  // sort by: PreDecorate>Other>PostDecorate, Selected>NotSelected
+  std::sort(els.begin(), els.end(), render_sort);
+  for( cit_elements cit  = els.begin(); cit != els.end(); ++cit )
+  {
+    if( !(*cit)->is_rendered() )
+      continue;
+    (*cit)->prerender();
+    (*cit)->render();
+  }
+  // draw nonselected
+  for( cit_elements cit  = els.begin(); cit != els.end(); ++cit )
+  {
+    if( !(*cit)->is_rendered() || (*cit)->is_selected() )
+      continue;
+    render_helper( (*cit)->iget_hudrect(), false );
+  }
+  // draw selected
+  for( cit_elements cit  = els.begin(); cit != els.end(); ++cit )
+  {
+    if( !(*cit)->is_rendered() || !(*cit)->is_selected() )
+      continue;
+    render_helper( (*cit)->iget_hudrect(), true );
   }
 }
 

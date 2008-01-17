@@ -30,7 +30,6 @@ class wxTextCtrl;
 class ElementsCtrlBase;
 class PropertiesNotebookBase;
 class DisplayCtrlBase;
-class Model;
 class wxDownloadEvent;
 
 class MainFrame : public wxFrame
@@ -61,7 +60,6 @@ class MainFrame : public wxFrame
     DisplayCtrlBase*    displayctrl() { return m_displayctrl; }
     wxTextCtrl*         configpreview() { return m_configpreview; }
     wxStatusBar*        statusbar() { return m_statusbar; }
-    Model*              model() { return m_model; }
     wxMenu*             edit_menu() { return m_edit_menu; }
 
     /// Selection changed in ElementsCtrl
@@ -98,7 +96,6 @@ class MainFrame : public wxFrame
     wxStatusBar       *m_statusbar;
     wxToolBar         *m_toolbar_file;
 
-    Model             *m_model;
 
     ElementsCtrlBase  *m_elementsctrl;
     PropertiesNotebookBase *m_propertiesnotebook;

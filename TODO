@@ -1,4 +1,3 @@
-t put an unknown elementname into the hud, code adds it anyway.. what happens then..? can we delete? write?
 + read proxy in webupdater from superhudeditor.conf
 
 ? toolbar file view is not properly updated with menu item (->debug win)

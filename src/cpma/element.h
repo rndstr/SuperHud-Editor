@@ -76,8 +76,8 @@ const int E_FONTSIZE_DEFAULT_POINT = 12; // verified 1.35
 const int E_FONTSIZE_DEFAULT_COORDX = 12; // verified 1.35
 const int E_FONTSIZE_DEFAULT_COORDY = 12; // verified 1.35
 
-const Color4 E_BGCOLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 0.f ); // (alpha==0) verified
-const Color4 E_COLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 1.f ); // verified
+const Color4 E_BGCOLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 0 ); // (alpha==0) verified
+const Color4 E_COLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 100 ); // verified
 const Color4 E_FADE_DEFAULT = E_COLOR_DEFAULT; // NOTverified
 
 const wxString E_FONT_DEFAULT = wxT("cpma"); // should be `cpma' or otherwise previews are drawn? <-- oO what is that supposed to mean?

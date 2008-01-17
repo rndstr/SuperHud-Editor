@@ -19,7 +19,6 @@
 
 
 #include "factorybase.h"
-#include "model.h"
 #include "prefs.h"
 #include "prefsdialog.h"
 #include "convertdialog.h"
@@ -39,6 +38,9 @@
 #include <wx/tipdlg.h>
 #include <wx/cmdproc.h>
 #include <wx/tokenzr.h>
+#include <wx/aboutdlg.h>
+#include <wx/txtstrm.h>
+#include <wx/sstream.h>
 
 #if !defined(__WXMSW__) && !defined(__WXPM__)
     #include "xpm/icons/superhudeditor.xpm"
@@ -89,7 +91,6 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
     m_edit_menu(0),
     m_statusbar(0),
     m_toolbar_file(0),
-    m_model(0),
     m_elementsctrl(0),
     m_propertiesnotebook(0),
     m_configpreview(0),
@@ -328,7 +329,7 @@ void MainFrame::OnDownload( wxDownloadEvent& event )
 
       wxString msg = _("\\o/ There is a new version available: ");
       msg += wxString::Format( wxT("%i.%i.%i"), major, minor, release) + (!releasetype.empty() ? wxT("_")+releasetype : wxT(""));
-      msg += wxString::Format(_("(you have %s installed)"), APP_VERSION.c_str());
+      msg += wxString::Format(_(" (you have %s installed)"), APP_VERSION.c_str());
       msg += wxT("\n\n");
 #if HAS_WEBUPDATER
       msg += _("Go to Help->Update.. or visit the website: ") + APP_URL;
@@ -427,9 +428,6 @@ void MainFrame::OnMenuExit( wxCommandEvent& )
 {
   Close(true);
 }
-#include <wx/aboutdlg.h>
-#include "pakfiledialog.h"
-#include "model.h"
 void MainFrame::OnMenuAbout( wxCommandEvent& )
 {
   wxAboutDialogInfo info;
@@ -439,12 +437,6 @@ void MainFrame::OnMenuAbout( wxCommandEvent& )
   info.SetCopyright(wxT("(C) 2006-2008 Roland Schilter <rolansch@ethz.ch>"));
   info.SetWebSite(APP_URL, APP_URL);
   wxAboutBox(info);
-  
-
-  /*
-  m_model = new Model();
-  m_model->load_mde(wxT("model/dfegg.mde"), PM_SEARCH_APPFILE);
-  */
 }
 
 void MainFrame::OnMenuNew( wxCommandEvent& )
@@ -598,8 +590,6 @@ void MainFrame::OnClose( wxCloseEvent& ev )
   if( !confirm_saving() )
     return;
 
-  if( m_model )
-    wxDELETE( m_model );
   
   // save view
   Prefs::get().set(wxT("app_perspective"), m_mgr.SavePerspective());
@@ -753,8 +743,6 @@ void MainFrame::OnMenuHelpUpdate( wxCommandEvent& )
 }
 #endif
 
-#include <wx/sstream.h>
-#include <wx/txtstrm.h>
 void MainFrame::OnElementSelectionChanged()
 {
   wxASSERT(m_elementsctrl);

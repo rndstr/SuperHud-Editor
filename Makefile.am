@@ -1,19 +1,34 @@
+# vim: noexpandtab
 SUBDIRS = src
 
-DOCS = AUTHORS ChangeLog COPYING INSTALL NEWS README
+DOCS = AUTHORS ChangeLog COPYING INSTALL NEWS README KNOWNBUGS TODO
 
-# note that this is only for devel... :x we should have everything in a pak file for retail
-nobase_dist_pkgdata_DATA = data/cpma/hudspecs.dat data/cpma/texture/background.jpg \
-                           data/model/dfegg.mde \
-                           data/texture/*.tga \
-                           data/tips.txt
+
+# Data that needs to be distributed and won't be packed up.
+# Note that webupdater is not supported on non-win32 so we 
+# don't ship it!
+nobase_dist_pkgdata_DATA = data/data-$(VERSION).pke data/tips.txt
+
+
 
 # EXTRA_DIST
+
+# those go into data-VERSION.pke but ship it into tarball nevertheless
+datapke = \
+					data/cpma/docs/README.hudspecs \
+					data/cpma/docs/README.superhud \
+					data/cpma/texture/background.jpg \
+					data/cpma/texture/backgroundws.jpg \
+					data/model/dfegg.mde \
+					data/model/README \
+					data/texture/default.tga \
+					data/texture/model.tga
+
 # we aren't using the webupdater on linux..
-dist_noinst_DATA =  \
-                    superhudeditor.sln \
-                    superhudeditor.vcproj \
-                    superhudeditor.cbp \
+# but provide it in distributed file nevertheless
+webupdater = \
+										data/webupdater/local.xml \
+										data/webupdater/webupdatedlg.xrc \
                     webupdater/include/wx/checked_dis.xpm \
                     webupdater/include/wx/checkedlistctrl.h \
                     webupdater/include/wx/checked.xpm \
@@ -42,7 +57,13 @@ dist_noinst_DATA =  \
                     webupdater/src/webupdatedlg.xrc \
                     webupdater/src/www.xpm
 
+dist_noinst_DATA =  \
+										data/data-$(VERSION).include \
+										$(datapke) \
+										create-data-pke.sh \
+                    superhudeditor.sln \
+                    superhudeditor.vcproj \
+                    superhudeditor.cbp \
+										$(webupdater) \
+										www/webupdater/remote.xml
 
-
-
-#DISTCHECK_CONFIGURE_FLAGS = --with-wx-config=`which wx-config-2.6` --disable-opengl

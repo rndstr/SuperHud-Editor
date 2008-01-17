@@ -28,7 +28,7 @@ AC_C_CONST
 AC_TYPE_SIZE_T
 
 AM_OPTIONS_WXCONFIG
-reqwx=2.8.0
+reqwx=2.8.7
 dnl check if WX was built with opengl support
 dnl but this doesn't give a warning if wxGTK wasn't built with opengl
 if test x$enable_debug = xyes; then

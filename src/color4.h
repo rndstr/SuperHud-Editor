@@ -38,7 +38,7 @@ typedef enum
 class Color4
 {
   public:
-    explicit Color4( float _r, float _g, float _b, float _a_percent=100 ) :
+    explicit Color4( float _r, float _g, float _b, int _a_percent=100 ) :
         r(_r), g(_g), b(_b), a(_a_percent), type(COLOR_RGBA)
     {
       set_a100(_a_percent);

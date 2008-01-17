@@ -5,12 +5,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-
+//
 // SuperHud Editor is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-
+//
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef DISPLAYCTRLBASE_H
@@ -37,6 +37,7 @@ typedef wxPoint Vec2;
 
 class Texture;
 class ElementBase;
+class Model;
 
 class DisplayCtrlBase : public wxGLCanvas
 {
@@ -93,17 +94,19 @@ class DisplayCtrlBase : public wxGLCanvas
     Texture       *m_texdefault;
     Texture       *m_texmodel; ///< what we display if user selected model (we can't render it (yet) ourselves : ((( 
 
-    virtual void render() {}
-    
+    Model         *m_fish;
+    wxTimer       m_timer_anim;
+    float         m_fishrot;
+
+    virtual void render();
 
 
-
-    virtual void OnIdle( wxIdleEvent& );
     void OnSize( wxSizeEvent& );
     void OnEraseBackground( wxEraseEvent& );
     void OnMouse( wxMouseEvent& );
     void OnPaint( wxPaintEvent& );
     void OnKeyDown( wxKeyEvent& );
+    void OnTimerAnim( wxTimerEvent& );
 
     /// smallest distance (max view_snapthreshold) to other elements
     /// @returns The 2d vector we have to move the selection to snap or wxPoint(0,0) if it's disabled by prefs 
@@ -121,6 +124,7 @@ class DisplayCtrlBase : public wxGLCanvas
     void prepare3d();
     
     wxPoint panel_to_hud( const wxPoint& p ) const;
+
 
     DECLARE_EVENT_TABLE()
 

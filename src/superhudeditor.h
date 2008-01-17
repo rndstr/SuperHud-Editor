@@ -25,11 +25,11 @@
 
 const wxString APP_NAME = wxT("SuperHud Editor");
 const wxString APP_NAME_UNIX = wxT("superhudeditor");
-const wxString APP_VERSION = wxT("0.3.0");
+const wxString APP_VERSION = wxT("0.3.0 beta");
 const int APP_MAJOR_VERSION = 0;
 const int APP_MINOR_VERSION = 3;
 const int APP_RELEASE_NUMBER = 0;
-const wxString APP_RELEASE_TYPE = wxT("");
+const wxString APP_RELEASE_TYPE = wxT("beta");
 const wxString APP_VENDOR = wxEmptyString;
 #ifndef NDEBUG
   const wxString APP_CAPTION = APP_NAME + wxT(" v") + APP_VERSION + wxT(" DEBUG BUILD");

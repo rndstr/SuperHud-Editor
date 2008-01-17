@@ -5,12 +5,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-
+//
 // SuperHud Editor is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-
+//
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include "displayctrlbase.h"
@@ -20,6 +20,7 @@
 #include "elementsctrlbase.h"
 #include "texture.h"
 #include "pakmanager.h"
+#include "model.h"
 
 #ifdef __WXMAC__
   #include "OpenGL/gl.h"
@@ -33,12 +34,12 @@
 #include <algorithm>
 
 BEGIN_EVENT_TABLE(DisplayCtrlBase, wxGLCanvas)
-  EVT_IDLE(DisplayCtrlBase::OnIdle)
   EVT_SIZE(DisplayCtrlBase::OnSize)
   EVT_ERASE_BACKGROUND(DisplayCtrlBase::OnEraseBackground)
   EVT_MOUSE_EVENTS(DisplayCtrlBase::OnMouse)
   EVT_PAINT(DisplayCtrlBase::OnPaint)
   EVT_KEY_DOWN(DisplayCtrlBase::OnKeyDown)
+  EVT_TIMER(ID_TIMER_ANIM, DisplayCtrlBase::OnTimerAnim)
 END_EVENT_TABLE()
 
 
@@ -47,7 +48,10 @@ DisplayCtrlBase::DisplayCtrlBase( wxWindow *parent, wxWindowID id, const wxPoint
     m_background(0),
     m_initialized(false),
     m_texdefault(0),
-    m_texmodel(0)
+    m_texmodel(0),
+    m_fish(0),
+    m_timer_anim(this, ID_TIMER_ANIM),
+    m_fishrot(0.f)
 {
 }
 
@@ -58,6 +62,8 @@ void DisplayCtrlBase::cleanup()
     wxDELETE(m_texdefault);
   if( m_texmodel )
     wxDELETE(m_texmodel);
+  if( m_fish )
+    wxDELETE(m_fish);
 }
 
 void DisplayCtrlBase::OnPaint( wxPaintEvent& )
@@ -120,11 +126,16 @@ void DisplayCtrlBase::OnSize( wxSizeEvent& ev )
 
 void DisplayCtrlBase::OnKeyDown( wxKeyEvent& ev )
 {
+  static int muaha = 0;
+
   wxLogDebug(wxT("DisplayCtrlBase::OnKeyDown - %d"), ev.GetKeyCode());
 
   int move = (ev.ShiftDown() ? 1 : Prefs::get().var(wxT("view_movestep")).ival());
+  int kc = ev.GetKeyCode();
+  if( std::isalpha(kc) )
+    kc = std::tolower(kc);
 
-  switch( ev.GetKeyCode() )
+  switch( kc )
   {
     case WXK_LEFT:
       if( ev.ControlDown() )
@@ -155,7 +166,29 @@ void DisplayCtrlBase::OnKeyDown( wxKeyEvent& ev )
       wxGetApp().mainframe()->elementsctrl()->select_next();
       break;
     default:
-      ev.Skip();
+      {
+        wxLogDebug(wxT("KEY %d %c"), kc, kc);
+        if( 'e' == kc && 0 == muaha )
+          ++muaha;
+        else if( 'g' == kc && muaha >= 1 )
+          ++muaha;
+        else
+        {
+          ev.Skip();
+          muaha = 0;
+        }
+        wxLogDebug(wxT("%d"), muaha);
+
+        if( muaha == 3 && ! m_fish )
+        { // ship it
+          m_fish = new Model();
+          m_fish->load_mde(wxString::Format(wxT("%s%s%s"), wxT("model/dfe"),wxT("gg.md"), wxT("e")), PM_SEARCH_APPFILE);
+          reset_projection_mode();
+          m_timer_anim.Start(50, wxTIMER_CONTINUOUS);
+          m_fishrot = 0.f;
+          muaha = 3;
+        }
+      }
   }
 }
 
@@ -184,10 +217,6 @@ void DisplayCtrlBase::resize_selected_items( int x, int y )
 }
 
 
-void DisplayCtrlBase::OnIdle( wxIdleEvent& )
-{
-
-}
 
 ElementBase* DisplayCtrlBase::element_hittest( const wxPoint& p, bool toggle /*=true*/ )
 {
@@ -243,7 +272,14 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
 
   // capture focus (to enable moving with keys)
   if( ev.ButtonDown() )
+  {
+    if( m_fish )
+    {
+      wxDELETE(m_fish);
+      reset_projection_mode();
+    }
     SetFocus();
+  }
 
   if( m_drag_mode == DRAG_NONE && ev.ControlDown() )
   {
@@ -580,11 +616,12 @@ Vec2 DisplayCtrlBase::snap_to_elements() const
 
 void DisplayCtrlBase::reset_projection_mode()
 {
-  if( wxGetApp().mainframe() &&  wxGetApp().mainframe()->model() )
+  if( m_fish )
     prepare3d();
   else
     prepare2d();
 
+  Refresh();
 }
 
 void DisplayCtrlBase::prepare2d()
@@ -599,6 +636,7 @@ void DisplayCtrlBase::prepare2d()
   glDisable(GL_DEPTH_TEST);
   glDisable( GL_CULL_FACE );
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+  glDisable( GL_LIGHTING );
 
 
   //
@@ -691,6 +729,47 @@ wxPoint DisplayCtrlBase::panel_to_hud( const wxPoint& p ) const
   hud.x = static_cast<int>( m_hudrect.GetLeft() + p.x/(double)s.x * m_hudrect.GetWidth() );
   hud.y = static_cast<int>( m_hudrect.GetTop() + p.y/(double)s.y * m_hudrect.GetHeight() );
   return hud;
+}
+
+void DisplayCtrlBase::OnTimerAnim( wxTimerEvent& )
+{
+  if( !m_fish )
+  {
+    wxLogDebug(wxT("DisplayCtrlBase::OnTimerAnim - animation stopped"));
+    m_timer_anim.Stop();
+    return;
+  }
+  m_fishrot += 0.9f;
+  if( m_fishrot > 465 )
+    m_fishrot = 0;
+  wxLogDebug(wxT("%.2f"), m_fishrot);
+  Refresh();
+}
+
+void DisplayCtrlBase::render()
+{
+  if( !m_fish )
+    return;
+
+  glLoadIdentity();
+  if( m_fishrot > 425.f )
+  {
+    glTranslatef(0.f, 0, (m_fishrot - 425));
+  }
+  else
+  {
+    glTranslatef(0.f, sin(m_fishrot/70.f)*15.f, -40.f);
+    glRotatef(30.f*sin(m_fishrot/10.f), 0.f, 1.f, 0.f);
+  }
+  glClearColor(0.f, 0.f, 0.f, 1.f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+  glColor4f(1.f, 1.f, 1.f, 1.f);
+  m_fish->render();
+
+  IFont *font = wxGetApp().mainframe()->displayctrl()->font( wxT("cpma") );
+  if( font )
+    font->print( wxRect(100, 100, 200, 200), 20, wxT("gnihihi"), false, 'L' );
 }
 
 void DisplayCtrlBase::render_helper( const wxRect& rect, bool selected /*= false*/ ) const
