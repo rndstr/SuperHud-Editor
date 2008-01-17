@@ -208,15 +208,17 @@ class CPMAElement : public ElementBase
     int         textstyle() const { return m_props.textstyle; }
 
     void        set_color( const wxColour& c ) { m_props.color.set(c); }
-    void        set_color( const Color4& c ) { m_props.color.set(c); }
+    void        set_color( const Color4& c ) { m_props.color = c; wxLogDebug(wxT("set C4"));}
     void        set_color_a100( int a100 ) { m_props.color.set_a100(a100); }
     Color4      iget_color() const;
 
     void        set_bgcolor( const wxColour& c ) { m_props.bgcolor.set(c); }
+    void        set_bgcolor( const Color4& c ) { m_props.bgcolor = c; }
     Color4      iget_bgcolor() const;
     void        set_bgcolor_a100( int a100 ) { m_props.bgcolor.set_a100(a100); }
 
     void        set_fade( const wxColour& c ) { m_props.fade.set(c); }
+    void        set_fade( const Color4& c ) { m_props.fade = c; }
     Color4      iget_fade() const;
     void        set_fade_a100( int a100 ) { m_props.fade.set_a100(a100); }
 

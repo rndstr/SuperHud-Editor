@@ -5,12 +5,12 @@
 <webupdate version="1.0">
 
   <!-- our customized messages -->
-  <msg-update-available>Some updates for "$(appname)" are available; don't miss them !</msg-update-available>
+  <msg-update-available>There are updates for "$(appname)", make sure to install them!</msg-update-available>
   <msg-update-notavailable>You have the most updated version of "$(appname)"...</msg-update-notavailable>
 
   <!-- for an example of XML webupdate script with multiple packages see script2.xml -->
   <package id="superhudeditor">
-      <latest-version importance="high">0.4.0</latest-version>
+      <latest-version importance="high">0.3.1</latest-version>
 
       <!-- our downloads (1 per platform) -->
       <latest-download>
@@ -37,7 +37,7 @@
       </latest-download>
 
           <!-- description for this package; don't break lines or you'll get some empty spaces in the final description string -->
-      <description>The package containing the binaries for the "$(appname)"... if you need to show to the user a link to your changelog, then the right place is this: URLs like http://wxcode.sourceforge.net are automatically highlighted and made clickable...</description>
+          <description>Full ChangeLog: http://plrf.org/superhudeditor</description>
   </package>
 
 </webupdate>

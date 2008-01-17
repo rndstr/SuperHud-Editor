@@ -41,6 +41,8 @@
 #include <wx/aboutdlg.h>
 #include <wx/txtstrm.h>
 #include <wx/sstream.h>
+#include <wx/docview.h>
+#include <wx/confbase.h>
 
 #if !defined(__WXMSW__) && !defined(__WXPM__)
     #include "xpm/icons/superhudeditor.xpm"
@@ -78,6 +80,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   
   EVT_DOWNLOAD(MainFrame::OnDownload)
   EVT_UPDATE_UI_RANGE(ID_MENU_VIEW_CONFIGPREVIEW, ID_MENU_VIEW_TOOLBAR_FILE, MainFrame::OnUpdateViewPanes)
+  EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrame::OnMRUFile)
 END_EVENT_TABLE()
 
 
@@ -106,14 +109,20 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   wxMenuBar *menu_bar = new wxMenuBar;
 
   wxMenu *file_menu = new wxMenu;
+  wxMenu *recent_submenu = new wxMenu;
   file_menu->Append( wxID_NEW, _("&New\tCtrl+N") );
   file_menu->Append( wxID_OPEN, _("&Open...\tCtrl+O") );
+  file_menu->AppendSubMenu( recent_submenu, _("&Recent") );
   file_menu->AppendSeparator();
   file_menu->Append( wxID_SAVE, _("&Save\tCtrl+S") );
   file_menu->Append( wxID_SAVEAS, _("Save &As...\tCtrl+Shift+S") );
   file_menu->AppendSeparator();
   file_menu->Append( wxID_EXIT, _("E&xit\tCtrl+Q") );
   menu_bar->Append( file_menu, _("&File") );
+  m_history = new wxFileHistory();
+  m_history->UseMenu(recent_submenu);
+  if( wxConfigBase::Get() )
+    m_history->Load( *wxConfigBase::Get() );
 
   m_edit_menu = new wxMenu;
 #if HAS_CMDPROC
@@ -174,7 +183,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
 
   // statusbar plz
   m_statusbar = CreateStatusBar(3);
-  m_statusbar->SetStatusText(_("Ready"));
+  m_statusbar->SetStatusText(_("Ready"), SB_MSG);
   int statusbar_widths[] = { -3, -1, 100 };
   m_statusbar->SetStatusWidths(3, statusbar_widths);
   int statusbar_styles[] = { wxSB_NORMAL, wxSB_NORMAL, wxSB_FLAT };
@@ -455,6 +464,7 @@ void MainFrame::OnMenuOpen( wxCommandEvent& )
   wxGetApp().hudfile()->OnOpen();
   update_title();
   m_elementsctrl->OnSelectionChanged();
+  m_history->AddFileToHistory(wxGetApp().hudfile()->filename());
   
 }
 
@@ -468,31 +478,6 @@ void MainFrame::OnMenuSaveAs( wxCommandEvent& )
 {
   wxGetApp().hudfile()->OnSave(true);
   update_title();
-  /*
-  int ret = wxID_OK;
-  wxFileDialog dlg(
-      this,
-      _("Save As..."),
-      wxT(""),
-      wxT(""),
-      wxT("SuperHUD Files (*.cfg)|*.cfg|All Files (*.*)|*.*"),
-#if wxCHECK_VERSION(2,7,0)
-      wxFD_SAVE | wxFD_OVERWRITE_PROMPT
-#else // 2.6
-      wxSAVE|wxOVERWRITE_PROMPT
-#endif
-      );
-  if( wxID_OK != (ret = dlg.ShowModal()) )
-    return; // user clicked cancel
-
-  wxString filename = dlg.GetPath();
-  
-  wxBeginBusyCursor();
-  if( !wxGetApp().hudfile()->save( filename ) )
-    wxLogError( _("Failed writing HUD to `%s'"), filename.c_str() );
-  update_title();
-  wxEndBusyCursor();
-  */
 }
 
 void MainFrame::OnMenuCopy( wxCommandEvent& ev )
@@ -559,12 +544,6 @@ bool MainFrame::confirm_saving()
 {
   HudFileBase *hf = wxGetApp().hudfile();
 
-  // we save it if filename is not empty (kann nie schaden zu speichern, auch wenn
-  // es nicht als modifiziert gilt, evtl haben wir wo was vergessen...) oder es
-  // modifiziert ist
-  //int save = ((!hf->filename().empty() || hf->is_modified())? wxID_YES : wxID_NO);
-
-  // naaah, if we cannot save it there will be endless loop :x
   int save = (hf->is_modified()? wxID_YES : wxID_NO);
   
   // ask if it's modified
@@ -598,11 +577,14 @@ void MainFrame::OnClose( wxCloseEvent& ev )
   Prefs::get().setb(wxT("app_maximized"), IsMaximized());
   Prefs::get().set(wxT("startup_loadfile"), wxGetApp().hudfile()->filename());
 
-  ev.Skip();// this->Destroy()?!
-    
+  if( wxConfigBase::Get() )
+    m_history->Save(*wxConfigBase::Get());
+
   if( !exec.empty() )
     wxLogDebug(wxT("MainFrame::OnClose - will exec: ") + exec);
   wxGetApp().set_exec(exec);
+
+  ev.Skip();// this->Destroy()?!
 }
 
 void MainFrame::OnMenuViewDefaultPerspective( wxCommandEvent& )
@@ -679,6 +661,17 @@ void MainFrame::OnUpdateViewPanes( wxUpdateUIEvent& ev )
     ev.Check( m_toolbar_file->IsShown() );
 }
 
+void MainFrame::OnMRUFile( wxCommandEvent& ev )
+{
+  wxString f(m_history->GetHistoryFile(ev.GetId() - wxID_FILE1));
+  if( !f.empty() )
+  {
+    wxGetApp().hudfile()->OnOpen(f);
+    update_title();
+    m_elementsctrl->OnSelectionChanged();
+  }
+}
+
 // call this in the event handler used to show the wxWebUpdateDlg
 void MainFrame::update_and_exit(bool savelog /*= FALSE*/,
      				bool restart /*= TRUE*/,
@@ -702,7 +695,7 @@ void MainFrame::update_and_exit(bool savelog /*= FALSE*/,
  	if (!uri.IsEmpty())
   		opts += wxT(" --uri=\"") + uri + wxT("\"");
 
-  //wxLogDebug(wxT("Invoking webupdater: ") + opts);
+  wxLogDebug(wxT("Invoking webupdater: ") + opts);
   wxString cmd;
 #ifdef __WXMSW__
 	cmd = wxT("webupdater.exe") + opts;
@@ -746,6 +739,7 @@ void MainFrame::OnMenuHelpUpdate( wxCommandEvent& )
 void MainFrame::OnElementSelectionChanged()
 {
   wxASSERT(m_elementsctrl);
+  wxASSERT(m_statusbar);
   elements_type& els = m_elementsctrl->selected_elements();
 
   // -- update propertiesctrl title
@@ -800,7 +794,6 @@ void MainFrame::update_configpreview()
   wxASSERT(m_elementsctrl);
   elements_type& els = m_elementsctrl->selected_elements();
   // -- update config preview
-  // TODO put configpreview in own class
   wxString out;
   wxStringOutputStream sos(&out);
   wxTextOutputStream tos(sos);

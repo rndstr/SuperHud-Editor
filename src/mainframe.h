@@ -31,6 +31,7 @@ class ElementsCtrlBase;
 class PropertiesNotebookBase;
 class DisplayCtrlBase;
 class wxDownloadEvent;
+class wxFileHistory;
 
 class MainFrame : public wxFrame
 {
@@ -135,10 +136,12 @@ class MainFrame : public wxFrame
 #if HAS_WEBUPDATER
     void OnMenuHelpUpdate( wxCommandEvent& );
 #endif
+    void OnMRUFile( wxCommandEvent& );
 
   private:
     wxAuiManager m_mgr;
     wxString     m_defaultperspective;
+    wxFileHistory *m_history;
 
 
    DECLARE_EVENT_TABLE()

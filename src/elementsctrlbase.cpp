@@ -95,9 +95,11 @@ class ListDrop : public wxTextDropTarget
       //static_cast<ElementsCtrlBase*>(m_list->GetParent())->list_refresh(wxGetApp().hudfile()->elements());
       // TODO ignore EVT_LIST_ITEM_SELECTED during this loop
 
+      wxGetApp().elementsctrl()->list_refresh(wxGetApp().hudfile()->elements());
       for( cit_elements cit = els.begin(); cit != els.end(); ++cit )
         static_cast<ElementsCtrlBase*>(m_list->GetParent())->select_item(*cit);
 
+    //  wxGetApp().mainframe()->elementsctrl()->OnSelectionChanged();
 
       return true;
     }
@@ -558,9 +560,11 @@ void ElementsCtrlBase::show_element_popup( bool only_insert /*=false*/, const wx
   const notuniqs_type& notuniqs = wxGetApp().hudfile()->notuniq_elements();
   int i=0;
   wxMenuItem *item;
+  ElementBase *el;
   for( cit_notuniqs cit = notuniqs.begin(); cit != notuniqs.end() && i <= (ID_INSERT_NOTUNIQ_END - ID_INSERT_NOTUNIQ); ++cit, ++i )
   {
-    item = m_elpopup->Append(ID_INSERT_NOTUNIQ+i, wxString::Format(_("Insert %s"), cit->c_str()));
+    el = wxGetApp().hudfile()->find_element(*cit);
+    item = m_elpopup->Append(ID_INSERT_NOTUNIQ+i, wxString::Format(_("Insert %s"), cit->c_str()), el ? el->desc() : wxT("HELP"));
     item->Enable( m_selels.size() == 1);
   }
 
@@ -614,6 +618,7 @@ void ElementsCtrlBase::OnBeginDrag( wxListEvent& ev )
   wxDropSource dragSource( this );
 	dragSource.SetData( my_data );
 	wxDragResult result = dragSource.DoDragDrop( TRUE );
+  wxGetApp().mainframe()->statusbar()->SetStatusText(_("Ready"), (SB_MSG));
   /*
   wxString pc;
   switch ( result )

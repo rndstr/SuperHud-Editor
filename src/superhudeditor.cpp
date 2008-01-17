@@ -134,6 +134,7 @@ bool SHEApp::OnInit()
 
   }
 
+  PakManager::get().init_app();
   if( !m_factory->init() )
   {
     m_factory->shutdown();
@@ -160,7 +161,7 @@ bool SHEApp::OnInit()
       wxGetApp().factory()->set_dir_game(wizard.gamedirpage()->gamedir());
   }
 
-  PakManager::get().init();
+  PakManager::get().init_game();
 
   m_mainframe = new MainFrame(0, wxID_ANY, APP_NAME, wxDefaultPosition, wxSize(800,600));
   SetTopWindow(m_mainframe);
@@ -282,3 +283,4 @@ bool SHEApp::is_q4max() const
   return false;
 #endif
 }
+

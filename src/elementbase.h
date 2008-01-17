@@ -137,6 +137,7 @@ class ElementBase
     // get&set
     const wxString& name() const { return m_name; }
     int             flags() const { return m_flags; }
+    const wxString& desc() const { return m_desc; }
     int             has() const { return m_has; }
     /// adds a value (bitmask) to what this element overwrite
     /// @arg bool add If false we actually remove it.

@@ -167,26 +167,26 @@ void DisplayCtrlBase::OnKeyDown( wxKeyEvent& ev )
       break;
     default:
       {
-        wxLogDebug(wxT("KEY %d %c"), kc, kc);
-        if( 'e' == kc && 0 == muaha )
-          ++muaha;
-        else if( 'g' == kc && muaha >= 1 )
+        if( 
+            'p' == kc && 2 == muaha ||
+            'd' == kc && 0 == muaha ||
+            'e' == kc && 3 == muaha ||
+            'o' == kc && 1 == muaha
+          )
           ++muaha;
         else
         {
           ev.Skip();
           muaha = 0;
         }
-        wxLogDebug(wxT("%d"), muaha);
-
-        if( muaha == 3 && ! m_fish )
+        if( muaha == 4 && ! m_fish )
         { // ship it
           m_fish = new Model();
           m_fish->load_mde(wxString::Format(wxT("%s%s%s"), wxT("model/dfe"),wxT("gg.md"), wxT("e")), PM_SEARCH_APPFILE);
           reset_projection_mode();
           m_timer_anim.Start(50, wxTIMER_CONTINUOUS);
           m_fishrot = 0.f;
-          muaha = 3;
+          muaha = 0;
         }
       }
   }
@@ -346,9 +346,6 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
             (*it)->set_rect((*it)->iget_rect());
             (*it)->add_has(E_HAS_RECT);
           }
-          // update properties
-          // FIXME that isn't entirely true.. it's rather OnElementPropertiesChanged but it does the trick for now :x
-    //      wxGetApp().mainframe()->OnElementSelectionChanged();
           wxGetApp().mainframe()->update_displayctrl();
           wxGetApp().mainframe()->update_propertiesctrl();
           wxGetApp().mainframe()->update_configpreview();
@@ -402,6 +399,8 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
         wxGetApp().mainframe()->update_displayctrl();
         wxGetApp().mainframe()->update_propertiesctrl();
         wxGetApp().mainframe()->update_configpreview();
+        wxRect r = m_drag_el->iget_hudrect();
+        wxGetApp().mainframe()->statusbar()->SetStatusText( m_drag_el->name() + wxString::Format(wxT(" @ (%i,%i)-(%i,%i)"), r.GetLeft(), r.GetTop(), r.GetRight(), r.GetBottom()), SB_ELEMENT );
       }
     }
     else if( ev.RightDown() )
@@ -524,7 +523,6 @@ Vec2 DisplayCtrlBase::snap_to_elements() const
       // skip other selected elements
       if( std::find(sels.begin(), sels.end(), *cit) != sels.end() )
       {
-        wxLogDebug(wxT("ISSEL ") + (*cit)->name());
         continue;
       }
       if( !(*cit)->is_rendered() )
@@ -602,15 +600,6 @@ Vec2 DisplayCtrlBase::snap_to_elements() const
       }
     }
   }
-  /*
-  if( ev.ControlDown() )
-  { // lock to x/y axis of m_drag_itempt
-    if( abs( r.x - m_drag_itempt.x ) < abs( r.y - m_drag_itempt.y ) )
-      r.x = m_drag_itempt.x;
-    else
-      r.y = m_drag_itempt.y;
-  }
-  */
   return r.GetPosition() - elr.GetPosition();
 }
 
@@ -710,7 +699,6 @@ void DisplayCtrlBase::prepare3d()
 
   wxRect hudrect(0, 0, GetSize().GetWidth(), GetSize().GetHeight());
 
-  //glViewport(topleft_x, topleft_y, bottomrigth_x-topleft_x, bottomrigth_y-topleft_y);
   glViewport(hudrect.GetLeft(), hudrect.GetTop(), hudrect.GetWidth(), hudrect.GetHeight());
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -766,10 +754,6 @@ void DisplayCtrlBase::render()
     
   glColor4f(1.f, 1.f, 1.f, 1.f);
   m_fish->render();
-
-  IFont *font = wxGetApp().mainframe()->displayctrl()->font( wxT("cpma") );
-  if( font )
-    font->print( wxRect(100, 100, 200, 200), 20, wxT("gnihihi"), false, 'L' );
 }
 
 void DisplayCtrlBase::render_helper( const wxRect& rect, bool selected /*= false*/ ) const
@@ -806,3 +790,4 @@ void DisplayCtrlBase::render_helper( const wxRect& rect, bool selected /*= false
   }
   glEnable(GL_TEXTURE_2D);
 }
+

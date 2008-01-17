@@ -107,10 +107,10 @@ class HudFileBase
     /// prints some information
     void                  debug() const;
 #endif
-
-  protected:
     /// looks for an element in the element list (m_els)
     ElementBase*          find_element( const wxString& name );
+
+  protected:
 
     /// moves an element in the list after a given other element
     /// @arg item The item to move

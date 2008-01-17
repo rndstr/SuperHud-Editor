@@ -9,7 +9,7 @@ if [ -z "$VERSION" ]; then
 fi
 
 echo "version is $VERSION"
-echo "zip -r data-$VERSION.pke . -i@data-$VERSION.include"
+echo "7z a -tzip data-$VERSION.pke -i@data-0.3.0.include"
 sleep 1
 echo -n "."
 sleep 1
@@ -19,4 +19,4 @@ echo -n "."
 echo
 cd data/
 rm -f data-$VERSION.pke
-zip -r data-$VERSION.pke . -i@data-$VERSION.include
+7z a -tzip data-$VERSION.pke -i@data-0.3.0.include

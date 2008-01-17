@@ -283,7 +283,6 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
   if( (m_has & E_HAS_TEXTALIGN) && m_props.textalign != ' ' )
     lines.push_back(wxString::Format( wxT("textalign %c"),  m_props.textalign));
   if( m_has & E_HAS_COLOR )
-    //stream << wxString::Format( "\n  color %i %i %i %i", m_props.color.r_norm(), m_props.color.g_norm(), m_props.color.b_norm(), m_props.color.a_norm() );
     lines.push_back(wxT("color ") + m_props.color.to_string());
   if( m_has & E_HAS_BGCOLOR )
     lines.push_back(wxT("bgcolor ") + m_props.bgcolor.to_string());

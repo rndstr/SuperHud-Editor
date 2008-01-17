@@ -46,6 +46,8 @@ MiscPropertiesCtrl::MiscPropertiesCtrl( wxWindow *parent ) :
   Append( new wxBoolProperty( _("Draw 3D model"), wxT("draw3d"), false) );
   SetPropertyHelpString( wxT("draw3d"), _("If both a model and an icon are present, use the model (irrelevant for most stuff).") );
 
+  Append( new wxPropertyCategory(_("Element description (click!)"), wxT("help")) );
+
   //SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX,(long)1);
 
   // a value of 0 (=disable) isn't the same as unspecified (=inherit)
@@ -134,6 +136,7 @@ void MiscPropertiesCtrl::from_element( const ElementBase *el )
   SetPropertyValue( wxT("draw3d"), cel->iget_draw3d() );
   SetPropertyValue( wxT("doublebar"), cel->iget_doublebar() );
   //SetPropertyValue( wxT("time"), cel->iget_time() );
+  SetPropertyHelpString( wxT("help"), el->desc() );
 
   update_layout();
 

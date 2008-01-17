@@ -34,12 +34,15 @@ PakManager& PakManager::get()
 }
 
 
-void PakManager::init()
+void PakManager::init_app()
 {
-  PakManager::enumerate_game_pakfiles(&m_pakfiles);
-
   wxDir::GetAllFiles( wxStandardPaths::Get().GetDataDir() + PATH_SEP + wxT("data"), &m_apppakfiles, PM_APPPAK_FILES, GETALLFILES_FLAGS );
   m_apppakfiles.Sort();
+}
+
+void PakManager::init_game()
+{
+  PakManager::enumerate_game_pakfiles(&m_pakfiles);
 }
 
 

@@ -2,10 +2,11 @@
 * the webupdater does not support a proxy (you should go to the website and download it yourself)
 
 --- SuperHud Implementation ---
-* [SuperHud] for certain elements of type ICON (game gives us an image) $color is ignored in CPMA.
+* for certain elements of type ICON (game gives us an image) $color is ignored in CPMA.
   ignoring: ItemPickupIcon, StatusBar_AmmoIcon in particular
   Not ignored: AttackerIcon
   but we apply the color to all of those
+* not implemented "Some elements will have special functions (for instance Bars) when color 0 0 0 0 is used."
 
 --- wxWidgets ---
 * if a pane is detached the caption does not update (wxAui bug?)

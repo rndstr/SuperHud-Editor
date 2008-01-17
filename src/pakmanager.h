@@ -60,8 +60,9 @@ class PakManager
 
   public:
 
-    virtual void init();
-    virtual void shutdown() { cleanup(); }
+    void init_app();
+    void init_game();
+    void shutdown() { cleanup(); }
     void cleanup();
     void cleanup_lastloaded();
 
@@ -100,7 +101,7 @@ class PakManager
 
     static wxString searchwhere2string( ePakManagerSearchWhere wher );
 
-    virtual void debug() const;
+    void debug() const;
 
 
   protected:

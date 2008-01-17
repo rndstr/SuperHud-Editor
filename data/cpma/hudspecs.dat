@@ -16,19 +16,19 @@ _desc=Empty elements that can be used to draw separator bars etc. Will be drawn 
 PostDecorate=notuniq:nodefault:enable:enablealways:drawfront:type=usericon
 
 _desc=Lagometer
-NetGraph=
+NetGraph=type=icon
 _desc=Ping
 NetGraphPing=type=text:text=12ms
 # supply number of weapons for multwidth and multheight
-_desc=Use FILL to show ammo for weapons you dont have, useful for tdm. Weaponlist wraps at the bottom of the screen so you can sneak a multi-column one in.
+_desc=
 WeaponList=type=weaponlist
 
 
-_desc=Numeric health level
+_desc=Numeric health level.
 StatusBar_HealthCount=text=200:type=text
-_desc=Bar health level
+_desc=Bar health level.
 StatusBar_HealthBar=type=bar
-_desc=Defaults to mynx icon but can be any model, image or shader found in pk3s (provided that the pk3 is on the pure server you join)
+_desc=Defaults to mynx icon but can be any model, image or shader found in pk3s (provided that the pk3 is on the pure server you join).
 # FIXME add mynx icon path
 StatusBar_HealthIcon=type=usericon:icon=models/players/mynx/icon_pm.tga
 
@@ -37,38 +37,41 @@ _desc=Numeric armor level.
 StatusBar_ArmorCount=text=200:type=text
 _desc=Bar armor level.
 StatusBar_ArmorBar=type=bar
-_desc=Type of armor - essential in cpm but irrelevant in vq3
+_desc=Type of armor - essential in cpm but irrelevant in vq3.
 StatusBar_ArmorIcon=type=icon:icon=icons/iconr_red.tga
 
-_desc=Numeric ammo level
+_desc=Numeric ammo level.
 StatusBar_AmmoCount=text=15:type=text
-_desc=Bar ammo level
+_desc=Bar ammo level.
 StatusBar_AmmoBar=type=bar
-_desc=Current weapon ammo icon
+_desc=Current weapon ammo icon.
 StatusBar_AmmoIcon=type=icon:icon=icons/iconw_railgun.tga
 
 
+_desc=Image of who just attacked you.
 AttackerIcon=type=icon:icon=models/players/tankjr/icon_pm.tga
+_desc=Name of who just attacked you.
 AttackerName=text=UnnamedPlayer:type=text
 
 _desc=Replacement for id's console. Use with con_notifyTime -1. Doesn't affect the console *buffer* but just the text in the top left.
 Console=text=UnnamedPlayer ate UnnamedPlayer's rocket:type=text
-_desc=Frames Per Second
+_desc=Frames Per Second.
 FPS=text=125fps:type=text
-_desc=Game Clock
+_desc=Game clock.
 GameTime=text=15;00:type=text
-_desc=Game Type - warmup only. Cannot be omitted. To remove place at off-screen x,y coordinates or set opaque to 0.
+_desc=Gametype - warmup only. Cannot be omitted. To remove place at off-screen x,y coordinates or set opaque to 0.
 GameType=enablealways:text=Tournament:type=text
 _desc=10sec countdown, Waiting for players, etc. Cannot be omitted. To remove place at off-screen x,y coordinates or set opaque 0.
 WarmupInfo=enablealways:text=Waiting for players:type=text
-_desc=Following <Player>
+_desc=Information who you are observing.
 FollowMessage=text=Following UnnamedPlayer:type=text
 _desc=SPECTATOR, FRAGGED (in CA/CTFS/FT)
 SpecMessage=type=text:text=Waiting to play
+_desc=Who did you just eliminate?
 FragMessage=text=You fragged UnnamedPlayer:type=text
 _desc=Placed 1st with 30 frags.
 RankMessage=text=Placed 1st with 30 frags:type=text
-_desc=Units Per Second
+_desc=How fast are you traveling? Units Per Second
 PlayerSpeed=text=623ups:type=text
 _desc=Text string of whatever item you pick up.
 ItemPickup=text=Rockets:type=text
@@ -105,24 +108,6 @@ TeamCount_NME=short:text=2:type=text
 _desc=Defaults to sarge icon but can be any model, image or shader found in pk3s (provided that the pk3 is on the pure server you join)
 TeamIcon_NME=short:type=usericon
 
-#_desc=Empty elements that can be used to draw separator bars etc. Will be drawn before/behind other elements.
-#!PreDecorate1=type=usericon
-#!PreDecorate2=type=usericon
-#!PreDecorate3=type=usericon
-#!PreDecorate4=type=usericon
-#!PreDecorate5=type=usericon
-#!PreDecorate6=type=usericon
-#!PreDecorate7=type=usericon
-#!PreDecorate8=type=usericon
-#_desc=Empty elements that can be used to draw separator bars etc. Will be drawn after/on top of other elements.
-#_PostDecorate1=type=usericon
-#_PostDecorate2=type=usericon
-#_PostDecorate3=type=usericon
-#_PostDecorate4=type=usericon
-#_PostDecorate5=type=usericon
-#_PostDecorate6=type=usericon
-#_PostDecorate7=type=usericon
-#_PostDecorate8=type=usericon
 
 # low ammo warning
 _desc=Low ammo/Out of ammo. The audio feedback "click" can be toggled using cg_ammoWarning.
@@ -148,22 +133,23 @@ PowerUp4_Time=short:text=12:type=text
 
 !DEFAULT
 _desc=Chat area
-Chat1=short:type=text
-Chat2=short:type=text
-Chat3=short:type=text
-Chat4=short:type=text
-Chat5=short:type=text
-Chat6=short:type=text
-Chat7=short:type=text
-Chat8=short:type=text
+Chat1=short:type=text:text=Chat1
+Chat2=short:type=text:text=Chat2
+Chat3=short:type=text:text=Chat3
+Chat4=short:type=text:text=Chat4
+Chat5=short:type=text:text=Chat5
+Chat6=short:type=text:text=Chat6
+Chat7=short:type=text:text=Chat7
+Chat8=short:type=text:text=Chat8
 
 !DEFAULT
 _desc=Teamoverlay
-Team1=short:type=text
-Team2=short:type=text
-Team3=short:type=text
-Team4=short:type=text
-Team5=short:type=text
-Team6=short:type=text
-Team7=short:type=text
-Team8=short:type=text
+Team1=short:type=text:text=TO1
+Team2=short:type=text:text=TO2
+Team3=short:type=text:text=TO3
+Team4=short:type=text:text=TO4
+Team5=short:type=text:text=TO5
+Team6=short:type=text:text=TO6
+Team7=short:type=text:text=TO7
+Team8=short:type=text:text=TO8
+

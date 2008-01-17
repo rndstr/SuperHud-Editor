@@ -48,10 +48,13 @@ ColorPropertiesCtrl::ColorPropertiesCtrl( wxWindow *parent ) :
   Append( new wxIntProperty(_("Opacity"), wxT("color-alpha"), 0) );
   SetPropertyEditor(wxT("color-alpha"),wxPG_EDITOR(SpinCtrl));
 #ifdef WIN32
-  // this does stupid things in wxGTK (not allowing to keep buttondown pressed.. stops somewhere)
+  // this does stupid things in wxGTK (not allowing to keep buttondown pressed.. stops randomly (?) somewhere)
   SetPropertyAttribute( wxT("color-alpha"), wxT("Min"), (long)0 );
   SetPropertyAttribute( wxT("color-alpha"), wxT("Max"), (long)100 );
 #endif
+  static const wxChar* color_special[] = { _("No"), _("Team color (red/blue)"), _("Enemey color (red/blue)"), (const wxChar*)0};
+  Append( new wxEnumProperty(_("Special?"), wxT("color-special"), color_special) );
+
 
   Append( new wxPropertyCategory(_("Background"), wxT("cat-bgcolor")) );
   Append( new wxBoolProperty( _("Use"), wxT("bgcolor-use"), false) );
@@ -125,7 +128,7 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
     SetPropertyValue( wxT("color"), she::colour2variant(c.to_wxColour()) );
     SetPropertyValue( wxT("color-alpha"), c.a100() );
   }
-  else if( name == wxT("color") || name == wxT("color-alpha") )
+  else if( name == wxT("color") || name == wxT("color-alpha") || name == wxT("color-special") )
   {
     if( !(el->has() & E_HAS_COLOR) )
     { // copy parentinfo
@@ -141,6 +144,25 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
     }
     else if( name == wxT("color-alpha") )
       el->set_color_a100( val.GetInteger() );
+    else if( name == wxT("color-special") )
+    {
+      Color4 col = el->iget_color();
+      switch( val.GetInteger() )
+      {
+        case 1:
+          col.set_type(COLOR_T);
+          break;
+        case 2:
+          col.set_type(COLOR_E);
+          break;
+        case 0:
+        default:
+          col.set_type(COLOR_RGBA);
+          break;
+      }
+      el->set_color(col);
+      wxLogDebug(col.to_string());
+    }
   }
 // -----------------------------------------------------
   else if( name == wxT("bgcolor-use") )
@@ -222,6 +244,19 @@ void ColorPropertiesCtrl::from_element( const ElementBase* el )
   SetPropertyValue( wxT("color-use"), (cel->has() & E_HAS_COLOR) != 0 );
   SetPropertyValue( wxT("color"), she::colour2variant(cel->iget_color().to_wxColour()) );
   SetPropertyValue( wxT("color-alpha"), cel->iget_color().a100() );
+  switch( cel->iget_color().get_type() )
+  {
+    case COLOR_T:
+      SetPropertyValue( wxT("color-special"), 1);
+      break;
+    case COLOR_E:
+      SetPropertyValue( wxT("color-special"), 2);
+      break;
+    case COLOR_RGBA:
+    default:
+      SetPropertyValue( wxT("color-special"), 0);
+      break;
+  }
 
   SetPropertyValue( wxT("bgcolor-use"), (cel->has() & E_HAS_BGCOLOR) != 0 );
   SetPropertyValue( wxT("bgcolor"), she::colour2variant(cel->iget_bgcolor().to_wxColour()) );
@@ -230,6 +265,7 @@ void ColorPropertiesCtrl::from_element( const ElementBase* el )
   SetPropertyValue( wxT("fade-use"), (cel->has() & E_HAS_FADE) != 0 );
   SetPropertyValue( wxT("fade"), she::colour2variant(cel->iget_fade().to_wxColour()) );
   SetPropertyValue( wxT("fade-alpha"), cel->iget_fade().a100() );
+
 
   if( cel->type() == E_T_WEAPONLIST )
     SetPropertyLabel(wxT("fill"), _("Show weapons w/o ammo"));
@@ -261,6 +297,9 @@ void ColorPropertiesCtrl::update_layout()
 
   property_defines(wxT("color"), (el->has() & E_HAS_COLOR) != 0);
   property_defines(wxT("color-alpha"), (el->has() & E_HAS_COLOR) != 0);
+  EnableProperty(wxT("color"), !el->iget_color().is_special() );
+  EnableProperty(wxT("color-alpha"), !el->iget_color().is_special() );
+  property_defines(wxT("color-special"), (el->has() & E_HAS_COLOR) != 0);
 
   property_defines(wxT("bgcolor"), (el->has() & E_HAS_BGCOLOR) != 0);
   property_defines(wxT("bgcolor-alpha"), (el->has() & E_HAS_BGCOLOR) != 0);

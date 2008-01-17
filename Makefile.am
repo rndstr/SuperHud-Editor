@@ -15,6 +15,7 @@ nobase_dist_pkgdata_DATA = data/data-$(VERSION).pke data/tips.txt
 
 # those go into data-VERSION.pke but ship it into tarball nevertheless
 datapke = \
+					data/cpma/hudspecs.dat \
 					data/cpma/docs/README.hudspecs \
 					data/cpma/docs/README.superhud \
 					data/cpma/texture/background.jpg \

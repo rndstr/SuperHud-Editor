@@ -478,7 +478,7 @@ wxPanel* PrefsDialog::create_advanced(wxWindow *parent)
    m_pg->Append( new wxIntProperty(_("Drag threshold"), wxT("view-dragthreshold"), Prefs::get().var(wxT("view_dragthreshold")).ival()) );
    m_pg->SetPropertyHelpString( wxT("view-dragthreshold"), _("How many pixel it takes till drag&drop begins") );
    m_pg->Append( new wxIntProperty(_("Snap threshold"), wxT("view-snapthreshold"), Prefs::get().var(wxT("view_snapthreshold")).ival()) );
-   m_pg->SetPropertyHelpString( wxT("view-snapthreshold"), _("The distance needed to snap to items") );
+   m_pg->SetPropertyHelpString( wxT("view-snapthreshold"), _("Says how close an item has to be for the element to snap at it") );
    m_pg->Append( new wxIntProperty(_("Move step"), wxT("view-movestep"), Prefs::get().var(wxT("view_movestep")).ival()) );
    m_pg->SetPropertyHelpString( wxT("view-movestep"), _("How many pixels to move upon pressing arrow keys") );
 

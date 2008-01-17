@@ -43,8 +43,12 @@ class Color4
     {
       set_a100(_a_percent);
     }
+    /*
     explicit Color4( const wxColour& col ) :
         r(col.Red()/255.f), g(col.Green()/255.f), b(col.Blue()/255.f), a(1.f), type(COLOR_RGBA) {}
+    Color4( const Color4& c4 ) :
+      r(c4.r), g(c4.g), b(c4.b), type(c4.type) {}
+      */
     Color4() :
         r(1.f), g(1.f), b(1.f), a(1.f), type(COLOR_RGBA) {}
 
@@ -123,7 +127,7 @@ class Color4
     */
 
     wxColour to_wxColour() const { return wxColour(static_cast<unsigned char>(r*255.f), static_cast<unsigned char>(g*255.f), static_cast<unsigned char>(b*255.f)); }
-    operator wxColour() const { return wxColour(static_cast<unsigned char>(r*255.f), static_cast<unsigned char>(g*255.f), static_cast<unsigned char>(b*255.f)); }
+//    operator wxColour() const { return wxColour(static_cast<unsigned char>(r*255.f), static_cast<unsigned char>(g*255.f), static_cast<unsigned char>(b*255.f)); }
     
   protected:
     float         r, g, b, a;
