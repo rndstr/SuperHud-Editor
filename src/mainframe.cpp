@@ -684,6 +684,7 @@ void MainFrame::OnUpdateViewPanes( wxUpdateUIEvent& ev )
 void MainFrame::OnToolViewSuppress( wxCommandEvent& ev )
 {
   Prefs::get().setb(wxT("view_suppresshelpergrid"), ev.IsChecked());
+  update_displayctrl();
 }
 
 void MainFrame::OnMRUFile( wxCommandEvent& ev )
