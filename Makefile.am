@@ -59,9 +59,18 @@ webupdater = \
                     webupdater/src/webupdatedlg.xrc \
                     webupdater/src/www.xpm
 
+# not compiled but supply in distribution nevertheless
+source = \
+				 src/convertdialog.wxg \
+				 elementsctrlbase.wxg \
+				 pakfiledialog.wxg \
+				 prefsdialog_tmp.wxg
+
+
 dist_noinst_DATA =  \
 										data/pak-$(VERSION).include \
 										$(apppak) \
+										$(source) \
 										create-pak.sh \
                     superhudeditor.sln \
                     superhudeditor.vcproj \
