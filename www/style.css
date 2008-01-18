@@ -96,16 +96,19 @@ h2 {
 }
 
 #screens {
-  width:380px;
+  width:440px;
   border:1px solid #000;
   float:right;
+  font-size:0.8em;
 }
 #screens li {
   display:block;
   float:left;
+  text-align:center;
 }
 #screens img {
   padding:3px;
+  margin:5px;
   border:1px solid #aaa;
 }
 #screens img:hover {
@@ -113,7 +116,7 @@ h2 {
 }
 
 #files {
-  width:340px;
+  width:280px;
   border:1px solid #000;
 }
 
