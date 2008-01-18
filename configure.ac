@@ -1,7 +1,7 @@
 dnl rerun autoreconf -fvi -Wall after modifying this.
 
 dnl AC_PREREQ(2.60)
-AC_INIT([superhudeditor], [0.3.0], [rolansch@ethz.ch])
+AC_INIT([superhudeditor], [0.4.0], [rolansch@ethz.ch])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/superhudeditor.cpp])
 AM_CONFIG_HEADER([config.h])
@@ -38,10 +38,8 @@ else
 fi
 AC_MSG_NOTICE([
 -------------------------------------------
-You are building with opengl.
-
 Make sure that wxWidgets (wxGTK) was 
-built with opengl support or else it 
+built with opengl support or else this
 won't compile.
 -------------------------------------------
 ])

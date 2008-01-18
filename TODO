@@ -1,15 +1,9 @@
-! toolbar file view is not properly updated with menu item (->debug win)
-+ add second background image for 16:10
-! E_T_ICON and color with alpha, check if correctly rendered (->PowerUp3_Icon e.g.) looks like alpha is ignored @she
-+ verify whether grey or red lagometer is used in cpma
-
-
 
 -- later --
 + maybe blink those items that have a `time' (duration) set? :)
 + add 5:4 resolution Oo
 + create statusbar reset function that sets to `Ready'.. cba right now..
-+ [UNIX] make APPRELATIVE and APPPAK also look in ~/.superhudeditor/
++ [linux] make APPRELATIVE and APPPAK also look in ~/.superhudeditor/
 + add preferences for `view_updatewhiledragging'
 + snapping outside of hudview (black borders) is b0rked i think
 + read proxy in webupdater from superhudeditor.conf
@@ -27,3 +21,4 @@ t the global defined messages (common.h) are they translated?
 + cpma/docs/README.hudspecs - for colorTE and FILL there is a border (which texture?) drawn. (TODO all elements?)
 + if ICON and draw3d we could lay a texture over it like modeltexture but without the backgroundmodel..
 + add an accelerator to temporarily hide all other elements except selected
++ [linux] docs not installed?!

@@ -18,7 +18,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#define ENABLE_Q4MAX 0
+#define ENABLE_Q4MAX 1
 #define ENABLE_CPMA 1
 
 #define HAS_CMDPROC 0

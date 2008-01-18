@@ -62,9 +62,9 @@ webupdater = \
 # not compiled but supply in distribution nevertheless
 source = \
 				 src/convertdialog.wxg \
-				 elementsctrlbase.wxg \
-				 pakfiledialog.wxg \
-				 prefsdialog_tmp.wxg
+				 src/elementsctrlbase.wxg \
+				 src/pakfiledialog.wxg \
+				 src/prefsdialog_tmp.wxg
 
 
 dist_noinst_DATA =  \

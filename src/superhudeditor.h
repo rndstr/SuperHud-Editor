@@ -25,9 +25,9 @@
 
 const wxString APP_NAME = wxT("SuperHud Editor");
 const wxString APP_NAME_UNIX = wxT("superhudeditor");
-const wxString APP_VERSION = wxT("0.3.0");
+const wxString APP_VERSION = wxT("0.4.0");
 const int APP_MAJOR_VERSION = 0;
-const int APP_MINOR_VERSION = 3;
+const int APP_MINOR_VERSION = 4;
 const int APP_RELEASE_NUMBER = 0;
 const wxString APP_RELEASE_TYPE = wxT("");
 const wxString APP_VENDOR = wxEmptyString;

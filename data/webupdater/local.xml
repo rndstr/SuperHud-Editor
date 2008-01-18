@@ -9,6 +9,6 @@
   <remoteuri>http://plrf.org/superhudeditor/webupdater/remote.xml</remoteuri>
   <keywords></keywords>
   <local-package id="superhudeditor">
-    <version>0.3.0</version>
+    <version>0.4.0</version>
   </local-package>
 </webupdate>
