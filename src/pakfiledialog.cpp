@@ -265,6 +265,8 @@ void PakFileDialog::OnKeyDown( wxKeyEvent& ev )
     wxCommandEvent fump(wxEVT_COMMAND_BUTTON_CLICKED, ID_BTN_PAKFILEDLG_GODIRUP);
     AddPendingEvent(fump);
   }
+  else
+    ev.Skip();
 }
 
 bool PakFileDialog::is_valid_ext( const wxString& ext ) const
