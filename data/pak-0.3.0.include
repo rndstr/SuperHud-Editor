@@ -1,8 +1,8 @@
 cpma/hudspecs.dat
 cpma/docs/README.hudspecs
 cpma/docs/README.superhud
-cpma/texture/background.jpg
-cpma/texture/backgroundws.jpg
+cpma/texture/background_16x10.jpg
+cpma/texture/background_4x3.jpg
 model/dfegg.mde
 model/README
 texture/model.tga

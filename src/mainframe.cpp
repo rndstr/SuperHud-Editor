@@ -78,6 +78,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 #endif
   EVT_MENU(ID_MENU_HELP_TIP, MainFrame::OnMenuHelpTip)
   
+  EVT_TOOL(ID_TOOL_VIEW_SUPPRESSHELPERGRID, MainFrame::OnToolViewSuppress)
   EVT_DOWNLOAD(MainFrame::OnDownload)
   EVT_UPDATE_UI_RANGE(ID_MENU_VIEW_CONFIGPREVIEW, ID_MENU_VIEW_TOOLBAR_FILE, MainFrame::OnUpdateViewPanes)
   EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrame::OnMRUFile)
@@ -94,6 +95,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
     m_edit_menu(0),
     m_statusbar(0),
     m_toolbar_file(0),
+    m_toolbar_view(0),
     m_elementsctrl(0),
     m_propertiesnotebook(0),
     m_configpreview(0),
@@ -158,7 +160,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   view_layout_submenu->Append( ID_MENU_VIEW_DEFAULTPERSPECTIVE, _("&Default Layout") );
   view_layout_submenu->AppendSeparator();
   view_layout_submenu->AppendCheckItem( ID_MENU_VIEW_CONFIGPREVIEW, _("Config &Preview\tCtrl+T"), _("Display the config preview panel") );
-  view_layout_submenu->AppendCheckItem( ID_MENU_VIEW_TOOLBAR_FILE, _("Toolbar &File"), _("Display the file toolbar") );
+//  view_layout_submenu->AppendCheckItem( ID_MENU_VIEW_TOOLBAR_FILE, _("Toolbar &File"), _("Display the file toolbar") );
   m_view_menu->AppendSubMenu(view_layout_submenu, _("&Layout"), _("Select which panes you would like to be visible or not"));
   m_view_menu->AppendSeparator();
   m_view_menu->AppendCheckItem( ID_MENU_VIEW_GRID, _("Display &Grid\tCtrl+G"), _("Draws a grid over the HUD") );
@@ -190,14 +192,20 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_statusbar->SetStatusStyles( 3, statusbar_styles );
   
 
-  // create toolbar
+  // create toolbars
   m_toolbar_file = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER);
   m_toolbar_file->SetToolBitmapSize(wxSize(16,16));
-  m_toolbar_file->AddTool( wxID_NEW, _("New"), wxArtProvider::GetBitmap(wxART_NEW_DIR, wxART_TOOLBAR, wxSize(16,16)), _("New") );
-  m_toolbar_file->AddTool( wxID_OPEN, _("Open..."), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, wxSize(16,16)), _("Open...") );
-  m_toolbar_file->AddTool( wxID_SAVE, _("Save"), wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR, wxSize(16,16)), _("Save") );
-  m_toolbar_file->AddTool( wxID_SAVEAS, _("Save As..."), wxArtProvider::GetBitmap(wxART_FILE_SAVE_AS, wxART_TOOLBAR, wxSize(16,16)), _("Save As...") );
+  m_toolbar_file->AddTool( wxID_NEW, _("New"), wxArtProvider::GetBitmap(wxART_NEW, wxART_TOOLBAR, wxSize(16,16)), _("New HUD") );
+  m_toolbar_file->AddTool( wxID_OPEN, _("Open..."), wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, wxSize(16,16)), _("Open HUD...") );
+  m_toolbar_file->AddSeparator();
+  m_toolbar_file->AddTool( wxID_SAVE, _("Save"), wxArtProvider::GetBitmap(wxART_FILE_SAVE, wxART_TOOLBAR, wxSize(16,16)), _("Save HUD") );
+  m_toolbar_file->AddTool( wxID_SAVEAS, _("Save As..."), wxArtProvider::GetBitmap(wxART_FILE_SAVE_AS, wxART_TOOLBAR, wxSize(16,16)), _("Save HUD As...") );
   m_toolbar_file->Realize();
+
+  m_toolbar_view = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER | wxTB_HORZ_TEXT);
+  m_toolbar_view->SetToolBitmapSize(wxSize(16,16));
+  m_toolbar_view->AddTool(ID_TOOL_VIEW_SUPPRESSHELPERGRID, _("Preview"),  wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE, wxART_TOOLBAR, wxSize(16,16)), _("Temporarily disables drawing of Helpers and Grid"), wxITEM_CHECK);
+  m_toolbar_view->Realize();
  
 
 
@@ -226,7 +234,10 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
       );
 
   m_mgr.AddPane(m_toolbar_file, wxAuiPaneInfo().Name(wxT("tb-file")).Caption(_("File")).
-	  ToolbarPane().Top().Row(1).Position(1).LeftDockable(false).RightDockable(false)
+	  ToolbarPane().Top().Row(1).Position(1).LeftDockable(false).RightDockable(false).CloseButton(false)
+	  );
+  m_mgr.AddPane(m_toolbar_view, wxAuiPaneInfo().Name(wxT("tb-view")).Caption(_("View")).
+	  ToolbarPane().Top().Row(1).Position(2).LeftDockable(false).RightDockable(false).CloseButton(false)
 	  );
   
   m_defaultperspective = m_mgr.SavePerspective();
@@ -668,6 +679,11 @@ void MainFrame::OnUpdateViewPanes( wxUpdateUIEvent& ev )
     ev.Check( m_configpreview->IsShown() );
   else if( ev.GetId() == ID_MENU_VIEW_TOOLBAR_FILE )
     ev.Check( m_toolbar_file->IsShown() );
+}
+
+void MainFrame::OnToolViewSuppress( wxCommandEvent& ev )
+{
+  Prefs::get().setb(wxT("view_suppresshelpergrid"), ev.IsChecked());
 }
 
 void MainFrame::OnMRUFile( wxCommandEvent& ev )

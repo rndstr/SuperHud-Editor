@@ -96,6 +96,7 @@ class MainFrame : public wxFrame
     wxMenu            *m_edit_menu;
     wxStatusBar       *m_statusbar;
     wxToolBar         *m_toolbar_file;
+    wxToolBar         *m_toolbar_view;
 
 
     ElementsCtrlBase  *m_elementsctrl;
@@ -132,6 +133,7 @@ class MainFrame : public wxFrame
     void OnMenuViewGrid( wxCommandEvent& );
     void OnMenuViewHelper( wxCommandEvent& );
     void OnUpdateViewPanes( wxUpdateUIEvent& );
+    void OnToolViewSuppress( wxCommandEvent& );
 
 #if HAS_WEBUPDATER
     void OnMenuHelpUpdate( wxCommandEvent& );

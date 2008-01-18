@@ -767,7 +767,7 @@ void DisplayCtrlBase::render()
 
 void DisplayCtrlBase::render_helper( const wxRect& rect, bool selected /*= false*/ ) const
 {
-  if( !Prefs::get().var(wxT("view_helper")) )
+  if( !Prefs::get().var(wxT("view_helper")) || Prefs::get().var(wxT("view_suppresshelpergrid")) )
     return;
   glDisable(GL_TEXTURE_2D);
   // -- draw helper outline

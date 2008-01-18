@@ -202,6 +202,7 @@ void Prefs::load()
   addvar(wxT("props_bgcolor"), PROPS_BGCOLOR.to_string(), PVT_COLOR);
   addvar(wxT("props_inheritcolor"), PROPS_INHERITCOLOR.to_string(), PVT_COLOR);
   addvar(wxT("props_inheritbgcolor"), PROPS_INHERITBGCOLOR.to_string(), PVT_COLOR);
+  addvar(wxT("view_suppresshelpergrid"), wxT("false"), PVT_BOOL, PVF_NOARCHIVE); ///< we only keep this while running...
   
   addvar(wxT("view_dragthreshold"), wxT("1"), PVT_INT); ///< how many pixels till we start dragging
   addvar(wxT("view_snapthreshold"), wxT("3"), PVT_INT); ///< how many pixels we snap to snappable items

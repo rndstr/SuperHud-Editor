@@ -545,11 +545,11 @@ wxRect CPMAElement::iget_hudrect() const
       if( r.y + r.height - baser.height >= h  && r.y < h )
       {// wrapwrapwrap
         // how many are invisible and have to be wrapped?
-        int outside = std::floor(((r.y + r.height + WEAPONLIST_SPACE)-h)/(double)(baser.height+WEAPONLIST_SPACE));
+        int outside = (int)std::floor(((r.y + r.height + WEAPONLIST_SPACE)-h)/(double)(baser.height+WEAPONLIST_SPACE));
         // height changes to (TOTAL - wrapcount)# items
         // width multiplies by ceil(TOTAL/wrapcount)# itms
         r.height = (WEAPONLIST_ITEMCOUNT - outside) * (baser.height + WEAPONLIST_SPACE) - WEAPONLIST_SPACE;
-        r.width = std::ceil(WEAPONLIST_ITEMCOUNT/(double)(WEAPONLIST_ITEMCOUNT - outside)) * (baser.width + WEAPONLIST_SPACE) - WEAPONLIST_SPACE;
+        r.width = (int)std::ceil(WEAPONLIST_ITEMCOUNT/(double)(WEAPONLIST_ITEMCOUNT - outside)) * (baser.width + WEAPONLIST_SPACE) - WEAPONLIST_SPACE;
       }
     }
     break;

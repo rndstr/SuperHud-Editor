@@ -170,6 +170,10 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
     el->add_has( E_HAS_BGCOLOR, val.GetBool() );
     // use own color (not parental)
     Color4 c = el->iget_bgcolor();
+    // normally if you enable bgcolor you want something to see... so just 
+    // fix alpha if it's 0 (default bgcolor (if not specified) has alpha 0, obviously. see cpma/element.h:E_BGCOLOR_DEFAULT)
+    if( val.GetBool() && c.a100() == 0 )
+      c.set_a100(100);
     SetPropertyValue( wxT("bgcolor"), she::colour2variant(c.to_wxColour()) );
     SetPropertyValue( wxT("bgcolor-alpha"), c.a100() );
   }
@@ -261,6 +265,7 @@ void ColorPropertiesCtrl::from_element( const ElementBase* el )
   SetPropertyValue( wxT("bgcolor-use"), (cel->has() & E_HAS_BGCOLOR) != 0 );
   SetPropertyValue( wxT("bgcolor"), she::colour2variant(cel->iget_bgcolor().to_wxColour()) );
   SetPropertyValue( wxT("bgcolor-alpha"), cel->iget_bgcolor().a100() );
+  SetPropertyValue( wxT("fill"), cel->iget_fill() );
 
   SetPropertyValue( wxT("fade-use"), (cel->has() & E_HAS_FADE) != 0 );
   SetPropertyValue( wxT("fade"), she::colour2variant(cel->iget_fade().to_wxColour()) );
@@ -303,6 +308,7 @@ void ColorPropertiesCtrl::update_layout()
 
   property_defines(wxT("bgcolor"), (el->has() & E_HAS_BGCOLOR) != 0);
   property_defines(wxT("bgcolor-alpha"), (el->has() & E_HAS_BGCOLOR) != 0);
+  property_defines(wxT("fill"), el->fill() );
 
   property_defines(wxT("fade"), (el->has() & E_HAS_FADE) != 0);
   property_defines(wxT("fade-alpha"), (el->has() & E_HAS_FADE) != 0);

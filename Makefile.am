@@ -19,8 +19,8 @@ apppak = \
 					data/cpma/hudspecs.dat \
 					data/cpma/docs/README.hudspecs \
 					data/cpma/docs/README.superhud \
-					data/cpma/texture/background.jpg \
-					data/cpma/texture/backgroundws.jpg \
+					data/cpma/texture/background_16x10.jpg \
+					data/cpma/texture/background_4x3.jpg \
 					data/model/dfegg.mde \
 					data/model/README \
 					data/texture/default.tga \

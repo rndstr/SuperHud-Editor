@@ -79,13 +79,15 @@ void CPMADisplayCtrl::load_background()
   wxDELETE(m_background);
   wxString sbg = Prefs::get().var(wxT("q3_background"));
   if( sbg.empty() )
-    sbg = wxT("cpma/texture/background.jpg");
+  {
+    if( Prefs::get().var(wxT("view_aspectratio")).sval() == wxT("16:10") )
+      sbg = wxT("cpma/texture/background_16x10.jpg");
+    else
+      sbg = wxT("cpma/texture/background_4x3.jpg");
+  }
   m_background = new Texture(sbg, PM_SEARCH_APPFILE, true);
 }
 
-void CPMADisplayCtrl::OnIdle( wxIdleEvent& )
-{
-}
 
 
 
@@ -93,9 +95,23 @@ void CPMADisplayCtrl::OnIdle( wxIdleEvent& )
 bool render_sort( ElementBase *a, ElementBase *b )
 {
   if( (a->flags() & E_DRAWFRONT) && !(b->flags() & E_DRAWFRONT) )
+    return false;
+  if( !(a->flags() & E_DRAWFRONT) && (b->flags() & E_DRAWFRONT) )
     return true;
   if( !(a->flags() & E_DRAWBACK) && (b->flags() & E_DRAWBACK) )
+    return false;
+  if( (a->flags() & E_DRAWBACK) && !(b->flags() & E_DRAWBACK) )
     return true;
+
+  wxASSERT_MSG( !(a->flags() & E_DRAWBACK) && !(b->flags() & E_DRAWBACK) && 
+   !(a->flags() & E_DRAWFRONT) && !(b->flags() & E_DRAWFRONT), wxT("looks like there are elements that have E_DRAWBACK _and_ E_DRAWFRONT? wtf decide plz") );
+
+  // ascending (thanks ix-ir)
+  if( a->name().Cmp(b->name()) < 0 )
+    return true;
+
+  return false;
+
   //if( wxGetApp().elementsctrl()->is_selected(a) && !wxGetApp().elementsctrl()->is_selected(b) )
   //  return true;
   return false;
@@ -107,7 +123,7 @@ void CPMADisplayCtrl::render()
   // that this is not yet ready only happens on wxGTK
   if( !wxGetApp().hudfile() ) return; 
   
-  //wxLogDebug(wxT("CPMADisplayCtrl::render"));
+//  wxLogDebug(wxT("CPMADisplayCtrl::render"));
 
   if( m_fish )
   {
@@ -142,7 +158,7 @@ void CPMADisplayCtrl::render()
   glEnd();
   */
   
-  if( Prefs::get().var(wxT("view_grid")) )
+  if( Prefs::get().var(wxT("view_grid")) && !Prefs::get().var(wxT("view_suppresshelpergrid")) )
   {
     // grid
     Prefs::get().var(wxT("view_gridcolor")).cval().glBind();
