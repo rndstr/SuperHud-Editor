@@ -1,8 +1,8 @@
 # this is a file that specifies what elements are available.
 # --------------------------------------------------------------------
 
-___date=2007-12-12
-___name=CPMA 1.43
+___date=2008-01-18
+___name=CPMA 1.44
 ___author=veal
 
 # can have several and add one as it's good to have a starting default.

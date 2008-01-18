@@ -1,20 +1,8 @@
-The application browses this directory (data/hudspecs/) and will pick the last
-file (*.dat) after sorting ascending.
-(You should name them according to cpma version and then add some var if you want
-to overwrite it, like 136veal.dat if you make any changes).
- 
-You may also set it to a certain file in the preferences or
-directly in the config file:
 
 
-#hudspecs_filename=135.dat
+`;' in text preview will be replaced by `:' before rendering
 
-
-
-
-`;' in text preview will be replaced by `:' in the end...
 The format of the file itself is as following:
-
 #
 # format:
 # <element-name>=<option>:<option>:<opt...
@@ -22,16 +10,17 @@ The format of the file itself is as following:
 # if it's a recurring element you can omit the '=' and it will
 # use the same options as the previous one (although certain ones
 # will be ommitted.)
-# (NOTE: not yet working with elemnts that have mult* options...)
 #
-# element-names starting with __ are ignored.
+# names starting with _ are considered to be special vars, 
+# i.e. not elements.
 #
-# reserved element-names = ___name ___author ___date __desc
+# reserved element-names = ___name ___author ___date _desc
 #
-# to add a description for the element place __desc on a previous line.
+# to add a description for the element place _desc on a previous line.
 # it will be used by all following elements unless you set it again.
 #
 # ordering in the Elements Panel is according to listing in hudspecs file.
+# (although it will be reordered if a hud is loaded)
 #
 # options
 #
@@ -44,7 +33,7 @@ The format of the file itself is as following:
 #     cannot be disabled.
 #   notuniq
 #     the element is not unique, can be used several times by the user.
-#     it will appear in the 'special' menu.
+#     it will appear in the 'special' menu (e.g. !DEFAULT PostDecorate/PreDecorate)
 #   nodefault
 #     is not considered as being a default item. so you won't see it
 #     if you do File->New. (makes only sense to use in conjunction with
@@ -61,22 +50,13 @@ The format of the file itself is as following:
 #     the element will inherit its contents to the others.
 #   noinherit
 #     do not inherit from elements that are parent (default they all inherit from inheriters).
-#   multheight=<int>
-#     the real height (how it's drawn on the screen) will be computed by 
-#     multiplying it with this value (see also WeaponList)
-#   multwidth=<int>
-#     same as multheight but height is multiplied.
-#   multdependalign
-#     how multheight and multwidth are used depends on textalign.
-#     if textalign == 'C' on the element then we use only multwidth,
-#     otherwise only multheight (see also WeapopnList).
 #   overwrites=<int>
 #     by default an element overwrites nothing to the one it inherits from.
 #     specify here the default bitmask it should overwrite.
 #   text=<string>
 #     sample text that is drawn (only available on those type==text).
 #   icon=<string>
-#     the icon to display (only available onthose type==icon).
+#     the icon to display (only available with type=icon).
 #   type=usericon|icon|bar|text|weaponlist
 #     those three are differently treated in cpma.. and we need to know which element belongs to which type.
 #     (icon = the game itself will supply us with an image, usericon = we can write the image in the hudfile)
