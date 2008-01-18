@@ -1,4 +1,4 @@
-2008-01-xx release: 0.3.0
+2008-01-18 release: 0.3.0
   * complete rewrite
 	* add: elements can be reset (i.e. everything except visibility is put back to default)
 	*	add: copy&paste can be accessed everywhere with Ctrl+C/Ctrl+V
@@ -25,9 +25,9 @@
 	* add: a pak file browser (with image preview)
   * add: commandline support for opening a hudfile (superhudeditor.exe [filename])
 	* add: correct rendering of WeaponList!
-	* add: wrapping at bottom of WeaponList
+	* add: WeaponList wraps at bottom (multicolumn)
   * add: new CPMA font `sansman' added
-
+  * and other stuff i forgot...
 
 	* chg: changed to highly modifiable user interface
 	* chg: properties now indicate if and which values they inherit (they have a
