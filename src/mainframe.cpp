@@ -458,7 +458,7 @@ void MainFrame::OnMenuAbout( wxCommandEvent& )
   info.SetName(APP_NAME);
   info.SetVersion(APP_VERSION);
   wxString desc = wxT("Head-Up Display Editor for Quake3 CPMA under GPL License.");
-  desc += wxT("\n");
+  desc += wxT("\n\n");
   desc += wxVERSION_STRING;
   desc += wxT("\nBuildtime: ");
   desc += APP_BUILDTIME;
