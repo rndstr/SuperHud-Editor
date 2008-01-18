@@ -175,6 +175,9 @@ Section "Core files" SecCORE
   
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\uninstall.exe"
+
+  ;Otherwise workingdir in link is wrong!
+  ${SetOutPath} "$INSTDIR"
     
 SectionEnd
 
