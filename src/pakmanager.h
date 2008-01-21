@@ -81,6 +81,8 @@ class PakManager
     /// @arg psize Used to return the size the buffer had (if not interested submit 0)
     static bool load_from_location( char **buf, const wxString& location, size_t *psize =0 );
 
+    
+
     /// we supply a path into the pakfiles (e.g. /icons/) and this enumerates all files/dirs in that path
     /// @arg dirs
     /// @arg files
@@ -93,7 +95,9 @@ class PakManager
     /// @arg search_type Where we look for the file (ePakManagerSearchWhere bitmask)
     /// @arg found_where Where we found the file (if not interested supply 0)
     /// @return The full location path to be used in wxFileSystem, only has forward dir slashes (needed for the cache to be consistent..)
-    wxString get_location( const wxString& fpath, int search_where /*= PM_SEARCH_ALL*/, ePakManagerSearchWhere *pfound_where = 0 ) const;
+    wxString get_location( const wxString& fpath, int search_where, ePakManagerSearchWhere *pfound_where = 0 ) const;
+
+    bool file_exists( const wxString& fpath, int search_where ) const;
 
 
     /// looks for pakfiles for the currently loaded game and stores them in $files

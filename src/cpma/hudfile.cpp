@@ -69,6 +69,7 @@ void CPMAHudFile::load_default_elements()
   m_modified = false;
 }
 
+/*
 bool CPMAHudFile::load( const wxString& filename )
 {
   wxLogDebug(wxT("Loading HUD: ") + filename);
@@ -164,6 +165,7 @@ bool CPMAHudFile::load( const wxString& filename )
   m_modified = false;
   return true;
 }
+*/
 
 bool CPMAHudFile::parse_item( wxString s )
 {

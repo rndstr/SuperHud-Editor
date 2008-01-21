@@ -75,7 +75,7 @@ class HudFileBase
     /// Loads a hudfile
     /// NOTE make sure that you don't forget to read the (hud)options like m_opt_version&co
     /// @arg wxString filename The filename
-    virtual bool          load( const wxString& filename ) = 0;
+    virtual bool          load( const wxString& filename );
 
     // clears all items and then loads default items
     virtual void          load_default_elements() = 0;
@@ -122,13 +122,16 @@ class HudFileBase
 
   protected:
     elements_type         m_els;
-    bool                  m_modified;
     wxString              m_filename;
+    bool                  m_modified;
+    ElementBase           *m_load_prevel;
 
     // options that have been set in the comments of the hudfile
     // like `version' `view_aspectratio'
     wxString              m_opt_version;
     wxString              m_opt_aspectratio;
+
+    
 };
 
 

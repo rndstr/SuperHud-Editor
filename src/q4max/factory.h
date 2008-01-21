@@ -32,11 +32,14 @@ class Q4MAXFactory : public FactoryBase
     wxString            modname() const { return wxT("Q4MAX"); }
     wxString            dirname_gamedata() const { return wxT("q4base"); }
     wxString            dirname_moddata() const { return wxT("q4max"); }
+
+    // -- access prefs
     wxString            dir_game() const { return Prefs::get().var(wxT("q4_gamedir")); }
     void                set_dir_game( const wxString& dir ) const { Prefs::get().set(wxT("q4_gamedir"), dir); }
     wxString            pakfiles() const { return Prefs::get().var(wxT("q4_pakfiles")); }
     wxString            filedialog_path() const { return Prefs::get().var(wxT("q4_filedialog_path")); }
     void                set_filedialog_path( const wxString& path ) { Prefs::get().set(wxT("q4_filedialog_path"), path); }
+    wxString            background() const { return Prefs::get().var(wxT"q4_background")); }
 #ifndef WIN32
     wxString            unixdirname_userdata() const { return Prefs::get().var(wxT("q4_homedirname")); }
 #endif

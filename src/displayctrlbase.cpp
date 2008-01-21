@@ -21,6 +21,7 @@
 #include "texture.h"
 #include "pakmanager.h"
 #include "model.h"
+#include "factorybase.h"
 
 #ifdef __WXMAC__
   #include "OpenGL/gl.h"
@@ -42,6 +43,29 @@ BEGIN_EVENT_TABLE(DisplayCtrlBase, wxGLCanvas)
   EVT_KEY_DOWN(DisplayCtrlBase::OnKeyDown)
   EVT_TIMER(ID_TIMER_ANIM, DisplayCtrlBase::OnTimerAnim)
 END_EVENT_TABLE()
+
+
+/// @returns true If left should be higher than right (ASC)
+static bool render_sort( ElementBase *a, ElementBase *b )
+{
+  if( (a->flags() & E_DRAWFRONT) && !(b->flags() & E_DRAWFRONT) )
+    return false;
+  if( !(a->flags() & E_DRAWFRONT) && (b->flags() & E_DRAWFRONT) )
+    return true;
+  if( !(a->flags() & E_DRAWBACK) && (b->flags() & E_DRAWBACK) )
+    return false;
+  if( (a->flags() & E_DRAWBACK) && !(b->flags() & E_DRAWBACK) )
+    return true;
+
+  wxASSERT_MSG( !(a->flags() & E_DRAWBACK) && !(b->flags() & E_DRAWBACK) && 
+   !(a->flags() & E_DRAWFRONT) && !(b->flags() & E_DRAWFRONT), wxT("looks like there are elements that have E_DRAWBACK _and_ E_DRAWFRONT? wtf decide plz") );
+
+  // ascending (thanks ix-ir)
+  if( a->name().Cmp(b->name()) < 0 )
+    return true;
+
+  return false;
+}
 
 
 DisplayCtrlBase::DisplayCtrlBase( wxWindow *parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) :
@@ -106,6 +130,20 @@ IFont* DisplayCtrlBase::font( const wxString& name )
   if( f == m_fonts.end() )
     return 0;
   return f->second;
+}
+
+void DisplayCtrlBase::load_background()
+{
+  wxDELETE(m_background);
+  wxString sbg = wxGetApp().factory()->background();
+  if( sbg.empty() )
+  {
+    if( Prefs::get().var(wxT("view_aspectratio")).sval() == wxT("16:10") )
+      sbg = wxGetApp().factory()->dirname_moddata() + wxT("/texture/background_16x10.jpg");
+    else
+      sbg = wxGetApp().factory()->dirname_moddata() + wxT("/texture/background_4x3.jpg");
+  }
+  m_background = new Texture(sbg, PM_SEARCH_APPFILE, true);
 }
 
 void DisplayCtrlBase::OnEraseBackground( wxEraseEvent& )
@@ -745,24 +783,73 @@ void DisplayCtrlBase::OnTimerAnim( wxTimerEvent& )
 
 void DisplayCtrlBase::render()
 {
-  if( !m_fish )
-    return;
+  if( !IsShown() ) return;
+  // that this is not yet ready only happens on wxGTK
+  if( !wxGetApp().hudfile() ) return; 
 
   glClearColor(0.f, 0.f, 0.f, 1.f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glLoadIdentity();
-  if( m_fishrot > 425.f )
-  {
-    glTranslatef(0.f, 0, (m_fishrot - 425));
+  if( m_fish )
+  { // the 3d view is already set up somewhere else
+    glLoadIdentity();
+    if( m_fishrot > 425.f )
+    {
+      glTranslatef(0.f, 0, (m_fishrot - 425));
+    }
+    else
+    {
+      glTranslatef(0.f, sin(m_fishrot/70.f)*15.f, -40.f);
+      glRotatef(30.f*sin(m_fishrot/10.f), 0.f, 1.f, 0.f);
+    }
+      
+    glColor4f(1.f, 1.f, 1.f, 1.f);
+    m_fish->render();
   }
   else
   {
-    glTranslatef(0.f, sin(m_fishrot/70.f)*15.f, -40.f);
-    glRotatef(30.f*sin(m_fishrot/10.f), 0.f, 1.f, 0.f);
-  }
+    glEnable(GL_TEXTURE_2D);
+    m_background->glBind();
+    // background
+    glColor4f(1.f, 1.f, 1.f, 1.f);
+    she::draw_rect(wxRect(0, 0, width(), height()), true);
+    glDisable(GL_TEXTURE_2D);
     
-  glColor4f(1.f, 1.f, 1.f, 1.f);
-  m_fish->render();
+    if( Prefs::get().var(wxT("view_grid")) && !Prefs::get().var(wxT("view_suppresshelpergrid")) )
+    {
+      // grid
+      Prefs::get().var(wxT("view_gridcolor")).cval().glBind();
+      glBegin(GL_POINTS);
+      for( int x=0; x < width(); x += Prefs::get().var(wxT("view_gridX")).ival() )
+        for( int y=0; y < height(); y += Prefs::get().var(wxT("view_gridY")).ival() )
+          glVertex2i(x, y);
+      glEnd();
+    }
+    // draw itemz0r
+    elements_type els = wxGetApp().hudfile()->elements();
+    // sort by: PreDecorate>Other>PostDecorate, Selected>NotSelected
+    std::sort(els.begin(), els.end(), render_sort);
+    for( cit_elements cit  = els.begin(); cit != els.end(); ++cit )
+    {
+      if( !(*cit)->is_rendered() )
+        continue;
+      (*cit)->prerender();
+      (*cit)->render();
+    }
+    // draw nonselected helper
+    for( cit_elements cit  = els.begin(); cit != els.end(); ++cit )
+    {
+      if( !(*cit)->is_rendered() || (*cit)->is_selected() )
+        continue;
+      render_helper( (*cit)->iget_hudrect(), false );
+    }
+    // draw selected helper
+    for( cit_elements cit  = els.begin(); cit != els.end(); ++cit )
+    {
+      if( !(*cit)->is_rendered() || !(*cit)->is_selected() )
+        continue;
+      render_helper( (*cit)->iget_hudrect(), true );
+    }
+  }
 }
 
 void DisplayCtrlBase::render_helper( const wxRect& rect, bool selected /*= false*/ ) const

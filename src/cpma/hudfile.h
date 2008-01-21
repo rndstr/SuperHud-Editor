@@ -48,7 +48,6 @@ class CPMAHudFile : public HudFileBase
 
 
     void load_default_elements();
-    bool load( const wxString& filename );
     bool save( const wxString& filename );
     wxString default_hudfilename() const { return wxT("hud/hud.cfg"); }
 
@@ -58,8 +57,6 @@ class CPMAHudFile : public HudFileBase
   private:
     bool parse_item( wxString s );
     bool read_properties( ElementBase *hi, const wxString& props );
-
-    ElementBase *m_load_prevel;
 };
 
 

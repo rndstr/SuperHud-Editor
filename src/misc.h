@@ -78,6 +78,10 @@ namespace she
   /// @returns True if successfull otherwise false
   bool ratio_string2double( const wxString& ratio, double *val );
 
+  /// extracts the width and height from `w:h'
+  /// @returns True if successfull otherwise false
+  bool ratio_string2long( const wxString& ratio, long *w, long *h );
+
   wxVariant colour2variant( const wxColour& col );
 
   template < typename T >
@@ -89,7 +93,7 @@ namespace she
 
 
   /// Checks if the latest version is newer than our.
-  /// @return <0 if our<latest, =0 if our=latest, >0 if our>latest.
+  /// @returns <0 if our<latest, =0 if our=latest, >0 if our>latest.
   int versioncheck( int major, int minor, int release, const wxString& type );
 };
 

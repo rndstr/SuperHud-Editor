@@ -72,6 +72,13 @@ void PakManager::cleanup_lastloaded()
   }
 }
 
+bool PakManager::file_exists( const wxString& fpath, int search_where ) const
+{
+  ePakManagerSearchWhere found;
+  get_location(fpath, search_where, &found);
+  return found != PM_SEARCH_NOWHERE;
+}
+
 wxString PakManager::get_location( const wxString& fpath, int search_where /*=PM_SEARCH_ALL*/, ePakManagerSearchWhere *pfound_where /*=0*/ ) const
 {
   wxString loc;

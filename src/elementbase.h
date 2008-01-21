@@ -63,16 +63,8 @@ typedef enum {
   E_SHORT = 1<<8, ///< while saving writes a oneliner instead of each property on one line.
 
   /// cannot be disabled.
-  E_ENABLEALWAYS = 1<<9,
+  E_ENABLEALWAYS = 1<<9
 
-  /// multiply height with m_multheight to get screen_height
-  E_MULTHEIGHT = 1<<10,
-
-  /// multiply width with m_multwidth to get screen_width
-  E_MULTWIDTH = 1<<11, 
-
-  /// depends on textalign property, if 'C' then we use only multwidth otherwise only multheight.
-  E_MULTDEPENDALIGN = 1<<12
 } eElementFlags;
 
 /// Defaults

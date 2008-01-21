@@ -33,9 +33,6 @@ class CPMADisplayCtrl : public DisplayCtrlBase
 
     void init();
     void cleanup();
-    void render();
-
-    void load_background();
 
 
   protected:

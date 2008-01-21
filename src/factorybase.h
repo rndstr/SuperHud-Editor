@@ -42,27 +42,30 @@ class FactoryBase
     virtual HudFileBase*        create_hudfile() const = 0;
 
     // game specific options
-    virtual wxString gamename() const = 0;
-    virtual wxString modname() const = 0;
+    virtual wxString    gamename() const = 0;
+    virtual wxString    modname() const = 0;
 
     /// e.g. 'baseq3'
-    virtual wxString dirname_gamedata() const = 0;
+    virtual wxString    dirname_gamedata() const = 0;
     /// e.g. 'cpma'
-    virtual wxString dirname_moddata() const = 0;
+    virtual wxString    dirname_moddata() const = 0;
     /// e.g. 'c:\\games\quake3'
     /// `GAME_gamedir' from prefs
-    virtual wxString dir_game() const = 0;
-    virtual void set_dir_game( const wxString& dir ) const = 0;
+    virtual wxString    dir_game() const = 0;
+    virtual void        set_dir_game( const wxString& dir ) const = 0;
     /// semicolon separated, relative to gamedir, wildcards (?*) allowed
     /// `GAME_pakfiles' from prefs
-    virtual wxString pakfiles() const = 0;
+    virtual wxString    pakfiles() const = 0;
     /// `GAME_filedialog_path' from prefs
-    virtual wxString filedialog_path() const = 0;
-    virtual void     set_filedialog_path( const wxString& path ) = 0;
+    virtual wxString    filedialog_path() const = 0;
+    virtual void        set_filedialog_path( const wxString& path ) = 0;
+
+    /// `GAME_background'
+    virtual wxString    background() const = 0;
 
     /// e.g. 'quake3.exe' or 'quake3.x86'
     /// is used to determine if we have a valid game directory
-    virtual wxString filename_gamebin() const = 0;
+    virtual wxString    filename_gamebin() const = 0;
 
 #ifndef WIN32
     /// e.g. '.q3a' only used on unix systems

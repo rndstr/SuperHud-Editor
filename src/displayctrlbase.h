@@ -78,7 +78,7 @@ class DisplayCtrlBase : public wxGLCanvas
 
     /// deletes the old background and loads new one (according to prefs)
     /// only call this from outside if it has changed
-    virtual void load_background() = 0;
+    void load_background();
 
   protected:
     bool          m_initialized;

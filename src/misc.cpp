@@ -177,22 +177,30 @@ long bitmap_type_by_ext( const wxString& ext )
   return wxBITMAP_TYPE_ANY; // auto
 }
 
+bool ratio_string2long( const wxString& ratio, long *w, long *h )
+{
+  wxASSERT(w && h);
+  size_t pos = ratio.Find(wxT(":"));
+  if( pos == wxString::npos )
+    return false;
+  long lhs, rhs;
+  if( !ratio.Left(pos).ToLong(w) || !ratio.Right(ratio.length() - pos - 1).ToLong(h) )
+    return false;
+  return true;
+}
+
+
 bool ratio_string2double( const wxString& ratio, double *val )
 {
   wxASSERT(val);
   if( ratio.ToDouble(val) )
     return true;
   // maybe it's a:b ?
-  size_t pos = ratio.Find(wxT(":"));
-  if( pos != wxString::npos )
-  {   
-    long lhs, rhs;
-    if( !ratio.Left(pos).ToLong(&lhs) || !ratio.Right(ratio.length() - pos - 1).ToLong(&rhs) )
-      return false;
-    *val = static_cast<double>(lhs)/static_cast<double>(rhs);
-    return true;
-  }
-  return false;
+  long w,h;
+  if( !ratio_string2long(ratio, &w, &h) )
+    return false;
+  *val = static_cast<double>(w)/static_cast<double>(h);
+  return true;
 }
 
 wxVariant colour2variant( const wxColour& col )

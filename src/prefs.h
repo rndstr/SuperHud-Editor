@@ -36,10 +36,10 @@ enum
 
 enum
 {
-  PVF_NONE = 0, ///< default flags
+  PVARF_NONE = 0, ///< default flags
   // per default we only write the var if it has been set / previously found in config
-  PVF_NOARCHIVE = 1, ///< never write to config
-  PVF_ARCHIVEALWAYS = 2 ///< always write to config
+  PVARF_NOARCHIVE = 1, ///< never write to config
+  PVARF_ARCHIVEALWAYS = 2 ///< always write to config
 };
 
 
@@ -49,7 +49,7 @@ class Variable
 {
   friend class Prefs;
   public:
-    Variable( const wxString& name, const wxString& def = wxT(""), int type = PVT_ANY, int flags = PVF_NONE );
+    Variable( const wxString& name, const wxString& def = wxT(""), int type = PVT_ANY, int flags = PVARF_NONE );
 
     int ival() const
     { 
@@ -152,7 +152,7 @@ class Prefs
   protected:
     variables_type  m_vars;
 
-    void addvar( const wxString& name, const wxString& def = wxT(""), int type = PVT_ANY, int flags = PVF_NONE );
+    void addvar( const wxString& name, const wxString& def = wxT(""), int type = PVT_ANY, int flags = PVARF_NONE );
 
 
   // singleton

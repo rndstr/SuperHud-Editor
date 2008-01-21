@@ -452,8 +452,21 @@ void MainFrame::OnMenuExit( wxCommandEvent& )
 {
   Close(true);
 }
+
+//#include "variable.h"
 void MainFrame::OnMenuAbout( wxCommandEvent& )
 {
+  /*
+  testvars v;
+  v.init();
+  
+  v.addvar( new TVar<int>(wxT("intvar"), 3) );
+  //wxLogWarning(v.var(wxT("plrf")).sval());
+  v.load();
+  wxLogWarning(wxT("%d"), v.var(wxT("intvar")).value());
+  v.cleanup();
+  */
+  /*
   wxAboutDialogInfo info;
   info.SetName(APP_NAME);
   info.SetVersion(APP_VERSION);
@@ -466,6 +479,7 @@ void MainFrame::OnMenuAbout( wxCommandEvent& )
   info.SetCopyright(wxT("(C) 2006-2008 Roland Schilter / veal <rolansch@ethz.ch>"));
   info.SetWebSite(APP_URL, APP_URL);
   wxAboutBox(info);
+  */
 }
 
 void MainFrame::OnMenuNew( wxCommandEvent& )

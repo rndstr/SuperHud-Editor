@@ -33,7 +33,8 @@ using namespace std;
 DECLARE_APP(SHEApp);
 
 HudFileBase::HudFileBase() :
-  m_modified(false)
+  m_modified(false),
+  m_load_prevel(0)
 {
 }
 
@@ -386,6 +387,103 @@ const ElementBase* HudFileBase::get_parent( const ElementBase * const from, int 
   }
   return d;
 }
+
+bool HudFileBase::load( const wxString& filename )
+{
+  wxLogDebug(wxT("Loading HUD: ") + filename);
+
+  wxString content;
+  char *buf;
+  size_t size;
+
+  if( !PakManager::get().load( &buf, filename, PM_SEARCH_EVERYWHERE, &size ) )
+  {
+    wxLogError(_("Couldn't find/load HUD: %s"), filename.c_str());
+    return false;
+  }
+
+
+  wxMemoryInputStream mis( buf, size );
+
+  m_load_prevel = 0;
+
+  load_default_elements();
+  wxTextInputStream tis( mis );
+  wxString line;
+  size_t pos;
+  // default opts
+
+  // read file line by line and remove `#' comments
+  while(!mis.Eof())
+  {
+    line = tis.ReadLine();
+    she::wxTrim(line);
+    if( 0 == line.length() || line[0] == '#' )
+    { // check for options
+      if( (pos = line.find(wxT("="))) != wxString::npos )
+      {
+        wxString optname = line.Mid(1, pos-1);
+        wxString optval = line.Mid(pos+1);
+        she::wxTrim(optname);
+        she::wxTrim(optval);
+        wxLogDebug(wxT("HudFileBase::load - have found option: ") + optname + wxT(" = ") + optval);
+        if( optname == wxT("version") )
+          m_opt_version = optval;
+        else if( optname == wxT("view_aspectratio") )
+          m_opt_aspectratio = optval;
+        else
+          wxLogDebug(wxT("HudFileBase::load - WARNING: invalid option ") + optname);
+      }
+      continue;
+    }
+    if( (pos = line.find( wxT("#") )) != wxString::npos )
+      line = line.substr( 0, pos );
+    content += line;
+    content += wxT("\n");
+  }
+
+  she::wxTrim( content ); 
+  try
+  {
+    wxStringTokenizer tok( content, wxT("}") );
+    while(tok.HasMoreTokens())
+      parse_item( tok.GetNextToken() );
+  }
+  catch( hudfile_parse_error& err )
+  {
+    wxString str = wxString::Format(_("ERROR while parsing `%s'"), filename.c_str());
+    str += wxString(err.what(), wxConvUTF8);
+    wxLogError( str );
+    load_default_elements();
+    return false;
+  }
+  // removeo all non-unique elements that aren't enabled
+  for( it_elements it = m_els.begin(); it != m_els.end(); ++it )
+  {
+    if( ((*it)->flags() & E_NOTUNIQ) && !(*it)->is_enabled() )
+      m_els.erase( it );
+  }
+
+  // remove E_DRAWNEVER and E_PARENT from end
+  ElementBase *el;
+  for( int i = m_els.size()-1; i >= 0; --i )
+  {
+    el = m_els[i];
+    if( el->flags() & E_DRAWNEVER && el->flags() & E_PARENT )
+    {
+      m_els.erase(m_els.begin() + i);
+      delete el;
+    }
+    else
+      break;
+  }
+  
+  m_filename = filename;
+  wxGetApp().mainframe()->update_elementsctrl();
+  m_modified = false;
+  return true;
+}
+
 
 void HudFileBase::convert_all( double from, double to, bool size, bool stretchposition, bool fontsize)
 {

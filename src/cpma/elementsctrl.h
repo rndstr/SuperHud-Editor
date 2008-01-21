@@ -22,8 +22,7 @@
 class CPMAElementsCtrl : public ElementsCtrlBase
 {
   public:
-    CPMAElementsCtrl( wxWindow *parent );
-
+    CPMAElementsCtrl( wxWindow *parent ) : ElementsCtrlBase(parent, wxID_ANY) {}
 
 };
 

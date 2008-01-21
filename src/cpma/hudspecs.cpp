@@ -95,8 +95,6 @@ bool CPMAHudSpecs::load()
     wxStringTokenizer options( value, wxT(":") );
     int flags = E_NONE;
     int overwrites = E_PROPERTIES_DEFAULT;
-    int multheight = 1;
-    int multwidth = 1;
     bool enable = false;
     int type = E_T_UNKNOWN;
     wxString text;
@@ -127,9 +125,6 @@ bool CPMAHudSpecs::load()
       else if( key.CmpNoCase(wxT("drawalways"))==0 ) flags |= E_DRAWALWAYS;
       else if( key.CmpNoCase(wxT("parent"))==0 ) flags |= E_PARENT;
       else if( key.CmpNoCase(wxT("noinherit"))==0 ) flags |= E_NOINHERIT;
-      else if( key.CmpNoCase(wxT("multheight"))==0 ) { sscanf( arg.mb_str(), "%i", &multheight ); flags |= E_MULTHEIGHT; }
-      else if( key.CmpNoCase(wxT("multwidth"))==0 ) { sscanf( arg.mb_str(), "%i", &multwidth ); flags |= E_MULTWIDTH; }
-      else if( key.CmpNoCase(wxT("multdependalign"))==0 ) flags |= E_MULTDEPENDALIGN;
       else if( key.CmpNoCase(wxT("overwrites"))==0 ) sscanf( arg.mb_str(), "%i", &overwrites );
       else if( key.CmpNoCase(wxT("type"))==0 )
       {
@@ -154,20 +149,14 @@ bool CPMAHudSpecs::load()
         wxLogError( wxT("Found unknown option `") + key + wxT("' for element `") + name + wxT("' in hudspec file, was ignored.") );
     }
     // NOTE: that items with HIF_NODEFAULT will still be stored here. but we won't add them upon File->New
-    wxLogDebug( wxT("adding: ") + name );
-    if( (flags & E_MULTDEPENDALIGN) || (flags & E_MULTWIDTH) || (flags & E_MULTHEIGHT) )
-    {
-      m_items.push_back( hsitem_s(name, desc, flags, overwrites, enable, type, text, icon, multwidth, multheight) );
-    }
-    else
-    {
-      // some sanitizing...
-      if( type == E_T_ICON && icon.empty() )
-        wxLogDebug( wxT("WARNING: missing `icon' in hudspecs file: ") + name  );
-      if( type == E_T_TEXT && text.empty() )
-        wxLogDebug( wxT("WARNING: missing `text' in hudspecs file: ") + name  );
-      m_items.push_back( hsitem_s(name, desc, flags, overwrites, enable, type, text, icon) );
-    }
+    wxLogDebug( wxT("Adding: ") + name );
+    
+    // some sanitizing...
+    if( type == E_T_ICON && icon.empty() )
+      wxLogDebug( wxT("WARNING: missing `icon' in hudspecs file: ") + name  );
+    if( type == E_T_TEXT && text.empty() )
+      wxLogDebug( wxT("WARNING: missing `text' in hudspecs file: ") + name  );
+    m_items.push_back( hsitem_s(name, desc, flags, overwrites, enable, type, text, icon) );
   }
 
   return true;

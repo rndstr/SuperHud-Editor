@@ -34,7 +34,7 @@ const wxString PREFS_Q4_HOMEDIRNAME_DEFAULT = wxT(".quake4");
 #endif
 
 
-Variable::Variable( const wxString& name, const wxString& def, int type, int flags /*= PVF_NONE*/ ) :
+Variable::Variable( const wxString& name, const wxString& def, int type, int flags /*= PVARF_NONE*/ ) :
   m_name(name),
   m_value(wxT("")),
   m_def(def),
@@ -56,9 +56,9 @@ void Variable::read()
 void Variable::write()
 {
   wxConfigBase *c = wxConfigBase::Get();
-  if( m_flags & PVF_NOARCHIVE ) 
+  if( m_flags & PVARF_NOARCHIVE ) 
     return;
-  if( !(m_flags & PVF_ARCHIVEALWAYS) )
+  if( !(m_flags & PVARF_ARCHIVEALWAYS) )
   {
     if( !m_isset ) 
       return;
@@ -173,7 +173,7 @@ bool Prefs::init()
 
 
 
-void Prefs::addvar( const wxString& name, const wxString& def /*= wxT("")*/, int type /*= PVT_ANY*/, int flags /*= PVF_NONE*/ )
+void Prefs::addvar( const wxString& name, const wxString& def /*= wxT("")*/, int type /*= PVT_ANY*/, int flags /*= PVARF_NONE*/ )
 {
   m_vars.insert( std::make_pair(name, Variable(name, def, type, flags)) );
 }
@@ -182,14 +182,14 @@ void Prefs::addvar( const wxString& name, const wxString& def /*= wxT("")*/, int
 void Prefs::load()
 {
   
-  addvar(wxT("app_version"), APP_VERSION, PVT_STRING, PVF_ARCHIVEALWAYS);
+  addvar(wxT("app_version"), APP_VERSION, PVT_STRING, PVARF_ARCHIVEALWAYS);
 
   // -- display
   addvar(wxT("game"), wxT(""), PVT_STRING);
   addvar(wxT("app_maximized"), wxT("false"), PVT_BOOL);
   addvar(wxT("app_width"), wxT("-1"), PVT_INT);
   addvar(wxT("app_height"), wxT("-1"), PVT_INT);
-  addvar(wxT("view_aspectratio"), wxT("4:3"), PVT_DOUBLE, PVF_NOARCHIVE);
+  addvar(wxT("view_aspectratio"), wxT("4:3"), PVT_DOUBLE, PVARF_NOARCHIVE);
   addvar(wxT("view_grid"), wxT("true"), PVT_BOOL);
   addvar(wxT("view_gridX"), wxT("12"), PVT_INT);
   addvar(wxT("view_gridY"), wxT("12"), PVT_INT);
@@ -206,7 +206,7 @@ void Prefs::load()
   addvar(wxT("props_bgcolor"), PROPS_BGCOLOR.to_string(), PVT_COLOR);
   addvar(wxT("props_inheritcolor"), PROPS_INHERITCOLOR.to_string(), PVT_COLOR);
   addvar(wxT("props_inheritbgcolor"), PROPS_INHERITBGCOLOR.to_string(), PVT_COLOR);
-  addvar(wxT("view_suppresshelpergrid"), wxT("false"), PVT_BOOL, PVF_NOARCHIVE); ///< we only keep this while running...
+  addvar(wxT("view_suppresshelpergrid"), wxT("false"), PVT_BOOL, PVARF_NOARCHIVE); ///< we only keep this while running...
   
   addvar(wxT("view_dragthreshold"), wxT("1"), PVT_INT); ///< how many pixels till we start dragging
   addvar(wxT("view_snapthreshold"), wxT("3"), PVT_INT); ///< how many pixels we snap to snappable items
@@ -221,7 +221,7 @@ void Prefs::load()
   // cpma
   addvar(wxT("q3_gamedir"), wxT(""), PVT_STRING);
 #ifndef WIN32
-  addvar(wxT("q3_homedirname"), PREFS_Q3_HOMEDIRNAME_DEFAULT, PVT_STRING, PVF_NOARCHIVE);
+  addvar(wxT("q3_homedirname"), PREFS_Q3_HOMEDIRNAME_DEFAULT, PVT_STRING, PVARF_NOARCHIVE);
 #endif
   
   wxString prefs_q3_pakfiles_default = PREFS_Q3_PAKFILES_DEFAULT;
@@ -234,7 +234,7 @@ void Prefs::load()
   // q4max
   addvar(wxT("q4_gamedir"), wxT(""), PVT_STRING);
 #ifndef WIN32
-  addvar(wxT("q4_homedirname"), PREFS_Q4_HOMEDIRNAME_DEFAULT, PVT_STRING, PVF_NOARCHIVE);
+  addvar(wxT("q4_homedirname"), PREFS_Q4_HOMEDIRNAME_DEFAULT, PVT_STRING, PVARF_NOARCHIVE);
 #endif
   wxString prefs_q4_pakfiles_default = PREFS_Q4_PAKFILES_DEFAULT;
   prefs_q4_pakfiles_default.Replace(wxT("/"), PATH_SEP);

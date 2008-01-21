@@ -13,12 +13,11 @@
 
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
-#ifndef CPMAPROPERTYGRIDBASE_H
-#define CPMAPROPERTYGRIDBASE_H
+#ifndef PROPERTYGRIDBASE_H
+#define PROPERTYGRIDBASE_H
 
-#include "element.h"
-#include "../mainframe.h"
-#include "../propertiesnotebookbase.h"
+#include "mainframe.h"
+#include "propertiesnotebookbase.h"
 #include <wx/variant.h>
 
 #include <wx/propgrid/propgrid.h>
@@ -29,10 +28,10 @@
 
 /// Provides a few functions that are in use on all
 /// the various grids
-class CPMAPropertyGridBase : public wxPropertyGridManager
+class PropertyGridBase : public wxPropertyGridManager
 {
   public:
-    CPMAPropertyGridBase( 
+    PropertyGridBase( 
       wxWindow *parent, 
       wxWindowID id = wxID_ANY, 
 		  const wxPoint& pos = wxDefaultPosition, 
@@ -75,6 +74,8 @@ class CPMAPropertyGridBase : public wxPropertyGridManager
     }
     */
 
+
+    /// implement this in the child class
     virtual void ExpandAll( bool expand = true )
     {
     }
@@ -100,41 +101,7 @@ class CPMAPropertyGridBase : public wxPropertyGridManager
 
 
 
-    /// returns the currently selected element (as stored in CPMAPropertiesNotebook::update_from_element)
-    /// @returns The current element or 0 if none selected
-    const CPMAElement* current_element() const
-    {
-      PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesctrl();
-      if( !p )
-      {
-        wxLogDebug(wxT("CPMAPropertyGridBase::curel() - PropertiesNotebook is not yet available"));
-        return 0;
-      }
-      const CPMAElement* el = static_cast<const CPMAElement*>(p->curel());
-      if( !el ) 
-      {
-        wxLogDebug(wxT("CPMAPropertyGridBase::curel() - there is no element selected"));
-        return 0;
-      }
-      return el;
-    }
-    CPMAElement* current_element()
-    {
-      PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesctrl();
-      if( !p )
-      {
-        wxLogDebug(wxT("CPMAPropertyGridBase::curel() - PropertiesNotebook is not yet available"));
-        return 0;
-      }
-      CPMAElement *el = static_cast<CPMAElement*>(p->curel());
-      if( !el ) 
-      {
-        wxLogDebug(wxT("CPMAPropertyGridBase::curel() - there is no element selected"));
-        return 0;
-      }
-      return el;
-    }
-
+    
     /// colorizes the property accordingly
     void property_inherits(wxPGPropArg id, bool inherits = true)
     {
