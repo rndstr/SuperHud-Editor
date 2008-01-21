@@ -453,6 +453,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\propertygridbase.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\scrolledmessagedialog.cpp"
 				>
 			</File>
@@ -484,6 +488,10 @@
 				RelativePath=".\src\texture.h"
 				>
 			</File>
+			<File
+				RelativePath=".\src\variable.h"
+				>
+			</File>
 			<Filter
 				Name="cpma"
 				>
@@ -509,10 +517,6 @@
 				</File>
 				<File
 					RelativePath=".\src\cpma\element.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\cpma\elementsctrl.cpp"
 					>
 				</File>
 				<File
@@ -576,10 +580,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\propertygridbase.h"
-					>
-				</File>
-				<File
 					RelativePath=".\src\cpma\visibilitypropertiesctrl.cpp"
 					>
 				</File>
@@ -587,6 +587,70 @@
 					RelativePath=".\src\cpma\visibilitypropertiesctrl.h"
 					>
 				</File>
+			</Filter>
+			<Filter
+				Name="q4max"
+				>
+				<File
+					RelativePath=".\src\q4max\displayctrl.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\q4max\displayctrl.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\q4max\element.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\q4max\element.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\q4max\elementsctrl.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\q4max\factory.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\q4max\factory.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\q4max\hudfile.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\q4max\hudfile.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\q4max\hudspecs.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\q4max\hudspecs.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\q4max\propertiesnotebook.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\q4max\propertiesnotebook.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\q4max\propertygrid.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="dummy"
+				>
 			</Filter>
 		</Filter>
 		<Filter

@@ -13,41 +13,14 @@
 
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
-#ifndef CPMAELEMENT_H
-#define CPMAELEMENT_H
+#ifndef Q4MAXELEMENT_H
+#define Q4MAXELEMENT_H
 
 #include "../common.h"
 #include "../elementbase.h"
 #include "../color4.h"
 #include "hudspecs.h"
 
-typedef enum
-{
-  E_FST_NONE,
-  E_FST_POINT,
-  E_FST_COORD
-} eElementFontSizeType;
-
-typedef enum
-{
-  E_TEXTSTYLE_NONE = 0,
-  E_TEXTSTYLE_SHADOW = 1
-} eElementTextStyle;;
-
-
-enum
-{
-  E_ANGLE_PITCH,
-  E_ANGLE_YAW,
-  E_ANGLE_ROLL,
-  E_ANGLE_PAN
-};
-enum
-{
-  E_OFFSET_X,
-  E_OFFSET_Y,
-  E_OFFSET_Z
-};
 
 
 const int E_PROPERTIES_DEFAULT = E_HAS_NONE;
@@ -56,21 +29,24 @@ const int WEAPONLIST_SPACE = 4; ///< how many pixels between items
 const int WEAPONLIST_SELECTEDIDX = 6; ///< which item do we highlight? should be same as ammo icon! (6=rail)
 
 
+typedef enum 
+{
+  E_FT_CHAIN = 0,
+  E_FT_MARINE = 1,
+  E_FT_LOWPIXEL = 2,
+  E_FT_PROFONT = 3,
+
+  // use as binary or operator
+  E_FT_OUTLINE = 0x4
+} eQ4MAXElementFont;
+
 /// Defaults
 /// @{
 
-const int E_FONTSIZE_NONE = -1;
-/// default fontsize for type E_FST_POINT
-const int E_FONTSIZE_DEFAULT_POINT = 12; // verified 1.35
-/// default fontsize for type E_FST_COORD
-const int E_FONTSIZE_DEFAULT_COORDX = 12; // verified 1.35
-const int E_FONTSIZE_DEFAULT_COORDY = 12; // verified 1.35
+const Color4 E_BGCOLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 0 );
+const Color4 E_COLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 100 );
 
-const Color4 E_BGCOLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 0 ); // (alpha==0) verified
-const Color4 E_COLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 100 ); // verified
-const Color4 E_FADE_DEFAULT = E_COLOR_DEFAULT; // NOTverified
-
-const wxString E_FONT_DEFAULT = wxT("cpma"); // should be `cpma' or otherwise previews are drawn? <-- oO what is that supposed to mean?
+const int E_FONT_DEFAULT = E_FT_CHAIN;
 const char E_TEXTALIGN_DEFAULT = 'L';
 const int E_TEXTSTYLE_DEFAULT = E_TEXTSTYLE_NONE;
 const int E_TIME_DEFAULT = 0;
@@ -79,7 +55,7 @@ const int E_TIME_DEFAULT = 0;
 
 class Texture;
 
-class CPMAElement : public ElementBase
+class Q4MAXElement : public ElementBase
 {
   public:
     struct Properties
@@ -124,12 +100,12 @@ class CPMAElement : public ElementBase
     };
 
   public:
-    //CPMAElement();
-    CPMAElement( const hsitem_s& def );
-    CPMAElement( const wxString& name, const wxString& desc =wxT(""), int type =E_T_UNKNOWN, 
+    //Q4MAXElement();
+    Q4MAXElement( const hsitem_s& def );
+    Q4MAXElement( const wxString& name, const wxString& desc =wxT(""), int type =E_T_UNKNOWN, 
       bool enable =false, int flags =E_NONE, int has =E_HAS_NONE, const wxString& text =wxT(""), 
       const wxString& icon =wxT(""), const wxRect& rect = E_RECT_DEFAULT);
-    virtual ~CPMAElement();
+    virtual ~Q4MAXElement();
 
     
 
@@ -234,7 +210,7 @@ class CPMAElement : public ElementBase
   protected:
     void        cleanup();
 
-    int           m_type ; ///< eCPMAElementType    
+    int           m_type ; ///< eElementType    
     Properties    m_props;
 
      

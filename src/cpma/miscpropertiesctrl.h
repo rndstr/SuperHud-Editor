@@ -16,11 +16,11 @@
 #ifndef CPMA_MISCPROPERTIESCTRL_H
 #define CPMA_MISCPROPERTIESCTRL_H
 
-#include "propertygridbase.h"
+#include "propertygrid.h"
 
 class ElementBase;
 
-class MiscPropertiesCtrl : public CPMAPropertyGridBase
+class MiscPropertiesCtrl : public CPMAPropertyGrid
 {
   public:
     MiscPropertiesCtrl( wxWindow *parent );

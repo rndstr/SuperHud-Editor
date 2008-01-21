@@ -16,11 +16,11 @@
 #ifndef CPMA_FONTPROPERTIESCTRL_H
 #define CPMA_FONTPROPERTIESCTRL_H
 
-#include "propertygridbase.h"
+#include "propertygrid.h"
 
 class ElementBase;
 
-class FontPropertiesCtrl : public CPMAPropertyGridBase
+class FontPropertiesCtrl : public CPMAPropertyGrid
 {
   public:
     FontPropertiesCtrl( wxWindow *parent );

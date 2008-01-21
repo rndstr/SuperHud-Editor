@@ -16,11 +16,11 @@
 #ifndef CPMA_IMAGEPROPERTIESCTRL_H
 #define CPMA_IMAGEPROPERTIESCTRL_H
 
-#include "propertygridbase.h"
+#include "propertygrid.h"
 
 class ElementBase;
 
-class ImagePropertiesCtrl : public CPMAPropertyGridBase
+class ImagePropertiesCtrl : public CPMAPropertyGrid
 {
   public:
     ImagePropertiesCtrl( wxWindow *parent );

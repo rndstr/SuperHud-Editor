@@ -16,11 +16,11 @@
 #ifndef CPMACOLORPROPERTIESCTRL_H
 #define CPMACOLORPROPERTIESCTRL_H
 
-#include "propertygridbase.h"
+#include "propertygrid.h"
 
 class ElementBase;
 
-class ColorPropertiesCtrl : public CPMAPropertyGridBase
+class ColorPropertiesCtrl : public CPMAPropertyGrid
 {
   public:
     ColorPropertiesCtrl( wxWindow *parent );

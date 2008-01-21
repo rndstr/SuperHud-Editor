@@ -21,11 +21,14 @@
 #include "optionalmessagedialog.h"
 #include "convertdialog.h"
 #include "factorybase.h"
+#include "pakmanager.h"
 
 #include <wx/txtstrm.h>
 #include <wx/wfstream.h>
 #include <wx/datetime.h>
 #include <wx/progdlg.h>
+#include <wx/mstream.h>
+#include <wx/tokenzr.h>
 
 #include <algorithm>
 using namespace std;

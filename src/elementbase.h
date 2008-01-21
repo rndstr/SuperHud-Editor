@@ -50,6 +50,29 @@ typedef enum {
 //  HIO_ALL = (1<<10)-1,
 } eElementProperties;
 
+typedef enum
+{
+  E_T_UNKNOWN = 0,
+  /// CPMA : the game will give us text to render
+  /// Q4MAX:      "
+  E_T_TEXT, 
+  /// CPMA : not available
+  /// Q4MAX: user defined text (Pre/PostDecorate_Text only!)
+  E_T_USERTEXT,
+
+  /// the game will override the IMAGE.
+  E_T_ICON, 
+  /// CPMA : more or less a general element where we can specify everything.
+  /// Q4MAX: user defined image
+  E_T_USERICON, 
+  /// CPMA : ammo bar, health bar, armor bar
+  /// Q4MAX: percentage bars
+  E_T_BAR, 
+  E_T_WEAPONLIST,
+} eElementType;
+ 
+
+
 typedef enum {
   E_NONE = 0,
   E_NOTUNIQ  = 1<<0,  ///< the name is allowed more than once.

@@ -39,7 +39,7 @@ class Q4MAXFactory : public FactoryBase
     wxString            pakfiles() const { return Prefs::get().var(wxT("q4_pakfiles")); }
     wxString            filedialog_path() const { return Prefs::get().var(wxT("q4_filedialog_path")); }
     void                set_filedialog_path( const wxString& path ) { Prefs::get().set(wxT("q4_filedialog_path"), path); }
-    wxString            background() const { return Prefs::get().var(wxT"q4_background")); }
+    wxString            background() const { return Prefs::get().var(wxT("q4_background")); }
 #ifndef WIN32
     wxString            unixdirname_userdata() const { return Prefs::get().var(wxT("q4_homedirname")); }
 #endif

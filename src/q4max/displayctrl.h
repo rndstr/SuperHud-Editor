@@ -13,36 +13,30 @@
 
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
-#ifndef CPMA_VISIBILITYPROPERTIESCTRL_H
-#define CPMA_VISIBILITYPROPERTIESCTRL_H
+#ifndef Q4MAXDISPLAYCTRL_H
+#define Q4MAXDISPLAYCTRL_H
 
+#include "../displayctrlbase.h"
 
-#include "propertygrid.h"
-
-class ElementBase;
-
-class VisibilityPropertiesCtrl : public CPMAPropertyGrid
+class Q4MAXDisplayCtrl : public DisplayCtrlBase
 {
+    
+
+    static const int WIDTH = 640;
+    static const int HEIGHT = 480;
+    
   public:
-    VisibilityPropertiesCtrl( wxWindow *parent );
+    Q4MAXDisplayCtrl( wxWindow *parent );
+    ~Q4MAXDisplayCtrl();
 
-    void from_element( const ElementBase *el );
-    void update_layout();
+    void init();
 
-    void ExpandAll( bool expand = true );
-
-  private:
-    void OnRightClick( wxPropertyGridEvent& ev );
-    void OnItemChanged( wxPropertyGridEvent& ev );
-    void OnElementVisibility( wxCommandEvent& ev );
-    void OnAlign( wxCommandEvent& ev );
- 
-
-
-
-    DECLARE_EVENT_TABLE()
+  protected:
+  
+    int width() const { return Q4MAXDisplayCtrl::WIDTH; }
+    int height() const { return Q4MAXDisplayCtrl::HEIGHT; }
 
 };
 
-
 #endif
+

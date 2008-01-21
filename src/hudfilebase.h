@@ -120,6 +120,8 @@ class HudFileBase
 
     void                  cleanup();
 
+    virtual bool          parse_item( wxString s ) { return false; }
+
   protected:
     elements_type         m_els;
     wxString              m_filename;

@@ -453,19 +453,17 @@ void MainFrame::OnMenuExit( wxCommandEvent& )
   Close(true);
 }
 
-//#include "variable.h"
+#include "variable.h"
 void MainFrame::OnMenuAbout( wxCommandEvent& )
 {
-  /*
-  testvars v;
+  VarContainer<Var> v;
   v.init();
   
-  v.addvar( new TVar<int>(wxT("intvar"), 3) );
+  v.addvar( wxT("testint"), wxT("3"), PVT_INT);
   //wxLogWarning(v.var(wxT("plrf")).sval());
   v.load();
-  wxLogWarning(wxT("%d"), v.var(wxT("intvar")).value());
+  wxLogWarning(wxT("%d"), v.var(wxT("testint")).ival());
   v.cleanup();
-  */
   /*
   wxAboutDialogInfo info;
   info.SetName(APP_NAME);

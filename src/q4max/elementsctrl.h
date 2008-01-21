@@ -13,36 +13,18 @@
 
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
-#ifndef CPMA_VISIBILITYPROPERTIESCTRL_H
-#define CPMA_VISIBILITYPROPERTIESCTRL_H
+#ifndef CPMAELEMENTSCTRL_H
+#define CPMAELEMENTSCTRL_H
+
+#include "../elementsctrlbase.h"
 
 
-#include "propertygrid.h"
-
-class ElementBase;
-
-class VisibilityPropertiesCtrl : public CPMAPropertyGrid
+class CPMAElementsCtrl : public ElementsCtrlBase
 {
   public:
-    VisibilityPropertiesCtrl( wxWindow *parent );
-
-    void from_element( const ElementBase *el );
-    void update_layout();
-
-    void ExpandAll( bool expand = true );
-
-  private:
-    void OnRightClick( wxPropertyGridEvent& ev );
-    void OnItemChanged( wxPropertyGridEvent& ev );
-    void OnElementVisibility( wxCommandEvent& ev );
-    void OnAlign( wxCommandEvent& ev );
- 
-
-
-
-    DECLARE_EVENT_TABLE()
+    CPMAElementsCtrl( wxWindow *parent ) : ElementsCtrlBase(parent, wxID_ANY) {}
 
 };
 
-
 #endif
+

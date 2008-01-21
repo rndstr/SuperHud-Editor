@@ -18,8 +18,6 @@
 
 #include "../displayctrlbase.h"
 
-class CPMAFont;
-
 class CPMADisplayCtrl : public DisplayCtrlBase
 {
     
@@ -32,8 +30,6 @@ class CPMADisplayCtrl : public DisplayCtrlBase
     ~CPMADisplayCtrl();
 
     void init();
-    void cleanup();
-
 
   protected:
   

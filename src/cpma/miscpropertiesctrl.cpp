@@ -24,13 +24,13 @@
 
 #include "element.h"
 
-BEGIN_EVENT_TABLE(MiscPropertiesCtrl, CPMAPropertyGridBase)
+BEGIN_EVENT_TABLE(MiscPropertiesCtrl, CPMAPropertyGrid)
   EVT_PG_CHANGED(ID_NOTEBOOK_PROPERTIES, MiscPropertiesCtrl::OnItemChanged)
   EVT_PG_CHANGING(ID_NOTEBOOK_PROPERTIES, MiscPropertiesCtrl::OnItemChanging)
 END_EVENT_TABLE()
 
 MiscPropertiesCtrl::MiscPropertiesCtrl( wxWindow *parent ) :
-  CPMAPropertyGridBase( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
+  CPMAPropertyGrid( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
             wxDefaultSize, wxPG_BOLD_MODIFIED|wxPG_SPLITTER_AUTO_CENTER|wxPG_DESCRIPTION|wxPGMAN_DEFAULT_STYLE )
 {
   // needed for `time' to give the user possibility to revert back to inherital value

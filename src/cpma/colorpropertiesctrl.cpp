@@ -26,13 +26,13 @@
 #include <wx/propgrid/advprops.h>
 #include <wx/propgrid/propgrid.h>
 
-BEGIN_EVENT_TABLE(ColorPropertiesCtrl, CPMAPropertyGridBase)
+BEGIN_EVENT_TABLE(ColorPropertiesCtrl, CPMAPropertyGrid)
   EVT_PG_CHANGING(ID_NOTEBOOK_PROPERTIES, ColorPropertiesCtrl::OnItemChanging)
   EVT_PG_CHANGED(ID_NOTEBOOK_PROPERTIES, ColorPropertiesCtrl::OnItemChanged)
 END_EVENT_TABLE()
 
 ColorPropertiesCtrl::ColorPropertiesCtrl( wxWindow *parent ) :
-  CPMAPropertyGridBase( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
+  CPMAPropertyGrid( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
             wxDefaultSize, wxPG_BOLD_MODIFIED|wxPG_SPLITTER_AUTO_CENTER|wxPG_DESCRIPTION|wxPGMAN_DEFAULT_STYLE )
 {
   //SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES);

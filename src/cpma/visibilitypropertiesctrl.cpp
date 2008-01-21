@@ -25,7 +25,7 @@
 
 
 
-BEGIN_EVENT_TABLE(VisibilityPropertiesCtrl, CPMAPropertyGridBase)
+BEGIN_EVENT_TABLE(VisibilityPropertiesCtrl, CPMAPropertyGrid)
   EVT_PG_CHANGED(ID_NOTEBOOK_PROPERTIES, VisibilityPropertiesCtrl::OnItemChanged)
   EVT_TOOL_RANGE(ID_BTN_ALIGN_LEFT, ID_BTN_ALIGN_BOTTOM,
     VisibilityPropertiesCtrl::OnAlign)
@@ -34,7 +34,7 @@ BEGIN_EVENT_TABLE(VisibilityPropertiesCtrl, CPMAPropertyGridBase)
 END_EVENT_TABLE()
 
 VisibilityPropertiesCtrl::VisibilityPropertiesCtrl( wxWindow *parent ) :
-  CPMAPropertyGridBase( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
+  CPMAPropertyGrid( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
             wxDefaultSize, wxPG_BOLD_MODIFIED|wxPG_SPLITTER_AUTO_CENTER|wxPG_DESCRIPTION|wxPG_TOOLBAR|wxPGMAN_DEFAULT_STYLE )
 {
   // needed for `time' (duration) to give the user possibility to revert back to inherital value

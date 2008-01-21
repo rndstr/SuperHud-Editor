@@ -83,9 +83,13 @@ DisplayCtrlBase::DisplayCtrlBase( wxWindow *parent, wxWindowID id, const wxPoint
 void DisplayCtrlBase::cleanup()
 {
   wxLogDebug(wxT("DisplayCtrlBase::cleanup"));
+  wxDELETE(m_background);
   wxDELETE(m_texdefault);
   wxDELETE(m_texmodel);
   wxDELETE(m_fish);
+  for( fonts_type::iterator it = m_fonts.begin(); it != m_fonts.end(); ++it )
+    delete it->second;
+  m_fonts.clear();
 }
 
 void DisplayCtrlBase::OnPaint( wxPaintEvent& )
