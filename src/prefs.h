@@ -137,9 +137,6 @@ class Prefs
     /// @arg from_prefs_dialog Whether we are coming from the preferences dialog (and thus only saving change that can be changed there)
     void save( bool from_prefs_dialog = false );
 
-    //void set_aspectratio( const wxString& ar );
-    //double get_aspectratio() const { return aspectratiod; }
-
     const Variable& var( const wxString& name ) const;
     void set( const wxString& name, const wxString& val );
     void setb( const wxString& name, bool bval );
@@ -168,3 +165,4 @@ class Prefs
 };
 
 #endif // PREFS_H
+
