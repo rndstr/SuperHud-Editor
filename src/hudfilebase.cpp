@@ -622,7 +622,7 @@ bool HudFileBase::read_properties( ElementBase *hi, const wxString& props )
       cmd = prop;
     
     if (cmd.empty())
-    { // FIXME who cares?
+    {
       wxLogWarning( _("Found empty element command.") );
       continue;
     }
@@ -637,7 +637,8 @@ bool HudFileBase::read_properties( ElementBase *hi, const wxString& props )
       args.Replace( wxT(","), wxT(" ") );
       while( args.Replace( wxT("  "), wxT(" ") ) > 0 );
     }
-
+    // scrap those doublequotes!
+    she::wxTrim( args, HF_PROPERTY_ARGTRIM );
     if( !hi->parse_property( cmd, args ) )
     {
       wxLogWarning( _("Invalid command `%s' found in element `%s'."), cmd.c_str(), hi->name().c_str() );

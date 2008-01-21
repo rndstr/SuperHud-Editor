@@ -22,11 +22,10 @@ cpma = \
                          cpma_colorpropertiesctrl.cpp cpma_colorpropertiesctrl.h \
                          cpma_displayctrl.cpp cpma_displayctrl.h \
                          cpma_element.cpp cpma_element.h \
-                         cpma_elementsctrl.cpp cpma_elementsctrl.h \
+                         cpma_elementsctrl.h \
                          cpma_factory.cpp cpma_factory.h \
                          cpma_fontpropertiesctrl.cpp cpma_fontpropertiesctrl.h \
                          cpma_hudfile.cpp cpma_hudfile.h \
-                         cpma_hudspecs.cpp cpma_hudspecs.h \
                          cpma_imagepropertiesctrl.cpp cpma_imagepropertiesctrl.h \
                          cpma_miscpropertiesctrl.cpp cpma_miscpropertiesctrl.h \
                          cpma_propertiesnotebook.cpp cpma_propertiesnotebook.h \
@@ -62,6 +61,7 @@ superhudeditor_SOURCES = \
                          factorybase.h \
                          font.cpp font.h \
                          hudfilebase.cpp hudfilebase.h \
+                         hudspecs.cpp hudspecs.h \
                          mainframe.cpp mainframe.h \
                          misc.cpp misc.h \
                          model.cpp model.h \

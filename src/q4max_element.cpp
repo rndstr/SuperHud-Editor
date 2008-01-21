@@ -50,8 +50,8 @@ Q4MAXElement::Properties::Properties()
 
 bool Q4MAXElement::Properties::init()
 {
-  addvar( wxT("color"), Q4MAX_E_COLOR_DEFAULT.to_string(), VART_COLOR );
-  addvar( wxT("colored"), Q4MAX_E_COLORED_DEFAULT, VART_BOOL );
+  addvar( wxT("color"), Q4MAX_E_COLOR_DEFAULT.to_string(), VART_COLOR, Q4MAX_E_HAS_COLOR );
+  addvar( wxT("colored"), Q4MAX_E_COLORED_DEFAULT, VART_BOOL, Q4MAX_E_HAS_COLORED );
   return true;
 }
 
@@ -91,11 +91,18 @@ bool Q4MAXElement::parse_property( const wxString& cmd, wxString args )
 
   //m_has = E_PROPERTIES_DEFAULT;
 
+  if( !m_props.exists(cmd) )
+    return false;
+
+  if( !m_props.set(cmd, args) )
+      wxLogWarning( _("Unknown `%s' argument: %s"), cmd.c_str(), args.c_str() );
+  m_has |= m_props.var(cmd).has();
+  /*
   if( cmd.CmpNoCase(wxT("color"))==0 )
   {
     Color4 col;
     if( !m_props.set(wxT("color"), args) )
-      wxLogWarning( _("Unknown `%c' argument: %s"), cmd.c_str(), args.c_str() );
+      wxLogWarning( _("Unknown `%s' argument: %s"), cmd.c_str(), args.c_str() );
     m_has |= Q4MAX_E_HAS_COLOR;
   }
   if( cmd.CmpNoCase(wxT("colored"))==0 )
@@ -103,6 +110,7 @@ bool Q4MAXElement::parse_property( const wxString& cmd, wxString args )
     m_props.set(wxT("colored"), args);
     m_has |= Q4MAX_E_HAS_COLORED;
   }
+  */
   
   /*
   else if( cmd.CmpNoCase(wxT("doublebar")) == 0 )
@@ -263,11 +271,11 @@ bool Q4MAXElement::parse_property( const wxString& cmd, wxString args )
       
     m_has |= E_HAS_ANGLES;
   }
-  */
   else
   {
     return false; // not found
   }
+  */
 
   return true;
 }
@@ -294,10 +302,14 @@ void Q4MAXElement::write_properties( wxTextOutputStream& stream ) const
   if( (m_has & E_HAS_TEXTALIGN) && m_props.textalign != ' ' )
     lines.push_back(wxString::Format( wxT("textalign %c"),  m_props.textalign));
     */
+  /*
   if( m_has & Q4MAX_E_HAS_COLOR )
-    lines.push_back(wxT("color ") + m_props.var(wxT("color")).cval().to_string());
+    lines.push_back(wxT("color ") + m_props.var(wxT("color")).sval());
   if( m_has & Q4MAX_E_HAS_COLORED )
-    lines.push_back(wxT("colored ") + m_props.var(wxT("color")).cval().to_string());
+    lines.push_back(wxT("colored ") + m_props.var(wxT("colored")).sval());
+    */
+  for( Properties::cit_variables cit = m_props.vars().begin(); cit != m_props.vars().end(); ++cit )
+    lines.push_back(cit->first + wxT(" \"") + cit->second.sval() + wxT("\""));
   /*
   if( m_has & E_HAS_BGCOLOR )
     lines.push_back(wxT("bgcolor ") + m_props.bgcolor.to_string());

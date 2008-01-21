@@ -5,12 +5,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-
+//
 // SuperHud Editor is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-
+//
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef VARIABLE_H
@@ -46,108 +46,110 @@ enum
 
 class Var
 {
-public:
-  Var( const wxString& name, const wxString& def = wxT(""), int type = VART_ANY, int flags = VARF_NONE ) :
+  public:
+    Var( const wxString& name, const wxString& def = wxT(""), int type = VART_ANY, int flags = VARF_NONE ) :
       m_name(name),
-        m_value(wxT("")),
-        m_def(def),
-        m_type(type),
-        m_flags(flags),
-        m_isset(false)
-      {
-      }
+      m_value(wxT("")),
+      m_def(def),
+      m_type(type),
+      m_flags(flags),
+      m_isset(false)
+    {
+    }
+    virtual ~Var() {}
 
-      int ival() const
-      { 
-        wxASSERT_MSG( m_type == VART_ANY || m_type == VART_INT, m_name );
-        return intval;
-      }
-      double dval() const
-      {
-        wxASSERT_MSG( m_type == VART_ANY || m_type == VART_DOUBLE, m_name );
-        return doubleval;
-      }
-      bool bval() const
-      {
-        wxASSERT_MSG( m_type == VART_ANY || m_type == VART_BOOL, m_name );
-        return boolval;
-      }
-      const Color4& cval() const
-      {
-        wxASSERT_MSG( m_type == VART_ANY || m_type == VART_COLOR, m_name );
-        return colorval;
-      }
-      Color4& cval()
-      {
-        wxASSERT_MSG( m_type == VART_ANY || m_type == VART_COLOR, m_name );
-        return colorval;
-      }
-      wxColour wxcval() const
-      {
-        wxASSERT_MSG( m_type == VART_ANY || m_type == VART_COLOR, m_name );
-        return colorval.to_wxColour();
-      }
+    int ival() const
+    { 
+      wxASSERT_MSG( m_type == VART_ANY || m_type == VART_INT, m_name );
+      return intval;
+    }
 
-      wxString sval() const
-      {
-        return (m_isset ? m_value : m_def);
-      }
+    double dval() const
+    {
+      wxASSERT_MSG( m_type == VART_ANY || m_type == VART_DOUBLE, m_name );
+      return doubleval;
+    }
+    bool bval() const
+    {
+      wxASSERT_MSG( m_type == VART_ANY || m_type == VART_BOOL, m_name );
+      return boolval;
+    }
+    const Color4& cval() const
+    {
+      wxASSERT_MSG( m_type == VART_ANY || m_type == VART_COLOR, m_name );
+      return colorval;
+    }
+    Color4& cval()
+    {
+      wxASSERT_MSG( m_type == VART_ANY || m_type == VART_COLOR, m_name );
+      return colorval;
+    }
+    wxColour wxcval() const
+    {
+      wxASSERT_MSG( m_type == VART_ANY || m_type == VART_COLOR, m_name );
+      return colorval.to_wxColour();
+    }
 
-      bool set( const wxString& str, bool isset = true )
+    wxString sval() const
+    {
+      return (m_isset ? m_value : m_def);
+    }
+
+    bool set( const wxString& str, bool isset = true )
+    {
+      m_isset = isset;
+      m_value = str;
+      if( m_type == VART_INT )
       {
-        m_isset = isset;
-        m_value = str;
-        if( m_type == VART_INT )
+        long val;
+        m_value.ToLong(&val);
+        intval = static_cast<int>(val);
+      }
+      else if( m_type == VART_DOUBLE )
+      {
+        if( !she::ratio_string2double(m_value, &doubleval) )
         {
-          long val;
-          m_value.ToLong(&val);
-          intval = static_cast<int>(val);
+          wxLogError(_("Invalid value for ratio (`%s')"), m_value.c_str());
+          return false;
         }
-        else if( m_type == VART_DOUBLE )
-        {
-          if( !she::ratio_string2double(m_value, &doubleval) )
-          {
-            wxLogError(_("Invalid value for ratio (`%s')"), m_value.c_str());
-            return false;
-          }
-        }
-        else if( m_type == VART_BOOL )
-        {
-          boolval = (m_value == wxT("true") || m_value == wxT("yes") || m_value == wxT("1"));
-        }
-        else if( m_type == VART_COLOR )
-        {
-          return colorval.set(m_value);
-        }
-        return true;
       }
-      bool set_default()
+      else if( m_type == VART_BOOL )
       {
-        return set(m_def);
+        boolval = (m_value == wxT("true") || m_value == wxT("yes") || m_value == wxT("1"));
       }
+      else if( m_type == VART_COLOR )
+      {
+        return colorval.set(m_value);
+      }
+      return true;
+    }
+    bool set_default()
+    {
+      return set(m_def);
+    }
 
-      wxString def() const { return m_def; }
+    wxString def() const { return m_def; }
 
-      operator bool() const { return bval(); }
-      operator Color4() const { return cval(); }
-      operator double() const { return dval(); }
-      operator int() const { return ival(); }
-      operator wxString() const { return sval(); }
+    operator bool() const { return bval(); }
+    operator Color4() const { return cval(); }
+    operator double() const { return dval(); }
+    operator int() const { return ival(); }
+    operator wxString() const { return sval(); }
 
 
-  wxString  m_name;
-  wxString  m_value;
-  wxString  m_def;
-  int       m_type;
-  int       m_flags;
-  bool      m_isset;
+    wxString  m_name;
+    wxString  m_value;
+    wxString  m_def;
+    int       m_type;
+    int       m_flags;
+    bool      m_isset;
 
-private:
-  // FIXME this is waste of space, union?
-  double    doubleval;
-  int       intval;
-  bool      boolval;
-  Color4    colorval;
+  private:
+    // FIXME this is waste of space, union?
+    double    doubleval;
+    int       intval;
+    bool      boolval;
+    Color4    colorval;
 };
 
 
@@ -156,7 +158,9 @@ class VarContainer
 {
 public:
   typedef VarC var_type;
-  typedef std::map<wxString, var_type> variables_type;
+  typedef std::map<wxString, var_type>    variables_type;
+  typedef typename variables_type::iterator        it_variables;
+  typedef typename variables_type::const_iterator  cit_variables;
 
 public:
   VarContainer() {}
@@ -170,7 +174,7 @@ public:
 
   virtual void load()
   {
-    for( variables_type::iterator it = m_vars.begin(); it != m_vars.end(); ++it )
+    for( typename variables_type::iterator it = m_vars.begin(); it != m_vars.end(); ++it )
     {
       // read element
       read_var(it->second);
@@ -178,7 +182,7 @@ public:
   }
   virtual void save()
   {
-    for( variables_type::iterator it = m_vars.begin(); it != m_vars.end(); ++it )
+    for( typename variables_type::iterator it = m_vars.begin(); it != m_vars.end(); ++it )
     {
       write_var(it->second);
     }
@@ -197,38 +201,38 @@ public:
 
   const var_type& var( const wxString& name ) const
   {
-    variables_type::const_iterator var = m_vars.find(name);
+    typename variables_type::const_iterator var = m_vars.find(name);
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable: ") + name );
     return var->second;
   }
 
   bool set( const wxString& name, const wxString& val )
   {
-    variables_type::iterator var = m_vars.find(name);
+    typename variables_type::iterator var = m_vars.find(name);
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
     return var->second.set(val);
   }
   bool setb( const wxString& name, bool bval )
   {
-    variables_type::iterator var = m_vars.find(name);
+    typename variables_type::iterator var = m_vars.find(name);
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
     return var->second.set( bval ? wxT("true") : wxT("false"));
   }
   bool seti( const wxString& name, int ival )
   {
-    variables_type::iterator var = m_vars.find(name);
+    typename variables_type::iterator var = m_vars.find(name);
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
     return var->second.set( wxString::Format(wxT("%i"), ival) );
   }
   bool setvar( const wxString& name, const wxVariant& variant )
   {
-    variables_type::iterator var = m_vars.find(name);
+    typename variables_type::iterator var = m_vars.find(name);
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
     return var->second.set( variant.MakeString() );
   }
   bool setwxc( const wxString& name, const wxColour& wxcol, int alpha = -1 )
   {
-    variables_type::iterator var = m_vars.find(name);
+    typename variables_type::iterator var = m_vars.find(name);
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
     if( var->second.cval().set(wxcol) )
     { // ok looks like the color changed.. so let's update
@@ -243,7 +247,7 @@ public:
 
   bool set_default( const wxString& name )
   {
-    variables_type::iterator var = m_vars.find(name);
+    typename variables_type::iterator var = m_vars.find(name);
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
     return var->second.set_default();
   }
@@ -256,7 +260,7 @@ public:
 
   bool exists( const wxString& name, int type = VART_ANY )
   {
-    variables_type::iterator var = m_vars.find(name);
+    typename variables_type::iterator var = m_vars.find(name);
     return (var != m_vars.end() && (VART_ANY == type || var->second.m_type == type));
   }
 

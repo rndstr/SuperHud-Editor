@@ -2,7 +2,7 @@ dnl rerun autoreconf -fvi -Wall after modifying this.
 
 dnl AC_PREREQ(2.60)
 AC_INIT([superhudeditor], [0.4.0], [rolansch@ethz.ch])
-AM_INIT_AUTOMAKE([subdir-objects])
+AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/superhudeditor.cpp])
 AM_CONFIG_HEADER([config.h])
 

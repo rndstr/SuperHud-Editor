@@ -75,3 +75,4 @@ void Q4MAXDisplayCtrl::init()
 
   PakManager::get().debug();
 }
+

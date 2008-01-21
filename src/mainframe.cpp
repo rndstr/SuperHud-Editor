@@ -230,6 +230,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
       );
   m_configpreview = new wxTextCtrl(this, ID_TEXTCTRL_CONFIGPREVIEW, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
   wxFont sysfont = wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT);
+  // FIXME this doesn't give fixed width font on wxGTK! ffs
   m_configpreview->SetFont( sysfont );
   m_mgr.AddPane( m_configpreview, wxAuiPaneInfo().Name(wxT("configpreview")).Caption(_("Config Preview")).
     CloseButton(true).MaximizeButton(true).MinSize(wxSize(150,100)).BestSize(200,100)
@@ -470,7 +471,7 @@ void MainFrame::OnMenuAbout( wxCommandEvent& )
   v.addvar( wxT("testint"), wxT("3"), VART_INT);
   v.addvar( wxT("testcol"), wxT("0.4 0.5 0.6 0.8"), VART_COLOR);
   v.load();
-  wxLogWarning(wxT("%s"), v.var(wxT("testcol")).sval());
+  wxLogWarning(wxT("%s"), v.var(wxT("testcol")).sval().c_str());
   v.cleanup();
   /*
   wxAboutDialogInfo info;

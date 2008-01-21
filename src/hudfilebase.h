@@ -5,12 +5,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-
+//
 // SuperHud Editor is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-
+//
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef HUDFILEBASE_H
@@ -38,8 +38,10 @@ const wxString HF_PREDECORATE_PREFIX = wxT("PreDecorate");
 /// between multiple elements on same line.. as q4max allows several nonseparated
 /// eleemnts on one line (although arguments have to be surrounded by doublequotes)
 const wxString HF_PROPERTY_DELIM = wxT("\n;");
-/// what we trim for.
+/// what we trim the whole property line for (`PROPERTYNAME PROPERTYARG')
 const wxString HF_PROPERTY_TRIM = wxT(" \n\t\r");
+/// the extracted argument trimmed
+const wxString HF_PROPERTY_ARGTRIM = wxT("\"");
 
 
 typedef std::vector<ElementBase*>           elements_type;

@@ -91,19 +91,33 @@ class Texture;
 class Q4MAXElement : public ElementBase
 {
   public:
-    class Properties : public varcont_type
+    class Property : public Var
+    {
+      public:
+        Property( const wxString& name, const wxString& def, int type, int has ) :
+          Var(name, def, type, VARF_NONE), m_has(has) { }
+
+        int has() const { return m_has; }
+
+      protected:
+        int m_has;
+    };
+
+
+
+    class Properties : public VarContainer<Property>
     {
       public:
         Properties();
         bool init();
         
-        Properties& Properties::operator= (const Properties& p)
+        Properties& operator= (const Properties& p)
         {
           if (this == &p) return *this;
 
           // copy all 
-          const varcont_type::variables_type& rhs = p.vars();
-          for( varcont_type::variables_type::const_iterator cit = rhs.begin(); cit != rhs.end(); ++cit )
+          const VarContainer<Property>::variables_type& rhs = p.vars();
+          for( VarContainer<Property>::variables_type::const_iterator cit = rhs.begin(); cit != rhs.end(); ++cit )
           {
             if( exists(cit->first) )
               set( cit->first, cit->second.sval() );

@@ -17,14 +17,14 @@ nobase_dist_pkgdata_DATA = data/pak-$(VERSION).pke data/tips.txt
 # this list should be equal to data/pak-VERSION.include
 apppak = \
 					data/cpma/hudspecs.dat \
-					data/cpma/docs/README.hudspecs \
 					data/cpma/docs/README.superhud \
 					data/cpma/texture/background_16x10.jpg \
 					data/cpma/texture/background_4x3.jpg \
 					data/model/dfegg.mde \
 					data/model/README \
 					data/texture/default.tga \
-					data/texture/model.tga
+					data/texture/model.tga \
+					data/docs/README.hudspecs
 
 # we aren't using the webupdater on linux..
 # but provide it in distributed file nevertheless

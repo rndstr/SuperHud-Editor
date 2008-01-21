@@ -40,7 +40,7 @@ bool HudSpecs::load()
   size_t size;
   if( !PakManager::get().load( &buf, hudspecs, PM_SEARCH_APPFILE, &size ) )
   {
-    wxLogError(_("Couldn't find/load hudspecs file: %s"), hudspecs.c_str());
+    wxLogError(_("Couldn't find/load hudspecs file: %s\n\nPlease reinstall"), hudspecs.c_str());
     return false;
   }
   wxStringInputStream sis( wxString(buf, wxConvUTF8, size) );
