@@ -16,8 +16,8 @@
 #ifndef Q4MAXFACTORY_H
 #define Q4MAXFACTORY_H
 
-#include "../factorybase.h"
-#include "../prefs.h"
+#include "factorybase.h"
+#include "prefs.h"
 
 class Q4MAXFactory : public FactoryBase
 {
@@ -38,6 +38,8 @@ class Q4MAXFactory : public FactoryBase
     wxString            pakfiles() const { return Prefs::get().var(wxT("q4_pakfiles")); }
     wxString            filedialog_path() const { return Prefs::get().var(wxT("q4_filedialog_path")); }
     void                set_filedialog_path( const wxString& path ) { Prefs::get().set(wxT("q4_filedialog_path"), path); }
+    wxString            startup_loadfile() const { return Prefs::get().var(wxT("q4_startup_loadfile")); }
+    void                set_startup_loadfile( const wxString& file ) { Prefs::get().set(wxT("q4_startup_loadfile"), file); }
     wxString            background() const { return Prefs::get().var(wxT("q4_background")); }
     wxString            hudspecs() const { return Prefs::get().var(wxT("q4_hudspecs")); }
 #ifndef WIN32

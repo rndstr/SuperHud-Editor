@@ -47,6 +47,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
+				ObjectFile="$(IntDir)\"
 				WarningLevel="3"
 				DebugInformationFormat="4"
 			/>
@@ -497,98 +498,98 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\variable.h"
+				RelativePath=".\src\varcontainer.h"
 				>
 			</File>
 			<Filter
 				Name="cpma"
 				>
 				<File
-					RelativePath=".\src\cpma\colorpropertiesctrl.cpp"
+					RelativePath=".\src\cpma_colorpropertiesctrl.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\colorpropertiesctrl.h"
+					RelativePath=".\src\cpma_colorpropertiesctrl.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\displayctrl.cpp"
+					RelativePath=".\src\cpma_displayctrl.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\displayctrl.h"
+					RelativePath=".\src\cpma_displayctrl.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\element.cpp"
+					RelativePath=".\src\cpma_element.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\element.h"
+					RelativePath=".\src\cpma_element.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\elementsctrl.h"
+					RelativePath=".\src\cpma_elementsctrl.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\factory.cpp"
+					RelativePath=".\src\cpma_factory.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\factory.h"
+					RelativePath=".\src\cpma_factory.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\fontpropertiesctrl.cpp"
+					RelativePath=".\src\cpma_fontpropertiesctrl.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\fontpropertiesctrl.h"
+					RelativePath=".\src\cpma_fontpropertiesctrl.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\hudfile.cpp"
+					RelativePath=".\src\cpma_hudfile.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\hudfile.h"
+					RelativePath=".\src\cpma_hudfile.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\imagepropertiesctrl.cpp"
+					RelativePath=".\src\cpma_imagepropertiesctrl.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\imagepropertiesctrl.h"
+					RelativePath=".\src\cpma_imagepropertiesctrl.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\miscpropertiesctrl.cpp"
+					RelativePath=".\src\cpma_miscpropertiesctrl.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\miscpropertiesctrl.h"
+					RelativePath=".\src\cpma_miscpropertiesctrl.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\propertiesnotebook.cpp"
+					RelativePath=".\src\cpma_propertiesnotebook.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\propertiesnotebook.h"
+					RelativePath=".\src\cpma_propertiesnotebook.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\propertygrid.h"
+					RelativePath=".\src\cpma_propertygrid.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\visibilitypropertiesctrl.cpp"
+					RelativePath=".\src\cpma_visibilitypropertiesctrl.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\visibilitypropertiesctrl.h"
+					RelativePath=".\src\cpma_visibilitypropertiesctrl.h"
 					>
 				</File>
 			</Filter>
@@ -596,57 +597,53 @@
 				Name="q4max"
 				>
 				<File
-					RelativePath=".\src\q4max\displayctrl.cpp"
+					RelativePath=".\src\q4max_displayctrl.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\q4max\displayctrl.h"
+					RelativePath=".\src\q4max_displayctrl.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\q4max\element.cpp"
+					RelativePath=".\src\q4max_element.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\q4max\element.h"
+					RelativePath=".\src\q4max_element.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\q4max\elementsctrl.h"
+					RelativePath=".\src\q4max_elementsctrl.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\q4max\factory.cpp"
+					RelativePath=".\src\q4max_factory.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\q4max\factory.h"
+					RelativePath=".\src\q4max_factory.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\q4max\hudfile.cpp"
+					RelativePath=".\src\q4max_hudfile.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\q4max\hudfile.h"
+					RelativePath=".\src\q4max_hudfile.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\q4max\propertiesnotebook.cpp"
+					RelativePath=".\src\q4max_propertiesnotebook.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\q4max\propertiesnotebook.h"
+					RelativePath=".\src\q4max_propertiesnotebook.h"
 					>
 				</File>
 				<File
-					RelativePath=".\src\q4max\propertygrid.h"
+					RelativePath=".\src\q4max_propertygrid.h"
 					>
 				</File>
-			</Filter>
-			<Filter
-				Name="dummy"
-				>
 			</Filter>
 		</Filter>
 		<Filter

@@ -16,8 +16,8 @@
 #ifndef CPMAPROPERTYGRID_H
 #define CPMAPROPERTYGRID_H
 
-#include "../propertygridbase.h"
-#include "element.h"
+#include "propertygridbase.h"
+#include "cpma_element.h"
 
 /// Provides a few functions that are in use on all
 /// the various grids

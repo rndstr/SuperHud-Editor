@@ -16,7 +16,7 @@
 #ifndef CPMA_MISCPROPERTIESCTRL_H
 #define CPMA_MISCPROPERTIESCTRL_H
 
-#include "propertygrid.h"
+#include "cpma_propertygrid.h"
 
 class ElementBase;
 

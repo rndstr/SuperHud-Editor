@@ -128,6 +128,8 @@ class PrefsDialog : public wxPropertySheetDialog
     // --- advanced
     // all those that have parents.. dunno how to access those values otherwise? :x
     wxPropertyGrid *m_pg;
+    wxPGProperty *m_vgc;
+    wxPGProperty *m_vgca;
     wxPGProperty *m_vhfs;
     wxPGProperty *m_vhfsa;
     wxPGProperty *m_vhbs;

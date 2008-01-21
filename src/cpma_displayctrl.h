@@ -16,7 +16,7 @@
 #ifndef CPMADISPLAYCTRL_H
 #define CPMADISPLAYCTRL_H
 
-#include "../displayctrlbase.h"
+#include "displayctrlbase.h"
 
 class CPMADisplayCtrl : public DisplayCtrlBase
 {

@@ -17,7 +17,7 @@
 #define CPMA_VISIBILITYPROPERTIESCTRL_H
 
 
-#include "propertygrid.h"
+#include "cpma_propertygrid.h"
 
 class ElementBase;
 

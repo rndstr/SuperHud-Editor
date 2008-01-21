@@ -13,16 +13,16 @@
 
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
-#include "factory.h"
+#include "q4max_factory.h"
 
-#include "elementsctrl.h"
-#include "propertiesnotebook.h"
-#include "displayctrl.h"
-#include "hudfile.h"
+#include "q4max_elementsctrl.h"
+#include "q4max_propertiesnotebook.h"
+#include "q4max_displayctrl.h"
+#include "q4max_hudfile.h"
 
 
 
-ElementsCtrlBase* Q4MAXFactory::creae_elementsctrl(wxWindow *parent) const
+ElementsCtrlBase* Q4MAXFactory::create_elementsctrl(wxWindow *parent) const
 {
   return new Q4MAXElementsCtrl(parent);
 }

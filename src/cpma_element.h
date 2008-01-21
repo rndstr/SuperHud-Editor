@@ -16,10 +16,10 @@
 #ifndef CPMAELEMENT_H
 #define CPMAELEMENT_H
 
-#include "../common.h"
-#include "../elementbase.h"
-#include "../color4.h"
-#include "../hudspecs.h"
+#include "common.h"
+#include "elementbase.h"
+#include "color4.h"
+#include "hudspecs.h"
 
 typedef enum
 {

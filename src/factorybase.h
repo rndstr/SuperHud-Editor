@@ -62,6 +62,9 @@ class FactoryBase
     virtual wxString    filedialog_path() const = 0;
     virtual void        set_filedialog_path( const wxString& path ) = 0;
 
+    virtual wxString    startup_loadfile() const = 0;
+    virtual void        set_startup_loadfile( const wxString& file ) = 0;
+
     /// `GAME_background'
     virtual wxString    background() const = 0;
 

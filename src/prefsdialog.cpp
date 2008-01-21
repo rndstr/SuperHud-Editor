@@ -138,24 +138,21 @@ void PrefsDialog::OnOk( wxCommandEvent& ev )
   
   
   wxColour col;
-  Color4 c4;
-/*
-  col << m_pg->GetPropertyValue(wxT("view-gridcolor"));
-  c4.set(col); c4.set_a100(m_pg->GetPropertyValueAsInt(wxT("view-gridcolor-alpha")));
-  Prefs::get().set(wxT("view_gridcolor"), c4.to_string());
+
+  col << m_vgc->GetValue();
+  Prefs::get().setwxc(wxT("view_gridcolor"), col, m_vgca->GetValue().GetInteger());
 
   col << m_vhfs->GetValue();
-  c4.set(col); c4.set_a100(m_vhfsa->GetValue().GetInteger());
-  Prefs::get().set(wxT("view_helper_fill_selected"), c4.to_string());
+  Prefs::get().setwxc(wxT("view_helper_fill_selected"), col, m_vhfsa->GetValue().GetInteger());
+
+  col << m_vhfs->GetValue();
+  Prefs::get().setwxc(wxT("view_helper_fill_selected"), col, m_vhfsa->GetValue().GetInteger());
 
   col << m_vhbs->GetValue();
-  c4.set(col); c4.set_a100(m_vhbsa->GetValue().GetInteger());
-  Prefs::get().set(wxT("view_helper_border_selected"), c4.to_string());
+  Prefs::get().setwxc(wxT("view_helper_border_selected"), col, m_vhbsa->GetValue().GetInteger());
 
   col << m_vhf->GetValue();
-  c4.set(col); c4.set_a100(m_vhfa->GetValue().GetInteger());
-  Prefs::get().set(wxT("view_helper_fill"), c4.to_string());
-  */
+  Prefs::get().setwxc(wxT("view_helper_fill"), col, m_vhfa->GetValue().GetInteger());
 
   col << m_vhb->GetValue();
   Prefs::get().setwxc(wxT("view_helper_border"), col, m_vhba->GetValue().GetInteger());
@@ -484,8 +481,8 @@ wxPanel* PrefsDialog::create_advanced(wxWindow *parent)
    m_pg->SetPropertyHelpString( wxT("view-movestep"), _("How many pixels to move upon pressing arrow keys") );
 
    m_pg->Append( new wxPropertyCategory(_("Grid color")) );
-   m_pg->Append( new wxColourProperty(_("Color"), wxT("view-gridcolor"), Prefs::get().var(wxT("view_gridcolor")).wxcval()) );
-   m_pg->Append( new wxIntProperty(_("Opacity"), wxT("view-gridcolor-alpha"), Prefs::get().var(wxT("view_gridcolor")).cval().a100()) );
+   m_vgc = m_pg->Append( new wxColourProperty(_("Color"), wxT("view-gridcolor"), Prefs::get().var(wxT("view_gridcolor")).wxcval()) );
+   m_vgca = m_pg->Append( new wxIntProperty(_("Opacity"), wxT("view-gridcolor-alpha"), Prefs::get().var(wxT("view_gridcolor")).cval().a100()) );
    
    m_pg->Append( new wxPropertyCategory(_("Helpers color")) );
    wxPGId pid = m_pg->Append( new wxParentProperty(_("Selected elements")) );

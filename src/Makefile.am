@@ -19,22 +19,29 @@ wxpropgrid = \
                          wxpropgrid-1.3/src/odcombo.cpp wxpropgrid-1.3/include/wx/propgrid/odcombo.h \
                          wxpropgrid-1.3/include/wx/propgrid/propdev.h
 cpma = \
-                         cpma/colorpropertiesctrl.cpp cpma/colorpropertiesctrl.h \
-                         cpma/displayctrl.cpp cpma/displayctrl.h \
-                         cpma/element.cpp cpma/element.h \
-                         cpma/elementsctrl.cpp cpma/elementsctrl.h \
-                         cpma/factory.cpp cpma/factory.h \
-                         cpma/fontpropertiesctrl.cpp cpma/fontpropertiesctrl.h \
-                         cpma/hudfile.cpp cpma/hudfile.h \
-                         cpma/hudspecs.cpp cpma/hudspecs.h \
-                         cpma/imagepropertiesctrl.cpp cpma/imagepropertiesctrl.h \
-                         cpma/miscpropertiesctrl.cpp cpma/miscpropertiesctrl.h \
-                         cpma/propertiesnotebook.cpp cpma/propertiesnotebook.h \
-                         cpma/propertygridbase.h \
-                         cpma/visibilitypropertiesctrl.cpp cpma/visibilitypropertiesctrl.h
+                         cpma_colorpropertiesctrl.cpp cpma_colorpropertiesctrl.h \
+                         cpma_displayctrl.cpp cpma_displayctrl.h \
+                         cpma_element.cpp cpma_element.h \
+                         cpma_elementsctrl.cpp cpma_elementsctrl.h \
+                         cpma_factory.cpp cpma_factory.h \
+                         cpma_fontpropertiesctrl.cpp cpma_fontpropertiesctrl.h \
+                         cpma_hudfile.cpp cpma_hudfile.h \
+                         cpma_hudspecs.cpp cpma_hudspecs.h \
+                         cpma_imagepropertiesctrl.cpp cpma_imagepropertiesctrl.h \
+                         cpma_miscpropertiesctrl.cpp cpma_miscpropertiesctrl.h \
+                         cpma_propertiesnotebook.cpp cpma_propertiesnotebook.h \
+                         cpma_propertygridbase.h \
+                         cpma_visibilitypropertiesctrl.cpp cpma_visibilitypropertiesctrl.h
 
 q4max = \
-        q4max/factory.cpp cpma/factory.h
+				q4max_displayctrl.cpp q4max_displayctrl.h \
+				q4max_element.cpp q4max_element.h \
+				q4max_elementsctrl.h \
+				q4max_factory.cpp q4max_factory.h \
+				q4max_hudfile.cpp q4max_hudfile.h \
+				q4max_propertiesnotebook.cpp q4max_propertiesnotebook.h \
+				q4max_propertygrid.h
+
 
 
 superhudeditor_SOURCES = \

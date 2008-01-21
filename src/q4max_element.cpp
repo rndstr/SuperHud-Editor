@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "element.h"
-#include "../hudfilebase.h"
-#include "../displayctrlbase.h"
-#include "../prefs.h"
-#include "../texture.h"
-#include "../pakmanager.h"
+#include "q4max_element.h"
+#include "hudfilebase.h"
+#include "displayctrlbase.h"
+#include "prefs.h"
+#include "texture.h"
+#include "pakmanager.h"
 
 #include <wx/tokenzr.h>
 
@@ -42,7 +42,7 @@ Q4MAXElement::Q4MAXElement( const wxString& name, const wxString& desc /*=""*/, 
 {
 }
 
-Q4MAXElement::Properties::Properties() :
+Q4MAXElement::Properties::Properties()
 {
   init();
   load(); // set default values
@@ -91,10 +91,17 @@ bool Q4MAXElement::parse_property( const wxString& cmd, wxString args )
 
   //m_has = E_PROPERTIES_DEFAULT;
 
+  /*
   if( cmd.CmpNoCase(wxT("color"))==0 )
   {
-    if( !m_props.var(wxT("color")).cval().from_string( args ) )
+    if( !m_props.setwxc(wxT("color")).cval().from_string( args ) )
       wxLogWarning( _("Unknown `%s' argument: %s"), "color", args.c_str() );
+    m_has |= Q4MAX_E_HAS_COLOR;
+  }
+  */
+  if( cmd.CmpNoCase(wxT("colored"))==0 )
+  {
+    m_props.set(wxT("colored"), args);
     m_has |= Q4MAX_E_HAS_COLOR;
   }
   
@@ -288,7 +295,7 @@ void Q4MAXElement::write_properties( wxTextOutputStream& stream ) const
   if( (m_has & E_HAS_TEXTALIGN) && m_props.textalign != ' ' )
     lines.push_back(wxString::Format( wxT("textalign %c"),  m_props.textalign));
     */
-  if( m_has & E_HAS_COLOR )
+  if( m_has & Q4MAX_E_HAS_COLOR )
     lines.push_back(wxT("color ") + m_props.var(wxT("color")).cval().to_string());
   /*
   if( m_has & E_HAS_BGCOLOR )
@@ -934,6 +941,7 @@ void Q4MAXElement::postparse()
 
 void Q4MAXElement::prerender()
 {
+  /*
   switch(m_type)
   {
   case E_T_ICON:
@@ -958,6 +966,7 @@ void Q4MAXElement::prerender()
       wxDELETE(m_ptex);
     break;
   }
+  */
 }
 
 void Q4MAXElement::copy_from( const ElementBase * const el )
@@ -978,6 +987,7 @@ void Q4MAXElement::convert( double from, double to, bool size, bool stretchposit
 {
   ElementBase::convert( from, to, size, stretchposition, fontsize );
 
+  /*
   double ratio = from/to;
   if( fontsize && (m_has & E_HAS_FONTSIZE) )
   {
@@ -1003,5 +1013,6 @@ void Q4MAXElement::convert( double from, double to, bool size, bool stretchposit
     set_fontsizex(sx);
     set_fontsizey(sy);
   }
+  */
 }
 

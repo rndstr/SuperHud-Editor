@@ -27,16 +27,16 @@
 
 
 #if ENABLE_CPMA
-  #include "cpma/elementsctrl.h"
-  #include "cpma/propertiesnotebook.h"
-  #include "cpma/displayctrl.h"
-  #include "cpma/hudfile.h"
+  #include "cpma_elementsctrl.h"
+  #include "cpma_propertiesnotebook.h"
+  #include "cpma_displayctrl.h"
+  #include "cpma_hudfile.h"
 #endif
 #if ENABLE_Q4MAX
-  #include "q4max/elementsctrl.h"
-  #include "q4max/propertiesnotebook.h"
-  #include "q4max/displayctrl.h"
-  #include "q4max/hudfile.h"
+  #include "q4max_elementsctrl.h"
+  #include "q4max_propertiesnotebook.h"
+  #include "q4max_displayctrl.h"
+  #include "q4max_hudfile.h"
 #endif
 
 #include <wx/artprov.h>
@@ -615,7 +615,7 @@ void MainFrame::OnClose( wxCloseEvent& ev )
   Prefs::get().seti(wxT("app_width"), GetSize().GetWidth());
   Prefs::get().seti(wxT("app_height"), GetSize().GetHeight());
   Prefs::get().setb(wxT("app_maximized"), IsMaximized());
-  Prefs::get().set(wxT("startup_loadfile"), wxGetApp().hudfile()->filename());
+  wxGetApp().factory()->set_startup_loadfile( wxGetApp().hudfile()->filename() );
 
   if( wxConfigBase::Get() )
     m_history->Save(*wxConfigBase::Get());

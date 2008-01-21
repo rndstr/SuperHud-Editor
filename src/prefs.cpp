@@ -93,6 +93,8 @@ bool Prefs::init()
   addvar(wxT("q3_hudspecs"), wxT("cpma/hudspecs.dat"), VART_STRING);
   addvar(wxT("q3_background"), wxT(""), VART_STRING);
   addvar(wxT("q3_filedialog_path"), wxT(""), VART_STRING);
+  addvar(wxT("q3_startup_loadfile"), wxT(""), VART_STRING);
+  
 
   // q4max
   addvar(wxT("q4_gamedir"), wxT(""), VART_STRING);
@@ -105,6 +107,7 @@ bool Prefs::init()
   addvar(wxT("q4_hudspecs"), wxT("q4max/hudspecs.dat"), VART_STRING);
   addvar(wxT("q4_background"), wxT(""), VART_STRING);
   addvar(wxT("q4_filedialog_path"), wxT(""), VART_STRING);
+  addvar(wxT("q4_startup_loadfile"), wxT(""), VART_STRING);
 
   // -- optional message dialogs
   addvar(wxT("dlg_reset"), wxT("-1"), VART_INT);
@@ -117,7 +120,6 @@ bool Prefs::init()
   // -- startup
   addvar(wxT("startup_gameselection"), wxT("true"), VART_BOOL);
   addvar(wxT("startup_load"), wxT("true"), VART_BOOL);
-  addvar(wxT("startup_loadfile"), wxT(""), VART_STRING);
   addvar(wxT("startup_tips"), wxT("true"), VART_BOOL);
   addvar(wxT("startup_tipidx"), wxT("0"), VART_INT);
   addvar(wxT("net_proxy"), wxT(""), VART_STRING);

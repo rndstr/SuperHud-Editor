@@ -13,16 +13,16 @@
 
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
-#include "propertiesnotebook.h"
+#include "cpma_propertiesnotebook.h"
 
-#include "visibilitypropertiesctrl.h"
-#include "fontpropertiesctrl.h"
-#include "colorpropertiesctrl.h"
-#include "imagepropertiesctrl.h"
-#include "miscpropertiesctrl.h"
-#include "../prefs.h"
+#include "cpma_visibilitypropertiesctrl.h"
+#include "cpma_fontpropertiesctrl.h"
+#include "cpma_colorpropertiesctrl.h"
+#include "cpma_imagepropertiesctrl.h"
+#include "cpma_miscpropertiesctrl.h"
+#include "prefs.h"
 
-#include "element.h"
+#include "cpma_element.h"
 #include <wx/propgrid/propgrid.h>
 
 

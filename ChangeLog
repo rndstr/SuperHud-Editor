@@ -1,3 +1,6 @@
+2008-01-xx release: 0.4.0
+	* fix: in Tools->Preferences|Advanced, some colors couldn't be changed
+
 2008-01-18 release: 0.3.0
   * complete rewrite: 
   * add: elements can be reset (i.e. everything except visibility is put back to default)

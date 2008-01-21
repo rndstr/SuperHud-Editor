@@ -34,12 +34,12 @@
 #include "artprovider.h"
 
 #if ENABLE_CPMA
-  #include "cpma/factory.h"
-  #include "cpma/hudfile.h"
+  #include "cpma_factory.h"
+  #include "cpma_hudfile.h"
 #endif
 #if ENABLE_Q4MAX
-  #include "q4max/factory.h"
-  #include "q4max/hudfile.h"
+  #include "q4max_factory.h"
+  #include "q4max_hudfile.h"
 #endif
 
 
@@ -197,8 +197,9 @@ int SHEApp::OnRun()
   m_mainframe->update_title();
   if( m_cmdline_file.empty() )
   {
-    if( Prefs::get().var(wxT("startup_load")) && !Prefs::get().var(wxT("startup_loadfile")).sval().empty() )
-      m_hudfile->OnOpen( Prefs::get().var(wxT("startup_loadfile")) );
+    wxString loadfile = wxGetApp().factory()->startup_loadfile();
+    if( Prefs::get().var(wxT("startup_load")) && !loadfile.empty() )
+      m_hudfile->OnOpen( loadfile );
     else
       m_hudfile->OnNew();
   }

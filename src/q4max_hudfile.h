@@ -16,8 +16,8 @@
 #ifndef Q4MAXHUDFILE_H
 #define Q4MAXHUDFILE_H
 
-#include  "../hudfilebase.h"
-#include "element.h"
+#include "hudfilebase.h"
+#include "q4max_element.h"
 
 // -- parsing
 
@@ -32,7 +32,6 @@ class Q4MAXHudFile : public HudFileBase
     Q4MAXHudFile();
     virtual ~Q4MAXHudFile() {}
 
-    void load_default_elements();
     wxString default_hudfilename() const { return wxT("hud/hud.cfg"); }
 
   protected:

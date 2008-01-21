@@ -16,8 +16,8 @@
 #ifndef Q4MAXPROPERTYGRID_H
 #define Q4MAXPROPERTYGRID_H
 
-#include "../propertygridbase.h"
-#include "element.h"
+#include "propertygridbase.h"
+#include "q4max_element.h"
 
 /// Provides a few functions that are in use on all
 /// the various grids

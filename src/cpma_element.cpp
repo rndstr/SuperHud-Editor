@@ -14,12 +14,12 @@
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "element.h"
-#include "../hudfilebase.h"
-#include "../displayctrlbase.h"
-#include "../prefs.h"
-#include "../texture.h"
-#include "../pakmanager.h"
+#include "cpma_element.h"
+#include "hudfilebase.h"
+#include "displayctrlbase.h"
+#include "prefs.h"
+#include "texture.h"
+#include "pakmanager.h"
 
 #include <wx/tokenzr.h>
 

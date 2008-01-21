@@ -16,7 +16,7 @@
 #ifndef Q4MAXPROPERTIESNOTEBOOK_H
 #define Q4MAXPROPERTIESNOTEBOOK_H
 
-#include "../propertiesnotebookbase.h"
+#include "propertiesnotebookbase.h"
 
 
 

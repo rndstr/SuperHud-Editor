@@ -97,7 +97,7 @@ class HudFileBase
     virtual bool          load( const wxString& filename );
 
     // clears all items and then loads default items
-    virtual void          load_default_elements() = 0;
+    virtual void          load_default_elements();
 
     virtual bool          save( const wxString& filename );
 

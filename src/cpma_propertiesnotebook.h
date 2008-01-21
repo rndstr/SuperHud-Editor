@@ -16,7 +16,7 @@
 #ifndef CPMAPROPERTIESNOTEBOOK_H
 #define CPMAPROPERTIESNOTEBOOK_H
 
-#include "../propertiesnotebookbase.h"
+#include "propertiesnotebookbase.h"
 
 
 class VisibilityPropertiesCtrl;

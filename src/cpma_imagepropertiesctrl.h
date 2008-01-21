@@ -16,7 +16,7 @@
 #ifndef CPMA_IMAGEPROPERTIESCTRL_H
 #define CPMA_IMAGEPROPERTIESCTRL_H
 
-#include "propertygrid.h"
+#include "cpma_propertygrid.h"
 
 class ElementBase;
 

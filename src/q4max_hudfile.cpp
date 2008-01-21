@@ -14,14 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "hudfile.h"
-#include "../common.h"
-#include "../elementsctrlbase.h"
-#include "../pakmanager.h"
+#include "q4max_hudfile.h"
+#include "common.h"
+#include "elementsctrlbase.h"
+#include "pakmanager.h"
+#include "hudspecs.h"
 
-
-#include "../hudspecs.h"
-#include "element.h"
+#include "q4max_element.h"
 
 #include <wx/txtstrm.h>
 #include <wx/datetime.h>
@@ -40,29 +39,6 @@ Q4MAXHudFile::Q4MAXHudFile() :
 {
 }
 
-
-ElementBase*  Q4MAXHudFile::create_element( const wxString& name ) const
-{
-  const hsitem_s *item = Q4MAXHudSpecs::get().find_item( name );
-  if( !item ) return 0;
-
-  return new Q4MAXElement(*item);
-}
-
-void Q4MAXHudFile::load_default_elements()
-{
-  clear();
-  ElementBase *el = 0;
-  const Q4MAXHudSpecs::hsitems_type& items = Q4MAXHudSpecs::get().items();
-  for( Q4MAXHudSpecs::cit_hsitems cit = items.begin(); cit != items.end(); ++cit )
-  {
-    if( cit->flags & E_NODEFAULT )
-      continue;
-    el = new Q4MAXElement(*cit);// cit->name, cit->desc, cit->enable, cit->text, cit->icon, 0, E_RECT_DEFAULT, cit->type, cit->flags, cit->has );    
-    append( el );
-  }
-  m_modified = false;
-}
 
 /*
 bool Q4MAXHudFile::load( const wxString& filename )
@@ -184,54 +160,5 @@ bool Q4MAXHudFile::read_properties( ElementBase *hi, const wxString& props )
     p += *cit;
   }
   return HudFileBase::read_properties( hi, p );
-}
-
-bool Q4MAXHudFile::read_properties( ElementBase *hi, const wxString& props )
-{
-  size_t pos;
-  wxString prop, cmd, args;
-  wxStringTokenizer linetok( props, HF_PROPERTY_DELIM );
-//  wxLogMessage( wxT("[%d] '%s'"), linetok.CountTokens(), props );
-  while( linetok.HasMoreTokens() )
-  {
-    prop = linetok.GetNextToken();
-    she::wxTrim( prop );
-    if (prop.empty())
-      continue;
-
-    // extract property name
-    pos = prop.find_first_of( HF_PROPERTY_TRIM );
-    if( pos != wxString::npos )
-      cmd = prop.substr( 0, pos );
-    else
-      cmd = prop;
-    
-    if (cmd.empty())
-    { // FIXME who cares?
-      wxLogWarning( _("Found empty element command.") );
-      continue;
-    }
-    
-    // extract arguments
-    args = wxT("");
-    if( pos != wxString::npos )
-    {
-      args = prop.substr(pos+1, prop.length() - pos - 1);
-      she::wxTrim( args );
-      // remove commas and multi-spaces, we only care about ONE single space as delimiter.
-      args.Replace( wxT(","), wxT(" ") );
-      while( args.Replace( wxT("  "), wxT(" ") ) > 0 );
-    }
-
-    if( !hi->parse_property( cmd, args ) )
-    {
-      wxLogWarning( _("Invalid command `%s' found in element `%s'."), cmd.c_str(), hi->name().c_str() );
-      //wxString e = wxString::Format( wxT("Invalid element command `%s' found in element `%s'."), cmd,  hi->get_name() );
-      //throw hudfilereader_parse_error( e.c_str() );
-    }
-  }
-  hi->postparse();
-
-  return true;
 }
 

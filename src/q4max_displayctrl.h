@@ -16,7 +16,7 @@
 #ifndef Q4MAXDISPLAYCTRL_H
 #define Q4MAXDISPLAYCTRL_H
 
-#include "../displayctrlbase.h"
+#include "displayctrlbase.h"
 
 class Q4MAXDisplayCtrl : public DisplayCtrlBase
 {

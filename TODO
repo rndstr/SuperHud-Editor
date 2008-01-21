@@ -1,3 +1,4 @@
+! [wxMSW] selected items in elementslist have no collicon
 
 -- later --
 + maybe blink those items that have a `time' (duration) set? :)

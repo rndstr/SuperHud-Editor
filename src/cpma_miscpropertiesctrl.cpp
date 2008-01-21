@@ -13,16 +13,16 @@
 
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
-#include "miscpropertiesctrl.h"
+#include "cpma_miscpropertiesctrl.h"
 
-#include "../common.h"
-#include "../mainframe.h"
-#include "../hudfilebase.h"
-#include "../elementbase.h"
-#include "../propertiesnotebookbase.h"
-#include "../prefs.h"
+#include "common.h"
+#include "mainframe.h"
+#include "hudfilebase.h"
+#include "elementbase.h"
+#include "propertiesnotebookbase.h"
+#include "prefs.h"
 
-#include "element.h"
+#include "cpma_element.h"
 
 BEGIN_EVENT_TABLE(MiscPropertiesCtrl, CPMAPropertyGrid)
   EVT_PG_CHANGED(ID_NOTEBOOK_PROPERTIES, MiscPropertiesCtrl::OnItemChanged)

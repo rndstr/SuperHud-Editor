@@ -47,6 +47,21 @@ const notuniqs_type& HudFileBase::notuniq_elements() const
   return HudSpecs::get().notuniqs();
 }
 
+void HudFileBase::load_default_elements()
+{
+  clear();
+  ElementBase *el = 0;
+  const HudSpecs::hsitems_type& items = HudSpecs::get().items();
+  for( HudSpecs::cit_hsitems cit = items.begin(); cit != items.end(); ++cit )
+  {
+    if( cit->flags & E_NODEFAULT )
+      continue;
+    el = create_element(*cit);// cit->name, cit->desc, cit->enable, cit->text, cit->icon, 0, E_RECT_DEFAULT, cit->type, cit->flags, cit->has );    
+    append( el );
+  }
+  m_modified = false;
+}
+
 
 void HudFileBase::set_modified( bool modified /*= true*/ )
 { 

@@ -16,7 +16,7 @@
 #ifndef CPMAELEMENTSCTRL_H
 #define CPMAELEMENTSCTRL_H
 
-#include "../elementsctrlbase.h"
+#include "elementsctrlbase.h"
 
 
 class CPMAElementsCtrl : public ElementsCtrlBase

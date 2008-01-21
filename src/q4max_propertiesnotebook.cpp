@@ -13,16 +13,16 @@
 
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
-#include "propertiesnotebook.h"
+#include "q4max_propertiesnotebook.h"
 
-#include "../prefs.h"
+#include "prefs.h"
 
-#include "element.h"
+#include "q4max_element.h"
 #include <wx/propgrid/propgrid.h>
 
 
 
-Q4MAXPropertiesNotebook::CPMAPropertiesNotebook( wxWindow *parent ) : 
+Q4MAXPropertiesNotebook::Q4MAXPropertiesNotebook( wxWindow *parent ) : 
   PropertiesNotebookBase(parent)
 {
   wxPropertyGrid::SetBoolChoices(_("On"), _("Off"));
@@ -54,7 +54,7 @@ Q4MAXPropertiesNotebook::CPMAPropertiesNotebook( wxWindow *parent ) :
   SetSize(300, -1);
 }
 
-void CPMAPropertiesNotebook::update_from_element( const elements_type& els )
+void Q4MAXPropertiesNotebook::update_from_element( const elements_type& els )
 {
   /*
   if( els.size() != 1 )

@@ -13,15 +13,15 @@
 
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
-#include "visibilitypropertiesctrl.h"
+#include "cpma_visibilitypropertiesctrl.h"
 
-#include "../common.h"
-#include "../mainframe.h"
-#include "../hudfilebase.h"
-#include "../elementsctrlbase.h"
-#include "../propertiesnotebookbase.h"
-#include "../artprovider.h"
-#include "element.h"
+#include "common.h"
+#include "mainframe.h"
+#include "hudfilebase.h"
+#include "elementsctrlbase.h"
+#include "propertiesnotebookbase.h"
+#include "artprovider.h"
+#include "cpma_element.h"
 
 
 

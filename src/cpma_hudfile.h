@@ -16,19 +16,13 @@
 #ifndef CPMAHUDFILE_H
 #define CPMAHUDFILE_H
 
-#include  "../hudfilebase.h"
-#include "element.h"
+#include "hudfilebase.h"
+#include "cpma_element.h"
 
 
 
 /// maximuum number of pre and postdecorates
 const int CPMA_HF_MAX_PREPOSTDECORATE = 64;
-
-// -- parsing
-
-
-
-
 
 class CPMAHudFile : public HudFileBase
 {
@@ -36,7 +30,6 @@ class CPMAHudFile : public HudFileBase
     CPMAHudFile();
     virtual ~CPMAHudFile() {}
 
-    void load_default_elements();
     bool save( const wxString& filename );
     wxString default_hudfilename() const { return wxT("hud/hud.cfg"); }
 

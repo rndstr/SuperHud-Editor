@@ -13,15 +13,15 @@
 
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
-#include "colorpropertiesctrl.h"
+#include "cpma_colorpropertiesctrl.h"
 
-#include "../common.h"
-#include "../mainframe.h"
-#include "../hudfilebase.h"
-#include "../propertiesnotebookbase.h"
-#include "../prefs.h"
+#include "common.h"
+#include "mainframe.h"
+#include "hudfilebase.h"
+#include "propertiesnotebookbase.h"
+#include "prefs.h"
 
-#include "element.h"
+#include "cpma_element.h"
 
 #include <wx/propgrid/advprops.h>
 #include <wx/propgrid/propgrid.h>

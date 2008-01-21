@@ -16,11 +16,11 @@
 #ifndef Q4MAXELEMENT_H
 #define Q4MAXELEMENT_H
 
-#include "../common.h"
-#include "../elementbase.h"
-#include "../color4.h"
-#include "../hudspecs.h"
-#include "../varcontainer.h"
+#include "common.h"
+#include "elementbase.h"
+#include "color4.h"
+#include "hudspecs.h"
+#include "varcontainer.h"
 
 
 
@@ -133,7 +133,7 @@ class Q4MAXElement : public ElementBase
 
     bool        iget_has(int what) const;
 
-    virtual wxRect  iget_hudrect() const;
+    //virtual wxRect  iget_hudrect() const;
 
     /*
     int         iget_time() const;

@@ -16,7 +16,7 @@
 #ifndef CPMACOLORPROPERTIESCTRL_H
 #define CPMACOLORPROPERTIESCTRL_H
 
-#include "propertygrid.h"
+#include "cpma_propertygrid.h"
 
 class ElementBase;
 

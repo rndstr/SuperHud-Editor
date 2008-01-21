@@ -13,12 +13,12 @@
 
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
-#include "factory.h"
+#include "cpma_factory.h"
 
-#include "elementsctrl.h"
-#include "propertiesnotebook.h"
-#include "displayctrl.h"
-#include "hudfile.h"
+#include "cpma_elementsctrl.h"
+#include "cpma_propertiesnotebook.h"
+#include "cpma_displayctrl.h"
+#include "cpma_hudfile.h"
 
 
 ElementsCtrlBase* CPMAFactory::create_elementsctrl(wxWindow *parent) const

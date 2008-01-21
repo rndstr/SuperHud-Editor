@@ -16,7 +16,7 @@
 #ifndef Q4MAXELEMENTSCTRL_H
 #define Q4MAXELEMENTSCTRL_H
 
-#include "../elementsctrlbase.h"
+#include "elementsctrlbase.h"
 
 
 class Q4MAXElementsCtrl : public ElementsCtrlBase

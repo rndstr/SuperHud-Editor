@@ -14,13 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "hudfile.h"
-#include "../common.h"
-#include "../elementsctrlbase.h"
-#include "../pakmanager.h"
+#include "cpma_hudfile.h"
+#include "common.h"
+#include "elementsctrlbase.h"
+#include "pakmanager.h"
 
 
-#include "element.h"
+#include "cpma_element.h"
 
 #include <wx/txtstrm.h>
 #include <wx/datetime.h>
@@ -38,23 +38,6 @@ CPMAHudFile::CPMAHudFile() :
   HudFileBase()
 {
 }
-
-void CPMAHudFile::load_default_elements()
-{
-  clear();
-  ElementBase *el = 0;
-  const HudSpecs::hsitems_type& items = HudSpecs::get().items();
-  for( HudSpecs::cit_hsitems cit = items.begin(); cit != items.end(); ++cit )
-  {
-    if( cit->flags & E_NODEFAULT )
-      continue;
-    el = new CPMAElement(*cit);// cit->name, cit->desc, cit->enable, cit->text, cit->icon, 0, E_RECT_DEFAULT, cit->type, cit->flags, cit->has );    
-    append( el );
-  }
-  m_modified = false;
-}
-
-
 
 
 bool CPMAHudFile::save( const wxString& filename )

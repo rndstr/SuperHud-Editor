@@ -13,17 +13,17 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
-#include "displayctrl.h"
+#include "q4max_displayctrl.h"
 
-#include "../common.h"
-#include "../pakmanager.h"
-#include "../model.h"
-#include "../hudfilebase.h"
-#include "../prefs.h"
-#include "../elementsctrlbase.h"
-#include "../font.h"
-#include "../texture.h"
-#include "../model.h"
+#include "common.h"
+#include "pakmanager.h"
+#include "model.h"
+#include "hudfilebase.h"
+#include "prefs.h"
+#include "elementsctrlbase.h"
+#include "font.h"
+#include "texture.h"
+#include "model.h"
 
 #include <algorithm>
 
