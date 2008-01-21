@@ -22,7 +22,7 @@
 
 
 
-ElementsCtrlBase* Q4MAXFactory::create_elementsctrl(wxWindow *parent) const
+ElementsCtrlBase* Q4MAXFactory::creae_elementsctrl(wxWindow *parent) const
 {
   return new Q4MAXElementsCtrl(parent);
 }

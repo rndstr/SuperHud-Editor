@@ -20,7 +20,7 @@
 #include "../pakmanager.h"
 
 
-#include "hudspecs.h"
+#include "../hudspecs.h"
 #include "element.h"
 
 #include <wx/txtstrm.h>
