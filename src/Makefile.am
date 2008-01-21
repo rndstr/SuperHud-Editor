@@ -33,6 +33,9 @@ cpma = \
                          cpma/propertygridbase.h \
                          cpma/visibilitypropertiesctrl.cpp cpma/visibilitypropertiesctrl.h
 
+q4max = \
+        q4max/factory.cpp cpma/factory.h
+
 
 superhudeditor_SOURCES = \
                          $(xpm) \
@@ -68,6 +71,7 @@ superhudeditor_SOURCES = \
                          texture.cpp texture.h \
                          GameSelectionDialog.cpp GameSelectionDialog.h \
                          $(cpma) \
+                         $(q4max) \
                          $(wxpropgrid)
 
 

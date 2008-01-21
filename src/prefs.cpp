@@ -28,6 +28,10 @@ const wxString PREFS_Q3_PAKFILES_DEFAULT = wxT("baseq3/pak*.pk3;baseq3/map_cpm*.
 #ifndef WIN32
 const wxString PREFS_Q3_HOMEDIRNAME_DEFAULT = wxT(".q3a");
 #endif
+const wxString PREFS_Q4_PAKFILES_DEFAULT = wxT("q4base/pak*.pk4;zz-q4max-*.pk4");
+#ifndef WIN32
+const wxString PREFS_Q4_HOMEDIRNAME_DEFAULT = wxT(".quake4");
+#endif
 
 
 Variable::Variable( const wxString& name, const wxString& def, int type, int flags /*= PVF_NONE*/ ) :
@@ -229,6 +233,15 @@ void Prefs::load()
 
   // q4max
   addvar(wxT("q4_gamedir"), wxT(""), PVT_STRING);
+#ifndef WIN32
+  addvar(wxT("q4_homedirname"), PREFS_Q4_HOMEDIRNAME_DEFAULT, PVT_STRING, PVF_NOARCHIVE);
+#endif
+  wxString prefs_q4_pakfiles_default = PREFS_Q4_PAKFILES_DEFAULT;
+  prefs_q4_pakfiles_default.Replace(wxT("/"), PATH_SEP);
+  addvar(wxT("q4_pakfiles"), prefs_q4_pakfiles_default, PVT_STRING);
+  addvar(wxT("q4_hudspecs"), wxT("q4max/hudspecs.dat"), PVT_STRING);
+  addvar(wxT("q4_background"), wxT(""), PVT_STRING);
+  addvar(wxT("q4_filedialog_path"), wxT(""), PVT_STRING);
 
   // -- optional message dialogs
   addvar(wxT("dlg_reset"), wxT("-1"), PVT_INT);

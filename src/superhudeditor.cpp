@@ -135,6 +135,8 @@ bool SHEApp::OnInit()
 
   }
 
+  wxASSERT_MSG(m_factory, wxT("no factory created!"));
+
   PakManager::get().init_app();
   if( !m_factory->init() )
   {

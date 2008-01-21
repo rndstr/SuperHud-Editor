@@ -259,6 +259,8 @@ size_t PakManager::enumerate_game_pakfiles( wxArrayString *files )
   size_t count=0;
 
   wxStringTokenizer tok(wxGetApp().factory()->pakfiles(), wxT(";"));
+  wxLogDebug( wxT("PakManager::enumerate_game_pakfiles - looking in paks: ") + wxGetApp().factory()->pakfiles() );
+
   wxString token;
   size_t pos;
 #ifndef WIN32

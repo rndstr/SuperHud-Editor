@@ -41,6 +41,25 @@ Will be automatically created at
 (Linux)   
   ~/.superhudeditor/superhudeditor.conf
 
+Some preferences that cannot be accessed in the app but still might be of 
+interest (name=default value):
+
+
+view_updatewhiledragging=true
+  Set to false if drag&drop is laggy
+
+q3_homedirname=.q3a
+q4_homedirname=.quake4
+  Only available on non-win32. If your user specific settings/installations 
+  are in a different directyro in your homedir, change this.
+  Although it should probably be preferred to create a symlink. But the 
+  default above is where we additionally look for paks&stuff.
+
+q3_pakfiles=baseq3/pak*.pk3;baseq3/map_cpm*.pk3;cpma/z-cpma-pak*.pk3
+q4_pakfiles=q4base/pak*.pk4;zz-q4max-*.pk4
+  In which pak files we look for gamefiles (images, defaulthud, fonts, etc)
+  Do not change unless you are sure what you are doing.
+
 
 -4- IMAGES/FONTS FROM PK3 FILES
 In hud elements you may also specify which image to draw as background.
@@ -63,9 +82,6 @@ at the cpma wiki [2].
 Known bugs can be found in the source distribution in file KNOWNBUGS
 Limitations of SuperHud itself can be read at [3].
 
-If drag&drop is laggy you might add the following in the configfile (see -3-)
-
-  view_updatewhiledragging=false
 
 
 -7- UPDATING
