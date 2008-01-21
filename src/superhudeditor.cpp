@@ -164,7 +164,7 @@ bool SHEApp::OnInit()
       Prefs::get().save(); // just save to make sure.. if we crash at least this we don't have to go through again
     }
   }
-  else if( Prefs::get().var(wxT("q3_gamedir")).sval().empty() )
+  else if( m_factory->dir_game().empty() )
   {
     SetupWizard wizard(0);
     if( wizard.RunWizard(wizard.GetFirstPage()) )

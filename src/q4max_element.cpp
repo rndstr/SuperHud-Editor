@@ -91,18 +91,17 @@ bool Q4MAXElement::parse_property( const wxString& cmd, wxString args )
 
   //m_has = E_PROPERTIES_DEFAULT;
 
-  /*
   if( cmd.CmpNoCase(wxT("color"))==0 )
   {
-    if( !m_props.setwxc(wxT("color")).cval().from_string( args ) )
-      wxLogWarning( _("Unknown `%s' argument: %s"), "color", args.c_str() );
+    Color4 col;
+    if( !m_props.set(wxT("color"), args) )
+      wxLogWarning( _("Unknown `%c' argument: %s"), cmd.c_str(), args.c_str() );
     m_has |= Q4MAX_E_HAS_COLOR;
   }
-  */
   if( cmd.CmpNoCase(wxT("colored"))==0 )
   {
     m_props.set(wxT("colored"), args);
-    m_has |= Q4MAX_E_HAS_COLOR;
+    m_has |= Q4MAX_E_HAS_COLORED;
   }
   
   /*
@@ -297,6 +296,8 @@ void Q4MAXElement::write_properties( wxTextOutputStream& stream ) const
     */
   if( m_has & Q4MAX_E_HAS_COLOR )
     lines.push_back(wxT("color ") + m_props.var(wxT("color")).cval().to_string());
+  if( m_has & Q4MAX_E_HAS_COLORED )
+    lines.push_back(wxT("colored ") + m_props.var(wxT("color")).cval().to_string());
   /*
   if( m_has & E_HAS_BGCOLOR )
     lines.push_back(wxT("bgcolor ") + m_props.bgcolor.to_string());

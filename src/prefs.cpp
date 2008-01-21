@@ -28,7 +28,7 @@ const wxString PREFS_Q3_PAKFILES_DEFAULT = wxT("baseq3/pak*.pk3;baseq3/map_cpm*.
 #ifndef WIN32
 const wxString PREFS_Q3_HOMEDIRNAME_DEFAULT = wxT(".q3a");
 #endif
-const wxString PREFS_Q4_PAKFILES_DEFAULT = wxT("q4base/pak*.pk4;zz-q4max-*.pk4");
+const wxString PREFS_Q4_PAKFILES_DEFAULT = wxT("q4base/pak*.pk4;q4max/zz-q4max-*.pk4");
 #ifndef WIN32
 const wxString PREFS_Q4_HOMEDIRNAME_DEFAULT = wxT(".quake4");
 #endif

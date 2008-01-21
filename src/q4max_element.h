@@ -46,12 +46,17 @@ typedef enum
 typedef enum {
   //E_HAS_NONE = 0,
   //E_HAS_RECT = 1<<0,
+  Q4MAX_E_HAS_COLOR = 1<<1,
+  Q4MAX_E_HAS_COLORED = 1<<2
+  /*
   Q4MAX_E_HAS_TIME = 1<<1,
   Q4MAX_E_HAS_FONT = 1<<2,
   Q4MAX_E_HAS_FONTSIZE = 1<<3,
   Q4MAX_E_HAS_TEXTSTYLE = 1<<4,
   Q4MAX_E_HAS_TEXTALIGN = 1<<5,
-  Q4MAX_E_HAS_COLOR = 1<<6,
+
+  
+
   Q4MAX_E_HAS_BGCOLOR = 1<<7,
   Q4MAX_E_HAS_FADE = 1<<8,
   Q4MAX_E_HAS_IMAGE = 1<<9,
@@ -66,7 +71,7 @@ typedef enum {
   Q4MAX_E_HAS_FILL = 1<<15,
   Q4MAX_E_HAS_DOUBLEBAR = 1<<16,
   Q4MAX_E_HAS_DRAW3D = 1<<17
-//  HIO_ALL = (1<<10)-1,
+  */
 } eQ4MAXElementProperties;
 
 /// Defaults

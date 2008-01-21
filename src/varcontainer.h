@@ -93,7 +93,7 @@ public:
         return (m_isset ? m_value : m_def);
       }
 
-      void set( const wxString& str, bool isset = true )
+      bool set( const wxString& str, bool isset = true )
       {
         m_isset = isset;
         m_value = str;
@@ -106,7 +106,10 @@ public:
         else if( m_type == VART_DOUBLE )
         {
           if( !she::ratio_string2double(m_value, &doubleval) )
-            wxLogError(wxT("Invalid value for aspectratio"));
+          {
+            wxLogError(_("Invalid value for ratio (`%s')"), m_value.c_str());
+            return false;
+          }
         }
         else if( m_type == VART_BOOL )
         {
@@ -114,12 +117,13 @@ public:
         }
         else if( m_type == VART_COLOR )
         {
-          colorval.set(m_value);
+          return colorval.set(m_value);
         }
+        return true;
       }
-      void set_default()
+      bool set_default()
       {
-        set(m_def);
+        return set(m_def);
       }
 
       wxString def() const { return m_def; }
@@ -198,31 +202,31 @@ public:
     return var->second;
   }
 
-  void set( const wxString& name, const wxString& val )
+  bool set( const wxString& name, const wxString& val )
   {
     variables_type::iterator var = m_vars.find(name);
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
-    var->second.set(val);
+    return var->second.set(val);
   }
-  void setb( const wxString& name, bool bval )
+  bool setb( const wxString& name, bool bval )
   {
     variables_type::iterator var = m_vars.find(name);
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
-    var->second.set( bval ? wxT("true") : wxT("false"));
+    return var->second.set( bval ? wxT("true") : wxT("false"));
   }
-  void seti( const wxString& name, int ival )
+  bool seti( const wxString& name, int ival )
   {
     variables_type::iterator var = m_vars.find(name);
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
-    var->second.set( wxString::Format(wxT("%i"), ival) );
+    return var->second.set( wxString::Format(wxT("%i"), ival) );
   }
-  void setvar( const wxString& name, const wxVariant& variant )
+  bool setvar( const wxString& name, const wxVariant& variant )
   {
     variables_type::iterator var = m_vars.find(name);
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
-    var->second.set( variant.MakeString() );
+    return var->second.set( variant.MakeString() );
   }
-  void setwxc( const wxString& name, const wxColour& wxcol, int alpha = -1 )
+  bool setwxc( const wxString& name, const wxColour& wxcol, int alpha = -1 )
   {
     variables_type::iterator var = m_vars.find(name);
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
@@ -232,14 +236,16 @@ public:
       tmp.set(wxcol);
       if( -1 != alpha )
         tmp.set_a100(alpha);
-      var->second.set( tmp.to_string() );
+      return var->second.set( tmp.to_string() );
     }
+    return false;
   }
-  void set_default( const wxString& name )
+
+  bool set_default( const wxString& name )
   {
     variables_type::iterator var = m_vars.find(name);
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
-    var->second.set_default();
+    return var->second.set_default();
   }
   void addvar( const wxString& name, const wxString& def = wxT(""), int type = VART_ANY, int flags = VARF_NONE )
   {

@@ -98,9 +98,9 @@ class Color4
       return true;
     }
 
-    void set(const wxString& str )
+    bool set(const wxString& str )
     {
-      from_string(str);
+      return from_string(str);
     }
 
     void set_a100( int _a_percent )

@@ -1,4 +1,5 @@
 ! [wxMSW] selected items in elementslist have no collicon
+% if an argument to a property read from hudfile is invalid, be consistent: either ignore or use default (but always)
 
 -- later --
 + maybe blink those items that have a `time' (duration) set? :)
