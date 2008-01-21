@@ -22,7 +22,6 @@
 class CPMAFactory : public FactoryBase
 {
   public:
-    bool                init();
     ElementsCtrlBase*   create_elementsctrl( wxWindow *parent ) const;
     PropertiesNotebookBase* create_propertiesnotebook( wxWindow *parent ) const;
     DisplayCtrlBase*    create_displayctrl( wxWindow *parent ) const;
@@ -40,6 +39,7 @@ class CPMAFactory : public FactoryBase
     wxString            filedialog_path() const { return Prefs::get().var(wxT("q3_filedialog_path")); }
     void                set_filedialog_path( const wxString& path ) { Prefs::get().set(wxT("q3_filedialog_path"), path); }
     wxString            background() const { return Prefs::get().var(wxT("q3_background")); }
+    wxString            hudspecs() const { return Prefs::get().var(wxT("q3_hudspecs")); }
 #ifndef WIN32
     wxString            unixdirname_userdata() const { return Prefs::get().var(wxT("q3_homedirname")); }
 #endif

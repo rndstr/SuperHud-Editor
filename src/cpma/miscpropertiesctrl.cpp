@@ -112,7 +112,7 @@ void MiscPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   /*
   else if( name == wxT("time") )
   {
-    el->add_has( E_HAS_TIME, !prop->IsValueUnspecified() );
+    el->add_has( CPMA_E_HAS_TIME, !prop->IsValueUnspecified() );
     if( !prop->IsValueUnspecified() )
       el->set_time(val.GetInteger());
     SetPropertyValue( wxT("time"), el->iget_time() );
@@ -157,6 +157,6 @@ void MiscPropertiesCtrl::update_layout()
   const CPMAElement *el = current_element();
   property_defines(wxT("doublebar"), el->doublebar() );
   property_defines(wxT("draw3d"), el->draw3d() );
-  //property_defines(wxT("time"), (el->has() & E_HAS_TIME) != 0 );
+  //property_defines(wxT("time"), (el->has() & CPMA_E_HAS_TIME) != 0 );
 }
 

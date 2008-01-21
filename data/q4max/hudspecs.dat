@@ -1,7 +1,7 @@
 # this is a file that specifies what elements are available.
 # --------------------------------------------------------------------
 
-___date=2007-12-12
+___date=2008-01-xx
 ___name=Q4MAX 0.80
 ___author=veal
 
@@ -10,76 +10,11 @@ ___author=veal
 _desc=Special type of element which sets default properties which are applied to all elements that follow this element. May occur multiple times.
 !DEFAULT=notuniq:drawnever:parent:enable:enablealways
 
-PostDecorate_Text=notuniq:nodefault:enable:enablealways:type=text
+Fps=text=90fps:type=text
+
+PostDecorate_Text=notuniq:nodefault:enable:enablealways:type=usertext
 PostDecorate_Image=notuniq:nodefault:enable:enablealways:type=usericon
-PreDecorate_Text=notuniq:nodefault:enable:enablealways:type=text
+PreDecorate_Text=notuniq:nodefault:enable:enablealways:type=usertext
 PreDecorate_Image=notuniq:nodefault:enable:enablealways:type=usericon
 
-Lagometer
-Weaponlist
-
-Statusbar_Healthcount
-Statusbar_Healthbar
-Statusbar_Healthicon
-
-Statusbar_Armorcount
-Statusbar_Armorbar
-Statusbar_Armoricon
-
-Statusbar_Ammocount
-Statusbar_Ammobar
-Statusbar_Ammoicon
-
-
-
-Awards
-Chat1
-Chat2
-Chat3
-Chat4
-Chat5
-Ctf_Holder_Own
-Ctf_Holder_Nmy
-Ctf_Status_Own
-Ctf_Status_Nmy
-Death_Message_1
-Death_Message_2
-Death_Message_3
-Fps
-Frag_Notice
-Gametime
-Gametime_Inf
-Input
-Main_Notice
-Motd
-Name_Nmy
-Name_Own
-Pickup_Text
-Pickup_Icon
-Powerups
-
-Score_Own
-Score_Nmy
-Spectimers
-Spec_Text_0
-Spec_Text_1
-Spec_Text_2
-Speed
-Spread
-
-
-Team_Overlay_1
-Team_Overlay_2
-Team_Overlay_3
-Team_Overlay_4
-Team_Overlay_5
-Team_Overlay_6
-Team_Overlay_7
-Team_Overlay_8
-Team_Score_Own
-Team_Score_Nmy
-Thawbar
-Voicechat_Transmit
-Vote_Notice
-Xhair_Text
 

@@ -13,16 +13,16 @@
 
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
-#ifndef CPMAELEMENTSCTRL_H
-#define CPMAELEMENTSCTRL_H
+#ifndef Q4MAXELEMENTSCTRL_H
+#define Q4MAXELEMENTSCTRL_H
 
 #include "../elementsctrlbase.h"
 
 
-class CPMAElementsCtrl : public ElementsCtrlBase
+class Q4MAXElementsCtrl : public ElementsCtrlBase
 {
   public:
-    CPMAElementsCtrl( wxWindow *parent ) : ElementsCtrlBase(parent, wxID_ANY) {}
+    Q4MAXElementsCtrl( wxWindow *parent ) : ElementsCtrlBase(parent, wxID_ANY) {}
 
 };
 

@@ -27,7 +27,7 @@
 #include <list>
 using namespace std;
 
-CPMAElement::CPMAElement( const wxString& name, const wxString& desc /*=""*/, int type /*=E_T_UNKNOWN*/, 
+Q4MAXElement::Q4MAXElement( const wxString& name, const wxString& desc /*=""*/, int type /*=E_T_UNKNOWN*/, 
   bool enable /*=false*/, int flags /*= E_NONE*/,
   int has /*= E_HAS_NONE*/,
   const wxString& text /*=""*/, 
@@ -42,25 +42,20 @@ CPMAElement::CPMAElement( const wxString& name, const wxString& desc /*=""*/, in
 {
 }
 
-CPMAElement::Properties::Properties() :
-    font(E_FONT_DEFAULT),
-    fontsize_type(E_FST_POINT),
-    fontsize_pt(E_FONTSIZE_DEFAULT_POINT), fontsize_x(E_FONTSIZE_DEFAULT_COORDX), fontsize_y(E_FONTSIZE_DEFAULT_COORDY),
-    textalign(E_TEXTALIGN_DEFAULT),
-    time(E_TIME_DEFAULT),
-    textstyle(E_TEXTSTYLE_DEFAULT),
-    color(E_COLOR_DEFAULT),
-    bgcolor(E_BGCOLOR_DEFAULT),
-    fade(E_COLOR_DEFAULT), // ?
-    image(),
-    model(),
-    usemodel(false),
-    angle_pitch(0), angle_yaw(0), angle_roll(0), angle_pan(0)
+Q4MAXElement::Properties::Properties() :
 {
-  offset[0] = 0.f; offset[1] = 0.f; offset[2] = 0.f;
+  init();
+  load(); // set default values
 }
 
-CPMAElement::CPMAElement( const hsitem_s& def ) :
+bool Q4MAXElement::Properties::init()
+{
+  addvar( wxT("color"), Q4MAX_E_COLOR_DEFAULT.to_string(), VART_COLOR );
+  addvar( wxT("colored"), Q4MAX_E_COLORED_DEFAULT, VART_BOOL );
+  return true;
+}
+
+Q4MAXElement::Q4MAXElement( const hsitem_s& def ) :
     ElementBase(def.name, def.desc, def.flags, def.has, def.enable),
     m_type(def.type),
     m_props(),
@@ -73,12 +68,12 @@ CPMAElement::CPMAElement( const hsitem_s& def ) :
 
 
 
-CPMAElement::~CPMAElement()
+Q4MAXElement::~Q4MAXElement()
 {
   cleanup();
 }
 
-void CPMAElement::cleanup()
+void Q4MAXElement::cleanup()
 {
   wxDELETE(m_ptex);
   for( std::vector<Texture*>::iterator it = m_weaponlist_tex.begin(); it != m_weaponlist_tex.end(); ++it )
@@ -88,7 +83,7 @@ void CPMAElement::cleanup()
 
 
 
-bool CPMAElement::parse_property( const wxString& cmd, wxString args )
+bool Q4MAXElement::parse_property( const wxString& cmd, wxString args )
 { 
   // let parent check on the property
   if (ElementBase::parse_property( cmd, args ))
@@ -96,7 +91,15 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
 
   //m_has = E_PROPERTIES_DEFAULT;
 
-  if( cmd.CmpNoCase(wxT("doublebar")) == 0 )
+  if( cmd.CmpNoCase(wxT("color"))==0 )
+  {
+    if( !m_props.var(wxT("color")).cval().from_string( args ) )
+      wxLogWarning( _("Unknown `%s' argument: %s"), "color", args.c_str() );
+    m_has |= Q4MAX_E_HAS_COLOR;
+  }
+  
+  /*
+  else if( cmd.CmpNoCase(wxT("doublebar")) == 0 )
   {
     if( m_type != E_T_BAR )
       wxLogWarning( _T("Found command `doublebar' which the element `%s' does not support."), m_name.c_str() );
@@ -206,7 +209,7 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
   {
     m_props.model = args;
     if( m_type == E_T_ICON )
-    { // model implies draw3d (and there is no model drawn, see data/cpma/docs/README.superhud)
+    { // model implies draw3d (and there is no model drawn, see data/Q4MAX/docs/README.superhud)
       m_has |= E_HAS_DRAW3D;
       m_props.model = wxT("");
     }
@@ -254,6 +257,7 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
       
     m_has |= E_HAS_ANGLES;
   }
+  */
   else
   {
     return false; // not found
@@ -263,11 +267,12 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
 }
 
 
-void CPMAElement::write_properties( wxTextOutputStream& stream ) const
+void Q4MAXElement::write_properties( wxTextOutputStream& stream ) const
 {
   ElementBase::write_properties(stream);
 
   list<wxString> lines;
+  /*
   if( (m_has & E_HAS_FONT)  && !m_props.font.empty() )
     lines.push_back( wxT("font ") + m_props.font );
   if( (m_has & E_HAS_TIME) && m_props.time >= 0 )
@@ -282,8 +287,10 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
     lines.push_back(wxString::Format( wxT("textstyle %i"), m_props.textstyle ));
   if( (m_has & E_HAS_TEXTALIGN) && m_props.textalign != ' ' )
     lines.push_back(wxString::Format( wxT("textalign %c"),  m_props.textalign));
+    */
   if( m_has & E_HAS_COLOR )
-    lines.push_back(wxT("color ") + m_props.color.to_string());
+    lines.push_back(wxT("color ") + m_props.var(wxT("color")).cval().to_string());
+  /*
   if( m_has & E_HAS_BGCOLOR )
     lines.push_back(wxT("bgcolor ") + m_props.bgcolor.to_string());
   if( fill() )
@@ -319,6 +326,7 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
   }
   else if( m_has & E_HAS_IMAGE )
     lines.push_back(wxT("image \"") + m_props.image + wxT("\""));
+    */
 
 
   if( m_flags & E_SHORT )
@@ -334,191 +342,178 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
 }
 
 
-wxString CPMAElement::type2string( int type )
-{
-  switch(type)
-  {
-  case E_T_UNKNOWN: return wxT("UNKNOWN");
-  case E_T_TEXT: return wxT("TEXT");
-  case E_T_ICON: return wxT("ICON");
-  case E_T_USERICON: return wxT("USERICON");
-  case E_T_BAR: return wxT("BAR");
-  case E_T_WEAPONLIST: return wxT("WEAPONLIST");
-  default:
-    break;
-  }
-  return wxT("WTF?!");
-}
 
-int CPMAElement::iget_time() const
+
+/*
+int Q4MAXElement::iget_time() const
 {
   int t = m_props.time;
   if( !(m_has & E_HAS_TIME) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TIME ));
+    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TIME ));
     if( parent == 0 ) t = E_TIME_DEFAULT;
     else t = parent->iget_time();
   }
   return t; 
 }
-wxString CPMAElement::iget_font() const
+wxString Q4MAXElement::iget_font() const
 {
   wxString f = m_props.font;
   if( !(m_has & E_HAS_FONT) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONT ));
+    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONT ));
     if( parent == 0 ) f = E_FONT_DEFAULT;
     else f = parent->iget_font();
   }
   return f; 
 }
-wxChar CPMAElement::iget_textalign() const
+wxChar Q4MAXElement::iget_textalign() const
 {
   wxChar ta = m_props.textalign;
   if( !(m_has & E_HAS_TEXTALIGN) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TEXTALIGN ));
+    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TEXTALIGN ));
     if( parent == 0 ) ta = E_TEXTALIGN_DEFAULT;
     else ta = parent->iget_textalign();
   }
   return ta; 
 }
-bool CPMAElement::iget_monospace() const
+bool Q4MAXElement::iget_monospace() const
 {
   if( m_has & E_HAS_MONOSPACE )
     return true;
 
-  const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_MONOSPACE ));
+  const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_MONOSPACE ));
 
   return (parent != 0);
 }
-bool CPMAElement::iget_doublebar() const
+bool Q4MAXElement::iget_doublebar() const
 {
   if( m_has & E_HAS_DOUBLEBAR )
     return true;
 
-  const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_DOUBLEBAR ));
+  const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_DOUBLEBAR ));
 
   return (parent != 0);
 }
-bool CPMAElement::iget_draw3d() const
+bool Q4MAXElement::iget_draw3d() const
 {
   if( m_has & E_HAS_DRAW3D )
     return true;
 
-  const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_DRAW3D ));
+  const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_DRAW3D ));
 
   return (parent != 0);
 }
-int CPMAElement::iget_fontsizetype() const
+int Q4MAXElement::iget_fontsizetype() const
 {
   int fst = m_props.fontsize_type;
   if( !(m_has & E_HAS_FONTSIZE) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
+    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
     if( parent == 0 ) fst = E_FST_POINT;
     else fst = parent->iget_fontsizetype();
   }
   return fst; 
 }
-int CPMAElement::iget_fontsizept() const
+int Q4MAXElement::iget_fontsizept() const
 {
   int s = m_props.fontsize_pt;
   if( !(m_has & E_HAS_FONTSIZE) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
+    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
     if( parent == 0 ) s = E_FONTSIZE_DEFAULT_POINT;
     else s = parent->iget_fontsizept();
   }
   return s;
 }
-int CPMAElement::iget_fontsizex() const
+int Q4MAXElement::iget_fontsizex() const
 {
   int s = m_props.fontsize_x;
   if( !(m_has & E_HAS_FONTSIZE) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
+    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
     if( parent == 0 ) s = E_FONTSIZE_DEFAULT_COORDX;
     else s = parent->iget_fontsizex();
   }
   return s;
 }
-int CPMAElement::iget_fontsizey() const
+int Q4MAXElement::iget_fontsizey() const
 {
   int s = m_props.fontsize_y;
   if( !(m_has & E_HAS_FONTSIZE) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
+    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
     if( parent == 0 ) s = E_FONTSIZE_DEFAULT_COORDY;
     else s = parent->iget_fontsizey();
   }
   return s;
 }
-int CPMAElement::iget_textstyle() const
+int Q4MAXElement::iget_textstyle() const
 {
   int ts = m_props.textstyle;
   if( !(m_has & E_HAS_TEXTSTYLE) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TEXTSTYLE ));
+    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TEXTSTYLE ));
     if( parent == 0 ) ts = E_TEXTSTYLE_DEFAULT;
     else ts = parent->iget_textstyle();
   }
   return ts;
 }
-Color4 CPMAElement::iget_color() const
+Color4 Q4MAXElement::iget_color() const
 {
   Color4 c = m_props.color;
   if( !(m_has & E_HAS_COLOR) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_COLOR ));
+    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_COLOR ));
     if( parent == 0 ) c = E_COLOR_DEFAULT;
     else c = parent->iget_color();
   }
   return c;
 }
-Color4 CPMAElement::iget_bgcolor() const
+Color4 Q4MAXElement::iget_bgcolor() const
 {
   Color4 c = m_props.bgcolor;
   if( !(m_has & E_HAS_BGCOLOR) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_BGCOLOR ));
+    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_BGCOLOR ));
     if( parent == 0 ) c = E_BGCOLOR_DEFAULT;
     else c = parent->iget_bgcolor();
   }
   return c;
 }
-bool CPMAElement::iget_fill() const
+bool Q4MAXElement::iget_fill() const
 {
   if( m_has & E_HAS_FILL )
     return true;
 
-  const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FILL ));
+  const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FILL ));
 
   return (parent != 0);
 }
-Color4 CPMAElement::iget_fade() const
+Color4 Q4MAXElement::iget_fade() const
 {
   Color4 c = m_props.fade;
   if( !(m_has & E_HAS_FADE) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FADE ));
+    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FADE ));
     if( parent == 0 ) c = E_FADE_DEFAULT;
     else c = parent->iget_fade();
   }
   return c;
 }
 
-bool CPMAElement::iget_has(int what) const
+bool Q4MAXElement::iget_has(int what) const
 {
   bool has = (m_has & what) != 0;
   if( !has )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, has ));
+    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, has ));
     has = (parent != 0);
   }
   return has;
 }
-wxRect CPMAElement::iget_hudrect() const
+wxRect Q4MAXElement::iget_hudrect() const
 {
   const wxRect baser = ElementBase::iget_rect();
   if( E_T_WEAPONLIST != m_type )
@@ -557,68 +552,68 @@ wxRect CPMAElement::iget_hudrect() const
   return r;
 }
 
-wxString CPMAElement::iget_image() const
+wxString Q4MAXElement::iget_image() const
 {
   wxString img = m_props.image;
   if( !(m_has & E_HAS_IMAGE) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_IMAGE ));
+    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_IMAGE ));
     if( parent == 0 ) img = wxEmptyString;
     else img = parent->iget_image();
   }
   return img;
 }
-wxString CPMAElement::iget_model() const
+wxString Q4MAXElement::iget_model() const
 {
   wxString m = m_props.model;
   if( !(m_has & E_HAS_MODEL) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_MODEL ));
+    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_MODEL ));
     if( parent == 0 ) m = wxEmptyString;
     else m = parent->iget_model();
   }
   return m;
 }
-wxString CPMAElement::iget_skin() const
+wxString Q4MAXElement::iget_skin() const
 {
   wxString s = m_props.skin;
   if( !(m_has & E_HAS_SKIN) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_SKIN ));
+    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_SKIN ));
     if( parent == 0 ) s = wxEmptyString;
     else s = parent->iget_skin();
   }
   return s;
 }
-float CPMAElement::iget_offset(int which) const
+float Q4MAXElement::iget_offset(int which) const
 {
   float d = m_props.offset[which];
   if( !(m_has & E_HAS_OFFSET) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_OFFSET ));
+    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_OFFSET ));
     if( parent == 0 ) d = 0.f;
     else d = parent->iget_offset(which);
   }
   return d;
 }
-void CPMAElement::set_offset( int which, float val )
+void Q4MAXElement::set_offset( int which, float val )
 {
   if( which < E_OFFSET_X || which > E_OFFSET_Z )
     return;
   m_props.offset[which] = val;
 }
-int CPMAElement::iget_angle(int which) const
+int Q4MAXElement::iget_angle(int which) const
 {
   int d = angle(which);
   if( !(m_has & E_HAS_ANGLES) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_ANGLES ));
+    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_ANGLES ));
     if( parent == 0 ) d = 0;
     else d = parent->iget_angle(which);
   }
   return d;
 }
-void CPMAElement::set_angle( int which, int val )
+void Q4MAXElement::set_angle( int which, int val )
 {
   switch(which)
   {
@@ -628,7 +623,7 @@ void CPMAElement::set_angle( int which, int val )
   case E_ANGLE_PAN: m_props.angle_pan = val; break;
   }
 }
-int CPMAElement::angle(int which) const
+int Q4MAXElement::angle(int which) const
 {
   switch(which)
   {
@@ -641,12 +636,15 @@ int CPMAElement::angle(int which) const
   }
   return 0;
 }
-void CPMAElement::render() const
+*/
+
+void Q4MAXElement::render() const
 {
 //  wxLogDebug(wxT("RENDER ") + m_name);
   bool hasownbg = true;
   wxRect r = iget_rect();
 
+  /*
   switch( m_type )
   {
   case E_T_BAR:
@@ -898,10 +896,12 @@ void CPMAElement::render() const
     }
     break;
   }
+  */
 }
 
-void CPMAElement::postparse()
+void Q4MAXElement::postparse()
 {
+  /*
   if( usemodel() )
   { // we have a model, weeeeh.
     remove_has(E_HAS_IMAGE);
@@ -914,6 +914,7 @@ void CPMAElement::postparse()
   }
   else if( m_type == E_T_WEAPONLIST )
   {
+    
     wxGetApp().mainframe()->displayctrl()->SetCurrent();
     // these give a small memleak
     m_weaponlist_tex.push_back( new Texture(wxT("icons/iconw_gauntlet.tga"), PM_SEARCH_HUDFILE) );
@@ -925,11 +926,13 @@ void CPMAElement::postparse()
     m_weaponlist_tex.push_back( new Texture(wxT("icons/iconw_railgun.tga"), PM_SEARCH_HUDFILE) );
     m_weaponlist_tex.push_back( new Texture(wxT("icons/iconw_plasma.tga"), PM_SEARCH_HUDFILE) );
     m_weaponlist_tex.push_back( new Texture(wxT("icons/iconw_bfg.tga"), PM_SEARCH_HUDFILE) );
+    
   }
+  */
 }
 
 
-void CPMAElement::prerender()
+void Q4MAXElement::prerender()
 {
   switch(m_type)
   {
@@ -957,21 +960,21 @@ void CPMAElement::prerender()
   }
 }
 
-void CPMAElement::copy_from( const ElementBase * const el )
+void Q4MAXElement::copy_from( const ElementBase * const el )
 {
   ElementBase::copy_from(el);
 
-  const CPMAElement * const cel = static_cast<const CPMAElement * const>(el);
+  const Q4MAXElement * const cel = static_cast<const Q4MAXElement * const>(el);
   m_props = cel->properties();
 }
 
-void CPMAElement::reset()
+void Q4MAXElement::reset()
 {
   ElementBase::reset();
   m_props = Properties();
 }
 
-void CPMAElement::convert( double from, double to, bool size, bool stretchposition, bool fontsize)
+void Q4MAXElement::convert( double from, double to, bool size, bool stretchposition, bool fontsize)
 {
   ElementBase::convert( from, to, size, stretchposition, fontsize );
 

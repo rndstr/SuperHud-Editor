@@ -21,6 +21,22 @@
 #include <wx/tokenzr.h>
 
 
+wxString ElementBase::type2string( int type )
+{
+  switch(type)
+  {
+  case E_T_UNKNOWN: return wxT("UNKNOWN");
+  case E_T_USERTEXT: return wxT("USERTEXT");
+  case E_T_TEXT: return wxT("TEXT");
+  case E_T_ICON: return wxT("ICON");
+  case E_T_USERICON: return wxT("USERICON");
+  case E_T_BAR: return wxT("BAR");
+  case E_T_WEAPONLIST: return wxT("WEAPONLIST");
+  default:
+    break;
+  }
+  return wxT("WTF?!");
+}
 
 bool ElementBase::parse_property( const wxString& cmd, wxString args )
 {

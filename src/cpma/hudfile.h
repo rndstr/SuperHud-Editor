@@ -17,28 +17,18 @@
 #define CPMAHUDFILE_H
 
 #include  "../hudfilebase.h"
+#include "element.h"
 
-#define BACKWARD_COMPATIBILITY_142
 
-/// Used for algos trying to iterate through all PostDecorate elements.
-const wxString HF_POSTDECORATE_PREFIX = wxT("PostDecorate");
-/// Used for algos trying to iterate through all PreDecorate elements.
-const wxString HF_PREDECORATE_PREFIX = wxT("PreDecorate");
+
 /// maximuum number of pre and postdecorates
-const int HF_MAX_PREPOSTDECORATE = 64;
+const int CPMA_HF_MAX_PREPOSTDECORATE = 64;
 
 // -- parsing
 
 
-/// possible property(command) delimiters: newline or semicolon.
-const wxString HF_PROPERTY_DELIM = wxT("\n;");
-/// what we trim for.
-const wxString HF_PROPERTY_TRIM = wxT(" \n\t\r");
 
-#ifdef BACKWARD_COMPATIBILITY_142
-  const wxString HF_POSTDECORATE_PREFIX_142 = wxT("_PostDecorate");
-  const wxString HF_PREDECORATE_PREFIX_142 = wxT("!PreDecorate");
-#endif
+
 
 class CPMAHudFile : public HudFileBase
 {
@@ -46,19 +36,13 @@ class CPMAHudFile : public HudFileBase
     CPMAHudFile();
     virtual ~CPMAHudFile() {}
 
-
     void load_default_elements();
     bool save( const wxString& filename );
     wxString default_hudfilename() const { return wxT("hud/hud.cfg"); }
 
-    const notuniqs_type& notuniq_elements() const;
-    ElementBase*  create_element( const wxString& name ) const;
-
-    bool parse_item( wxString s );
-
-  private:
-    
-    bool read_properties( ElementBase *hi, const wxString& props );
+  protected:
+    ElementBase*  create_element( const wxString& name ) const { return new CPMAElement(name); }
+    ElementBase*  create_element( const hsitem_s& defit ) const { return new CPMAElement(defit); }
 };
 
 

@@ -35,9 +35,15 @@
 
 #if ENABLE_CPMA
   #include "cpma/factory.h"
-  #include "cpma/hudspecs.h"
   #include "cpma/hudfile.h"
 #endif
+#if ENABLE_Q4MAX
+  #include "q4max/factory.h"
+  #include "q4max/hudfile.h"
+#endif
+
+
+#include "hudspecs.h"
 
 #include <wx/stdpaths.h>
 #include <wx/fs_arc.h>
@@ -79,6 +85,7 @@ bool SHEApp::OnInit()
 
   // set up config file
   m_firststart = Prefs::get().init();
+  Prefs::get().load();
 
 #ifndef NDEBUG
   // also log to file in debug mode
@@ -132,7 +139,7 @@ bool SHEApp::OnInit()
   }
   else if( is_q4max() )
   {
-
+    m_factory = new Q4MAXFactory;
   }
 
   wxASSERT_MSG(m_factory, wxT("no factory created!"));
@@ -219,7 +226,7 @@ int SHEApp::OnExit()
   m_ready = false;
   wxLogDebug(wxT("SHEApp::OnExit"));
   Prefs::get().save();
-  Prefs::get().shutdown();
+  Prefs::get().cleanup();
 
 #if HAS_UNDO
   m_commands->SetEditMenu(0);

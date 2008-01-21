@@ -44,13 +44,13 @@ class CPMAPropertyGrid : public PropertyGridBase
       PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesctrl();
       if( !p )
       {
-        wxLogDebug(wxT("CPMAPropertyGridBase::curel() - PropertiesNotebook is not yet available"));
+        wxLogDebug(wxT("CPMAPropertyGrid::current_element - PropertiesNotebook is not yet available"));
         return 0;
       }
       const CPMAElement* el = static_cast<const CPMAElement*>(p->curel());
       if( !el ) 
       {
-        wxLogDebug(wxT("CPMAPropertyGridBase::curel() - there is no element selected"));
+        wxLogDebug(wxT("CPMAPropertyGrid::current_element - there is no element selected"));
         return 0;
       }
       return el;
@@ -60,13 +60,13 @@ class CPMAPropertyGrid : public PropertyGridBase
       PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesctrl();
       if( !p )
       {
-        wxLogDebug(wxT("CPMAPropertyGridBase::curel() - PropertiesNotebook is not yet available"));
+        wxLogDebug(wxT("CPMAPropertyGrid::current_element - PropertiesNotebook is not yet available"));
         return 0;
       }
       CPMAElement *el = static_cast<CPMAElement*>(p->curel());
       if( !el ) 
       {
-        wxLogDebug(wxT("CPMAPropertyGridBase::curel() - there is no element selected"));
+        wxLogDebug(wxT("CPMAPropertyGrid::current_element - there is no element selected"));
         return 0;
       }
       return el;

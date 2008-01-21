@@ -35,6 +35,10 @@
   #define HAS_MULTIPLE_GAMES 0
 #endif
 
+#if ENABLE_CPMA
+  #define CPMA_BACKWARD_COMPATIBILITY_142 1
+#endif
+
 #include <wx/wx.h>
 
 #include "superhudeditor.h"

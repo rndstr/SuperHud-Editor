@@ -22,7 +22,6 @@
 class Q4MAXFactory : public FactoryBase
 {
   public:
-    bool                init();
     ElementsCtrlBase*   create_elementsctrl( wxWindow *parent ) const;
     PropertiesNotebookBase* create_propertiesnotebook( wxWindow *parent ) const;
     DisplayCtrlBase*    create_displayctrl( wxWindow *parent ) const;
@@ -40,6 +39,7 @@ class Q4MAXFactory : public FactoryBase
     wxString            filedialog_path() const { return Prefs::get().var(wxT("q4_filedialog_path")); }
     void                set_filedialog_path( const wxString& path ) { Prefs::get().set(wxT("q4_filedialog_path"), path); }
     wxString            background() const { return Prefs::get().var(wxT("q4_background")); }
+    wxString            hudspecs() const { return Prefs::get().var(wxT("q4_hudspecs")); }
 #ifndef WIN32
     wxString            unixdirname_userdata() const { return Prefs::get().var(wxT("q4_homedirname")); }
 #endif

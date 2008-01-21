@@ -122,7 +122,7 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
 
   if( name == wxT("color-use") )
   {
-    el->add_has( E_HAS_COLOR, val.GetBool() );
+    el->add_has( CPMA_E_HAS_COLOR, val.GetBool() );
     // use own color (not parental)
     Color4 c = el->iget_color();
     SetPropertyValue( wxT("color"), she::colour2variant(c.to_wxColour()) );
@@ -130,10 +130,10 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   }
   else if( name == wxT("color") || name == wxT("color-alpha") || name == wxT("color-special") )
   {
-    if( !(el->has() & E_HAS_COLOR) )
+    if( !(el->has() & CPMA_E_HAS_COLOR) )
     { // copy parentinfo
       el->set_color( el->iget_color() );
-      el->add_has( E_HAS_COLOR );
+      el->add_has( CPMA_E_HAS_COLOR );
       SetPropertyValue( wxT("color-use"), true );
     }
     if( name == wxT("color") )
@@ -167,11 +167,11 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
 // -----------------------------------------------------
   else if( name == wxT("bgcolor-use") )
   {
-    el->add_has( E_HAS_BGCOLOR, val.GetBool() );
+    el->add_has( CPMA_E_HAS_BGCOLOR, val.GetBool() );
     // use own color (not parental)
     Color4 c = el->iget_bgcolor();
     // normally if you enable bgcolor you want something to see... so just 
-    // fix alpha if it's 0 (default bgcolor (if not specified) has alpha 0, obviously. see cpma/element.h:E_BGCOLOR_DEFAULT)
+    // fix alpha if it's 0 (default bgcolor (if not specified) has alpha 0, obviously. see cpma/element.h:CPMA_E_BGCOLOR_DEFAULT)
     if( val.GetBool() && c.a100() == 0 )
       c.set_a100(100);
     SetPropertyValue( wxT("bgcolor"), she::colour2variant(c.to_wxColour()) );
@@ -179,10 +179,10 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   }
   else if( name == wxT("bgcolor") || name == wxT("bgcolor-alpha") )
   {
-    if( !(el->has() & E_HAS_BGCOLOR) )
+    if( !(el->has() & CPMA_E_HAS_BGCOLOR) )
     { // copy parentinfo
       el->set_bgcolor( el->iget_bgcolor() );
-      el->add_has( E_HAS_BGCOLOR );
+      el->add_has( CPMA_E_HAS_BGCOLOR );
       SetPropertyValue( wxT("bgcolor-use"), true );
     }
     if( name == wxT("bgcolor") )
@@ -197,7 +197,7 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
 // -----------------------------------------------------
   else if( name == wxT("fade-use") )
   {
-    el->add_has( E_HAS_FADE, val.GetBool() );
+    el->add_has( CPMA_E_HAS_FADE, val.GetBool() );
     // use own color (not parental)
     Color4 c = el->iget_fade();
     SetPropertyValue( wxT("fade"), she::colour2variant(c.to_wxColour()) );
@@ -205,10 +205,10 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   }
   else if( name == wxT("fade") || name == wxT("fade-alpha") )
   {
-    if( !(el->has() & E_HAS_FADE) )
+    if( !(el->has() & CPMA_E_HAS_FADE) )
     { // copy parentinfo
       el->set_fade( el->iget_fade() );
-      el->add_has( E_HAS_FADE );
+      el->add_has( CPMA_E_HAS_FADE );
       SetPropertyValue( wxT("fade-use"), true );
     }
     if( name == wxT("fade") )
@@ -245,7 +245,7 @@ void ColorPropertiesCtrl::from_element( const ElementBase* el )
 {
   const CPMAElement* cel = static_cast<const CPMAElement*>(el);
 
-  SetPropertyValue( wxT("color-use"), (cel->has() & E_HAS_COLOR) != 0 );
+  SetPropertyValue( wxT("color-use"), (cel->has() & CPMA_E_HAS_COLOR) != 0 );
   SetPropertyValue( wxT("color"), she::colour2variant(cel->iget_color().to_wxColour()) );
   SetPropertyValue( wxT("color-alpha"), cel->iget_color().a100() );
   switch( cel->iget_color().get_type() )
@@ -262,12 +262,12 @@ void ColorPropertiesCtrl::from_element( const ElementBase* el )
       break;
   }
 
-  SetPropertyValue( wxT("bgcolor-use"), (cel->has() & E_HAS_BGCOLOR) != 0 );
+  SetPropertyValue( wxT("bgcolor-use"), (cel->has() & CPMA_E_HAS_BGCOLOR) != 0 );
   SetPropertyValue( wxT("bgcolor"), she::colour2variant(cel->iget_bgcolor().to_wxColour()) );
   SetPropertyValue( wxT("bgcolor-alpha"), cel->iget_bgcolor().a100() );
   SetPropertyValue( wxT("fill"), cel->iget_fill() );
 
-  SetPropertyValue( wxT("fade-use"), (cel->has() & E_HAS_FADE) != 0 );
+  SetPropertyValue( wxT("fade-use"), (cel->has() & CPMA_E_HAS_FADE) != 0 );
   SetPropertyValue( wxT("fade"), she::colour2variant(cel->iget_fade().to_wxColour()) );
   SetPropertyValue( wxT("fade-alpha"), cel->iget_fade().a100() );
 
@@ -300,18 +300,18 @@ void ColorPropertiesCtrl::update_layout()
 {
   const CPMAElement* const el = current_element();
 
-  property_defines(wxT("color"), (el->has() & E_HAS_COLOR) != 0);
-  property_defines(wxT("color-alpha"), (el->has() & E_HAS_COLOR) != 0);
+  property_defines(wxT("color"), (el->has() & CPMA_E_HAS_COLOR) != 0);
+  property_defines(wxT("color-alpha"), (el->has() & CPMA_E_HAS_COLOR) != 0);
   EnableProperty(wxT("color"), !el->iget_color().is_special() );
   EnableProperty(wxT("color-alpha"), !el->iget_color().is_special() );
-  property_defines(wxT("color-special"), (el->has() & E_HAS_COLOR) != 0);
+  property_defines(wxT("color-special"), (el->has() & CPMA_E_HAS_COLOR) != 0);
 
-  property_defines(wxT("bgcolor"), (el->has() & E_HAS_BGCOLOR) != 0);
-  property_defines(wxT("bgcolor-alpha"), (el->has() & E_HAS_BGCOLOR) != 0);
+  property_defines(wxT("bgcolor"), (el->has() & CPMA_E_HAS_BGCOLOR) != 0);
+  property_defines(wxT("bgcolor-alpha"), (el->has() & CPMA_E_HAS_BGCOLOR) != 0);
   property_defines(wxT("fill"), el->fill() );
 
-  property_defines(wxT("fade"), (el->has() & E_HAS_FADE) != 0);
-  property_defines(wxT("fade-alpha"), (el->has() & E_HAS_FADE) != 0);
+  property_defines(wxT("fade"), (el->has() & CPMA_E_HAS_FADE) != 0);
+  property_defines(wxT("fade-alpha"), (el->has() & CPMA_E_HAS_FADE) != 0);
   
 }
 

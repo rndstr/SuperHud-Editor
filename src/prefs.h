@@ -18,12 +18,15 @@
 
 #include "common.h"
 
-#include <wx/string.h>
+#include "variable.h"
 #include "color4.h"
+
+#include <wx/string.h>
 
 #include <map>
 
 
+/*
 enum
 {
   PVT_ANY, ///< valid as well but we don't do checks upon int/float/boolval() and there is no conversion stored
@@ -110,7 +113,6 @@ class Variable
     bool      m_isset;
 
   private:
-    bool      m_uptodate;
     // store conversions
     // FIXME this is waste of space, union?
     double    doubleval;
@@ -121,39 +123,28 @@ class Variable
 
 typedef std::map<wxString, Variable> variables_type;
 
+*/
 
 
-class Prefs
+class Prefs : public varcont_type
 {
     
   public:
+    
     /// initializes the config object
     /// @returns bool True if the configfile didn't yet exist aka "first start" otherwise false
     bool init();
-    void shutdown();
+    void cleanup();
 
     void load();
     /// stores all preferences in config file
-    /// @arg from_prefs_dialog Whether we are coming from the preferences dialog (and thus only saving change that can be changed there)
-    void save( bool from_prefs_dialog = false );
-
-    const Variable& var( const wxString& name ) const;
-    void set( const wxString& name, const wxString& val );
-    void setb( const wxString& name, bool bval );
-    void seti( const wxString& name, int ival );
-    void setv( const wxString& name, const wxVariant& variant );
-    void setwxc( const wxString& name, const wxColour& wxcol, int alpha = -1 );
-    void set_default( const wxString& name );
+    void save();
+    void read_var( var_type& var );
+    void write_var( const var_type& var ) const;
 
 
     /// returns the initial path to be used in a filedialog for the current game
     wxString filedialog_path() const;
-
-  protected:
-    variables_type  m_vars;
-
-    void addvar( const wxString& name, const wxString& def = wxT(""), int type = PVT_ANY, int flags = PVARF_NONE );
-
 
   // singleton
   public:
@@ -162,6 +153,7 @@ class Prefs
     Prefs() {}
     Prefs(const Prefs&);
     Prefs& operator= (const Prefs&);
+    virtual ~Prefs() {}
 };
 
 #endif // PREFS_H

@@ -15,17 +15,11 @@
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include "factory.h"
 
-#include "hudspecs.h"
 #include "elementsctrl.h"
 #include "propertiesnotebook.h"
 #include "displayctrl.h"
 #include "hudfile.h"
 
-
-bool CPMAFactory::init()
-{
-  return CPMAHudSpecs::get().load();
-}
 
 ElementsCtrlBase* CPMAFactory::create_elementsctrl(wxWindow *parent) const
 {

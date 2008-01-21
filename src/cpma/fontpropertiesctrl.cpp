@@ -68,8 +68,8 @@ FontPropertiesCtrl::FontPropertiesCtrl( wxWindow *parent ) :
 
   wxArrayString size_type;
   size_type.Add(wxEmptyString);
-  size_type.Add(fontsizetype_element_to_ui(E_FST_POINT));
-  size_type.Add(fontsizetype_element_to_ui(E_FST_COORD));
+  size_type.Add(fontsizetype_element_to_ui(CPMA_E_FST_POINT));
+  size_type.Add(fontsizetype_element_to_ui(CPMA_E_FST_COORD));
   Append( new wxEnumProperty(_("Type"), wxT("fontsizetype"), size_type) );
 }
 
@@ -96,7 +96,7 @@ void FontPropertiesCtrl::OnItemChanging( wxPropertyGridEvent& ev )
     wxMessageBox(CANTDISABLEPROPERTY_MSG);
     ev.Veto();
   }
-  else if( name == wxT("style-shadow") && !ev.GetValue().GetBool() && !(el->has() & E_HAS_TEXTSTYLE) && el->iget_textstyle() == E_TEXTSTYLE_SHADOW )
+  else if( name == wxT("style-shadow") && !ev.GetValue().GetBool() && !(el->has() & CPMA_E_HAS_TEXTSTYLE) && el->iget_textstyle() == CPMA_E_TEXTSTYLE_SHADOW )
   {
     wxMessageBox(_("There is no way to disable this property on that element as a parent element specifies it.\nYou should enable `Enforce none'."));
     ev.Veto();
@@ -127,14 +127,14 @@ void FontPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   else if( name == wxT("font") )
   { // dropdown
     wxString font = ev.GetPropertyValueAsString();
-    el->add_has( E_HAS_FONT, !font.empty() );
+    el->add_has( CPMA_E_HAS_FONT, !font.empty() );
     el->set_font( font );
     SetPropertyValue( wxT("font"), el->iget_font() );
   }
   else if( name == wxT("textalign") )
   {
     wxString ta = ev.GetPropertyValueAsString();
-    el->add_has( E_HAS_TEXTALIGN, !ta.empty() );
+    el->add_has( CPMA_E_HAS_TEXTALIGN, !ta.empty() );
     if( !ta.empty() )
       el->set_textalign( FontPropertiesCtrl::textalign_ui_to_element(ta) );
     SetPropertyValue( wxT("textalign"), FontPropertiesCtrl::textalign_element_to_ui(el->iget_textalign()) );
@@ -143,51 +143,51 @@ void FontPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   {
     if( val.GetBool() )
     {
-      el->add_has(E_HAS_TEXTSTYLE);
-      el->set_textstyle(E_TEXTSTYLE_NONE);
+      el->add_has(CPMA_E_HAS_TEXTSTYLE);
+      el->set_textstyle(CPMA_E_TEXTSTYLE_NONE);
     }
     else
     {
-      if( el->textstyle() == E_TEXTSTYLE_NONE )
+      if( el->textstyle() == CPMA_E_TEXTSTYLE_NONE )
       { // shadow is not set, so remove stuff
-        el->remove_has(E_HAS_TEXTSTYLE);
+        el->removCPMA_E_HAS(CPMA_E_HAS_TEXTSTYLE);
       }
     }
-    SetPropertyValue( wxT("style-none"), el->has() & E_HAS_TEXTSTYLE && el->iget_textstyle() == E_TEXTSTYLE_NONE );
-    SetPropertyValue( wxT("style-shadow"), el->iget_textstyle() == E_TEXTSTYLE_SHADOW );
+    SetPropertyValue( wxT("style-none"), el->has() & CPMA_E_HAS_TEXTSTYLE && el->iget_textstyle() == CPMA_E_TEXTSTYLE_NONE );
+    SetPropertyValue( wxT("style-shadow"), el->iget_textstyle() == CPMA_E_TEXTSTYLE_SHADOW );
   }
   else if( name == wxT("style-shadow") )
   {
     if( val.GetBool() )
     {
-      el->add_has(E_HAS_TEXTSTYLE);
-      el->set_textstyle(E_TEXTSTYLE_SHADOW);
+      el->add_has(CPMA_E_HAS_TEXTSTYLE);
+      el->set_textstyle(CPMA_E_TEXTSTYLE_SHADOW);
     }
     else
     {
-      el->remove_has(E_HAS_TEXTSTYLE);
-      el->set_textstyle(E_TEXTSTYLE_NONE);
+      el->removCPMA_E_HAS(CPMA_E_HAS_TEXTSTYLE);
+      el->set_textstyle(CPMA_E_TEXTSTYLE_NONE);
     }
-    SetPropertyValue( wxT("style-shadow"), el->iget_textstyle() == E_TEXTSTYLE_SHADOW );
-    SetPropertyValue( wxT("style-none"), el->has() & E_HAS_TEXTSTYLE && el->iget_textstyle() == E_TEXTSTYLE_NONE );
+    SetPropertyValue( wxT("style-shadow"), el->iget_textstyle() == CPMA_E_TEXTSTYLE_SHADOW );
+    SetPropertyValue( wxT("style-none"), el->has() & CPMA_E_HAS_TEXTSTYLE && el->iget_textstyle() == CPMA_E_TEXTSTYLE_NONE );
   }
   else if( name == wxT("fontsizetype") )
   {
     int type = FontPropertiesCtrl::fontsizetype_ui_to_element(ev.GetPropertyValueAsString());
-    el->add_has( E_HAS_FONTSIZE, type != E_FST_NONE );
-    if( type != E_FST_NONE)
+    el->add_has( CPMA_E_HAS_FONTSIZE, type != CPMA_E_FST_NONE );
+    if( type != CPMA_E_FST_NONE)
       el->set_fontsizetype( type );
     
   }
   else if( name == wxT("fontsize_pt") || name == wxT("fontsize_x") || name == wxT("fontsize_y") )
   {
-    if( !(el->has() & E_HAS_FONTSIZE) )
+    if( !(el->has() & CPMA_E_HAS_FONTSIZE) )
     { // copy it over
       el->set_fontsizetype( el->iget_fontsizetype() );
       el->set_fontsizept( el->iget_fontsizept() );
       el->set_fontsizex( el->iget_fontsizex() );
       el->set_fontsizey( el->iget_fontsizey() );
-      el->add_has( E_HAS_FONTSIZE );
+      el->add_has( CPMA_E_HAS_FONTSIZE );
     }
     if( name == wxT("fontsize_pt") )
       el->set_fontsizept( ev.GetPropertyValueAsInt() );
@@ -214,8 +214,8 @@ void FontPropertiesCtrl::from_element( const ElementBase *el )
   SetPropertyValue( wxT("font"), cel->iget_font() );
   SetPropertyValue( wxT("textalign"), textalign_element_to_ui(cel->iget_textalign()) );
   SetPropertyValue( wxT("monospace"), cel->iget_monospace() );
-  SetPropertyValue( wxT("style-none"), cel->has() & E_HAS_TEXTSTYLE && cel->iget_textstyle() == E_TEXTSTYLE_NONE );
-  SetPropertyValue( wxT("style-shadow"), cel->iget_textstyle() == E_TEXTSTYLE_SHADOW );
+  SetPropertyValue( wxT("style-none"), cel->has() & CPMA_E_HAS_TEXTSTYLE && cel->iget_textstyle() == CPMA_E_TEXTSTYLE_NONE );
+  SetPropertyValue( wxT("style-shadow"), cel->iget_textstyle() == CPMA_E_TEXTSTYLE_SHADOW );
   SetPropertyValue( wxT("fontsizetype"), fontsizetype_element_to_ui(cel->fontsizetype()) );
   
   update_layout();
@@ -230,18 +230,18 @@ void FontPropertiesCtrl::from_element( const ElementBase *el )
 int FontPropertiesCtrl::fontsizetype_ui_to_element( const wxString& fs )
 {
   if( fs == wxT("points") )
-    return E_FST_POINT;
+    return CPMA_E_FST_POINT;
   else if( fs == wxT("pixels") )
-    return E_FST_COORD;
-  return E_FST_NONE;
+    return CPMA_E_FST_COORD;
+  return CPMA_E_FST_NONE;
 }
 
 wxString FontPropertiesCtrl::fontsizetype_element_to_ui( int fst )
 {
   switch( fst )
   {
-    case E_FST_COORD: return wxT("pixels");
-    case E_FST_POINT: return wxT("points");
+    case CPMA_E_FST_COORD: return wxT("pixels");
+    case CPMA_E_FST_POINT: return wxT("points");
     default:
       break;
   }
@@ -275,12 +275,12 @@ void FontPropertiesCtrl::update_layout( bool reset /*=true*/ )
   CPMAElement *el = current_element();
   
 
-  property_defines( wxT("font"), (el->has() & E_HAS_FONT) != 0);
-  property_defines( wxT("textalign"), (el->has() & E_HAS_TEXTALIGN) != 0);
+  property_defines( wxT("font"), (el->has() & CPMA_E_HAS_FONT) != 0);
+  property_defines( wxT("textalign"), (el->has() & CPMA_E_HAS_TEXTALIGN) != 0);
   property_defines(wxT("monospace"), el->monospace() );
-  property_defines( wxT("style-shadow"), (el->has() & E_HAS_TEXTSTYLE) != 0 );
+  property_defines( wxT("style-shadow"), (el->has() & CPMA_E_HAS_TEXTSTYLE) != 0 );
 
-  property_defines( wxT("fontsizetype"), (el->has() & E_HAS_FONTSIZE) != 0 );
+  property_defines( wxT("fontsizetype"), (el->has() & CPMA_E_HAS_FONTSIZE) != 0 );
 
   int type = el->iget_fontsizetype();
   SetPropertyValue( wxT("fontsizetype"), FontPropertiesCtrl::fontsizetype_element_to_ui(type) );
@@ -293,12 +293,12 @@ void FontPropertiesCtrl::update_layout( bool reset /*=true*/ )
     if( id ) DeleteProperty(wxT("fontsize_x"));
     id = GetPropertyByName(wxT("fontsize_y"));
     if( id ) DeleteProperty(wxT("fontsize_y"));
-    if( type == E_FST_POINT )
+    if( type == CPMA_E_FST_POINT )
     {
       Append( new wxIntProperty(_("Size"), wxT("fontsize_pt"), el->iget_fontsizept()) );
       SetPropertyEditor(wxT("fontsize_pt"),wxPG_EDITOR(SpinCtrl));
     }
-    else if( type == E_FST_COORD )
+    else if( type == CPMA_E_FST_COORD )
     {
       Append( new wxIntProperty(_("Width"), wxT("fontsize_x"), el->iget_fontsizex()) );
       SetPropertyEditor(wxT("fontsize_x"),wxPG_EDITOR(SpinCtrl));
@@ -306,14 +306,14 @@ void FontPropertiesCtrl::update_layout( bool reset /*=true*/ )
       SetPropertyEditor(wxT("fontsize_y"),wxPG_EDITOR(SpinCtrl));
     }
   }
-  if( type == E_FST_POINT )
+  if( type == CPMA_E_FST_POINT )
   {
-    property_defines( wxT("fontsize_pt"), (el->has() & E_HAS_FONTSIZE) != 0 );
+    property_defines( wxT("fontsize_pt"), (el->has() & CPMA_E_HAS_FONTSIZE) != 0 );
   }
-  else if( type == E_FST_COORD )
+  else if( type == CPMA_E_FST_COORD )
   {
-    property_defines( wxT("fontsize_x"), (el->has() & E_HAS_FONTSIZE) != 0 );
-    property_defines( wxT("fontsize_y"), (el->has() & E_HAS_FONTSIZE) != 0 );
+    property_defines( wxT("fontsize_x"), (el->has() & CPMA_E_HAS_FONTSIZE) != 0 );
+    property_defines( wxT("fontsize_y"), (el->has() & CPMA_E_HAS_FONTSIZE) != 0 );
   }
 
 /*
@@ -322,8 +322,8 @@ void FontPropertiesCtrl::update_layout( bool reset /*=true*/ )
   int fspt = el->fontsizept();
   int fsx = el->fontsizex();
   int fsy = el->fontsizey();
-  property_defines( wxT("fontsizetype"), (el->has() & E_HAS_FONTSIZE) != 0) );
-  if( !(el->has() & E_HAS_FONTSIZE) )
+  property_defines( wxT("fontsizetype"), (el->has() & CPMA_E_HAS_FONTSIZE) != 0) );
+  if( !(el->has() & CPMA_E_HAS_FONTSIZE) )
   {
     type = el->iget_fontsizetype();
     fspt = el->iget_fontsizept();
@@ -338,10 +338,10 @@ void FontPropertiesCtrl::update_layout( bool reset /*=true*/ )
   if( id ) DeleteProperty(wxT("fontsize_x"));
   id = GetPropertyByName(wxT("fontsize_y"));
   if( id ) DeleteProperty(wxT("fontsize_y"));
-  if( type == E_FST_POINT )
+  if( type == CPMA_E_FST_POINT )
   {
     Append( new wxIntProperty(_("Size"), wxT("fontsize_pt"), fspt) );
-    if( el->has() & E_HAS_FONTSIZE )
+    if( el->has() & CPMA_E_HAS_FONTSIZE )
     {
       SetPropertyTextColour( wxT("fontsize_pt"), PROPS_COLOR_NORMAL );
       SetPropertyBackgroundColour( wxT("fontsize_pt"), PROPS_BGCOLOR_NORMAL );
@@ -352,11 +352,11 @@ void FontPropertiesCtrl::update_layout( bool reset /*=true*/ )
       SetPropertyBackgroundColour( wxT("fontsize_pt"), PROPS_BGCOLOR_INHERITED );
     }
   }
-  else if( type == E_FST_COORD )
+  else if( type == CPMA_E_FST_COORD )
   {
     Append( new wxIntProperty(_("X Size"), wxT("fontsize_x"), fsx) );
     Append( new wxIntProperty(_("Y Size"), wxT("fontsize_y"), fsy) );
-    if( el->has() & E_HAS_FONTSIZE )
+    if( el->has() & CPMA_E_HAS_FONTSIZE )
     {
       SetPropertyTextColour( wxT("fontsize_x"), PROPS_COLOR_NORMAL );
       SetPropertyBackgroundColour( wxT("fontsize_x"), PROPS_BGCOLOR_NORMAL );

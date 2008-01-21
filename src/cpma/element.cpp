@@ -43,15 +43,15 @@ CPMAElement::CPMAElement( const wxString& name, const wxString& desc /*=""*/, in
 }
 
 CPMAElement::Properties::Properties() :
-    font(E_FONT_DEFAULT),
-    fontsize_type(E_FST_POINT),
-    fontsize_pt(E_FONTSIZE_DEFAULT_POINT), fontsize_x(E_FONTSIZE_DEFAULT_COORDX), fontsize_y(E_FONTSIZE_DEFAULT_COORDY),
-    textalign(E_TEXTALIGN_DEFAULT),
-    time(E_TIME_DEFAULT),
-    textstyle(E_TEXTSTYLE_DEFAULT),
-    color(E_COLOR_DEFAULT),
-    bgcolor(E_BGCOLOR_DEFAULT),
-    fade(E_COLOR_DEFAULT), // ?
+    font(CPMA_E_FONT_DEFAULT),
+    fontsize_type(CPMA_E_FST_POINT),
+    fontsize_pt(CPMA_E_FONTSIZE_DEFAULT_POINT), fontsize_x(CPMA_E_FONTSIZE_DEFAULT_COORDX), fontsize_y(CPMA_E_FONTSIZE_DEFAULT_COORDY),
+    textalign(CPMA_E_TEXTALIGN_DEFAULT),
+    time(CPMA_E_TIME_DEFAULT),
+    textstyle(CPMA_E_TEXTSTYLE_DEFAULT),
+    color(CPMA_E_COLOR_DEFAULT),
+    bgcolor(CPMA_E_BGCOLOR_DEFAULT),
+    fade(CPMA_E_COLOR_DEFAULT), // ?
     image(),
     model(),
     usemodel(false),
@@ -102,13 +102,13 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
       wxLogWarning( _T("Found command `doublebar' which the element `%s' does not support."), m_name.c_str() );
     else
     {
-      m_has |= E_HAS_DOUBLEBAR;
+      m_has |= CPMA_E_HAS_DOUBLEBAR;
     }
   }
   else if( cmd.CmpNoCase(wxT("font")) == 0 )
   {
     m_props.font = args;
-    m_has |= E_HAS_FONT;
+    m_has |= CPMA_E_HAS_FONT;
   }
   else if( cmd.CmpNoCase(wxT("fontsize")) == 0 )
   {
@@ -119,12 +119,12 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
       if( 1 != sscanf( targ.GetNextToken().mb_str(), "%i", &m_props.fontsize_pt ) )
       {
         wxLogWarning( _("Unknown `fontsize' argument in element `%s', should be one (pointsize) or two (xy-size) numbers. (defaultvalues set)"), m_name.c_str() );
-        m_props.fontsize_pt = E_FONTSIZE_DEFAULT_POINT;
+        m_props.fontsize_pt = CPMA_E_FONTSIZE_DEFAULT_POINT;
       }
-      m_props.fontsize_x = E_FONTSIZE_DEFAULT_COORDX;
-      m_props.fontsize_y = E_FONTSIZE_DEFAULT_COORDY;
-      m_props.fontsize_type = E_FST_POINT;
-      m_has |= E_HAS_FONTSIZE;
+      m_props.fontsize_x = CPMA_E_FONTSIZE_DEFAULT_COORDX;
+      m_props.fontsize_y = CPMA_E_FONTSIZE_DEFAULT_COORDY;
+      m_props.fontsize_type = CPMA_E_FST_POINT;
+      m_has |= CPMA_E_HAS_FONTSIZE;
       break;
 
     case 2:
@@ -132,12 +132,12 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
         1 !=sscanf( targ.GetNextToken().mb_str(), "%i", &m_props.fontsize_y ) )
       {
         wxLogWarning( _("Unknown `fontsize' argument in element `%s', should be one (pointsize) or two (xy-size) numbers. (defaultvalues set)"), m_name.c_str() );
-        m_props.fontsize_x = E_FONTSIZE_DEFAULT_COORDX;
-        m_props.fontsize_y = E_FONTSIZE_DEFAULT_COORDY;
+        m_props.fontsize_x = CPMA_E_FONTSIZE_DEFAULT_COORDX;
+        m_props.fontsize_y = CPMA_E_FONTSIZE_DEFAULT_COORDY;
       }
-      m_props.fontsize_pt = E_FONTSIZE_DEFAULT_POINT;
-      m_props.fontsize_type = E_FST_COORD;
-      m_has |= E_HAS_FONTSIZE;
+      m_props.fontsize_pt = CPMA_E_FONTSIZE_DEFAULT_POINT;
+      m_props.fontsize_type = CPMA_E_FST_COORD;
+      m_has |= CPMA_E_HAS_FONTSIZE;
       break;
 
     default:
@@ -149,24 +149,24 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
   {
     if( !m_props.color.from_string( args ) )
       wxLogWarning( _("Unknown `%s' argument: %s"), "color", args.c_str() );
-    m_has |= E_HAS_COLOR;
+    m_has |= CPMA_E_HAS_COLOR;
   }
   else if( cmd.CmpNoCase(wxT("bgcolor"))==0 )
   {
     if( !m_props.bgcolor.from_string( args ) )
       wxLogWarning( _("Unknown `%s' argument: %s"), "bgcolor", args.c_str() );
-    m_has |= E_HAS_BGCOLOR;
+    m_has |= CPMA_E_HAS_BGCOLOR;
   }
   else if( cmd.CmpNoCase(wxT("fade"))==0 )
   {
     if( !m_props.fade.from_string( args ) )
       wxLogWarning( _("Unknown `%s' argument: %s"), "fade", args.c_str() );
-    m_has |= E_HAS_FADE;
+    m_has |= CPMA_E_HAS_FADE;
   }
   else if( cmd.CmpNoCase(wxT("time"))==0 )
   {
     sscanf( args.mb_str(), "%i", &m_props.time );
-    m_has |= E_HAS_TIME;
+    m_has |= CPMA_E_HAS_TIME;
   }
   else if( cmd.CmpNoCase(wxT("textalign"))==0 )
   {
@@ -177,43 +177,43 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
       wxLogWarning( _("Unknown `%c' argument: %s"), "textalign", m_props.textalign );
       m_props.textalign = 'L';
     }
-    m_has |= E_HAS_TEXTALIGN;
+    m_has |= CPMA_E_HAS_TEXTALIGN;
   }
   else if( cmd.CmpNoCase(wxT("textstyle"))==0 )
   {
     sscanf( args.mb_str(), "%i", &m_props.textstyle );
-    m_has |= E_HAS_TEXTSTYLE;
+    m_has |= CPMA_E_HAS_TEXTSTYLE;
   }
   else if( cmd.CmpNoCase(wxT("monospace"))==0 )
   {
-    m_has |= E_HAS_MONOSPACE;
+    m_has |= CPMA_E_HAS_MONOSPACE;
   }
   else if( cmd.CmpNoCase(wxT("fill"))==0 )
   {
-    m_has |= E_HAS_FILL;
+    m_has |= CPMA_E_HAS_FILL;
   }
   else if( cmd.CmpNoCase(wxT("draw3d"))==0 )
   {
-    m_has |= E_HAS_DRAW3D;
+    m_has |= CPMA_E_HAS_DRAW3D;
   }
   else if( cmd.CmpNoCase(wxT("image"))==0 )
   {
     m_props.image = args;
     she::wxTrim(m_props.image, wxT("\"'"));
-    m_has |= E_HAS_IMAGE;
+    m_has |= CPMA_E_HAS_IMAGE;
   }
   else if( cmd.CmpNoCase(wxT("model"))==0 )
   {
     m_props.model = args;
     if( m_type == E_T_ICON )
     { // model implies draw3d (and there is no model drawn, see data/cpma/docs/README.superhud)
-      m_has |= E_HAS_DRAW3D;
+      m_has |= CPMA_E_HAS_DRAW3D;
       m_props.model = wxT("");
     }
     else
     {
       she::wxTrim(m_props.model, wxT("\"'"));
-      m_has |= E_HAS_MODEL;
+      m_has |= CPMA_E_HAS_MODEL;
     }
     set_usemodel();
   }
@@ -226,7 +226,7 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
         1 != sscanf(targ.GetNextToken().mb_str(), "%f", &m_props.offset[E_OFFSET_Z])
         )
       wxLogWarning( _("Unknown `offset' argument in element `%s', should be three numbers (z x y). (ignored)"), m_name.c_str() );
-    m_has |= E_HAS_OFFSET;
+    m_has |= CPMA_E_HAS_OFFSET;
   }
   else if( cmd.CmpNoCase(wxT("angles"))==0 )
   {
@@ -252,7 +252,7 @@ bool CPMAElement::parse_property( const wxString& cmd, wxString args )
     m_props.angle_pan = static_cast<int>(pan);
 
       
-    m_has |= E_HAS_ANGLES;
+    m_has |= CPMA_E_HAS_ANGLES;
   }
   else
   {
@@ -268,23 +268,23 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
   ElementBase::write_properties(stream);
 
   list<wxString> lines;
-  if( (m_has & E_HAS_FONT)  && !m_props.font.empty() )
+  if( (m_has & CPMA_E_HAS_FONT)  && !m_props.font.empty() )
     lines.push_back( wxT("font ") + m_props.font );
-  if( (m_has & E_HAS_TIME) && m_props.time >= 0 )
+  if( (m_has & CPMA_E_HAS_TIME) && m_props.time >= 0 )
     lines.push_back(wxString::Format( wxT("time %i"), m_props.time ));
-  if( (m_has & E_HAS_FONTSIZE) && m_props.fontsize_type == E_FST_POINT )
+  if( (m_has & CPMA_E_HAS_FONTSIZE) && m_props.fontsize_type == CPMA_E_FST_POINT )
     lines.push_back(wxString::Format( wxT("fontsize %i"),  m_props.fontsize_pt));
-  if( (m_has & E_HAS_FONTSIZE) && m_props.fontsize_type == E_FST_COORD )
+  if( (m_has & CPMA_E_HAS_FONTSIZE) && m_props.fontsize_type == CPMA_E_FST_COORD )
     lines.push_back(wxString::Format( wxT("fontsize %i %i"),  m_props.fontsize_x, m_props.fontsize_y ));
   if( monospace() )
     lines.push_back(wxT("monospace"));
-  if( (m_has & E_HAS_TEXTSTYLE) && m_props.textstyle >= 0 )
+  if( (m_has & CPMA_E_HAS_TEXTSTYLE) && m_props.textstyle >= 0 )
     lines.push_back(wxString::Format( wxT("textstyle %i"), m_props.textstyle ));
-  if( (m_has & E_HAS_TEXTALIGN) && m_props.textalign != ' ' )
+  if( (m_has & CPMA_E_HAS_TEXTALIGN) && m_props.textalign != ' ' )
     lines.push_back(wxString::Format( wxT("textalign %c"),  m_props.textalign));
-  if( m_has & E_HAS_COLOR )
+  if( m_has & CPMA_E_HAS_COLOR )
     lines.push_back(wxT("color ") + m_props.color.to_string());
-  if( m_has & E_HAS_BGCOLOR )
+  if( m_has & CPMA_E_HAS_BGCOLOR )
     lines.push_back(wxT("bgcolor ") + m_props.bgcolor.to_string());
   if( fill() )
     lines.push_back(wxT("fill"));
@@ -292,15 +292,15 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
     lines.push_back(wxT("doublebar"));
   if( draw3d() )
     lines.push_back(wxT("draw3d"));
-  if( m_has & E_HAS_FADE )
+  if( m_has & CPMA_E_HAS_FADE )
     lines.push_back(wxT("fade ") + m_props.fade.to_string());
-  if( usemodel() ) //m_has & E_HAS_MODEL )
+  if( usemodel() ) //m_has & CPMA_E_HAS_MODEL )
   {
-    if( m_has & E_HAS_MODEL )
+    if( m_has & CPMA_E_HAS_MODEL )
       lines.push_back(wxT("model \"") + m_props.model + wxT("\""));
-    if( m_has & E_HAS_SKIN )
+    if( m_has & CPMA_E_HAS_SKIN )
       lines.push_back(wxT("image \"") + m_props.skin + wxT("\""));
-    if( m_has & E_HAS_ANGLES )
+    if( m_has & CPMA_E_HAS_ANGLES )
     {
       wxString angles;
       if( m_props.angle_pan == 0 )
@@ -309,7 +309,7 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
         angles = wxString::Format( wxT("angles %d %d %d %d"), m_props.angle_pitch, m_props.angle_yaw, m_props.angle_roll, m_props.angle_pan );
       lines.push_back( angles );
     }
-    if( m_has & E_HAS_OFFSET )
+    if( m_has & CPMA_E_HAS_OFFSET )
     {
       wxString offset = wxT("offset ") + she::pretty_print_float(m_props.offset[E_OFFSET_X]) + wxT(" ") + 
         she::pretty_print_float(m_props.offset[E_OFFSET_Y]) + wxT(" ") +
@@ -317,7 +317,7 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
       lines.push_back( offset );
     }
   }
-  else if( m_has & E_HAS_IMAGE )
+  else if( m_has & CPMA_E_HAS_IMAGE )
     lines.push_back(wxT("image \"") + m_props.image + wxT("\""));
 
 
@@ -334,29 +334,13 @@ void CPMAElement::write_properties( wxTextOutputStream& stream ) const
 }
 
 
-wxString CPMAElement::type2string( int type )
-{
-  switch(type)
-  {
-  case E_T_UNKNOWN: return wxT("UNKNOWN");
-  case E_T_TEXT: return wxT("TEXT");
-  case E_T_ICON: return wxT("ICON");
-  case E_T_USERICON: return wxT("USERICON");
-  case E_T_BAR: return wxT("BAR");
-  case E_T_WEAPONLIST: return wxT("WEAPONLIST");
-  default:
-    break;
-  }
-  return wxT("WTF?!");
-}
-
 int CPMAElement::iget_time() const
 {
   int t = m_props.time;
-  if( !(m_has & E_HAS_TIME) )
+  if( !(m_has & CPMA_E_HAS_TIME) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TIME ));
-    if( parent == 0 ) t = E_TIME_DEFAULT;
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_TIME ));
+    if( parent == 0 ) t = CPMA_E_TIME_DEFAULT;
     else t = parent->iget_time();
   }
   return t; 
@@ -364,10 +348,10 @@ int CPMAElement::iget_time() const
 wxString CPMAElement::iget_font() const
 {
   wxString f = m_props.font;
-  if( !(m_has & E_HAS_FONT) )
+  if( !(m_has & CPMA_E_HAS_FONT) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONT ));
-    if( parent == 0 ) f = E_FONT_DEFAULT;
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_FONT ));
+    if( parent == 0 ) f = CPMA_E_FONT_DEFAULT;
     else f = parent->iget_font();
   }
   return f; 
@@ -375,48 +359,48 @@ wxString CPMAElement::iget_font() const
 wxChar CPMAElement::iget_textalign() const
 {
   wxChar ta = m_props.textalign;
-  if( !(m_has & E_HAS_TEXTALIGN) )
+  if( !(m_has & CPMA_E_HAS_TEXTALIGN) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TEXTALIGN ));
-    if( parent == 0 ) ta = E_TEXTALIGN_DEFAULT;
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_TEXTALIGN ));
+    if( parent == 0 ) ta = CPMA_E_TEXTALIGN_DEFAULT;
     else ta = parent->iget_textalign();
   }
   return ta; 
 }
 bool CPMAElement::iget_monospace() const
 {
-  if( m_has & E_HAS_MONOSPACE )
+  if( m_has & CPMA_E_HAS_MONOSPACE )
     return true;
 
-  const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_MONOSPACE ));
+  const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_MONOSPACE ));
 
   return (parent != 0);
 }
 bool CPMAElement::iget_doublebar() const
 {
-  if( m_has & E_HAS_DOUBLEBAR )
+  if( m_has & CPMA_E_HAS_DOUBLEBAR )
     return true;
 
-  const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_DOUBLEBAR ));
+  const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_DOUBLEBAR ));
 
   return (parent != 0);
 }
 bool CPMAElement::iget_draw3d() const
 {
-  if( m_has & E_HAS_DRAW3D )
+  if( m_has & CPMA_E_HAS_DRAW3D )
     return true;
 
-  const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_DRAW3D ));
+  const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_DRAW3D ));
 
   return (parent != 0);
 }
 int CPMAElement::iget_fontsizetype() const
 {
   int fst = m_props.fontsize_type;
-  if( !(m_has & E_HAS_FONTSIZE) )
+  if( !(m_has & CPMA_E_HAS_FONTSIZE) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
-    if( parent == 0 ) fst = E_FST_POINT;
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_FONTSIZE ));
+    if( parent == 0 ) fst = CPMA_E_FST_POINT;
     else fst = parent->iget_fontsizetype();
   }
   return fst; 
@@ -424,10 +408,10 @@ int CPMAElement::iget_fontsizetype() const
 int CPMAElement::iget_fontsizept() const
 {
   int s = m_props.fontsize_pt;
-  if( !(m_has & E_HAS_FONTSIZE) )
+  if( !(m_has & CPMA_E_HAS_FONTSIZE) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
-    if( parent == 0 ) s = E_FONTSIZE_DEFAULT_POINT;
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_FONTSIZE ));
+    if( parent == 0 ) s = CPMA_E_FONTSIZE_DEFAULT_POINT;
     else s = parent->iget_fontsizept();
   }
   return s;
@@ -435,10 +419,10 @@ int CPMAElement::iget_fontsizept() const
 int CPMAElement::iget_fontsizex() const
 {
   int s = m_props.fontsize_x;
-  if( !(m_has & E_HAS_FONTSIZE) )
+  if( !(m_has & CPMA_E_HAS_FONTSIZE) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
-    if( parent == 0 ) s = E_FONTSIZE_DEFAULT_COORDX;
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_FONTSIZE ));
+    if( parent == 0 ) s = CPMA_E_FONTSIZE_DEFAULT_COORDX;
     else s = parent->iget_fontsizex();
   }
   return s;
@@ -446,10 +430,10 @@ int CPMAElement::iget_fontsizex() const
 int CPMAElement::iget_fontsizey() const
 {
   int s = m_props.fontsize_y;
-  if( !(m_has & E_HAS_FONTSIZE) )
+  if( !(m_has & CPMA_E_HAS_FONTSIZE) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
-    if( parent == 0 ) s = E_FONTSIZE_DEFAULT_COORDY;
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_FONTSIZE ));
+    if( parent == 0 ) s = CPMA_E_FONTSIZE_DEFAULT_COORDY;
     else s = parent->iget_fontsizey();
   }
   return s;
@@ -457,10 +441,10 @@ int CPMAElement::iget_fontsizey() const
 int CPMAElement::iget_textstyle() const
 {
   int ts = m_props.textstyle;
-  if( !(m_has & E_HAS_TEXTSTYLE) )
+  if( !(m_has & CPMA_E_HAS_TEXTSTYLE) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TEXTSTYLE ));
-    if( parent == 0 ) ts = E_TEXTSTYLE_DEFAULT;
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_TEXTSTYLE ));
+    if( parent == 0 ) ts = CPMA_E_TEXTSTYLE_DEFAULT;
     else ts = parent->iget_textstyle();
   }
   return ts;
@@ -468,10 +452,10 @@ int CPMAElement::iget_textstyle() const
 Color4 CPMAElement::iget_color() const
 {
   Color4 c = m_props.color;
-  if( !(m_has & E_HAS_COLOR) )
+  if( !(m_has & CPMA_E_HAS_COLOR) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_COLOR ));
-    if( parent == 0 ) c = E_COLOR_DEFAULT;
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_COLOR ));
+    if( parent == 0 ) c = CPMA_E_COLOR_DEFAULT;
     else c = parent->iget_color();
   }
   return c;
@@ -479,30 +463,30 @@ Color4 CPMAElement::iget_color() const
 Color4 CPMAElement::iget_bgcolor() const
 {
   Color4 c = m_props.bgcolor;
-  if( !(m_has & E_HAS_BGCOLOR) )
+  if( !(m_has & CPMA_E_HAS_BGCOLOR) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_BGCOLOR ));
-    if( parent == 0 ) c = E_BGCOLOR_DEFAULT;
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_BGCOLOR ));
+    if( parent == 0 ) c = CPMA_E_BGCOLOR_DEFAULT;
     else c = parent->iget_bgcolor();
   }
   return c;
 }
 bool CPMAElement::iget_fill() const
 {
-  if( m_has & E_HAS_FILL )
+  if( m_has & CPMA_E_HAS_FILL )
     return true;
 
-  const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FILL ));
+  const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_FILL ));
 
   return (parent != 0);
 }
 Color4 CPMAElement::iget_fade() const
 {
   Color4 c = m_props.fade;
-  if( !(m_has & E_HAS_FADE) )
+  if( !(m_has & CPMA_E_HAS_FADE) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FADE ));
-    if( parent == 0 ) c = E_FADE_DEFAULT;
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_FADE ));
+    if( parent == 0 ) c = CPMA_E_FADE_DEFAULT;
     else c = parent->iget_fade();
   }
   return c;
@@ -560,9 +544,9 @@ wxRect CPMAElement::iget_hudrect() const
 wxString CPMAElement::iget_image() const
 {
   wxString img = m_props.image;
-  if( !(m_has & E_HAS_IMAGE) )
+  if( !(m_has & CPMA_E_HAS_IMAGE) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_IMAGE ));
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_IMAGE ));
     if( parent == 0 ) img = wxEmptyString;
     else img = parent->iget_image();
   }
@@ -571,9 +555,9 @@ wxString CPMAElement::iget_image() const
 wxString CPMAElement::iget_model() const
 {
   wxString m = m_props.model;
-  if( !(m_has & E_HAS_MODEL) )
+  if( !(m_has & CPMA_E_HAS_MODEL) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_MODEL ));
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_MODEL ));
     if( parent == 0 ) m = wxEmptyString;
     else m = parent->iget_model();
   }
@@ -582,9 +566,9 @@ wxString CPMAElement::iget_model() const
 wxString CPMAElement::iget_skin() const
 {
   wxString s = m_props.skin;
-  if( !(m_has & E_HAS_SKIN) )
+  if( !(m_has & CPMA_E_HAS_SKIN) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_SKIN ));
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_SKIN ));
     if( parent == 0 ) s = wxEmptyString;
     else s = parent->iget_skin();
   }
@@ -593,9 +577,9 @@ wxString CPMAElement::iget_skin() const
 float CPMAElement::iget_offset(int which) const
 {
   float d = m_props.offset[which];
-  if( !(m_has & E_HAS_OFFSET) )
+  if( !(m_has & CPMA_E_HAS_OFFSET) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_OFFSET ));
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_OFFSET ));
     if( parent == 0 ) d = 0.f;
     else d = parent->iget_offset(which);
   }
@@ -610,9 +594,9 @@ void CPMAElement::set_offset( int which, float val )
 int CPMAElement::iget_angle(int which) const
 {
   int d = angle(which);
-  if( !(m_has & E_HAS_ANGLES) )
+  if( !(m_has & CPMA_E_HAS_ANGLES) )
   {
-    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_ANGLES ));
+    const CPMAElement *parent = static_cast<const CPMAElement*>(wxGetApp().hudfile()->get_parent( this, CPMA_E_HAS_ANGLES ));
     if( parent == 0 ) d = 0;
     else d = parent->iget_angle(which);
   }
@@ -718,7 +702,7 @@ void CPMAElement::render() const
       if( color.is_special() )
       {
         bgcolor.set_type( color.get_type() );
-        color = E_COLOR_DEFAULT;
+        color = CPMA_E_COLOR_DEFAULT;
       }
       color.set_a1(1.f); // NB for eg StatusBar_ArmorIcon the color would be completely discarded.
 
@@ -741,7 +725,7 @@ void CPMAElement::render() const
 
   case E_T_TEXT:
     { // COLOR_T && FILE = border around ...
-      int sx = E_FONTSIZE_DEFAULT_COORDX, sy = E_FONTSIZE_DEFAULT_COORDX; // some safe default values
+      int sx = CPMA_E_FONTSIZE_DEFAULT_COORDX, sy = CPMA_E_FONTSIZE_DEFAULT_COORDX; // some safe default values
       int fst = iget_fontsizetype();
 
       wxString text = m_text;
@@ -755,16 +739,16 @@ void CPMAElement::render() const
       if( color.is_special() )
       {
         bgcolor.set_type( color.get_type() );
-        color = E_COLOR_DEFAULT;
+        color = CPMA_E_COLOR_DEFAULT;
       }
 
       switch( fst )
       {
-      case E_FST_POINT:
+      case CPMA_E_FST_POINT:
         sx = iget_fontsizept();
         
         break;
-      case E_FST_COORD:
+      case CPMA_E_FST_COORD:
         sx = iget_fontsizex();
         sy = iget_fontsizey();
         break;
@@ -797,11 +781,11 @@ void CPMAElement::render() const
         color.glBind();
         switch( fst )
         {
-        case E_FST_POINT:
+        case CPMA_E_FST_POINT:
           font->print( r, sx, text, monospace, iget_textalign() );
           break;
 
-        case E_FST_COORD:
+        case CPMA_E_FST_COORD:
           // sx is always 12!
           font->print( r, sx, sy, text, monospace, iget_textalign() );
           break;
@@ -853,11 +837,11 @@ void CPMAElement::render() const
         iconr = itemr;
         switch(iget_fontsizetype())
         {
-        case E_FST_COORD:
+        case CPMA_E_FST_COORD:
           iconr.width = iget_fontsizex();
           iconr.height = iget_fontsizey();
           break;
-        case E_FST_POINT: 
+        case CPMA_E_FST_POINT: 
         default:
           iconr.width = iget_fontsizept();
           iconr.height = iconr.width;
@@ -904,10 +888,10 @@ void CPMAElement::postparse()
 {
   if( usemodel() )
   { // we have a model, weeeeh.
-    remove_has(E_HAS_IMAGE);
+    removCPMA_E_HAS(CPMA_E_HAS_IMAGE);
     if( !m_props.image.empty() )
     {
-      add_has(E_HAS_SKIN); 
+      add_has(CPMA_E_HAS_SKIN); 
       m_props.skin = m_props.image; // hence the image is actually the skin    
       m_props.image = wxT(""); // and no longer an image.. :x
     }
@@ -976,27 +960,27 @@ void CPMAElement::convert( double from, double to, bool size, bool stretchpositi
   ElementBase::convert( from, to, size, stretchposition, fontsize );
 
   double ratio = from/to;
-  if( fontsize && (m_has & E_HAS_FONTSIZE) )
+  if( fontsize && (m_has & CPMA_E_HAS_FONTSIZE) )
   {
-    int sx = E_FONTSIZE_DEFAULT_COORDX;
-    int sy = E_FONTSIZE_DEFAULT_COORDY;
+    int sx = CPMA_E_FONTSIZE_DEFAULT_COORDX;
+    int sy = CPMA_E_FONTSIZE_DEFAULT_COORDY;
 
     int fst = fontsizetype();
 
     switch( fst )
     {
-      case E_FST_POINT:
+      case CPMA_E_FST_POINT:
         sx = fontsizept();
         sy = fontsizept();
         break;
-      case E_FST_COORD:
+      case CPMA_E_FST_COORD:
         sx = fontsizex();
         sy = fontsizey();
         break;
     }
 
     sx  = (int)(sx*ratio);
-    set_fontsizetype(E_FST_COORD);
+    set_fontsizetype(CPMA_E_FST_COORD);
     set_fontsizex(sx);
     set_fontsizey(sy);
   }

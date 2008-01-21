@@ -13,31 +13,21 @@
 
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
-#ifndef CPMAPROPERTIESNOTEBOOK_H
-#define CPMAPROPERTIESNOTEBOOK_H
+#ifndef Q4MAXPROPERTIESNOTEBOOK_H
+#define Q4MAXPROPERTIESNOTEBOOK_H
 
 #include "../propertiesnotebookbase.h"
 
 
-class VisibilityPropertiesCtrl;
-class FontPropertiesCtrl;
-class ColorPropertiesCtrl;
-class MiscPropertiesCtrl;
-class ImagePropertiesCtrl;
 
-class CPMAPropertiesNotebook : public PropertiesNotebookBase
+class Q4MAXPropertiesNotebook : public PropertiesNotebookBase
 {
   public:
-    CPMAPropertiesNotebook( wxWindow *parent );
+    Q4MAXPropertiesNotebook( wxWindow *parent );
 
     void update_from_element( const elements_type& els );
 
   private:
-    VisibilityPropertiesCtrl  *m_vis;
-    FontPropertiesCtrl      *m_font;
-    ColorPropertiesCtrl     *m_color;
-    ImagePropertiesCtrl     *m_image;
-    MiscPropertiesCtrl        *m_misc;
 
 };
 

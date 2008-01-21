@@ -601,7 +601,7 @@ void ElementsCtrlBase::OnInsertNotuniq( wxCommandEvent& ev )
   if( m_selels.size() != 1 )
     return;
   const notuniqs_type& notuniqs = wxGetApp().hudfile()->notuniq_elements();
-  ElementBase *el = wxGetApp().hudfile()->create_element( notuniqs[idx] );
+  ElementBase *el = wxGetApp().hudfile()->create_element_from_default( notuniqs[idx] );
   wxGetApp().hudfile()->insert( m_selels.front(), el );
   wxGetApp().mainframe()->update_elementsctrl();
 

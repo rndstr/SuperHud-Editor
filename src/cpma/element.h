@@ -19,20 +19,20 @@
 #include "../common.h"
 #include "../elementbase.h"
 #include "../color4.h"
-#include "hudspecs.h"
+#include "../hudspecs.h"
 
 typedef enum
 {
-  E_FST_NONE,
-  E_FST_POINT,
-  E_FST_COORD
-} eElementFontSizeType;
+  CPMA_E_FST_NONE,
+  CPMA_E_FST_POINT,
+  CPMA_E_FST_COORD
+} eCPMAElementFontSizeType;
 
 typedef enum
 {
-  E_TEXTSTYLE_NONE = 0,
-  E_TEXTSTYLE_SHADOW = 1
-} eElementTextStyle;;
+  CPMA_E_TEXTSTYLE_NONE = 0,
+  CPMA_E_TEXTSTYLE_SHADOW = 1
+} eCPMAElementTextStyle;;
 
 
 enum
@@ -49,8 +49,35 @@ enum
   E_OFFSET_Z
 };
 
+/// whether that element has the property enabled (specified)
+/// aka the element overwrites that property
+typedef enum {
+  //E_HAS_NONE = 0,
+  //E_HAS_RECT = 1<<0,
+  CPMA_E_HAS_TIME = 1<<1,
+  CPMA_E_HAS_FONT = 1<<2,
+  CPMA_E_HAS_FONTSIZE = 1<<3,
+  CPMA_E_HAS_TEXTSTYLE = 1<<4,
+  CPMA_E_HAS_TEXTALIGN = 1<<5,
+  CPMA_E_HAS_COLOR = 1<<6,
+  CPMA_E_HAS_BGCOLOR = 1<<7,
+  CPMA_E_HAS_FADE = 1<<8,
+  CPMA_E_HAS_IMAGE = 1<<9,
+  CPMA_E_HAS_MODEL = 1<<10,
+  CPMA_E_HAS_SKIN = 1<<11,
+  CPMA_E_HAS_OFFSET = 1<<12,
+  CPMA_E_HAS_ANGLES = 1<<13,
+  // NOTE: for those now we don't have actually a overwrite checkbox.
+  // but we still include it here. Those are set if the attributes are true.
+  // So we can still search with Hud::get_inheriter
+  CPMA_E_HAS_MONOSPACE = 1<<14,
+  CPMA_E_HAS_FILL = 1<<15,
+  CPMA_E_HAS_DOUBLEBAR = 1<<16,
+  CPMA_E_HAS_DRAW3D = 1<<17
+//  HIO_ALL = (1<<10)-1,
+} eCPMAElementProperties;
 
-const int E_PROPERTIES_DEFAULT = E_HAS_NONE;
+
 const int WEAPONLIST_ITEMCOUNT = 9; ///, how many items there are
 const int WEAPONLIST_SPACE = 4; ///< how many pixels between items
 const int WEAPONLIST_SELECTEDIDX = 6; ///< which item do we highlight? should be same as ammo icon! (6=rail)
@@ -59,21 +86,21 @@ const int WEAPONLIST_SELECTEDIDX = 6; ///< which item do we highlight? should be
 /// Defaults
 /// @{
 
-const int E_FONTSIZE_NONE = -1;
-/// default fontsize for type E_FST_POINT
-const int E_FONTSIZE_DEFAULT_POINT = 12; // verified 1.35
-/// default fontsize for type E_FST_COORD
-const int E_FONTSIZE_DEFAULT_COORDX = 12; // verified 1.35
-const int E_FONTSIZE_DEFAULT_COORDY = 12; // verified 1.35
+//const int CPMA_E_FONTSIZE_NONE = -1;
+/// default fontsize for type CPMA_E_FST_POINT
+const int CPMA_E_FONTSIZE_DEFAULT_POINT = 12; // verified 1.35
+/// default fontsize for type CPMA_E_FST_COORD
+const int CPMA_E_FONTSIZE_DEFAULT_COORDX = 12; // verified 1.35
+const int CPMA_E_FONTSIZE_DEFAULT_COORDY = 12; // verified 1.35
 
-const Color4 E_BGCOLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 0 ); // (alpha==0) verified
-const Color4 E_COLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 100 ); // verified
-const Color4 E_FADE_DEFAULT = E_COLOR_DEFAULT; // NOTverified
+const Color4 CPMA_E_BGCOLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 0 ); // (alpha==0) verified
+const Color4 CPMA_E_COLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 100 ); // verified
+const Color4 CPMA_E_FADE_DEFAULT = CPMA_E_COLOR_DEFAULT; // NOTverified
 
-const wxString E_FONT_DEFAULT = wxT("cpma"); // should be `cpma' or otherwise previews are drawn? <-- oO what is that supposed to mean?
-const char E_TEXTALIGN_DEFAULT = 'L';
-const int E_TEXTSTYLE_DEFAULT = E_TEXTSTYLE_NONE;
-const int E_TIME_DEFAULT = 0;
+const wxString CPMA_E_FONT_DEFAULT = wxT("cpma"); // should be `cpma' or otherwise previews are drawn? <-- oO what is that supposed to mean?
+const char CPMA_E_TEXTALIGN_DEFAULT = 'L';
+const int CPMA_E_TEXTSTYLE_DEFAULT = CPMA_E_TEXTSTYLE_NONE;
+const int CPMA_E_TIME_DEFAULT = 0;
 /// @}
 
 
@@ -161,16 +188,16 @@ class CPMAElement : public ElementBase
     void        set_textalign( const wxChar& ta ) { m_props.textalign = ta; }
     wxChar      iget_textalign() const;
 
-    void        set_monospace( bool monospace = true ) { add_has( E_HAS_MONOSPACE, monospace ); }
-    bool        monospace() const { return (m_has & E_HAS_MONOSPACE) != 0; }
+    void        set_monospace( bool monospace = true ) { add_has( CPMA_E_HAS_MONOSPACE, monospace ); }
+    bool        monospace() const { return (m_has & CPMA_E_HAS_MONOSPACE) != 0; }
     bool        iget_monospace() const;
 
-    void        set_draw3d( bool draw3d = true ) { add_has( E_HAS_DRAW3D, draw3d ); }
-    bool        draw3d() const { return (m_has & E_HAS_DRAW3D) != 0; }
+    void        set_draw3d( bool draw3d = true ) { add_has( CPMA_E_HAS_DRAW3D, draw3d ); }
+    bool        draw3d() const { return (m_has & CPMA_E_HAS_DRAW3D) != 0; }
     bool        iget_draw3d() const;
 
-    void        set_doublebar( bool doublebar = true ) { add_has( E_HAS_DOUBLEBAR, doublebar ); }
-    bool        doublebar() const { return (m_has & E_HAS_DOUBLEBAR) != 0; }
+    void        set_doublebar( bool doublebar = true ) { add_has( CPMA_E_HAS_DOUBLEBAR, doublebar ); }
+    bool        doublebar() const { return (m_has & CPMA_E_HAS_DOUBLEBAR) != 0; }
     bool        iget_doublebar() const;
 
     void        set_angle( int which, int val );
@@ -212,8 +239,8 @@ class CPMAElement : public ElementBase
     Color4      iget_fade() const;
     void        set_fade_a100( int a100 ) { m_props.fade.set_a100(a100); }
 
-    void        set_fill( bool fill = true ) { add_has( E_HAS_FILL, fill ); }
-    bool        fill() const { return (m_has & E_HAS_FILL) != 0; }
+    void        set_fill( bool fill = true ) { add_has( CPMA_E_HAS_FILL, fill ); }
+    bool        fill() const { return (m_has & CPMA_E_HAS_FILL) != 0; }
     bool        iget_fill() const;
 
     wxString    iget_image() const;
@@ -230,7 +257,6 @@ class CPMAElement : public ElementBase
     void        set_usemodel( bool um = true ) { m_props.usemodel = um; }
 
 
-    static wxString type2string( int type );
   protected:
     void        cleanup();
 

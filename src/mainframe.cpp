@@ -400,7 +400,7 @@ void MainFrame::OnMenuToolsPreferences( wxCommandEvent& )
   wxString gamedir = wxGetApp().factory()->dir_game();
   if( wxID_OK == dlg.ShowModal() )
   {
-    Prefs::get().save(true);
+    Prefs::get().save();
     m_displayctrl->reset_projection_mode();
     m_displayctrl->load_background();
     update_displayctrl();
@@ -459,10 +459,10 @@ void MainFrame::OnMenuAbout( wxCommandEvent& )
   VarContainer<Var> v;
   v.init();
   
-  v.addvar( wxT("testint"), wxT("3"), PVT_INT);
-  //wxLogWarning(v.var(wxT("plrf")).sval());
+  v.addvar( wxT("testint"), wxT("3"), VART_INT);
+  v.addvar( wxT("testcol"), wxT("0.4 0.5 0.6 0.8"), VART_COLOR);
   v.load();
-  wxLogWarning(wxT("%d"), v.var(wxT("testint")).ival());
+  wxLogWarning(wxT("%s"), v.var(wxT("testcol")).sval());
   v.cleanup();
   /*
   wxAboutDialogInfo info;

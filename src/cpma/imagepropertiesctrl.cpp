@@ -86,17 +86,17 @@ void ImagePropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   if( name == wxT("image") )
   {
     el->set_image( val.GetString() );
-    el->add_has( E_HAS_IMAGE, !val.GetString().empty() );
+    el->add_has( CPMA_E_HAS_IMAGE, !val.GetString().empty() );
   }
   else if( name == wxT("model") )
   {
     el->set_model( val.GetString() );
-    el->add_has( E_HAS_MODEL, !val.GetString().empty() );
+    el->add_has( CPMA_E_HAS_MODEL, !val.GetString().empty() );
   }
   else if( name == wxT("skin") )
   {
     el->set_skin( val.GetString() );
-    el->add_has( E_HAS_SKIN, !val.GetString().empty() );
+    el->add_has( CPMA_E_HAS_SKIN, !val.GetString().empty() );
   }
   else if( name == wxT("use-model") )
   {
@@ -104,17 +104,17 @@ void ImagePropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   }
   else if( name == wxT("use-angles") )
   {
-    el->add_has( E_HAS_ANGLES, val.GetBool() );
+    el->add_has( CPMA_E_HAS_ANGLES, val.GetBool() );
   }
   else if( name == wxT("yaw") || name == wxT("roll") || name == wxT("pitch") || name == wxT("pan") )
   {
-    if( !(el->has() & E_HAS_ANGLES) )
+    if( !(el->has() & CPMA_E_HAS_ANGLES) )
     { // user was starting to edit while seeing the inherited values, copy them over
       el->set_angle(E_ANGLE_YAW, el->iget_angle(E_ANGLE_YAW));
       el->set_angle(E_ANGLE_ROLL, el->iget_angle(E_ANGLE_ROLL));
       el->set_angle(E_ANGLE_PITCH, el->iget_angle(E_ANGLE_PITCH));
       el->set_angle(E_ANGLE_PAN, el->iget_angle(E_ANGLE_PAN));
-      el->add_has( E_HAS_ANGLES );
+      el->add_has( CPMA_E_HAS_ANGLES );
     }
     if( name == wxT("yaw") )
       el->set_angle(E_ANGLE_YAW, val.GetInteger() );
@@ -127,16 +127,16 @@ void ImagePropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   }
   else if( name == wxT("use-offset") )
   {
-    el->add_has( E_HAS_OFFSET, val.GetBool() );
+    el->add_has( CPMA_E_HAS_OFFSET, val.GetBool() );
   }
   else if( name == wxT("x") || name == wxT("y") || name == wxT("z") )
   {
-    if( !(el->has() & E_HAS_OFFSET) )
+    if( !(el->has() & CPMA_E_HAS_OFFSET) )
     { // user was starting to edit while seeing the inherited values, copy them over
       el->set_offset(E_OFFSET_X, el->iget_offset(E_OFFSET_X));
       el->set_offset(E_OFFSET_Y, el->iget_offset(E_OFFSET_Y));
       el->set_offset(E_OFFSET_Z, el->iget_offset(E_OFFSET_Z));
-      el->add_has( E_HAS_OFFSET );
+      el->add_has( CPMA_E_HAS_OFFSET );
     }
     if( name == wxT("x") )
       el->set_offset(E_OFFSET_X, val.GetInteger() );
@@ -190,7 +190,7 @@ void ImagePropertiesCtrl::append_model_properties( const CPMAElement *el /*=0*/ 
 
   Append( new wxPropertyCategory(_("Rotation"), wxT("cat-angles")) );
   SetPropertyHelpString( wxT("cat-angles"), _("Alters the display of MODEL. Note that most Q3 models do not work properly if r_vertexlight is on.") );
-  Append( new wxBoolProperty(_("Use"), wxT("use-angles"), el ? (el->has() & E_HAS_ANGLES) != 0 : false) );
+  Append( new wxBoolProperty(_("Use"), wxT("use-angles"), el ? (el->has() & CPMA_E_HAS_ANGLES) != 0 : false) );
   SetPropertyAttribute(wxT("use-angles"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
   Append( new wxIntProperty(_("Pitch"), wxT("pitch"), el ? el->iget_angle(E_ANGLE_PITCH) : 0) );
   SetPropertyHelpString( wxT("pitch"), _("Rotation around axis pointing right (horizontal, X).") ); 
@@ -207,7 +207,7 @@ void ImagePropertiesCtrl::append_model_properties( const CPMAElement *el /*=0*/ 
 
   Append( new wxPropertyCategory(_("Offset"), wxT("cat-offset")) );
   SetPropertyHelpString( wxT("cat-offset"), _("Moves the model along the X/Y/Z axis.") );
-  Append( new wxBoolProperty(_("Use"), wxT("use-offset"), el ? (el->has() & E_HAS_OFFSET) != 0 : false) );
+  Append( new wxBoolProperty(_("Use"), wxT("use-offset"), el ? (el->has() & CPMA_E_HAS_OFFSET) != 0 : false) );
   SetPropertyAttribute(wxT("use-offset"),wxPG_BOOL_USE_CHECKBOX,(long)1,wxPG_RECURSE);
   Append( new wxIntProperty(wxT("X"), wxT("x"), el ? (int)el->iget_offset(E_OFFSET_X) : 0) );
   SetPropertyEditor(wxT("x"),wxPG_EDITOR(SpinCtrl));
@@ -266,18 +266,18 @@ void ImagePropertiesCtrl::update_layout( bool reset /*=true*/)
   }
   if( el->usemodel() )
   {
-    property_defines( wxT("model"), (el->has() & E_HAS_MODEL) != 0 );
-    property_defines( wxT("skin"), (el->has() & E_HAS_SKIN) != 0 );
-    property_defines( wxT("yaw"), (el->has() & E_HAS_ANGLES) != 0 );
-    property_defines( wxT("roll"), (el->has() & E_HAS_ANGLES) != 0 );
-    property_defines( wxT("pitch"), (el->has() & E_HAS_ANGLES) != 0 );
-    property_defines( wxT("pan"), (el->has() & E_HAS_ANGLES) != 0 );
-    property_defines( wxT("x"), (el->has() & E_HAS_OFFSET) != 0 );
-    property_defines( wxT("y"), (el->has() & E_HAS_OFFSET) != 0 );
-    property_defines( wxT("z"), (el->has() & E_HAS_OFFSET) != 0 );
+    property_defines( wxT("model"), (el->has() & CPMA_E_HAS_MODEL) != 0 );
+    property_defines( wxT("skin"), (el->has() & CPMA_E_HAS_SKIN) != 0 );
+    property_defines( wxT("yaw"), (el->has() & CPMA_E_HAS_ANGLES) != 0 );
+    property_defines( wxT("roll"), (el->has() & CPMA_E_HAS_ANGLES) != 0 );
+    property_defines( wxT("pitch"), (el->has() & CPMA_E_HAS_ANGLES) != 0 );
+    property_defines( wxT("pan"), (el->has() & CPMA_E_HAS_ANGLES) != 0 );
+    property_defines( wxT("x"), (el->has() & CPMA_E_HAS_OFFSET) != 0 );
+    property_defines( wxT("y"), (el->has() & CPMA_E_HAS_OFFSET) != 0 );
+    property_defines( wxT("z"), (el->has() & CPMA_E_HAS_OFFSET) != 0 );
 
   }
   else
-    property_defines( wxT("image"), (el->has() & E_HAS_IMAGE) != 0 );
+    property_defines( wxT("image"), (el->has() & CPMA_E_HAS_IMAGE) != 0 );
 }
 

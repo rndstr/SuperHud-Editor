@@ -15,10 +15,11 @@
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include "hudspecs.h"
 
-#include "element.h"
-#include "../prefs.h"
-#include "../common.h"
-#include "../pakmanager.h"
+#include "prefs.h"
+#include "common.h"
+#include "pakmanager.h"
+#include "factorybase.h"
+#include "hudfilebase.h"
 
 #include <wx/arrstr.h>
 #include <wx/stdpaths.h>
@@ -29,9 +30,9 @@
 #include <wx/tokenzr.h>
 #include <wx/sstream.h>
 
-bool CPMAHudSpecs::load()
+bool HudSpecs::load()
 {
-  wxString hudspecs = Prefs::get().var(wxT("q3_hudspecs")).sval();
+  wxString hudspecs = wxGetApp().factory()->hudspecs();
   
   m_items.clear();
 
@@ -52,7 +53,6 @@ bool CPMAHudSpecs::load()
   wxString value; // whole options line
   wxString key; // cmd of option
   wxString arg; // optionally an argument (if a '=' is found)
-  CPMAElement *hi = 0;
   wxString desc = wxT(""); // desc which is written as _desc=... on a single line
   while(!sis.Eof())
   {
@@ -134,6 +134,8 @@ bool CPMAHudSpecs::load()
           type = E_T_USERICON;
         else if( arg.CmpNoCase(wxT("text"))==0 )
           type = E_T_TEXT;
+        else if( arg.CmpNoCase(wxT("usertext"))==0 )
+          type = E_T_USERTEXT;
         else if( arg.CmpNoCase(wxT("bar"))==0 )
           type = E_T_BAR;
         else if( arg.CmpNoCase(wxT("weaponlist"))==0 )
@@ -162,7 +164,7 @@ bool CPMAHudSpecs::load()
   return true;
 }
 
-const hsitem_s* CPMAHudSpecs::find_item( const wxString& name ) const
+const hsitem_s* HudSpecs::find_item( const wxString& name ) const
 {
   for( cit_hsitems cit = m_items.begin(); cit != m_items.end(); ++cit )
   {
@@ -172,9 +174,9 @@ const hsitem_s* CPMAHudSpecs::find_item( const wxString& name ) const
   return 0;
 }
 
-CPMAHudSpecs& CPMAHudSpecs::get() 
+HudSpecs& HudSpecs::get() 
 {
-  static CPMAHudSpecs pinstance;
+  static HudSpecs pinstance;
   return pinstance;
 }
 

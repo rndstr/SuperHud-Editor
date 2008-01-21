@@ -377,6 +377,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\hudspecs.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\hudspecs.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mainframe.cpp"
 				>
 			</File>
@@ -548,14 +556,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\cpma\hudspecs.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\src\cpma\hudspecs.h"
-					>
-				</File>
-				<File
 					RelativePath=".\src\cpma\imagepropertiesctrl.cpp"
 					>
 				</File>
@@ -577,6 +577,10 @@
 				</File>
 				<File
 					RelativePath=".\src\cpma\propertiesnotebook.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\cpma\propertygrid.h"
 					>
 				</File>
 				<File
@@ -625,14 +629,6 @@
 				</File>
 				<File
 					RelativePath=".\src\q4max\hudfile.h"
-					>
-				</File>
-				<File
-					RelativePath=".\src\q4max\hudspecs.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\src\q4max\hudspecs.h"
 					>
 				</File>
 				<File

@@ -53,8 +53,7 @@ public:
         m_def(def),
         m_type(type),
         m_flags(flags),
-        m_isset(false),
-        m_uptodate(false)
+        m_isset(false)
       {
       }
 
@@ -94,33 +93,26 @@ public:
         return (m_isset ? m_value : m_def);
       }
 
-      virtual void read()
-      {
-      }
-      virtual void write()
-      {
-      }
-
       void set( const wxString& str, bool isset = true )
       {
         m_isset = isset;
         m_value = str;
-        if( m_type == PVT_INT )
+        if( m_type == VART_INT )
         {
           long val;
           m_value.ToLong(&val);
           intval = static_cast<int>(val);
         }
-        else if( m_type == PVT_DOUBLE )
+        else if( m_type == VART_DOUBLE )
         {
           if( !she::ratio_string2double(m_value, &doubleval) )
             wxLogError(wxT("Invalid value for aspectratio"));
         }
-        else if( m_type == PVT_BOOL )
+        else if( m_type == VART_BOOL )
         {
           boolval = (m_value == wxT("true") || m_value == wxT("yes") || m_value == wxT("1"));
         }
-        else if( m_type == PVT_COLOR )
+        else if( m_type == VART_COLOR )
         {
           colorval.set(m_value);
         }
@@ -139,7 +131,6 @@ public:
       operator wxString() const { return sval(); }
 
 
-protected:
   wxString  m_name;
   wxString  m_value;
   wxString  m_def;
@@ -148,8 +139,6 @@ protected:
   bool      m_isset;
 
 private:
-  bool      m_uptodate;
-  // store conversions
   // FIXME this is waste of space, union?
   double    doubleval;
   int       intval;
@@ -166,6 +155,8 @@ public:
   typedef std::map<wxString, var_type> variables_type;
 
 public:
+  VarContainer() {}
+  virtual ~VarContainer() {}
   /// @returns bool True on success otherwise false
   virtual bool init() { return true; }
   virtual void cleanup()
@@ -191,7 +182,7 @@ public:
 
   virtual void read_var( var_type& var )
   {
-
+    var.set_default();
   }
 
   virtual void write_var( const var_type& var ) const
@@ -255,10 +246,19 @@ public:
     m_vars.insert( std::make_pair(name, var_type(name, def, type, flags)) );
   }
 
+  const variables_type& vars() const { return m_vars; }
+
+  bool exists( const wxString& name, int type = VART_ANY )
+  {
+    variables_type::iterator var = m_vars.find(name);
+    return (var != m_vars.end() && (VART_ANY == type || var->second.m_type == type));
+  }
+
 protected:
   variables_type  m_vars;
-  
 };
+
+typedef VarContainer<Var> varcont_type;
 
 #endif // PREFS_H
 

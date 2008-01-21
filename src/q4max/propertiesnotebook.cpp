@@ -15,11 +15,6 @@
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include "propertiesnotebook.h"
 
-#include "visibilitypropertiesctrl.h"
-#include "fontpropertiesctrl.h"
-#include "colorpropertiesctrl.h"
-#include "imagepropertiesctrl.h"
-#include "miscpropertiesctrl.h"
 #include "../prefs.h"
 
 #include "element.h"
@@ -27,11 +22,12 @@
 
 
 
-CPMAPropertiesNotebook::CPMAPropertiesNotebook( wxWindow *parent ) : 
+Q4MAXPropertiesNotebook::CPMAPropertiesNotebook( wxWindow *parent ) : 
   PropertiesNotebookBase(parent)
 {
   wxPropertyGrid::SetBoolChoices(_("On"), _("Off"));
 
+  /*
   wxColour col = Prefs::get().var(wxT("props_color")).wxcval();
   wxColour bgcol = Prefs::get().var(wxT("props_bgcolor")).wxcval();
   wxColour icol = Prefs::get().var(wxT("props_inheritcolor")).wxcval();
@@ -53,12 +49,14 @@ CPMAPropertiesNotebook::CPMAPropertiesNotebook( wxWindow *parent ) :
   AddPage( m_color, _("Color") );
   AddPage( m_image, _("Image") );
   AddPage( m_misc, _("Misc") );
+  */
   // some initial size so it isn't smashed without an existing perspective
   SetSize(300, -1);
 }
 
 void CPMAPropertiesNotebook::update_from_element( const elements_type& els )
 {
+  /*
   if( els.size() != 1 )
   { // no properties selection
     
@@ -108,6 +106,7 @@ void CPMAPropertiesNotebook::update_from_element( const elements_type& els )
     m_image->ClearModifiedStatus();
     m_misc->ClearModifiedStatus();
   }
+  */
 }
 
 

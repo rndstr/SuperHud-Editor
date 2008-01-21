@@ -13,18 +13,18 @@
 
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
-#ifndef CPMAPROPERTYGRID_H
-#define CPMAPROPERTYGRID_H
+#ifndef Q4MAXPROPERTYGRID_H
+#define Q4MAXPROPERTYGRID_H
 
 #include "../propertygridbase.h"
 #include "element.h"
 
 /// Provides a few functions that are in use on all
 /// the various grids
-class CPMAPropertyGrid : public PropertyGridBase
+class Q4MAXPropertyGrid : public PropertyGridBase
 {
   public:
-    CPMAPropertyGrid( 
+    Q4MAXPropertyGrid( 
       wxWindow *parent, 
       wxWindowID id = wxID_ANY, 
 		  const wxPoint& pos = wxDefaultPosition, 
@@ -39,34 +39,34 @@ class CPMAPropertyGrid : public PropertyGridBase
   protected:
     /// returns the currently selected element (as stored in CPMAPropertiesNotebook::update_from_element)
     /// @returns The current element or 0 if none selected
-    const CPMAElement* current_element() const
+    const Q4MAXElement* current_element() const
     {
       PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesctrl();
       if( !p )
       {
-        wxLogDebug(wxT("CPMAPropertyGridBase::curel() - PropertiesNotebook is not yet available"));
+        wxLogDebug(wxT("Q4MAXPropertyGrid::current_element - PropertiesNotebook is not yet available"));
         return 0;
       }
-      const CPMAElement* el = static_cast<const CPMAElement*>(p->curel());
+      const Q4MAXElement* el = static_cast<const Q4MAXElement*>(p->curel());
       if( !el ) 
       {
-        wxLogDebug(wxT("CPMAPropertyGridBase::curel() - there is no element selected"));
+        wxLogDebug(wxT("Q4MAXPropertyGrid::current_element - there is no element selected"));
         return 0;
       }
       return el;
     }
-    CPMAElement* current_element()
+    Q4MAXElement* current_element()
     {
       PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesctrl();
       if( !p )
       {
-        wxLogDebug(wxT("CPMAPropertyGridBase::curel() - PropertiesNotebook is not yet available"));
+        wxLogDebug(wxT("Q4MAXPropertyGrid::current_element - PropertiesNotebook is not yet available"));
         return 0;
       }
-      CPMAElement *el = static_cast<CPMAElement*>(p->curel());
+      Q4MAXElement *el = static_cast<Q4MAXElement*>(p->curel());
       if( !el ) 
       {
-        wxLogDebug(wxT("CPMAPropertyGridBase::curel() - there is no element selected"));
+        wxLogDebug(wxT("Q4MAXPropertyGrid::current_element - there is no element selected"));
         return 0;
       }
       return el;

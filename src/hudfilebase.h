@@ -19,15 +19,34 @@
 #include "common.h"
 
 #include "elementbase.h"
+#include "hudspecs.h"
 
 #include <vector>
+
+/// Used for algos trying to iterate through all PostDecorate elements.
+const wxString HF_POSTDECORATE_PREFIX = wxT("PostDecorate");
+/// Used for algos trying to iterate through all PreDecorate elements.
+const wxString HF_PREDECORATE_PREFIX = wxT("PreDecorate");
+
+#ifdef CPMA_BACKWARD_COMPATIBILITY_142
+  const wxString CPMA_HF_POSTDECORATE_PREFIX_142 = wxT("_PostDecorate");
+  const wxString CPMA_HF_PREDECORATE_PREFIX_142 = wxT("!PreDecorate");
+#endif
+
+/// available property(command) delimiters: newline or semicolon.
+/// NOTE that for q4max we "fix" the properties first by inserting semicolons
+/// between multiple elements on same line.. as q4max allows several nonseparated
+/// eleemnts on one line (although arguments have to be surrounded by doublequotes)
+const wxString HF_PROPERTY_DELIM = wxT("\n;");
+/// what we trim for.
+const wxString HF_PROPERTY_TRIM = wxT(" \n\t\r");
+
 
 typedef std::vector<ElementBase*>           elements_type;
 typedef elements_type::iterator             it_elements;
 typedef elements_type::const_iterator       cit_elements;
 
-typedef std::vector<wxString>               notuniqs_type;
-typedef notuniqs_type::const_iterator       cit_notuniqs;
+
 
 /// represents a hudfile (document)
 class HudFileBase
@@ -70,7 +89,7 @@ class HudFileBase
     /// returns the parent element that overwrites $specifies.
     /// parent element has flag E_PARENT
     /// @returns The parent or 0 if there is none (aka element uses default value)
-    const ElementBase*    get_parent( const ElementBase * const from, int specifies = E_HAS_NONE ) const;
+    const ElementBase*    get_parent( const ElementBase * const from, int specifies = 0 ) const;
 
     /// Loads a hudfile
     /// NOTE make sure that you don't forget to read the (hud)options like m_opt_version&co
@@ -85,8 +104,7 @@ class HudFileBase
     /// the default hud filename, return empty if none
     virtual wxString      default_hudfilename() const = 0;
 
-    /// create an element by name
-    virtual ElementBase*  create_element( const wxString& name ) const = 0;
+    
 
     /// writes the header that preceeds every file we write
     void                  write_header( wxTextOutputStream& stream );
@@ -98,7 +116,7 @@ class HudFileBase
     void                  convert_all( double from, double to, bool size, bool stretchposition, bool fontsize);
 
     /// returns a list of names of notuniq elements
-    virtual const notuniqs_type& notuniq_elements() const = 0;
+    const notuniqs_type& notuniq_elements() const;
 
     wxString              opt_version() const { return m_opt_version; }
     wxString              opt_aspectratio() const { return m_opt_aspectratio; }
@@ -110,6 +128,15 @@ class HudFileBase
     /// looks for an element in the element list (m_els)
     ElementBase*          find_element( const wxString& name );
 
+    /// creates a default element from given name
+    /// @returns The newly created element, if name was not found 0
+    ElementBase*          create_element_from_default( const wxString& name ) const
+    {
+      const hsitem_s *item = HudSpecs::get().find_item(name);
+      if( !item ) return 0;
+      return create_element(*item);
+    }
+
   protected:
 
     /// moves an element in the list after a given other element
@@ -120,7 +147,16 @@ class HudFileBase
 
     void                  cleanup();
 
-    virtual bool          parse_item( wxString s ) { return false; }
+    virtual bool          parse_item( wxString s );
+
+    virtual bool          read_properties( ElementBase *hi, const wxString& props );
+
+    /// create an unknown element by name
+    virtual ElementBase*  create_element( const wxString& name ) const = 0;
+    /// create a known element from a hudspecs item
+    virtual ElementBase*  create_element( const hsitem_s& defit ) const = 0;
+
+    
 
   protected:
     elements_type         m_els;

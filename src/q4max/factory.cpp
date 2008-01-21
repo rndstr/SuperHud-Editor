@@ -15,17 +15,12 @@
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include "factory.h"
 
-#include "hudspecs.h"
 #include "elementsctrl.h"
 #include "propertiesnotebook.h"
 #include "displayctrl.h"
 #include "hudfile.h"
 
 
-bool Q4MAXFactory::init()
-{
-  return Q4MAXHudSpecs::get().load();
-}
 
 ElementsCtrlBase* Q4MAXFactory::create_elementsctrl(wxWindow *parent) const
 {

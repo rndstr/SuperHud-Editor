@@ -35,43 +35,37 @@
 //#include <algorithm>
 
 
-CPMAHudFile::CPMAHudFile() : 
+Q4MAXHudFile::Q4MAXHudFile() : 
   HudFileBase()
 {
 }
 
 
-
-const notuniqs_type& CPMAHudFile::notuniq_elements() const
+ElementBase*  Q4MAXHudFile::create_element( const wxString& name ) const
 {
-  return CPMAHudSpecs::get().notuniqs();
-}
-
-ElementBase*  CPMAHudFile::create_element( const wxString& name ) const
-{
-  const hsitem_s *item = CPMAHudSpecs::get().find_item( name );
+  const hsitem_s *item = Q4MAXHudSpecs::get().find_item( name );
   if( !item ) return 0;
 
-  return new CPMAElement(*item);
+  return new Q4MAXElement(*item);
 }
 
-void CPMAHudFile::load_default_elements()
+void Q4MAXHudFile::load_default_elements()
 {
   clear();
   ElementBase *el = 0;
-  const CPMAHudSpecs::hsitems_type& items = CPMAHudSpecs::get().items();
-  for( CPMAHudSpecs::cit_hsitems cit = items.begin(); cit != items.end(); ++cit )
+  const Q4MAXHudSpecs::hsitems_type& items = Q4MAXHudSpecs::get().items();
+  for( Q4MAXHudSpecs::cit_hsitems cit = items.begin(); cit != items.end(); ++cit )
   {
     if( cit->flags & E_NODEFAULT )
       continue;
-    el = new CPMAElement(*cit);// cit->name, cit->desc, cit->enable, cit->text, cit->icon, 0, E_RECT_DEFAULT, cit->type, cit->flags, cit->has );    
+    el = new Q4MAXElement(*cit);// cit->name, cit->desc, cit->enable, cit->text, cit->icon, 0, E_RECT_DEFAULT, cit->type, cit->flags, cit->has );    
     append( el );
   }
   m_modified = false;
 }
 
 /*
-bool CPMAHudFile::load( const wxString& filename )
+bool Q4MAXHudFile::load( const wxString& filename )
 {
   wxLogDebug(wxT("Loading HUD: ") + filename);
 
@@ -109,13 +103,13 @@ bool CPMAHudFile::load( const wxString& filename )
         wxString optval = line.Mid(pos+1);
         she::wxTrim(optname);
         she::wxTrim(optval);
-        wxLogDebug(wxT("CPMAHudFile::load - have found option: ") + optname + wxT(" = ") + optval);
+        wxLogDebug(wxT("Q4MAXHudFile::load - have found option: ") + optname + wxT(" = ") + optval);
         if( optname == wxT("version") )
           m_opt_version = optval;
         else if( optname == wxT("view_aspectratio") )
           m_opt_aspectratio = optval;
         else
-          wxLogDebug(wxT("CPMAHudFile::load - WARNING: invalid option ") + optname);
+          wxLogDebug(wxT("Q4MAXHudFile::load - WARNING: invalid option ") + optname);
       }
       continue;
     }
@@ -168,88 +162,31 @@ bool CPMAHudFile::load( const wxString& filename )
 }
 */
 
-bool CPMAHudFile::parse_item( wxString s )
+
+bool Q4MAXHudFile::read_properties( ElementBase *hi, const wxString& props )
 {
-  she::wxLTrim(s);
-
-  // fish name of item.
-  size_t pos = s.find_first_of( wxT(" {\n\t\r") );
-  wxString name = s.substr( 0, pos );
-
-  // extract properties of this item
-  pos = s.find_first_of('{');
-  wxString props = s.substr( pos + 1, s.length() - pos - 1 );
-  she::wxTrim( props );
-  if( props.find('{') != wxString::npos )
+  wxString p;
+  bool quoting = false;
+  for( wxString::const_iterator cit = props.begin(); cit != props.end(); ++cit )
   {
-    wxString e = wxString::Format(_("Missing closing brace in element `%s'"), name.c_str());
-    throw hudfile_parse_error( e );
-  }
-#ifdef BACKWARD_COMPATIBILITY_142
-  if( name == HF_PREDECORATE_PREFIX || name.StartsWith(HF_PREDECORATE_PREFIX_142) )
-#else
-  if( name == HF_PREDECORATE_PREFIX )
-#endif
-    name = HF_PREDECORATE_PREFIX;
-#ifdef BACKWARD_COMPATIBILITY_142
-  else if( name == HF_POSTDECORATE_PREFIX || name.StartsWith(HF_POSTDECORATE_PREFIX_142) )
-#else
-  else if( name == HF_POSTDECORATE_PREFIX )
-#endif
-    name = HF_POSTDECORATE_PREFIX;
-
-  // check if item exists (it should!).
-  const hsitem_s *defit = CPMAHudSpecs::get().find_item( name );
-  ElementBase *exel = find_element( name ); // the existing item.
-  ElementBase *el = 0; // the item we are gonna create
-  if (defit == 0)
-  { // warning, unknown item!
-    wxLogWarning( _("Unknown elementname `%s', adding it anyway."), name.c_str() );
-    el = new CPMAElement(name);
-    append(el);
-  }
-  else // valid item-name, verry gooood...
-  { 
-    if( exel ) 
-    { // and it already exists in hud    
-      if( defit->flags & E_NOTUNIQ )
-      { // as we can have several of it, check if the one in the hud is already in use.
-        if( exel->is_enabled() )
-        { // already in use add another one and keep flags alive.
-          el = new CPMAElement(*defit);
-          append(el);
-        }
-        else
-          el = exel;
-      }
-      else
-      { // it's an unique item. so if it's already enabled (=already been read), issue a warning
-        el = exel;
-        if( exel->m_enabled )//() && ~exel->flags() & E_ENABLEALWAYS )
-          wxLogWarning( _("You have more than one instance of `%s' in your hudfile\nwhich might doesn't have the effect you desire."), name.c_str() );
-      }
-    }
-    else
+    if( *cit == '"' )
     {
-      el = new CPMAElement( *defit );
-      append(el);
+      if( quoting )
+      { // close
+        p += *cit;
+        p += ';';
+        quoting = false;
+        continue;
+      }
+      else // !quoting
+        quoting = true;
     }
+    p += *cit;
   }
-
-  wxASSERT( el != 0 );
-  // all items inside the hudfile are drawn (enabled).
-  el->set_enabled( true );
-  // make sure the order is the same as in hudfile.
-  if( el != m_load_prevel && !move_element_after( el, m_load_prevel ) )
-      wxLogError( BUG_MSG + wxT("Failed moving item ") + el->name() );
-  m_load_prevel = el;
-  
-  // read properties
-  return read_properties( el, props );
+  return HudFileBase::read_properties( hi, p );
 }
 
-
-bool CPMAHudFile::read_properties( ElementBase *hi, const wxString& props )
+bool Q4MAXHudFile::read_properties( ElementBase *hi, const wxString& props )
 {
   size_t pos;
   wxString prop, cmd, args;
@@ -298,31 +235,3 @@ bool CPMAHudFile::read_properties( ElementBase *hi, const wxString& props )
   return true;
 }
 
-
-bool CPMAHudFile::save( const wxString& filename )
-{
-  wxLogDebug(wxT("Saving HUD: ") + filename);
-  int decoratecount = 0;
-  wxFFileOutputStream file( filename.c_str() );
-  if( !file.Ok() )
-    return false;
-
-  wxTextOutputStream stream( file );
-  write_header(stream);
-  
-
-  for( cit_elements it = m_els.begin(); it != m_els.end(); ++it )
-  {
-    if( (*it)->name() == HF_POSTDECORATE_PREFIX || (*it)->name() == HF_PREDECORATE_PREFIX )
-      ++decoratecount;
-    write_element( stream, *(*it) );
-  }
-
-  if( decoratecount > HF_MAX_PREPOSTDECORATE )
-    wxLogWarning( _("You have more than %d combined PreDecorate/PostDecorate elements which CPMA does not support"), HF_MAX_PREPOSTDECORATE );
-
-  m_filename = filename;
-  m_modified = false;
-
-  return true;
-}

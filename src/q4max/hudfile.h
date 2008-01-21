@@ -13,52 +13,32 @@
 
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
-#ifndef CPMAHUDFILE_H
-#define CPMAHUDFILE_H
+#ifndef Q4MAXHUDFILE_H
+#define Q4MAXHUDFILE_H
 
 #include  "../hudfilebase.h"
-
-#define BACKWARD_COMPATIBILITY_142
-
-/// Used for algos trying to iterate through all PostDecorate elements.
-const wxString HF_POSTDECORATE_PREFIX = wxT("PostDecorate");
-/// Used for algos trying to iterate through all PreDecorate elements.
-const wxString HF_PREDECORATE_PREFIX = wxT("PreDecorate");
-/// maximuum number of pre and postdecorates
-const int HF_MAX_PREPOSTDECORATE = 64;
+#include "element.h"
 
 // -- parsing
-
-
-/// possible property(command) delimiters: newline or semicolon.
-const wxString HF_PROPERTY_DELIM = wxT("\n;");
-/// what we trim for.
-const wxString HF_PROPERTY_TRIM = wxT(" \n\t\r");
 
 #ifdef BACKWARD_COMPATIBILITY_142
   const wxString HF_POSTDECORATE_PREFIX_142 = wxT("_PostDecorate");
   const wxString HF_PREDECORATE_PREFIX_142 = wxT("!PreDecorate");
 #endif
 
-class CPMAHudFile : public HudFileBase
+class Q4MAXHudFile : public HudFileBase
 {
   public:
-    CPMAHudFile();
-    virtual ~CPMAHudFile() {}
-
+    Q4MAXHudFile();
+    virtual ~Q4MAXHudFile() {}
 
     void load_default_elements();
-    bool save( const wxString& filename );
     wxString default_hudfilename() const { return wxT("hud/hud.cfg"); }
 
-    const notuniqs_type& notuniq_elements() const;
-    ElementBase*  create_element( const wxString& name ) const;
-
-    bool parse_item( wxString s );
-
-  private:
-    
-    bool read_properties( ElementBase *hi, const wxString& props );
+  protected:
+    bool          read_properties( ElementBase *hi, const wxString& props );
+    ElementBase*  create_element( const wxString& name ) const { return new Q4MAXElement(name); }
+    ElementBase*  create_element( const hsitem_s& defit ) const { return new Q4MAXElement(defit); }
 };
 
 

@@ -140,7 +140,7 @@ void VisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   }
   else if( name == wxT("time") )
   {
-    el->add_has( E_HAS_TIME, !ev.GetProperty()->IsValueUnspecified() );
+    el->add_has( CPMA_E_HAS_TIME, !ev.GetProperty()->IsValueUnspecified() );
     if( !ev.GetProperty()->IsValueUnspecified() )
       el->set_time(val.GetInteger());
     SetPropertyValue( wxT("time"), el->iget_time() );
@@ -192,7 +192,7 @@ void VisibilityPropertiesCtrl::update_layout()
   property_defines( wxT("width"), (el->has() & E_HAS_RECT)!=0 );
   property_defines( wxT("height"), (el->has() & E_HAS_RECT)!=0 );
 
-  property_defines(wxT("time"), (el->has() & E_HAS_TIME) != 0 );
+  property_defines(wxT("time"), (el->has() & CPMA_E_HAS_TIME) != 0 );
 }
 
 void VisibilityPropertiesCtrl::OnElementVisibility( wxCommandEvent& ev )

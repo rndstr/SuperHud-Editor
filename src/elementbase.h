@@ -22,32 +22,11 @@
 #include <wx/txtstrm.h>
 #include <wx/gdicmn.h>
 
-/// whether that element has the property enabled (specified)
-/// aka the element overwrites that property
-typedef enum {
+
+typedef enum
+{
   E_HAS_NONE = 0,
-  E_HAS_RECT = 1<<0,
-  E_HAS_TIME = 1<<1,
-  E_HAS_FONT = 1<<2,
-  E_HAS_FONTSIZE = 1<<3,
-  E_HAS_TEXTSTYLE = 1<<4,
-  E_HAS_TEXTALIGN = 1<<5,
-  E_HAS_COLOR = 1<<6,
-  E_HAS_BGCOLOR = 1<<7,
-  E_HAS_FADE = 1<<8,
-  E_HAS_IMAGE = 1<<9,
-  E_HAS_MODEL = 1<<10,
-  E_HAS_SKIN = 1<<11,
-  E_HAS_OFFSET = 1<<12,
-  E_HAS_ANGLES = 1<<13,
-  // NOTE: for those now we don't have actually a overwrite checkbox.
-  // but we still include it here. Those are set if the attributes are true.
-  // So we can still search with Hud::get_inheriter
-  E_HAS_MONOSPACE = 1<<14,
-  E_HAS_FILL = 1<<15,
-  E_HAS_DOUBLEBAR = 1<<16,
-  E_HAS_DRAW3D = 1<<17
-//  HIO_ALL = (1<<10)-1,
+  E_HAS_RECT = 1<<0
 } eElementProperties;
 
 typedef enum
@@ -92,6 +71,7 @@ typedef enum {
 
 /// Defaults
 /// @{
+const int E_PROPERTIES_DEFAULT = E_HAS_NONE;
 const wxRect E_RECT_DEFAULT = wxRect( 0, 0, 64, 32 ); // (0,0) verified 1.35
 /// @}
 
@@ -103,11 +83,11 @@ const wxString HF_PROPERTY_ARG_DELIM = wxT(" ");
 
 class ElementBase
 {
-   friend class CPMAHudFile; // for proper detection if item has already been read (through m_enabled as is_enabled() is lying)
+   friend class HudFileBase; // for proper detection if item has already been read (through m_enabled as is_enabled() is lying)
    friend class CPMAPropertiesCtrl; // TODO still needed?
    friend class VisibilityPropertiesCtrl; // TODO still needed?
   public:
-    ElementBase( const wxString& name, const wxString& desc = wxT(""), int flags = E_NONE, int has = E_HAS_NONE, bool enabled = false, 
+    ElementBase( const wxString& name, const wxString& desc = wxT(""), int flags = E_NONE, int has = 0, bool enabled = false, 
       const wxRect& rect = E_RECT_DEFAULT ) :
       m_name(name), m_desc(desc), m_flags(flags), m_has(has), m_enabled(enabled), m_rect(rect)
     {}
@@ -156,8 +136,8 @@ class ElementBase
     int             has() const { return m_has; }
     /// adds a value (bitmask) to what this element overwrite
     /// @arg bool add If false we actually remove it.
-    void            add_has( int has, int add = true ) { if( !add) remove_has(has); else m_has |= has; }
-    void            remove_has( int has ) { m_has &= ~has; }
+    void            add_has( int has, int add = true ) { if( !add) removCPMA_E_HAS(has); else m_has |= has; }
+    void            removCPMA_E_HAS( int has ) { m_has &= ~has; }
     bool            is_enabled() const { return (m_flags & E_ENABLEALWAYS ? true : m_enabled); }
     void            set_enabled(bool en = true) { m_enabled = en; }
     bool            is_selected() const;
@@ -173,6 +153,7 @@ class ElementBase
     bool            is_rendered() const;
     virtual bool    is_removable() const { return (flags() & E_NOTUNIQ) != 0; }
 
+    static wxString type2string( int type );
   protected:
     wxString  m_name; ///< is not unique
     wxString  m_desc;

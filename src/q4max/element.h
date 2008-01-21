@@ -23,11 +23,11 @@
 
 
 
-const int E_PROPERTIES_DEFAULT = E_HAS_NONE;
+/*
 const int WEAPONLIST_ITEMCOUNT = 9; ///, how many items there are
 const int WEAPONLIST_SPACE = 4; ///< how many pixels between items
 const int WEAPONLIST_SELECTEDIDX = 6; ///< which item do we highlight? should be same as ammo icon! (6=rail)
-
+*/
 
 typedef enum 
 {
@@ -40,16 +40,43 @@ typedef enum
   E_FT_OUTLINE = 0x4
 } eQ4MAXElementFont;
 
+/// whether that element has the property enabled (specified)
+/// aka the element overwrites that property
+typedef enum {
+  //E_HAS_NONE = 0,
+  //E_HAS_RECT = 1<<0,
+  Q4MAX_E_HAS_TIME = 1<<1,
+  Q4MAX_E_HAS_FONT = 1<<2,
+  Q4MAX_E_HAS_FONTSIZE = 1<<3,
+  Q4MAX_E_HAS_TEXTSTYLE = 1<<4,
+  Q4MAX_E_HAS_TEXTALIGN = 1<<5,
+  Q4MAX_E_HAS_COLOR = 1<<6,
+  Q4MAX_E_HAS_BGCOLOR = 1<<7,
+  Q4MAX_E_HAS_FADE = 1<<8,
+  Q4MAX_E_HAS_IMAGE = 1<<9,
+  Q4MAX_E_HAS_MODEL = 1<<10,
+  Q4MAX_E_HAS_SKIN = 1<<11,
+  Q4MAX_E_HAS_OFFSET = 1<<12,
+  Q4MAX_E_HAS_ANGLES = 1<<13,
+  // NOTE: for those now we don't have actually a overwrite checkbox.
+  // but we still include it here. Those are set if the attributes are true.
+  // So we can still search with Hud::get_inheriter
+  Q4MAX_E_HAS_MONOSPACE = 1<<14,
+  Q4MAX_E_HAS_FILL = 1<<15,
+  Q4MAX_E_HAS_DOUBLEBAR = 1<<16,
+  Q4MAX_E_HAS_DRAW3D = 1<<17
+//  HIO_ALL = (1<<10)-1,
+} eQ4MAXElementProperties;
+
 /// Defaults
 /// @{
 
-const Color4 E_BGCOLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 0 );
-const Color4 E_COLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 100 );
+const Color4 Q4MAX_E_BGCOLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 0 );
+const Color4 Q4MAX_E_COLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 100 );
+const wxString Q4MAX_E_COLORED_DEFAULT = wxT("false");
 
-const int E_FONT_DEFAULT = E_FT_CHAIN;
-const char E_TEXTALIGN_DEFAULT = 'L';
-const int E_TEXTSTYLE_DEFAULT = E_TEXTSTYLE_NONE;
-const int E_TIME_DEFAULT = 0;
+const int Q4MAX_E_FONT_DEFAULT = E_FT_CHAIN;
+const char Q4MAX_E_TEXTALIGN_DEFAULT = 'L';
 /// @}
 
 
@@ -58,45 +85,25 @@ class Texture;
 class Q4MAXElement : public ElementBase
 {
   public:
-    struct Properties
+    class Properties : public varcont_type
     {
-      Properties();
+      public:
+        Properties();
+        bool init();
+        
+        Properties& Properties::operator= (const Properties& p)
+        {
+          if (this == &p) return *this;
 
-      wxString    font;
-      // either pointsize or coordsize.
-      int         fontsize_type; ///< eElementFontSizeType
-      int         fontsize_pt;
-      int         fontsize_x;
-      int         fontsize_y;
-
-      wxChar      textalign; // L|C|R
-      int         time; ///< milliseconds.
-
-      int         textstyle; // 1 = dropshadow
-      
-
-      Color4      color;
-
-      Color4      bgcolor;
-      
-      
-      Color4      fade; ///< only used if m_time bigger than 0.
-
-      wxString    image;
-
-      /// the model to display, only if type == HIT_ICON|HIT_USERICON|HIT_TEXT
-      wxString    model; ///< if this is set, m_image contains skinpath!
-
-      wxString    skin; ///< will finally go to m_image
-
-      bool        usemodel; ///< for prefs dialog whether use model is selected
-
-      float       offset[3];
-
-      int         angle_pitch;
-      int         angle_yaw;
-      int         angle_roll;
-      int         angle_pan;
+          // copy all 
+          const varcont_type::variables_type& rhs = p.vars();
+          for( varcont_type::variables_type::const_iterator cit = rhs.begin(); cit != rhs.end(); ++cit )
+          {
+            if( exists(cit->first) )
+              set( cit->first, cit->second.sval() );
+          }
+          return *this;
+        }
     };
 
   public:
@@ -127,6 +134,7 @@ class Q4MAXElement : public ElementBase
 
     virtual wxRect  iget_hudrect() const;
 
+    /*
     int         iget_time() const;
     void        set_time( int time ) { m_props.time = time; }
 
@@ -201,9 +209,11 @@ class Q4MAXElement : public ElementBase
     wxString    iget_skin() const;
     void        set_skin( const wxString& skin ) { m_props.skin = skin; }
     wxString    skin() const { return m_props.skin; }
+    
 
     bool        usemodel() const { return m_props.usemodel; }
     void        set_usemodel( bool um = true ) { m_props.usemodel = um; }
+    */
 
 
     static wxString type2string( int type );

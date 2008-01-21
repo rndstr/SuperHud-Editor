@@ -18,6 +18,8 @@
 
 #include "common.h"
 
+#include "hudspecs.h"
+
 #include <wx/string.h>
 
 class ElementsCtrlBase;
@@ -31,7 +33,7 @@ class FactoryBase
   public:
 
     /// this can be used to initialize game specific stuff
-    virtual bool init() { return true; }
+    virtual bool init() { return HudSpecs::get().load();; }
     /// this can be used to shut down game specific stuff
     virtual void shutdown() {  }
 
@@ -62,6 +64,9 @@ class FactoryBase
 
     /// `GAME_background'
     virtual wxString    background() const = 0;
+
+    /// `GAME_hudspecs'
+    virtual wxString    hudspecs() const = 0;
 
     /// e.g. 'quake3.exe' or 'quake3.x86'
     /// is used to determine if we have a valid game directory

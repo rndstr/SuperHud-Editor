@@ -7,6 +7,7 @@
   Not ignored: AttackerIcon
   but we apply the color to all of those
 * not implemented "Some elements will have special functions (for instance Bars) when color 0 0 0 0 is used."
+* [Q4MAX] does not support multiple /* */ style comments on one line
 
 --- wxWidgets ---
 * if a pane is detached the caption does not update (wxAui bug?)
