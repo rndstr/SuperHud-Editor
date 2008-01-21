@@ -183,7 +183,6 @@ bool ratio_string2long( const wxString& ratio, long *w, long *h )
   size_t pos = ratio.Find(wxT(":"));
   if( pos == wxString::npos )
     return false;
-  long lhs, rhs;
   if( !ratio.Left(pos).ToLong(w) || !ratio.Right(ratio.length() - pos - 1).ToLong(h) )
     return false;
   return true;

@@ -27,7 +27,9 @@
 BEGIN_EVENT_TABLE(PrefsDialog, wxPropertySheetDialog)
   EVT_BUTTON(wxID_OK, PrefsDialog::OnOk)
   EVT_BUTTON(wxID_DEFAULT, PrefsDialog::OnAdvancedDefault) // advanced settings default
+#if ENABLE_CPMA
   EVT_CHECKBOX(ID_CHECK_Q3_BACKGROUND_USEDEFAULT, PrefsDialog::OnCheckQ3BackgroundUseDefault)
+#endif
   EVT_CHOICE(ID_CHOICE_ASPECTRATIO, PrefsDialog::OnChoiceAspectratio)
 END_EVENT_TABLE()
 
@@ -80,10 +82,12 @@ PrefsDialog::~PrefsDialog()
   delete m_imglist;
 }
 
+#if ENABLE_CPMA
 void PrefsDialog::OnCheckQ3BackgroundUseDefault( wxCommandEvent& ev )
 {
   m_q3_background->Enable( !ev.IsChecked() );
 }
+#endif
 
 void PrefsDialog::OnChoiceAspectratio( wxCommandEvent& )
 {

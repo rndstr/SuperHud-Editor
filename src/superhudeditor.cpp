@@ -133,14 +133,14 @@ bool SHEApp::OnInit()
   wxLogDebug(wxT("ERROR - No game"));
 #endif
 
+#if ENABLE_CPMA
   if( is_cpma() )
-  {
     m_factory = new CPMAFactory;
-  }
-  else if( is_q4max() )
-  {
+#endif
+#if ENABLE_Q4MAX
+  if( is_q4max() )
     m_factory = new Q4MAXFactory;
-  }
+#endif
 
   wxASSERT_MSG(m_factory, wxT("no factory created!"));
 

@@ -59,7 +59,9 @@ class PrefsDialog : public wxPropertySheetDialog
 
     void OnOk( wxCommandEvent& );
     void OnAdvancedDefault( wxCommandEvent& );
+#if ENABLE_CPMA
     void OnCheckQ3BackgroundUseDefault( wxCommandEvent& );
+#endif
     void OnChoiceAspectratio( wxCommandEvent& );
 
   private:

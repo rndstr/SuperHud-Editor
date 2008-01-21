@@ -26,10 +26,18 @@
 #include "scrolledmessagedialog.h"
 
 
-#include "cpma/elementsctrl.h"
-#include "cpma/propertiesnotebook.h"
-#include "cpma/displayctrl.h"
-#include "cpma/hudfile.h"
+#if ENABLE_CPMA
+  #include "cpma/elementsctrl.h"
+  #include "cpma/propertiesnotebook.h"
+  #include "cpma/displayctrl.h"
+  #include "cpma/hudfile.h"
+#endif
+#if ENABLE_Q4MAX
+  #include "q4max/elementsctrl.h"
+  #include "q4max/propertiesnotebook.h"
+  #include "q4max/displayctrl.h"
+  #include "q4max/hudfile.h"
+#endif
 
 #include <wx/artprov.h>
 #include <wx/menu.h>
@@ -453,7 +461,7 @@ void MainFrame::OnMenuExit( wxCommandEvent& )
   Close(true);
 }
 
-#include "variable.h"
+#include "varcontainer.h"
 void MainFrame::OnMenuAbout( wxCommandEvent& )
 {
   VarContainer<Var> v;
