@@ -31,7 +31,9 @@ enum
   VART_INT,
   VART_BOOL,
   VART_COLOR,
-  VART_STRING
+  VART_STRING,
+  VART_POINT,
+  VART_RECT
 };
 
 enum
@@ -43,6 +45,28 @@ enum
 };
 
 
+struct PointVal
+{
+  float x, y;
+  bool from_string( const wxString& str )
+  {
+    if( 2 != sscanf(str.mb_str(), "%f %f", &x, &y) )
+      return false;
+    return true;
+  }
+};
+
+
+struct RectVal
+{
+  float x, y, w, h;
+  bool from_string( const wxString& str )
+  {
+    if( 4 != sscanf(str.mb_str(), "%f %f %f %f", &x, &y, &w, &h) )
+      return false;
+    return true;
+  }
+};
 
 class Var
 {
@@ -61,18 +85,18 @@ class Var
     int ival() const
     { 
       wxASSERT_MSG( m_type == VART_ANY || m_type == VART_INT, m_name );
-      return intval;
+      return m_specific.intval;
     }
 
     double dval() const
     {
       wxASSERT_MSG( m_type == VART_ANY || m_type == VART_DOUBLE, m_name );
-      return doubleval;
+      return m_specific.doubleval;
     }
     bool bval() const
     {
       wxASSERT_MSG( m_type == VART_ANY || m_type == VART_BOOL, m_name );
-      return boolval;
+      return m_specific.boolval;
     }
     const Color4& cval() const
     {
@@ -90,10 +114,21 @@ class Var
       return colorval.to_wxColour();
     }
 
+    PointVal pval() const
+    {
+      wxASSERT_MSG( m_type == VART_ANY || m_type == VART_POINT, m_name );
+      return m_specific.pointval;
+    }
+
+    RectVal rval() const
+    {
+      wxASSERT_MSG( m_type == VART_ANY || m_type == VART_RECT, m_name );
+      return m_specific.rectval;
+    }
+
+
     wxString sval() const
     {
-      if( m_name.CmpNoCase(wxT("colorhigh")) == 0 )
-        int i = 2;
       return (m_isset ? m_value : m_def);
     }
 
@@ -105,11 +140,11 @@ class Var
       {
         long val;
         m_value.ToLong(&val);
-        intval = static_cast<int>(val);
+        m_specific.intval = static_cast<int>(val);
       }
       else if( m_type == VART_DOUBLE )
       {
-        if( !she::ratio_string2double(m_value, &doubleval) )
+        if( !she::ratio_string2double(m_value, &m_specific.doubleval) )
         {
           wxLogError(_("Invalid value for ratio (`%s')"), m_value.c_str());
           return false;
@@ -117,11 +152,19 @@ class Var
       }
       else if( m_type == VART_BOOL )
       {
-        boolval = (m_value == wxT("true") || m_value == wxT("yes") || m_value == wxT("1"));
+        m_specific.boolval = (m_value == wxT("true") || m_value == wxT("yes") || m_value == wxT("1"));
       }
       else if( m_type == VART_COLOR )
       {
         return colorval.set(m_value);
+      }
+      else if( m_type == VART_POINT )
+      {
+        return m_specific.pointval.from_string(m_value);
+      }
+      else if( m_type == VART_RECT )
+      {
+        return m_specific.rectval.from_string(m_value);
       }
       return true;
     }
@@ -151,10 +194,14 @@ class Var
     bool      m_isset;
 
   private:
-    // FIXME this is waste of space, union?
-    double    doubleval;
-    int       intval;
-    bool      boolval;
+    union value_u
+    {
+      double    doubleval;
+      int       intval;
+      bool      boolval;
+      PointVal  pointval;
+      RectVal   rectval;
+    } m_specific;
     Color4    colorval;
 };
 
@@ -185,6 +232,9 @@ public:
       // read element
       read_var(it->second);
     }
+#ifndef NDEBUG
+    debug();
+#endif
   }
   virtual void save()
   {
@@ -257,21 +307,26 @@ public:
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
     return var->second.set_default();
   }
-  void addvar( const wxString& name, const wxString& def = wxT(""), int type = VART_ANY, int flags = VARF_NONE )
+  var_type& addvar( const wxString& name, const wxString& def = wxT(""), int type = VART_ANY, int flags = VARF_NONE )
   {
-    m_vars.insert( std::make_pair(name.Lower(), var_type(name, def, type, flags)) );
+     it_variables it = m_vars.insert( m_vars.begin(), std::make_pair(name.Lower(), var_type(name, def, type, flags)) );
+     return it->second;
   }
-  void addvari( const wxString& name, int def, int type = VART_ANY, int flags = VARF_NONE )
+  var_type& addvari( const wxString& name, int def, int flags = VARF_NONE )
   {
-    addvar( name, wxString::Format(wxT("%d"), def), type, flags);
+    return addvar( name, wxString::Format(wxT("%d"), def), VART_INT, flags);
   }
-  void addvarc( const wxString& name, const Color4& def, int type = VART_ANY, int flags = VARF_NONE )
+  var_type& addvarc( const wxString& name, const Color4& def, int flags = VARF_NONE )
   {
-    addvar( name, def.to_string(), type, flags );
+    return addvar( name, def.to_string(), VART_COLOR, flags );
   }
-  void addvarb( const wxString& name, bool def, int type = VART_ANY, int flags = VARF_NONE )
+  var_type& addvarb( const wxString& name, bool def, int flags = VARF_NONE )
   {
-    addvar( name, (def ? wxT("1") : wxT("0")), type, flags );
+    return addvar( name, (def ? wxT("1") : wxT("0")), VART_BOOL, flags );
+  }
+  var_type& addvarp( const wxString& name, int xdef, int ydef, int flags = VARF_NONE )
+  {
+    return addvar( name, wxString::Format(wxT("%d %d"), xdef, ydef), VART_POINT, flags);
   }
 
   const variables_type& vars() const { return m_vars; }
@@ -281,6 +336,17 @@ public:
     typename variables_type::iterator var = m_vars.find(name.Lower());
     return (var != m_vars.end() && (VART_ANY == type || var->second.m_type == type));
   }
+
+#ifndef NDEBUG
+  void debug()
+  {
+    wxLogDebug(wxT("VarContainer<>::debug - all vars registered"));
+    for( typename variables_type::iterator it = m_vars.begin(); it != m_vars.end(); ++it )
+    {
+      wxLogDebug(wxT("[%s] %s = %s"), it->first.c_str(), it->second.name().c_str(), it->second.sval().c_str());
+    }
+  }
+#endif
 
 protected:
   variables_type  m_vars;

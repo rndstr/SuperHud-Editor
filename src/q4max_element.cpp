@@ -50,15 +50,29 @@ Q4MAXElement::Properties::Properties()
 
 bool Q4MAXElement::Properties::init()
 {
-  addvar( wxT("Color"), Q4MAX_E_COLOR_DEFAULT.to_string(), VART_COLOR, Q4MAX_E_HAS_COLOR );
-  addvar( wxT("Colored"), Q4MAX_E_COLORED_DEFAULT, VART_BOOL, Q4MAX_E_HAS_COLORED );
-  addvar( wxT("ColorBG"), Q4MAX_E_COLORBG_DEFAULT.to_string(), VART_COLOR, Q4MAX_E_HAS_COLORBG );
-  addvar( wxT("ColorHighlight"), Q4MAX_E_COLORHIGHLIGHT_DEFAULT.to_string(), VART_COLOR, Q4MAX_E_HAS_COLORHIGHLIGHT );
-  addvar( wxT("ColorHigh"), Q4MAX_E_COLORHIGH_DEFAULT.to_string(), VART_COLOR, Q4MAX_E_HAS_COLORHIGH );
-  addvar( wxT("ColorMed"), Q4MAX_E_COLORMED_DEFAULT.to_string(), VART_COLOR, Q4MAX_E_HAS_COLORMED );
-  addvar( wxT("ColorLow"), Q4MAX_E_COLORLOW_DEFAULT.to_string(), VART_COLOR, Q4MAX_E_HAS_COLORLOW );
+  addvar(wxT("Color"), Q4MAX_E_COLOR_DEFAULT.to_string(), VART_COLOR).defines(Q4MAX_E_HAS_COLOR);
+  addvarb(wxT("Colored"), Q4MAX_E_COLORED_DEFAULT).defines(Q4MAX_E_HAS_COLORED);
+  addvarc(wxT("ColorBG"), Q4MAX_E_COLORBG_DEFAULT).defines(Q4MAX_E_HAS_COLORBG);
+  addvarc(wxT("ColorHighlight"), Q4MAX_E_COLORHIGHLIGHT_DEFAULT).defines(Q4MAX_E_HAS_COLORHIGHLIGHT);
+  addvar(wxT("ColorHigh"), Q4MAX_E_COLORHIGH_DEFAULT, VART_STRING).defines(Q4MAX_E_HAS_COLORHIGH);
+  addvar(wxT("ColorMed"), Q4MAX_E_COLORMED_DEFAULT, VART_STRING).defines(Q4MAX_E_HAS_COLORMED);
+  addvar(wxT("ColorLow"), Q4MAX_E_COLORLOW_DEFAULT, VART_STRING).defines(Q4MAX_E_HAS_COLORLOW);
+  addvarp(wxT("Dimensions"), Q4MAX_E_DIMENSIONSX_DEFAULT, Q4MAX_E_DIMENSIONSY_DEFAULT).defines(Q4MAX_E_HAS_DIMENSIONS);
+  addvari(wxT("Font"), Q4MAX_E_FONT_DEFAULT).defines(Q4MAX_E_HAS_FONT);
+  addvari(wxT("HighWatermark"), Q4MAX_E_HIGHWATERMARK_DEFAULT).defines(Q4MAX_E_HAS_HIGHWATERMARK);
+  /*
+  */
   // Dimensions X Y
-  addvari( wxT("Font"), Q4MAX_E_FONT_DEFAULT, VART_INT, Q4MAX_E_HAS_FONT );
+    /*
+  addvari( wxT("HighWatermark"), Q4MAX_E_HIGHWATERMARK_DEFAULT, Q4MAX_E_HAS_HIGHWATERMARK );
+  addvari( wxT(""), Q4MAX_E__DEFAULT, Q4MAX_E_HAS_);
+  addvari( wxT(""), Q4MAX_E__DEFAULT, Q4MAX_E_HAS_);
+  addvari( wxT(""), Q4MAX_E__DEFAULT, Q4MAX_E_HAS_);
+  addvari( wxT(""), Q4MAX_E__DEFAULT, Q4MAX_E_HAS_);
+  addvari( wxT(""), Q4MAX_E__DEFAULT, Q4MAX_E_HAS_);
+  addvari( wxT(""), Q4MAX_E__DEFAULT, Q4MAX_E_HAS_);
+  addvari( wxT(""), Q4MAX_E__DEFAULT, Q4MAX_E_HAS_);
+  */
   
 
   return true;
@@ -105,7 +119,7 @@ bool Q4MAXElement::parse_property( const wxString& cmd, wxString args )
 
   if( !m_props.set(cmd, args) )
       wxLogWarning( _("Unknown `%s' argument: %s"), cmd.c_str(), args.c_str() );
-  m_has |= m_props.var(cmd).hasf();
+  m_has |= m_props.var(cmd).defines();
   /*
   if( cmd.CmpNoCase(wxT("color"))==0 )
   {
@@ -297,7 +311,7 @@ void Q4MAXElement::write_properties( wxTextOutputStream& stream ) const
   list<wxString> lines;
   for( Properties::cit_variables cit = m_props.vars().begin(); cit != m_props.vars().end(); ++cit )
   {
-    if( m_has & cit->second.hasf() )
+    if( m_has & cit->second.defines() )
       lines.push_back(cit->second.name() + wxT(" \"") + cit->second.sval() + wxT("\""));
   }
   /*

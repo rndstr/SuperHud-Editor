@@ -76,6 +76,7 @@ superhudeditor_SOURCES = \
                          scrolledmessagedialog.cpp scrolledmessagedialog.h \
                          superhudeditor.cpp superhudeditor.h \
                          texture.cpp texture.h \
+                         varcontainer.cpp varcontainer.h \
                          GameSelectionDialog.cpp GameSelectionDialog.h \
                          $(cpma) \
                          $(q4max) \
