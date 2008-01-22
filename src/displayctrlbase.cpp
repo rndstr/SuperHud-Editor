@@ -57,8 +57,8 @@ static bool render_sort( ElementBase *a, ElementBase *b )
   if( (a->flags() & E_DRAWBACK) && !(b->flags() & E_DRAWBACK) )
     return true;
 
-  wxASSERT_MSG( !(a->flags() & E_DRAWBACK) && !(b->flags() & E_DRAWBACK) && 
-   !(a->flags() & E_DRAWFRONT) && !(b->flags() & E_DRAWFRONT), wxT("looks like there are elements that have E_DRAWBACK _and_ E_DRAWFRONT? wtf decide plz") );
+  wxASSERT_MSG( (a->flags() & E_DRAWBACK) && (a->flags() & E_DRAWFRONT), wxT("has E_DRAWBACK and E_DRAWFRONT set: ") + a->name() );
+  wxASSERT_MSG( (b->flags() & E_DRAWBACK) && (b->flags() & E_DRAWFRONT), wxT("has E_DRAWBACK and E_DRAWFRONT set: ") + b->name() );
 
   // ascending (thanks ix-ir)
   if( a->name().Cmp(b->name()) < 0 )
