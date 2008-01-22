@@ -1,14 +1,14 @@
 ! [wxMSW] selected items in elementslist have no collicon
-% if an argument to a property read from hudfile is invalid, be consistent: either ignore or use default (but always)
-+ url links in Help->
-! backspace not working in pakfilebrowser on wxgtk
+% if an argument to a property read from hudfile is invalid, be consistent: either ignore or use default (but always the same)
+! backspace not working in pakfilebrowser on wxgtk (what about wxmsw?)
++ add preferences for `view_updatewhiledragging'
 
--- later --
-+ maybe blink those items that have a `time' (duration) set? :)
+
+-- later maybe --
++ maybe blink/flash/fade those items that have a `time' (duration) set? :)
 + add 5:4 resolution Oo
 + create statusbar reset function that sets to `Ready'.. cba right now..
 + [linux] make APPRELATIVE and APPPAK also look in ~/.superhudeditor/
-+ add preferences for `view_updatewhiledragging'
 + snapping outside of hudview (black borders) is b0rked i think
 + read proxy in webupdater from superhudeditor.conf
 + figure out (or rather: confirm?) onwhich elements `color T/E' changes something
@@ -25,4 +25,4 @@ t the global defined messages (common.h) are they translated?
 + cpma/docs/README.hudspecs - for colorTE and FILL there is a border (which texture?) drawn. (TODO all elements?)
 + if ICON and draw3d we could lay a texture over it like modeltexture but without the backgroundmodel..
 + add an accelerator to temporarily hide all other elements except selected
-+ [linux] docs not installed?!
++ [linux] docs not installed?! they are with ebuild on gentoo though

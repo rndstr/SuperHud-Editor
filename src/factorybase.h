@@ -81,6 +81,8 @@ class FactoryBase
     virtual wxString unixdirname_userdata() const = 0;
 #endif
 
+    virtual wxString wikiurl() const = 0;
+
 };
 
 #endif // FACTORYBASE_H

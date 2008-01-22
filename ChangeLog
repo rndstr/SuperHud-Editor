@@ -1,5 +1,8 @@
 2008-01-xx release: 0.4.0
-	* fix: in Tools->Preferences|Advanced, some colors couldn't be changed
+  * fix: helper/grid color changes in Tools->Preferences|Advanced weren't saved
+  * fix: aspect ratio was never saved into configfile
+  * chg: config preview is now default off
+  * add: Help menu has links to cpma/q4max SuperHud wiki and Editor website
 
 2008-01-18 release: 0.3.0
   * complete rewrite: 

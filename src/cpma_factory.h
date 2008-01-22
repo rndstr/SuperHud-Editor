@@ -52,6 +52,8 @@ class CPMAFactory : public FactoryBase
     wxString            filename_gamebin() const { return wxT("quake3.x86"); }
 #endif
 
+    virtual wxString wikiurl() const { return wxT("http://www.promode.org/wiki/index.php/Custom_HUDs"); }
+
 };
 
 #endif

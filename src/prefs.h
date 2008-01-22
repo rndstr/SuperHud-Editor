@@ -44,6 +44,11 @@ class Prefs : public varcont_type
     /// returns the initial path to be used in a filedialog for the current game
     wxString filedialog_path() const;
 
+    const wxString& oldappversion() const { return m_oldappversion; }
+
+  protected:
+    wxString m_oldappversion; ///< the one when we read it...
+
   // singleton
   public:
     static Prefs& get();

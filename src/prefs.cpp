@@ -52,7 +52,7 @@ bool Prefs::init()
   addvar(wxT("app_maximized"), wxT("false"), VART_BOOL);
   addvar(wxT("app_width"), wxT("-1"), VART_INT);
   addvar(wxT("app_height"), wxT("-1"), VART_INT);
-  addvar(wxT("view_aspectratio"), wxT("4:3"), VART_DOUBLE, VARF_NOARCHIVE);
+  addvar(wxT("view_aspectratio"), wxT("4:3"), VART_DOUBLE);
   addvar(wxT("view_grid"), wxT("true"), VART_BOOL);
   addvar(wxT("view_gridX"), wxT("12"), VART_INT);
   addvar(wxT("view_gridY"), wxT("12"), VART_INT);
@@ -69,7 +69,6 @@ bool Prefs::init()
   addvar(wxT("props_bgcolor"), PROPS_BGCOLOR.to_string(), VART_COLOR);
   addvar(wxT("props_inheritcolor"), PROPS_INHERITCOLOR.to_string(), VART_COLOR);
   addvar(wxT("props_inheritbgcolor"), PROPS_INHERITBGCOLOR.to_string(), VART_COLOR);
-  addvar(wxT("view_suppresshelpergrid"), wxT("false"), VART_BOOL, VARF_NOARCHIVE); ///< we only keep this while running...
   
   addvar(wxT("view_dragthreshold"), wxT("1"), VART_INT); ///< how many pixels till we start dragging
   addvar(wxT("view_snapthreshold"), wxT("3"), VART_INT); ///< how many pixels we snap to snappable items
@@ -130,6 +129,12 @@ bool Prefs::init()
   addvar(wxT("save_backup"), wxT("true"), VART_BOOL);
   addvar(wxT("load_autoconvert"), wxT("false"), VART_BOOL); ///< whether to auto convert huds that have a different aspectratio than we would like
 
+
+  // -- temp, never archive
+  addvar(wxT("view_suppresshelpergrid"), wxT("false"), VART_BOOL, VARF_NOARCHIVE); ///< preview mode
+  addvar(wxT("view_visible"), wxT("0"), VART_INT, VARF_NOARCHIVE); ///< (q4max only) which elements to display
+
+
   return !confexists;
 }
 
@@ -137,8 +142,11 @@ void Prefs::load()
 {
   VarContainer<Var>::load();
   
+  m_oldappversion = var(wxT("app_version")).sval();
   if( APP_VERSION != var(wxT("app_version")).sval() )
   { // different app version has written this config file.. we might need to do some conversion work
+    // first and foremost we reset the perspective.. as otherwise newly added elements probably will be hidden
+
   }
   set(wxT("app_version"), APP_VERSION);
 }

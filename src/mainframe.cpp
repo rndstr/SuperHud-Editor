@@ -90,6 +90,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_DOWNLOAD(MainFrame::OnDownload)
   EVT_UPDATE_UI_RANGE(ID_MENU_VIEW_CONFIGPREVIEW, ID_MENU_VIEW_TOOLBAR_FILE, MainFrame::OnUpdateViewPanes)
   EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrame::OnMRUFile)
+  EVT_MENU_RANGE(ID_MENU_HELP_WIKI, ID_MENU_HELP_WEBSITE, MainFrame::OnMenuHelpURL)
 END_EVENT_TABLE()
 
 
@@ -185,6 +186,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   help_menu->Append( ID_MENU_HELP_UPDATE, _("&Web Updater...") );
 #endif
   help_menu->Append( ID_MENU_HELP_TIP, _("&Tip of the Day") );
+  help_menu->Append( ID_MENU_HELP_WIKI, _("Visit &Mod Wiki") );
+  help_menu->Append( ID_MENU_HELP_WEBSITE, _("Visit &Website") );
   help_menu->Append( wxID_ABOUT, _("&About\tCtrl+A") );
   
   menu_bar->Append( help_menu, _("Help") );
@@ -213,6 +216,20 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_toolbar_view = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER | wxTB_HORZ_TEXT);
   m_toolbar_view->SetToolBitmapSize(wxSize(16,16));
   m_toolbar_view->AddTool(ID_TOOL_VIEW_SUPPRESSHELPERGRID, _("Preview"),  wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE, wxART_TOOLBAR, wxSize(16,16)), _("Temporarily disables drawing of Helpers and Grid"), wxITEM_CHECK);
+  if( wxGetApp().is_q4max() )
+  {
+    m_toolbar_view->AddSeparator();
+    wxArrayString cs;
+    cs.Add(_("All"));
+    cs.Add(_("No team games"));
+    cs.Add(_("Team games (no CTF)"));
+    cs.Add(_("CTF"));
+    wxChoice *c = new wxChoice(m_toolbar_view, wxID_ANY, wxDefaultPosition, wxDefaultSize, cs);
+    m_toolbar_view->AddControl(new wxStaticText(m_toolbar_view, wxID_ANY, _("Visible:")));
+    m_toolbar_view->AddControl(c);
+
+
+  }
   m_toolbar_view->Realize();
  
 
@@ -233,7 +250,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   // FIXME this doesn't give fixed width font on wxGTK! ffs
   m_configpreview->SetFont( sysfont );
   m_mgr.AddPane( m_configpreview, wxAuiPaneInfo().Name(wxT("configpreview")).Caption(_("Config Preview")).
-    CloseButton(true).MaximizeButton(true).MinSize(wxSize(150,100)).BestSize(200,100)
+    CloseButton(true).MaximizeButton(true).MinSize(wxSize(150,100)).BestSize(200,100).Hide()
     );
 
   m_propertiesnotebook = wxGetApp().factory()->create_propertiesnotebook(this);
@@ -250,16 +267,17 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
 	  );
   
   m_defaultperspective = m_mgr.SavePerspective();
-  
 
   GetDockArt()->SetColor(wxAUI_DOCKART_INACTIVE_CAPTION_COLOUR, wxColour(200, 200, 200));
   GetDockArt()->SetColor(wxAUI_DOCKART_INACTIVE_CAPTION_GRADIENT_COLOUR, wxColour(200, 200, 200));
+  // FIXME not working..
   GetDockArt()->SetColor(wxAUI_DOCKART_ACTIVE_CAPTION_COLOUR, wxColour(100, 100, 100));
   GetDockArt()->SetColor(wxAUI_DOCKART_ACTIVE_CAPTION_GRADIENT_COLOUR, wxColour(100, 100, 100));
   
 
-  // update stuff
-  m_mgr.LoadPerspective( Prefs::get().var(wxT("app_perspective")) );
+  // reset perspective if config was saved with different app
+  if( Prefs::get().oldappversion() == APP_VERSION )
+    m_mgr.LoadPerspective( Prefs::get().var(wxT("app_perspective")) );
   //m_view_menu->Check( ID_MENU_VIEW_TOOLBAR_FILE, m_toolbar_file->IsShown() ); // done through UpdateUI event
   //m_view_menu->Check( ID_MENU_VIEW_CONFIGPREVIEW, m_configpreview->IsShown() ); // done through UpdateUI event
   m_view_menu->Check( ID_MENU_VIEW_GRID, Prefs::get().var(wxT("view_grid")) );
@@ -782,6 +800,14 @@ void MainFrame::OnMenuHelpUpdate( wxCommandEvent& )
   launch_webupdater();
 }
 #endif
+
+void MainFrame::OnMenuHelpURL( wxCommandEvent& ev )
+{
+  if( ev.GetId() == ID_MENU_HELP_WIKI )
+    wxLaunchDefaultBrowser( wxGetApp().factory()->wikiurl() );
+  else if( ev.GetId() == ID_MENU_HELP_WEBSITE );
+    wxLaunchDefaultBrowser( APP_URL );
+}
 
 void MainFrame::OnElementSelectionChanged()
 {

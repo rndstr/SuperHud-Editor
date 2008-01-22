@@ -55,6 +55,7 @@ void Texture::load( const wxString& fpath, int search_where, bool mipmap /*=fals
       wxGetApp().mainframe()->statusbar()->PopStatusText();
       return;
     }
+    wxLogMessage(wxT("SUXES?"));
   }
   
   

@@ -52,6 +52,8 @@ class Q4MAXFactory : public FactoryBase
     wxString            filename_gamebin() const { return wxT("quake4.x86"); }
 #endif
 
+    virtual wxString wikiurl() const { return wxT("http://q4max.com/wiki/index.php/SuperHud"); }
+
 };
 
 #endif

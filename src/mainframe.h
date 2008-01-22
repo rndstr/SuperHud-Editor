@@ -138,6 +138,7 @@ class MainFrame : public wxFrame
 #if HAS_WEBUPDATER
     void OnMenuHelpUpdate( wxCommandEvent& );
 #endif
+    void OnMenuHelpURL( wxCommandEvent& );
     void OnMRUFile( wxCommandEvent& );
 
   private:
