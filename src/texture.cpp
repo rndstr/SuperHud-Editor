@@ -38,6 +38,7 @@ void Texture::cleanup()
 
 void Texture::load( const wxString& fpath, int search_where, bool mipmap /*=false*/ )
 {
+  wxString fext = she::file_ext(fpath);
   wxGetApp().mainframe()->statusbar()->PushStatusText(_("Loading texture ") + fpath);
   cleanup();
   wxLogDebug(wxT("Loading texture: ") + fpath);
@@ -47,7 +48,6 @@ void Texture::load( const wxString& fpath, int search_where, bool mipmap /*=fals
   size_t size;
   if( !PakManager::get().load( &buf, fpath, search_where, &size ) )
   {
-    wxLogDebug(wxT("FAILED TO LOAD"));
     // if it hasn't an extension we try .tga (CPMA does this as well)
     if( !she::file_ext(fpath).empty() || !PakManager::get().load(&buf, fpath + wxT(".tga"), search_where, &size) )
     {
@@ -55,13 +55,13 @@ void Texture::load( const wxString& fpath, int search_where, bool mipmap /*=fals
       wxGetApp().mainframe()->statusbar()->PopStatusText();
       return;
     }
-    wxLogMessage(wxT("SUXES?"));
+    fext = wxT("tga");
   }
   
   
   wxMemoryInputStream mis( buf, size );
   wxImage img;
-  if( !img.LoadFile(mis, she::bitmap_type_by_ext(she::file_ext(fpath))) )
+  if( !img.LoadFile(mis, she::bitmap_type_by_ext(fext)) )
   {
     wxLogWarning(wxT("Failed loading image: %s"), fpath.c_str());
     wxGetApp().mainframe()->statusbar()->PopStatusText();

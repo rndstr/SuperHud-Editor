@@ -805,7 +805,7 @@ void MainFrame::OnMenuHelpURL( wxCommandEvent& ev )
 {
   if( ev.GetId() == ID_MENU_HELP_WIKI )
     wxLaunchDefaultBrowser( wxGetApp().factory()->wikiurl() );
-  else if( ev.GetId() == ID_MENU_HELP_WEBSITE );
+  else if( ev.GetId() == ID_MENU_HELP_WEBSITE )
     wxLaunchDefaultBrowser( APP_URL );
 }
 

@@ -171,17 +171,21 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
     // use own color (not parental)
     Color4 c = el->iget_bgcolor();
     // normally if you enable bgcolor you want something to see... so just 
-    // fix alpha if it's 0 (default bgcolor (if not specified) has alpha 0, obviously. see cpma/element.h:CPMA_E_BGCOLOR_DEFAULT)
+    // fix alpha if it's 0 (default bgcolor (if not specified) has alpha 0. see cpma/element.h:CPMA_E_BGCOLOR_DEFAULT)
     if( val.GetBool() && c.a100() == 0 )
+    {
       c.set_a100(100);
+      el->set_bgcolor( c );
+    }
     SetPropertyValue( wxT("bgcolor"), she::colour2variant(c.to_wxColour()) );
     SetPropertyValue( wxT("bgcolor-alpha"), c.a100() );
   }
   else if( name == wxT("bgcolor") || name == wxT("bgcolor-alpha") )
   {
+    Color4 newc = el->iget_bgcolor(); 
     if( !(el->has() & CPMA_E_HAS_BGCOLOR) )
     { // copy parentinfo
-      el->set_bgcolor( el->iget_bgcolor() );
+      el->set_bgcolor( newc );
       el->add_has( CPMA_E_HAS_BGCOLOR );
       SetPropertyValue( wxT("bgcolor-use"), true );
     }
@@ -190,6 +194,12 @@ void ColorPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
       wxColour col;
       col << val;
       el->set_bgcolor(col);
+      if( newc.a100() == 0 )
+      {
+        newc.set_a100(100);
+        el->set_bgcolor_a100(100);
+        SetPropertyValue( wxT("bgcolor-alpha"), newc.a100() );
+      }
     }
     else if( name == wxT("bgcolor-alpha") )
       el->set_bgcolor_a100( val.GetInteger() );

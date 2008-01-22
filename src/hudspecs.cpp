@@ -120,8 +120,10 @@ bool HudSpecs::load()
       else if( key.CmpNoCase(wxT("notuniq"))==0 ) { flags |= E_NOTUNIQ; m_notuniqs.push_back( name ); }
       else if( key.CmpNoCase(wxT("nodefault"))==0 ) { flags |= E_NODEFAULT; }
       else if( key.CmpNoCase(wxT("drawnever"))==0 ) flags |= E_DRAWNEVER;
-      else if( key.CmpNoCase(wxT("drawback"))==0 ) flags |= E_DRAWBACK;
-      else if( key.CmpNoCase(wxT("drawfront"))==0 ) flags |= E_DRAWFRONT;
+      else if( key.CmpNoCase(wxT("drawback"))==0 ) 
+        flags |= E_DRAWBACK;
+      else if( key.CmpNoCase(wxT("drawfront"))==0 ) 
+        flags |= E_DRAWFRONT;
       else if( key.CmpNoCase(wxT("drawalways"))==0 ) flags |= E_DRAWALWAYS;
       else if( key.CmpNoCase(wxT("parent"))==0 ) flags |= E_PARENT;
       else if( key.CmpNoCase(wxT("noinherit"))==0 ) flags |= E_NOINHERIT;

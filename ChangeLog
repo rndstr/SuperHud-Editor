@@ -1,6 +1,9 @@
 2008-01-xx release: 0.4.0
   * fix: helper/grid color changes in Tools->Preferences|Advanced weren't saved
   * fix: aspect ratio was never saved into configfile
+	* fix: changing stuff in `Background color' had some weird behaviour, not
+			updating properties
+	* fix: if image has no file extension, try .tga (thanks alienpl)
   * chg: config preview is now default off
   * add: Help menu has links to cpma/q4max SuperHud wiki and Editor website
 

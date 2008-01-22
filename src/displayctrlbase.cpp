@@ -57,8 +57,14 @@ static bool render_sort( ElementBase *a, ElementBase *b )
   if( (a->flags() & E_DRAWBACK) && !(b->flags() & E_DRAWBACK) )
     return true;
 
-  wxASSERT_MSG( (a->flags() & E_DRAWBACK) && (a->flags() & E_DRAWFRONT), wxT("has E_DRAWBACK and E_DRAWFRONT set: ") + a->name() );
-  wxASSERT_MSG( (b->flags() & E_DRAWBACK) && (b->flags() & E_DRAWFRONT), wxT("has E_DRAWBACK and E_DRAWFRONT set: ") + b->name() );
+  if( a->name() == wxT("PreDecorate") )
+    int i=2;
+  if( (a->flags() & E_DRAWBACK) != 0 )
+    wxLogDebug(a->name() + wxT(" drawback"));
+  if( (a->flags() & E_DRAWFRONT) != 0 )
+    wxLogDebug(a->name() + wxT(" drawfront"));
+  wxASSERT_MSG( !(((a->flags() & E_DRAWBACK) != 0) && ((a->flags() & E_DRAWFRONT) != 0)), wxT("has E_DRAWBACK and E_DRAWFRONT set: ") + a->name() );
+  //wxASSERT_MSG( (b->flags() & E_DRAWBACK) && (b->flags() & E_DRAWFRONT), wxT("has E_DRAWBACK and E_DRAWFRONT set: ") + b->name() );
 
   // ascending (thanks ix-ir)
   if( a->name().Cmp(b->name()) < 0 )
