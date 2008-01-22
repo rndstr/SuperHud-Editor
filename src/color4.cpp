@@ -24,7 +24,7 @@ wxString Color4::to_string() const
     return she::pretty_print_float( r ) + wxT(" ") +
       she::pretty_print_float( g ) + wxT(" ") +
       she::pretty_print_float( b ) + wxT(" ") +
-      she::pretty_print_float( a ) + wxT(" ");
+      she::pretty_print_float( a );
   
   case COLOR_T:
     return wxT("T");
@@ -42,11 +42,23 @@ wxTextOutputStream& operator<<( wxTextOutputStream& stream, const Color4& c )
   return stream;
 }
 
+#include <wx/sstream.h>
+#include <wx/txtstrm.h>
+
 bool Color4::from_string( const wxString& str )
 {
   float _r, _g, _b, _a;
 
+  wxStringInputStream sis(str);
+  wxTextInputStream tis(sis);
+
   // FIXME use wxTextInputStream
+  /*
+  _r = tis.ReadDouble();
+  _g = tis.ReadDouble();
+  _b = tis.ReadDouble();
+  _a = tis.ReadDouble();
+  */
   if( 4 != sscanf( str.mb_str(), "%f %f %f %f", &_r, &_g, &_b, &_a ) )
   {
     char special;

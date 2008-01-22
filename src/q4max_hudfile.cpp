@@ -138,13 +138,71 @@ bool Q4MAXHudFile::load( const wxString& filename )
 }
 */
 
+/// extracts a word with regard of doublequotes are surrounding a word
+wxString extract_word( const wxString& s, size_t *start = 0 )
+{
+  size_t pos = (start ? *start : 0);
+  wxString word;
+  size_t i = pos;
+  bool quoting = false;
+  for( ; i < s.Length(); ++i )
+  {
+    if( '"' == s[i] )
+    {
+      if( quoting )
+        break;
+      quoting = true;
+      continue;
+    }
+    if( !quoting && (s[i] == '\n' || s[i] == '\t' || s[i] == ';') )
+    {
+      if( word.empty() )
+        continue; // skip whitespace at start
+      break;
+    }
+    word += s[i];
+  }
+  if( start )
+    *start = i+1;
+
+  return word;
+}
 
 bool Q4MAXHudFile::read_properties( ElementBase *hi, const wxString& props )
 {
-  wxString p;
+  wxString okprop;
+  size_t pos = 0;
+  wxString propname;
+  wxString propval;
+  do
+  {
+    propname = extract_word(props, &pos);
+    propval = extract_word(props, &pos);
+    okprop += propname + wxT(" ") + propval + wxT("; ");
+  }
+  while( !propname.empty() );
+
+  return HudFileBase::read_properties( hi, okprop );
+
+  /*
+  // add dividing semilicon between elements (q4max allows to omit it)
+  // but it also has the requirement that each property can have only one
+  // param (if there are several arguments they have to be enclosed in doublequotes)
   bool quoting = false;
+  bool name = true; // we start with a name
+  bool arg = false;
+  fixedprop.Replace(wxT("\n"), wxT(" "));
+  she::wxTrim(fixedprop, wxT(" "));
   for( wxString::const_iterator cit = props.begin(); cit != props.end(); ++cit )
   {
+    if( *cit == ' ' )
+    {
+      if( name )
+      {
+        name = false;
+        arg = true; // next is arg
+      }
+    }
     if( *cit == '"' )
     {
       if( quoting )
@@ -160,5 +218,6 @@ bool Q4MAXHudFile::read_properties( ElementBase *hi, const wxString& props )
     p += *cit;
   }
   return HudFileBase::read_properties( hi, p );
+  */
 }
 

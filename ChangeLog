@@ -5,6 +5,8 @@
 			updating properties
 	* fix: if image has no file extension, try .tga (thanks alienpl)
   * chg: config preview is now default off
+	* chg: the layout of the application will be reset on each version update,
+			makes sure you won't be missing any new items/buttons
   * add: Help menu has links to cpma/q4max SuperHud wiki and Editor website
 
 2008-01-18 release: 0.3.0

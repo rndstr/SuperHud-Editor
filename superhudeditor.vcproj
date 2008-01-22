@@ -498,6 +498,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\varcontainer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\varcontainer.h"
 				>
 			</File>

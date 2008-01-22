@@ -1,5 +1,6 @@
 --- Application ---
-* the webupdater does not support a proxy (you should go to the website and download it yourself)
+* the webupdater does not support a proxy (you should go to the website and download the updated version yourself)
+* if you switch games, the view toolbar (preview&co) will be reset to default position
 
 --- My SuperHud Implementation ---
 * for certain elements of type ICON (game gives us an image) $color is ignored in CPMA.
@@ -7,7 +8,7 @@
   Not ignored: AttackerIcon
   but we apply the color to all of those
 * not implemented "Some elements will have special functions (for instance Bars) when color 0 0 0 0 is used."
-* [Q4MAX] does not support multiple /* */ style comments on one line
+* [Q4MAX] we do not support multiple /* */ style comments on one line
 
 --- wxWidgets ---
 * if a pane is detached the caption does not update (wxAui bug?)

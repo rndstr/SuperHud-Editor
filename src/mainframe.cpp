@@ -262,7 +262,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_mgr.AddPane(m_toolbar_file, wxAuiPaneInfo().Name(wxT("tb-file")).Caption(_("File")).
 	  ToolbarPane().Top().Row(1).Position(1).LeftDockable(false).RightDockable(false).CloseButton(false)
 	  );
-  m_mgr.AddPane(m_toolbar_view, wxAuiPaneInfo().Name(wxT("tb-view")).Caption(_("View")).
+  m_mgr.AddPane(m_toolbar_view, wxAuiPaneInfo().Name(wxT("tb-view-")+wxGetApp().factory()->dirname_moddata()).Caption(_("View")).
 	  ToolbarPane().Top().Row(1).Position(2).LeftDockable(false).RightDockable(false).CloseButton(false)
 	  );
   
@@ -277,7 +277,10 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
 
   // reset perspective if config was saved with different app
   if( Prefs::get().oldappversion() == APP_VERSION )
+  {
     m_mgr.LoadPerspective( Prefs::get().var(wxT("app_perspective")) );
+    m_mgr.GetPane(wxT("tb-view-")+wxGetApp().factory()->dirname_moddata()).Show();
+  }
   //m_view_menu->Check( ID_MENU_VIEW_TOOLBAR_FILE, m_toolbar_file->IsShown() ); // done through UpdateUI event
   //m_view_menu->Check( ID_MENU_VIEW_CONFIGPREVIEW, m_configpreview->IsShown() ); // done through UpdateUI event
   m_view_menu->Check( ID_MENU_VIEW_GRID, Prefs::get().var(wxT("view_grid")) );

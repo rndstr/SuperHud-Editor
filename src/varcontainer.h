@@ -49,7 +49,7 @@ class Var
   public:
     Var( const wxString& name, const wxString& def = wxT(""), int type = VART_ANY, int flags = VARF_NONE ) :
       m_name(name),
-      m_value(wxT("")),
+      m_value(),
       m_def(def),
       m_type(type),
       m_flags(flags),
@@ -92,6 +92,8 @@ class Var
 
     wxString sval() const
     {
+      if( m_name.CmpNoCase(wxT("colorhigh")) == 0 )
+        int i = 2;
       return (m_isset ? m_value : m_def);
     }
 
@@ -128,7 +130,7 @@ class Var
       return set(m_def);
     }
 
-    wxString def() const { return m_def; }
+    
 
     operator bool() const { return bval(); }
     operator Color4() const { return cval(); }
@@ -137,7 +139,11 @@ class Var
     operator wxString() const { return sval(); }
 
 
-    wxString  m_name;
+    wxString def() const { return m_def; }
+    wxString name() const { return m_name; }
+
+
+    wxString  m_name; ///< note that this is not all lowercase
     wxString  m_value;
     wxString  m_def;
     int       m_type;
@@ -201,38 +207,38 @@ public:
 
   const var_type& var( const wxString& name ) const
   {
-    typename variables_type::const_iterator var = m_vars.find(name);
+    typename variables_type::const_iterator var = m_vars.find(name.Lower());
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable: ") + name );
     return var->second;
   }
 
   bool set( const wxString& name, const wxString& val )
   {
-    typename variables_type::iterator var = m_vars.find(name);
+    typename variables_type::iterator var = m_vars.find(name.Lower());
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
     return var->second.set(val);
   }
   bool setb( const wxString& name, bool bval )
   {
-    typename variables_type::iterator var = m_vars.find(name);
+    typename variables_type::iterator var = m_vars.find(name.Lower());
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
-    return var->second.set( bval ? wxT("true") : wxT("false"));
+    return var->second.set( bval ? wxT("1") : wxT("0"));
   }
   bool seti( const wxString& name, int ival )
   {
-    typename variables_type::iterator var = m_vars.find(name);
+    typename variables_type::iterator var = m_vars.find(name.Lower());
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
     return var->second.set( wxString::Format(wxT("%i"), ival) );
   }
   bool setvar( const wxString& name, const wxVariant& variant )
   {
-    typename variables_type::iterator var = m_vars.find(name);
+    typename variables_type::iterator var = m_vars.find(name.Lower());
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
     return var->second.set( variant.MakeString() );
   }
   bool setwxc( const wxString& name, const wxColour& wxcol, int alpha = -1 )
   {
-    typename variables_type::iterator var = m_vars.find(name);
+    typename variables_type::iterator var = m_vars.find(name.Lower());
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
     if( var->second.cval().set(wxcol) )
     { // ok looks like the color changed.. so let's update
@@ -247,20 +253,32 @@ public:
 
   bool set_default( const wxString& name )
   {
-    typename variables_type::iterator var = m_vars.find(name);
+    typename variables_type::iterator var = m_vars.find(name.Lower());
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
     return var->second.set_default();
   }
   void addvar( const wxString& name, const wxString& def = wxT(""), int type = VART_ANY, int flags = VARF_NONE )
   {
-    m_vars.insert( std::make_pair(name, var_type(name, def, type, flags)) );
+    m_vars.insert( std::make_pair(name.Lower(), var_type(name, def, type, flags)) );
+  }
+  void addvari( const wxString& name, int def, int type = VART_ANY, int flags = VARF_NONE )
+  {
+    addvar( name, wxString::Format(wxT("%d"), def), type, flags);
+  }
+  void addvarc( const wxString& name, const Color4& def, int type = VART_ANY, int flags = VARF_NONE )
+  {
+    addvar( name, def.to_string(), type, flags );
+  }
+  void addvarb( const wxString& name, bool def, int type = VART_ANY, int flags = VARF_NONE )
+  {
+    addvar( name, (def ? wxT("1") : wxT("0")), type, flags );
   }
 
   const variables_type& vars() const { return m_vars; }
 
   bool exists( const wxString& name, int type = VART_ANY )
   {
-    typename variables_type::iterator var = m_vars.find(name);
+    typename variables_type::iterator var = m_vars.find(name.Lower());
     return (var != m_vars.end() && (VART_ANY == type || var->second.m_type == type));
   }
 

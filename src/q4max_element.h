@@ -47,7 +47,13 @@ typedef enum {
   //E_HAS_NONE = 0,
   //E_HAS_RECT = 1<<0,
   Q4MAX_E_HAS_COLOR = 1<<1,
-  Q4MAX_E_HAS_COLORED = 1<<2
+  Q4MAX_E_HAS_COLORED = 1<<2,
+  Q4MAX_E_HAS_COLORBG = 1<<3,
+  Q4MAX_E_HAS_COLORHIGHLIGHT = 1<<4,
+  Q4MAX_E_HAS_COLORHIGH = 1<<5,
+  Q4MAX_E_HAS_COLORMED = 1<<6,
+  Q4MAX_E_HAS_COLORLOW = 1<<7,
+  Q4MAX_E_HAS_FONT = 1<<8
   /*
   Q4MAX_E_HAS_TIME = 1<<1,
   Q4MAX_E_HAS_FONT = 1<<2,
@@ -77,9 +83,13 @@ typedef enum {
 /// Defaults
 /// @{
 
-const Color4 Q4MAX_E_BGCOLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 0 );
+const Color4 Q4MAX_E_COLORBG_DEFAULT = Color4( 1.f, 1.f, 1.f, 0 );
 const Color4 Q4MAX_E_COLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 100 );
 const wxString Q4MAX_E_COLORED_DEFAULT = wxT("false");
+const Color4 Q4MAX_E_COLORHIGHLIGHT_DEFAULT;
+const Color4 Q4MAX_E_COLORHIGH_DEFAULT;
+const Color4 Q4MAX_E_COLORMED_DEFAULT;
+const Color4 Q4MAX_E_COLORLOW_DEFAULT;
 
 const int Q4MAX_E_FONT_DEFAULT = E_FT_CHAIN;
 const char Q4MAX_E_TEXTALIGN_DEFAULT = 'L';
@@ -94,13 +104,13 @@ class Q4MAXElement : public ElementBase
     class Property : public Var
     {
       public:
-        Property( const wxString& name, const wxString& def, int type, int has ) :
-          Var(name, def, type, VARF_NONE), m_has(has) { }
-
-        int has() const { return m_has; }
+        Property( const wxString& name, const wxString& def, int type, int hasflag ) :
+          Var(name, def, type, VARF_NONE), m_hasf(hasflag) { }
+        
+        int hasf() const { return m_hasf; }
 
       protected:
-        int m_has;
+        int m_hasf;
     };
 
 

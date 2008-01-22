@@ -151,6 +151,7 @@ class HudFileBase
 
     virtual bool          parse_item( wxString s );
 
+    /// @arg props  The string is formatted: `PROPNAME PROPVALUE[;\n] PROPNAME PROPVALUE'
     virtual bool          read_properties( ElementBase *hi, const wxString& props );
 
     /// create an unknown element by name

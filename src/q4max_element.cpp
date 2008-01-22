@@ -50,8 +50,17 @@ Q4MAXElement::Properties::Properties()
 
 bool Q4MAXElement::Properties::init()
 {
-  addvar( wxT("color"), Q4MAX_E_COLOR_DEFAULT.to_string(), VART_COLOR, Q4MAX_E_HAS_COLOR );
-  addvar( wxT("colored"), Q4MAX_E_COLORED_DEFAULT, VART_BOOL, Q4MAX_E_HAS_COLORED );
+  addvar( wxT("Color"), Q4MAX_E_COLOR_DEFAULT.to_string(), VART_COLOR, Q4MAX_E_HAS_COLOR );
+  addvar( wxT("Colored"), Q4MAX_E_COLORED_DEFAULT, VART_BOOL, Q4MAX_E_HAS_COLORED );
+  addvar( wxT("ColorBG"), Q4MAX_E_COLORBG_DEFAULT.to_string(), VART_COLOR, Q4MAX_E_HAS_COLORBG );
+  addvar( wxT("ColorHighlight"), Q4MAX_E_COLORHIGHLIGHT_DEFAULT.to_string(), VART_COLOR, Q4MAX_E_HAS_COLORHIGHLIGHT );
+  addvar( wxT("ColorHigh"), Q4MAX_E_COLORHIGH_DEFAULT.to_string(), VART_COLOR, Q4MAX_E_HAS_COLORHIGH );
+  addvar( wxT("ColorMed"), Q4MAX_E_COLORMED_DEFAULT.to_string(), VART_COLOR, Q4MAX_E_HAS_COLORMED );
+  addvar( wxT("ColorLow"), Q4MAX_E_COLORLOW_DEFAULT.to_string(), VART_COLOR, Q4MAX_E_HAS_COLORLOW );
+  // Dimensions X Y
+  addvari( wxT("Font"), Q4MAX_E_FONT_DEFAULT, VART_INT, Q4MAX_E_HAS_FONT );
+  
+
   return true;
 }
 
@@ -96,7 +105,7 @@ bool Q4MAXElement::parse_property( const wxString& cmd, wxString args )
 
   if( !m_props.set(cmd, args) )
       wxLogWarning( _("Unknown `%s' argument: %s"), cmd.c_str(), args.c_str() );
-  m_has |= m_props.var(cmd).has();
+  m_has |= m_props.var(cmd).hasf();
   /*
   if( cmd.CmpNoCase(wxT("color"))==0 )
   {
@@ -286,6 +295,11 @@ void Q4MAXElement::write_properties( wxTextOutputStream& stream ) const
   ElementBase::write_properties(stream);
 
   list<wxString> lines;
+  for( Properties::cit_variables cit = m_props.vars().begin(); cit != m_props.vars().end(); ++cit )
+  {
+    if( m_has & cit->second.hasf() )
+      lines.push_back(cit->second.name() + wxT(" \"") + cit->second.sval() + wxT("\""));
+  }
   /*
   if( (m_has & E_HAS_FONT)  && !m_props.font.empty() )
     lines.push_back( wxT("font ") + m_props.font );
@@ -308,8 +322,7 @@ void Q4MAXElement::write_properties( wxTextOutputStream& stream ) const
   if( m_has & Q4MAX_E_HAS_COLORED )
     lines.push_back(wxT("colored ") + m_props.var(wxT("colored")).sval());
     */
-  for( Properties::cit_variables cit = m_props.vars().begin(); cit != m_props.vars().end(); ++cit )
-    lines.push_back(cit->first + wxT(" \"") + cit->second.sval() + wxT("\""));
+  
   /*
   if( m_has & E_HAS_BGCOLOR )
     lines.push_back(wxT("bgcolor ") + m_props.bgcolor.to_string());

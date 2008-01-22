@@ -829,8 +829,10 @@ void DisplayCtrlBase::render()
       // grid
       Prefs::get().var(wxT("view_gridcolor")).cval().glBind();
       glBegin(GL_POINTS);
-      for( int x=0; x < width(); x += Prefs::get().var(wxT("view_gridX")).ival() )
-        for( int y=0; y < height(); y += Prefs::get().var(wxT("view_gridY")).ival() )
+      int gridx = Prefs::get().var(wxT("view_gridX")).ival();
+      int gridy = Prefs::get().var(wxT("view_gridY")).ival();
+      for( int x=0; x < width(); x += gridx )
+        for( int y=0; y < height(); y += gridy )
           glVertex2i(x, y);
       glEnd();
     }
