@@ -186,8 +186,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   help_menu->Append( ID_MENU_HELP_UPDATE, _("&Web Updater...") );
 #endif
   help_menu->Append( ID_MENU_HELP_TIP, _("&Tip of the Day") );
-  help_menu->Append( ID_MENU_HELP_WIKI, _("Visit &Mod Wiki") );
-  help_menu->Append( ID_MENU_HELP_WEBSITE, _("Visit &Website") );
+  help_menu->Append( ID_MENU_HELP_WIKI, _("Visit &Mod Wiki"), wxGetApp().factory()->wikiurl() );
+  help_menu->Append( ID_MENU_HELP_WEBSITE, _("Visit &Website"), APP_URL );
   help_menu->Append( wxID_ABOUT, _("&About\tCtrl+A") );
   
   menu_bar->Append( help_menu, _("Help") );
@@ -221,8 +221,8 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
     m_toolbar_view->AddSeparator();
     wxArrayString cs;
     cs.Add(_("All"));
-    cs.Add(_("No team games"));
-    cs.Add(_("Team games (no CTF)"));
+    cs.Add(_("DUEL"));
+    cs.Add(_("TDM"));
     cs.Add(_("CTF"));
     wxChoice *c = new wxChoice(m_toolbar_view, wxID_ANY, wxDefaultPosition, wxDefaultSize, cs);
     m_toolbar_view->AddControl(new wxStaticText(m_toolbar_view, wxID_ANY, _("Visible:")));

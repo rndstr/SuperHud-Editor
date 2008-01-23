@@ -225,9 +225,6 @@ public:
       // read element
       read_var(it->second);
     }
-#ifndef NDEBUG
-    debug();
-#endif
   }
   virtual void save()
   {

@@ -497,7 +497,7 @@ bool HudFileBase::load( const wxString& filename )
     load_default_elements();
     return false;
   }
-  // removeo all non-unique elements that aren't enabled
+  // remove all non-unique elements that aren't enabled
   for( it_elements it = m_els.begin(); it != m_els.end(); ++it )
   {
     if( ((*it)->flags() & E_NOTUNIQ) && !(*it)->is_enabled() )
@@ -563,6 +563,7 @@ bool HudFileBase::parse_item( wxString s )
   }
   else // valid item-name, verry gooood...
   { 
+    name = defit->name; // get correct capitalization :)
     if( exel ) 
     { // and it already exists in hud    
       if( defit->flags & E_NOTUNIQ )

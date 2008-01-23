@@ -5,12 +5,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-
+//
 // SuperHud Editor is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-
+//
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef Q4MAXELEMENT_H
@@ -46,16 +46,16 @@ typedef enum
 typedef enum {
   //E_HAS_NONE = 0,
   //E_HAS_RECT = 1<<0,
-  Q4MAX_E_HAS_COLOR = 1<<1,
-  Q4MAX_E_HAS_COLORED = 1<<2,
-  Q4MAX_E_HAS_COLORBG = 1<<3,
-  Q4MAX_E_HAS_COLORHIGHLIGHT = 1<<4,
-  Q4MAX_E_HAS_COLORHIGH = 1<<5,
-  Q4MAX_E_HAS_COLORMED = 1<<6,
-  Q4MAX_E_HAS_COLORLOW = 1<<7,
-  Q4MAX_E_HAS_DIMENSIONS = 1<<8,
-  Q4MAX_E_HAS_FONT = 1<<9,
-  Q4MAX_E_HAS_HIGHWATERMARK = 1<<10
+  Q4MAX_E_HAS_COLOR = 1<<2,
+  Q4MAX_E_HAS_COLORED = 1<<3,
+  Q4MAX_E_HAS_COLORBG = 1<<4,
+  Q4MAX_E_HAS_COLORHIGHLIGHT = 1<<5,
+  Q4MAX_E_HAS_COLORHIGH = 1<<6,
+  Q4MAX_E_HAS_COLORMED = 1<<7,
+  Q4MAX_E_HAS_COLORLOW = 1<<8,
+  Q4MAX_E_HAS_DIMENSIONS = 1<<9,
+  Q4MAX_E_HAS_FONT = 1<<10,
+  Q4MAX_E_HAS_HIGHWATERMARK = 1<<11
   /*
   Q4MAX_E_HAS_TIME = 1<<1,
   Q4MAX_E_HAS_FONT = 1<<2,
@@ -274,3 +274,4 @@ class Q4MAXElement : public ElementBase
 };
 
 #endif
+

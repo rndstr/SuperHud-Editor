@@ -54,26 +54,26 @@ enum
 typedef enum {
   //E_HAS_NONE = 0,
   //E_HAS_RECT = 1<<0,
-  CPMA_E_HAS_TIME = 1<<1,
-  CPMA_E_HAS_FONT = 1<<2,
-  CPMA_E_HAS_FONTSIZE = 1<<3,
-  CPMA_E_HAS_TEXTSTYLE = 1<<4,
-  CPMA_E_HAS_TEXTALIGN = 1<<5,
-  CPMA_E_HAS_COLOR = 1<<6,
-  CPMA_E_HAS_BGCOLOR = 1<<7,
-  CPMA_E_HAS_FADE = 1<<8,
-  CPMA_E_HAS_IMAGE = 1<<9,
-  CPMA_E_HAS_MODEL = 1<<10,
-  CPMA_E_HAS_SKIN = 1<<11,
-  CPMA_E_HAS_OFFSET = 1<<12,
-  CPMA_E_HAS_ANGLES = 1<<13,
+  CPMA_E_HAS_TIME = 1<<2,
+  CPMA_E_HAS_FONT = 1<<3,
+  CPMA_E_HAS_FONTSIZE = 1<<4,
+  CPMA_E_HAS_TEXTSTYLE = 1<<5,
+  CPMA_E_HAS_TEXTALIGN = 1<<6,
+  CPMA_E_HAS_COLOR = 1<<7,
+  CPMA_E_HAS_BGCOLOR = 1<<8,
+  CPMA_E_HAS_FADE = 1<<9,
+  CPMA_E_HAS_IMAGE = 1<<10,
+  CPMA_E_HAS_MODEL = 1<<11,
+  CPMA_E_HAS_SKIN = 1<<12,
+  CPMA_E_HAS_OFFSET = 1<<13,
+  CPMA_E_HAS_ANGLES = 1<<14,
   // NOTE: for those now we don't have actually a overwrite checkbox.
   // but we still include it here. Those are set if the attributes are true.
   // So we can still search with Hud::get_inheriter
-  CPMA_E_HAS_MONOSPACE = 1<<14,
-  CPMA_E_HAS_FILL = 1<<15,
-  CPMA_E_HAS_DOUBLEBAR = 1<<16,
-  CPMA_E_HAS_DRAW3D = 1<<17
+  CPMA_E_HAS_MONOSPACE = 1<<15,
+  CPMA_E_HAS_FILL = 1<<16,
+  CPMA_E_HAS_DOUBLEBAR = 1<<17,
+  CPMA_E_HAS_DRAW3D = 1<<18
 //  HIO_ALL = (1<<10)-1,
 } eCPMAElementProperties;
 
