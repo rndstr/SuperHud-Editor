@@ -71,15 +71,7 @@ struct RectVal
 class Var
 {
   public:
-    Var( const wxString& name, const wxString& def = wxT(""), int type = VART_ANY, int flags = VARF_NONE ) :
-      m_name(name),
-      m_value(),
-      m_def(def),
-      m_type(type),
-      m_flags(flags),
-      m_isset(false)
-    {
-    }
+    Var( const wxString& name, const wxString& def, int type = VART_ANY, int flags = VARF_NONE );
     virtual ~Var() {}
 
     int ival() const
@@ -174,12 +166,13 @@ class Var
     }
 
     
-
+    /*
     operator bool() const { return bval(); }
     operator Color4() const { return cval(); }
     operator double() const { return dval(); }
     operator int() const { return ival(); }
     operator wxString() const { return sval(); }
+    */
 
 
     wxString def() const { return m_def; }
@@ -258,7 +251,7 @@ public:
   const var_type& var( const wxString& name ) const
   {
     typename variables_type::const_iterator var = m_vars.find(name.Lower());
-    wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable: ") + name );
+    wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable: `") + name + wxT("'"));
     return var->second;
   }
 

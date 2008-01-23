@@ -5,12 +5,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-
+//
 // SuperHud Editor is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-
+//
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include "hudfilebase.h"
@@ -221,7 +221,7 @@ int HudFileBase::OnSave( bool saveas /*=false*/)
   if( m_filename.empty() )
     return wxID_CANCEL; // this shouldn't reach here.. but make sure anyway
 
-  if( !saveas && Prefs::get().var(wxT("save_backup")) && wxFile::Exists(m_filename)  )
+  if( !saveas && Prefs::get().var(wxT("save_backup")).bval() && wxFile::Exists(m_filename)  )
   {
     wxString target = m_filename + wxT(".bak");
     wxGetApp().mainframe()->statusbar()->PushStatusText(wxString::Format(_("Copying backup HUD: %s"), target.c_str()));
@@ -373,7 +373,7 @@ void HudFileBase::write_element( wxTextOutputStream& stream, const ElementBase& 
 {
   if( !el.is_enabled() )
   {
-    if( Prefs::get().var(wxT("save_writedisabled")) )
+    if( Prefs::get().var(wxT("save_writedisabled")).bval() )
       stream << wxT("# ") << el.name() << wxT(" { }\n");
     return;
   }

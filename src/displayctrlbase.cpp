@@ -526,9 +526,9 @@ Vec2 DisplayCtrlBase::snap_to_grid() const
 
   wxASSERT_MSG( m_drag_el != 0, wxT("need a valid element") );
 
-  const int gx = Prefs::get().var(wxT("view_gridX"));
-  const int gy = Prefs::get().var(wxT("view_gridY"));
-  const int threshold = Prefs::get().var(wxT("view_snapthreshold"));
+  const int gx = Prefs::get().var(wxT("view_gridX")).ival();
+  const int gy = Prefs::get().var(wxT("view_gridY")).ival();
+  const int threshold = Prefs::get().var(wxT("view_snapthreshold")).ival();
 
   const wxRect elr = m_drag_el->iget_rect();
   Vec2 p;
@@ -559,7 +559,7 @@ Vec2 DisplayCtrlBase::snap_to_elements() const
   wxRect r = elr;
 
   // assert( r now has the real position where it is currently )
-  const int threshold = Prefs::get().var(wxT("view_snapthreshold"));
+  const int threshold = Prefs::get().var(wxT("view_snapthreshold")).ival();
   const elements_type& els = wxGetApp().hudfile()->elements();
   const elements_type& sels = wxGetApp().elementsctrl()->selected_elements();
   wxRect itr; // rectangle to be checked against
@@ -824,7 +824,7 @@ void DisplayCtrlBase::render()
     she::draw_rect(wxRect(0, 0, width(), height()), true);
     glDisable(GL_TEXTURE_2D);
     
-    if( Prefs::get().var(wxT("view_grid")) && !Prefs::get().var(wxT("view_suppresshelpergrid")) )
+    if( Prefs::get().var(wxT("view_grid")).bval() && !Prefs::get().var(wxT("view_suppresshelpergrid")).bval() )
     {
       // grid
       Prefs::get().var(wxT("view_gridcolor")).cval().glBind();
@@ -866,7 +866,7 @@ void DisplayCtrlBase::render()
 
 void DisplayCtrlBase::render_helper( const wxRect& rect, bool selected /*= false*/ ) const
 {
-  if( !Prefs::get().var(wxT("view_helper")) || Prefs::get().var(wxT("view_suppresshelpergrid")) )
+  if( !Prefs::get().var(wxT("view_helper")).bval() || Prefs::get().var(wxT("view_suppresshelpergrid")).bval() )
     return;
   glDisable(GL_TEXTURE_2D);
   // -- draw helper outline

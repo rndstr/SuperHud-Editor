@@ -109,7 +109,7 @@ bool SHEApp::OnInit()
 
 #if HAS_MULTIPLE_GAMES
   wxLogDebug(wxT("Multiple Games"));
-  if( (!is_cpma() && !is_q4max()) || Prefs::get().var(wxT("startup_gameselection")) )
+  if( (!is_cpma() && !is_q4max()) || Prefs::get().var(wxT("startup_gameselection")).bval() )
   {
     GameSelectionDialog dlg(0);
     int ret = dlg.ShowModal();
@@ -198,7 +198,7 @@ int SHEApp::OnRun()
   if( m_cmdline_file.empty() )
   {
     wxString loadfile = wxGetApp().factory()->startup_loadfile();
-    if( Prefs::get().var(wxT("startup_load")) && !loadfile.empty() )
+    if( Prefs::get().var(wxT("startup_load")).bval() && !loadfile.empty() )
       m_hudfile->OnOpen( loadfile );
     else
       m_hudfile->OnNew();

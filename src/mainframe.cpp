@@ -278,13 +278,13 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   // reset perspective if config was saved with different app
   if( Prefs::get().oldappversion() == APP_VERSION )
   {
-    m_mgr.LoadPerspective( Prefs::get().var(wxT("app_perspective")) );
+    m_mgr.LoadPerspective( Prefs::get().var(wxT("app_perspective")).sval() );
     m_mgr.GetPane(wxT("tb-view-")+wxGetApp().factory()->dirname_moddata()).Show();
   }
   //m_view_menu->Check( ID_MENU_VIEW_TOOLBAR_FILE, m_toolbar_file->IsShown() ); // done through UpdateUI event
   //m_view_menu->Check( ID_MENU_VIEW_CONFIGPREVIEW, m_configpreview->IsShown() ); // done through UpdateUI event
-  m_view_menu->Check( ID_MENU_VIEW_GRID, Prefs::get().var(wxT("view_grid")) );
-  m_view_menu->Check( ID_MENU_VIEW_HELPER, Prefs::get().var(wxT("view_helper")) );
+  m_view_menu->Check( ID_MENU_VIEW_GRID, Prefs::get().var(wxT("view_grid")).bval() );
+  m_view_menu->Check( ID_MENU_VIEW_HELPER, Prefs::get().var(wxT("view_helper")).bval() );
 
   
   
@@ -300,7 +300,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
     SetSize(wxSize(1000,500));
 
   //SetMinSize(wxSize(1000,600));
-  if( Prefs::get().var(wxT("app_maximized")) )
+  if( Prefs::get().var(wxT("app_maximized")).bval() )
     Maximize();
   else if( Prefs::get().var(wxT("app_height")).ival() != -1 && Prefs::get().var(wxT("app_width")).ival() != -1 )
     SetSize( Prefs::get().var(wxT("app_width")).ival(), Prefs::get().var(wxT("app_height")).ival() );
