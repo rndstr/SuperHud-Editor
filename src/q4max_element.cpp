@@ -57,9 +57,9 @@ bool Q4MAXElement::Properties::init()
   addvar(wxT("ColorHigh"), Q4MAX_E_COLORHIGH_DEFAULT, VART_STRING).defines(Q4MAX_E_HAS_COLORHIGH);
   addvar(wxT("ColorMed"), Q4MAX_E_COLORMED_DEFAULT, VART_STRING).defines(Q4MAX_E_HAS_COLORMED);
   addvar(wxT("ColorLow"), Q4MAX_E_COLORLOW_DEFAULT, VART_STRING).defines(Q4MAX_E_HAS_COLORLOW);
-  addvarp(wxT("Dimensions"), Q4MAX_E_DIMENSIONSX_DEFAULT, Q4MAX_E_DIMENSIONSY_DEFAULT).defines(Q4MAX_E_HAS_DIMENSIONS);
   addvari(wxT("Font"), Q4MAX_E_FONT_DEFAULT).defines(Q4MAX_E_HAS_FONT);
   addvari(wxT("HighWatermark"), Q4MAX_E_HIGHWATERMARK_DEFAULT).defines(Q4MAX_E_HAS_HIGHWATERMARK);
+  addvari(wxT("Horizontal"), Q4MAX_E_HORIZONTAL_DEFAULT).defines(Q4MAX_E_HAS_HORIZONTAL);
   /*
   */
   // Dimensions X Y
@@ -389,6 +389,25 @@ void Q4MAXElement::write_properties( wxTextOutputStream& stream ) const
 }
 
 
+Vec2 Q4MAXElement::iget_v2val( const wxString& propname ) const
+{
+  wxASSERT_MSG( propname.CmpNoCase(wxT("position")) != 0, wxT("use iget_pos() instead") );
+  wxASSERT_MSG( propname.CmpNoCase(wxT("dimensions")) != 0, wxT("use iget_dim() instead") );
+  const Properties::var_type& var = m_props.var(propname);
+  Vec2 v2 = var.v2val();
+  if( !(m_has & var.defines()) )
+  {
+    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, var.defines() ));
+    if( parent == 0 )
+    { // default
+      Properties::var_type tmp = var;
+      tmp.set_default();
+      v2 = tmp.v2val();
+    }
+    else v2 = parent->iget_v2val(propname);
+  }
+  return v2; 
+}
 
 
 /*

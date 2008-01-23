@@ -33,8 +33,6 @@ typedef std::map<wxString, IFont*> fonts_type;
 typedef fonts_type::iterator it_fonts;
 typedef fonts_type::const_iterator cit_fonts;
 
-typedef wxPoint Vec2;
-
 class Texture;
 class ElementBase;
 class Model;
@@ -110,9 +108,9 @@ class DisplayCtrlBase : public wxGLCanvas
 
     /// smallest distance (max view_snapthreshold) to other elements
     /// @returns The 2d vector we have to move the selection to snap or wxPoint(0,0) if it's disabled by prefs 
-    Vec2 snap_to_elements() const;
+    wxPoint snap_to_elements() const;
 
-    Vec2 snap_to_grid() const;
+    wxPoint snap_to_grid() const;
 
     void move_selected_items( int x, int y );
     void resize_selected_items( int x, int y );

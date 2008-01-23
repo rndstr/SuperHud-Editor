@@ -888,7 +888,7 @@ void CPMAElement::postparse()
 {
   if( usemodel() )
   { // we have a model, weeeeh.
-    removCPMA_E_HAS(CPMA_E_HAS_IMAGE);
+    remove_has(CPMA_E_HAS_IMAGE);
     if( !m_props.image.empty() )
     {
       add_has(CPMA_E_HAS_SKIN); 

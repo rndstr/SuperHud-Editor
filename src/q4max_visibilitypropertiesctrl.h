@@ -17,14 +17,14 @@
 #define CPMA_VISIBILITYPROPERTIESCTRL_H
 
 
-#include "cpma_propertygrid.h"
+#include "q4max_propertygrid.h"
 
 class ElementBase;
 
-class CPMAVisibilityPropertiesCtrl : public CPMAPropertyGrid
+class Q4MAXVisibilityPropertiesCtrl : public Q4MAXPropertyGrid
 {
   public:
-    CPMAVisibilityPropertiesCtrl( wxWindow *parent );
+    Q4MAXVisibilityPropertiesCtrl( wxWindow *parent );
 
     void from_element( const ElementBase *el );
     void update_layout();

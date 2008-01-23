@@ -55,7 +55,8 @@ typedef enum {
   Q4MAX_E_HAS_COLORLOW = 1<<8,
   Q4MAX_E_HAS_DIMENSIONS = 1<<9,
   Q4MAX_E_HAS_FONT = 1<<10,
-  Q4MAX_E_HAS_HIGHWATERMARK = 1<<11
+  Q4MAX_E_HAS_HIGHWATERMARK = 1<<11,
+  Q4MAX_E_HAS_HORIZONTAL = 1<<12
   /*
   Q4MAX_E_HAS_TIME = 1<<1,
   Q4MAX_E_HAS_FONT = 1<<2,
@@ -98,6 +99,7 @@ const int Q4MAX_E_DIMENSIONSX_DEFAULT = 0;
 const int Q4MAX_E_DIMENSIONSY_DEFAULT = 0;
 const char Q4MAX_E_TEXTALIGN_DEFAULT = 'L';
 const int Q4MAX_E_HIGHWATERMARK_DEFAULT = 100;
+const int Q4MAX_E_HORIZONTAL_DEFAULT = 0;
 /// @}
 
 
@@ -109,10 +111,10 @@ class Q4MAXElement : public ElementBase
     class Property : public Var
     {
       public:
-        Property( const wxString& name, const wxString& def, int type, int defines ) :
-          Var(name, def, type, VARF_NONE), m_defines(defines) { }
+        Property( const wxString& name, const wxString& def, int type, int flags ) :
+          Var(name, def, type, flags), m_defines(E_HAS_NONE) { }
         
-        void defines( int def ) { m_defines = def; }
+        Property& defines( int def ) { m_defines = def; return *this; }
         int defines() const { return m_defines; }
 
       protected:
@@ -135,7 +137,10 @@ class Q4MAXElement : public ElementBase
           const VarContainer<Property>::variables_type& rhs = p.vars();
           for( VarContainer<Property>::variables_type::const_iterator cit = rhs.begin(); cit != rhs.end(); ++cit )
           {
+            wxASSERT_MSG( exists(cit->first), wxT("cannot copy property that does not exist in this element") );
+#ifdef NDEBUG
             if( exists(cit->first) )
+#endif
               set( cit->first, cit->second.sval() );
           }
           return *this;
@@ -170,6 +175,7 @@ class Q4MAXElement : public ElementBase
 
     //virtual wxRect  iget_hudrect() const;
 
+    Vec2        iget_v2val( const wxString& name ) const;
     /*
     int         iget_time() const;
     void        set_time( int time ) { m_props.time = time; }

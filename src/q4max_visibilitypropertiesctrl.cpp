@@ -13,7 +13,7 @@
 
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
-#include "cpma_visibilitypropertiesctrl.h"
+#include "q4max_visibilitypropertiesctrl.h"
 
 #include "common.h"
 #include "mainframe.h"
@@ -21,20 +21,20 @@
 #include "elementsctrlbase.h"
 #include "propertiesnotebookbase.h"
 #include "artprovider.h"
-#include "cpma_element.h"
+#include "q4max_element.h"
 
 
 
-BEGIN_EVENT_TABLE(CPMAVisibilityPropertiesCtrl, CPMAPropertyGrid)
-  EVT_PG_CHANGED(ID_NOTEBOOK_PROPERTIES, CPMAVisibilityPropertiesCtrl::OnItemChanged)
+BEGIN_EVENT_TABLE(Q4MAXVisibilityPropertiesCtrl, Q4MAXPropertyGrid)
+  EVT_PG_CHANGED(ID_NOTEBOOK_PROPERTIES, Q4MAXVisibilityPropertiesCtrl::OnItemChanged)
   EVT_TOOL_RANGE(ID_BTN_ALIGN_LEFT, ID_BTN_ALIGN_BOTTOM,
-    CPMAVisibilityPropertiesCtrl::OnAlign)
+    Q4MAXVisibilityPropertiesCtrl::OnAlign)
   EVT_TOOL_RANGE(ID_BTN_ELEMENT_ENABLE, ID_BTN_ELEMENT_DISABLE,
-    CPMAVisibilityPropertiesCtrl::OnElementVisibility)
+    Q4MAXVisibilityPropertiesCtrl::OnElementVisibility)
 END_EVENT_TABLE()
 
-CPMAVisibilityPropertiesCtrl::CPMAVisibilityPropertiesCtrl( wxWindow *parent ) :
-  CPMAPropertyGrid( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
+Q4MAXVisibilityPropertiesCtrl::Q4MAXVisibilityPropertiesCtrl( wxWindow *parent ) :
+  Q4MAXPropertyGrid( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
             wxDefaultSize, wxPG_BOLD_MODIFIED|wxPG_SPLITTER_AUTO_CENTER|wxPG_DESCRIPTION|wxPG_TOOLBAR|wxPGMAN_DEFAULT_STYLE )
 {
   // needed for `time' (duration) to give the user possibility to revert back to inherital value
@@ -49,10 +49,10 @@ CPMAVisibilityPropertiesCtrl::CPMAVisibilityPropertiesCtrl( wxWindow *parent ) :
   SetPropertyHelpString( wxT("time"), _("How long the element will be displayed for if it doesn't update again. Generally used for item pickups, frag messages, chat, etc.\n\nClear to disable.") );
 
 
-  Append( new wxPropertyCategory( _("Rectangle"), wxT("cat-rect")) );
+  Append( new wxPropertyCategory( _("Position"), wxT("cat-pos")) );
 
-  Append( new wxBoolProperty( _("Use"), wxT("overwrite-rect"), false) );
-  SetPropertyHelpString( wxT("overwrite-rect"), _("By default an element is drawn at position (0,0) with width 64 and height 32. Check this box to specify your own values.") );
+  Append( new wxBoolProperty( _("Use"), wxT("overwrite-pos"), false) );
+  SetPropertyHelpString( wxT("overwrite-pos"), _("By default an element is drawn at position (0,0). Check this box to specify your own values.") );
 
   Append( new wxIntProperty( wxT("X"), wxPG_LABEL, 0) );
   SetPropertyHelpString( wxT("X"), _("This sets where the element is drawn, how many pixels from left") );
@@ -62,6 +62,9 @@ CPMAVisibilityPropertiesCtrl::CPMAVisibilityPropertiesCtrl( wxWindow *parent ) :
   SetPropertyHelpString( wxT("Y"), _("This sets where the element is drawn, how many pixels from top") );
   SetPropertyEditor(wxT("Y"),wxPG_EDITOR(SpinCtrl));
 
+  Append( new wxPropertyCategory( _("Dimensions"), wxT("cat-dim")) );
+
+  Append( new wxBoolProperty( _("Use"), wxT("overwrite-dim"), false) );
   Append( new wxIntProperty( _("Width"), wxT("width"), 64) );
   SetPropertyEditor(wxT("width"),wxPG_EDITOR(SpinCtrl));
 
@@ -95,55 +98,56 @@ CPMAVisibilityPropertiesCtrl::CPMAVisibilityPropertiesCtrl( wxWindow *parent ) :
   tb->Realize();
 }
 
-void CPMAVisibilityPropertiesCtrl::ExpandAll( bool expand /*=true*/ )
+void Q4MAXVisibilityPropertiesCtrl::ExpandAll( bool expand /*=true*/ )
 {
-  Expand(wxT("cat-rect"), expand);
+  Expand(wxT("cat-pos"), expand);
+  Expand(wxT("cat-dim"), expand);
 }
 
-void CPMAVisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
+void Q4MAXVisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
 {
   PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesctrl();
   if( !p )
   {
-    wxLogDebug(wxT("CPMAVisibilityPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
+    wxLogDebug(wxT("Q4MAXVisibilityPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
     return;
   }
 
-  CPMAElement *el = static_cast<CPMAElement*>(p->curel());
+  Q4MAXElement *el = static_cast<Q4MAXElement*>(p->curel());
   wxString name = ev.GetPropertyName();
   wxVariant val = ev.GetPropertyValue();
-  if( name == wxT("overwrite-rect") )
+  if( name == wxT("overwrite-pos") )
   {
-    el->add_has( E_HAS_RECT, val.GetBool() );
-    wxRect r = el->iget_rect();
-    SetPropertyValue( wxT("X"), r.GetX() );
-    SetPropertyValue( wxT("Y"), r.GetY() );
-    SetPropertyValue( wxT("width"), r.GetWidth() );
-    SetPropertyValue( wxT("height"), r.GetHeight() );
+    el->add_has( E_HAS_POS, val.GetBool() );
+    Vec2 p = el->iget_pos();
+    SetPropertyValue( wxT("X"), p.x );
+    SetPropertyValue( wxT("Y"), p.y );
+
+    //SetPropertyValue( wxT("width"), r.GetWidth() );
+    //SetPropertyValue( wxT("height"), r.GetHeight() );
   }
-  else if( name == wxT("X") || name == wxT("Y") || name == wxT("height") || name == wxT("width") )
+  else if( name == wxT("X") || name == wxT("Y") ) //|| name == wxT("height") || name == wxT("width") )
   {
-    if( !(el->m_has & E_HAS_RECT) )
+    if( !(el->m_has & E_HAS_POS) )
     { // user was starting to edit while seeing the inherited values, copy them over
-      el->m_rect = el->iget_rect();
-      //SetPropertyValue( wxT("overwrite-rect"), true );
-      el->m_has |= E_HAS_RECT;
+      Vec2 p = el->iget_pos();
+      el->m_rect.x = (int)p.x;
+      el->m_rect.y = (int)p.y;
+      el->m_has |= E_HAS_POS;
     }
     if( name == wxT("X") )
       el->m_rect.x = ev.GetPropertyValueAsInt();
     else if( name == wxT("Y") )
       el->m_rect.y = ev.GetPropertyValueAsInt();
-    else if( name == wxT("width") )
-      el->m_rect.width = ev.GetPropertyValueAsInt();
-    else if( name == wxT("height") )
-      el->m_rect.height = ev.GetPropertyValueAsInt();
   }
   else if( name == wxT("time") )
   {
-    el->add_has( CPMA_E_HAS_TIME, !ev.GetProperty()->IsValueUnspecified() );
+    /*
+    el->add_has( Q4MAX_E_HAS_TIME, !ev.GetProperty()->IsValueUnspecified() );
     if( !ev.GetProperty()->IsValueUnspecified() )
       el->set_time(val.GetInteger());
     SetPropertyValue( wxT("time"), el->iget_time() );
+    */
   }
   else
     return; // nothing changed
@@ -155,52 +159,53 @@ void CPMAVisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   // propagate
   wxGetApp().mainframe()->OnPropertiesChanged();
 }
-void CPMAVisibilityPropertiesCtrl::from_element( const ElementBase *el )
+void Q4MAXVisibilityPropertiesCtrl::from_element( const ElementBase *el )
 {
-  const CPMAElement *cel = static_cast<const CPMAElement*>(el);
+  const Q4MAXElement *cel = static_cast<const Q4MAXElement*>(el);
 
-  SetPropertyValue( wxT("overwrite-rect"), el->has() & E_HAS_RECT );
+  SetPropertyValue( wxT("overwrite-pos"), el->has() & E_HAS_POS );
+  SetPropertyValue( wxT("overwrite-dim"), el->has() & E_HAS_DIM );
 
   wxToolBar *tb = GetToolBar();
   tb->ToggleTool( (el->is_enabled() ? ID_BTN_ELEMENT_ENABLE : ID_BTN_ELEMENT_DISABLE), true );
   tb->EnableTool( ID_BTN_ELEMENT_ENABLE,  (el->flags() & E_ENABLEALWAYS)==0 );
   tb->EnableTool( ID_BTN_ELEMENT_DISABLE,  (el->flags() & E_ENABLEALWAYS)==0 );
     
-  wxRect r = el->iget_rect();
-  SetPropertyValue( wxT("X"), r.GetX() );
-  SetPropertyValue( wxT("Y"), r.GetY() );
-  SetPropertyValue( wxT("width"), r.GetWidth() );
-  SetPropertyValue( wxT("height"), r.GetHeight() );
+  Vec2 p = el->iget_pos();
+  SetPropertyValue( wxT("X"), p.x );
+  SetPropertyValue( wxT("Y"), p.y );
+//  SetPropertyValue( wxT("width"), r.GetWidth() );
+//  SetPropertyValue( wxT("height"), r.GetHeight() );
 
-  SetPropertyValue( wxT("time"), cel->iget_time() );
+//  SetPropertyValue( wxT("time"), cel->iget_time() );
 
   update_layout();
 }
 
-void CPMAVisibilityPropertiesCtrl::update_layout()
+void Q4MAXVisibilityPropertiesCtrl::update_layout()
 {
   PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesctrl();
   if( !p )
   {
-    wxLogDebug(wxT("CPMAVisibilityPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
+    wxLogDebug(wxT("Q4MAXVisibilityPropertiesCtrl::OnItemChanged() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
     return;
   }
   ElementBase *el = p->curel();
 
-  property_defines( wxT("X"), (el->has() & E_HAS_RECT)!=0 );
-  property_defines( wxT("Y"), (el->has() & E_HAS_RECT)!=0 );
-  property_defines( wxT("width"), (el->has() & E_HAS_RECT)!=0 );
-  property_defines( wxT("height"), (el->has() & E_HAS_RECT)!=0 );
+  property_defines( wxT("X"), (el->has() & E_HAS_POS)!=0 );
+  property_defines( wxT("Y"), (el->has() & E_HAS_POS)!=0 );
+//  property_defines( wxT("width"), (el->has() & E_HAS_RECT)!=0 );
+//  property_defines( wxT("height"), (el->has() & E_HAS_RECT)!=0 );
 
-  property_defines(wxT("time"), (el->has() & CPMA_E_HAS_TIME) != 0 );
+//  property_defines(wxT("time"), (el->has() & CPMA_E_HAS_TIME) != 0 );
 }
 
-void CPMAVisibilityPropertiesCtrl::OnElementVisibility( wxCommandEvent& ev )
+void Q4MAXVisibilityPropertiesCtrl::OnElementVisibility( wxCommandEvent& ev )
 {
   PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesctrl();
   if( !p )
   {
-    wxLogDebug(wxT("CPMAVisibilityPropertiesCtrl::OnElementVisibility() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
+    wxLogDebug(wxT("Q4MAXVisibilityPropertiesCtrl::OnElementVisibility() - PropertiesCtrl is not yet available but user shouldn't trigger this function"));
     return;
   }
   ElementBase *el = p->curel();
@@ -212,23 +217,25 @@ void CPMAVisibilityPropertiesCtrl::OnElementVisibility( wxCommandEvent& ev )
   wxGetApp().mainframe()->OnPropertiesChanged();
 }
 
-void CPMAVisibilityPropertiesCtrl::OnAlign( wxCommandEvent& ev )
+void Q4MAXVisibilityPropertiesCtrl::OnAlign( wxCommandEvent& ev )
 {
-  CPMAElement *el = current_element();
+  Q4MAXElement *el = current_element();
   el->add_has( E_HAS_RECT );
-  wxRect r = el->rect();
+  Vec2 p = el->iget_pos();
+  Vec2 d = el->iget_dim();
   switch( ev.GetId() )
   {
-  case ID_BTN_ALIGN_LEFT: r.x = 0; break;
-  case ID_BTN_ALIGN_CENTER: r.x = (640-r.width)/2; break;
-  case ID_BTN_ALIGN_RIGHT: r.x = 640-r.width; break;
-  case ID_BTN_ALIGN_TOP: r.y = 0; break;
-  case ID_BTN_ALIGN_MIDDLE: r.y = (480-r.height)/2; break;
-  case ID_BTN_ALIGN_BOTTOM: r.y = 480-r.height; break;
+  case ID_BTN_ALIGN_LEFT: p.x = 0; break;
+  case ID_BTN_ALIGN_CENTER: p.x = (640-d.x)/2; break;
+  case ID_BTN_ALIGN_RIGHT: p.x = 640-d.x; break;
+  case ID_BTN_ALIGN_TOP: p.y = 0; break;
+  case ID_BTN_ALIGN_MIDDLE: p.y = (480-d.y)/2; break;
+  case ID_BTN_ALIGN_BOTTOM: p.y = 480-d.y; break;
   default:
     return;
   }
-  el->set_rect(r);
+  el->set_pos(p);
+  el->set_dim(d);
 
   // -- propagate
   from_element(el); // update propertygrid

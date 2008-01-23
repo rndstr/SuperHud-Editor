@@ -39,7 +39,8 @@ q4max = \
 				q4max_factory.cpp q4max_factory.h \
 				q4max_hudfile.cpp q4max_hudfile.h \
 				q4max_propertiesnotebook.cpp q4max_propertiesnotebook.h \
-				q4max_propertygrid.h
+				q4max_propertygrid.h \
+        q4max_visibilitypropertiesctrl.cpp q4max_visibilitypropertiesctrl.h
 
 
 

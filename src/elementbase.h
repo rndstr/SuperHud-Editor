@@ -18,6 +18,8 @@
 
 #include "common.h"
 
+#include "varcontainer.h"
+
 #include <wx/string.h>
 #include <wx/txtstrm.h>
 #include <wx/gdicmn.h>
@@ -27,7 +29,7 @@ typedef enum
 {
   E_HAS_NONE = 0,
   E_HAS_POS = 1<<0,
-  E_HAS_DIM = 1<<1
+  E_HAS_DIM = 1<<1,
   E_HAS_RECT = E_HAS_POS | E_HAS_DIM
 } eElementProperties;
 
@@ -87,7 +89,8 @@ class ElementBase
 {
    friend class HudFileBase; // for proper detection if item has already been read (through m_enabled as is_enabled() is lying)
    friend class CPMAPropertiesCtrl; // TODO still needed?
-   friend class VisibilityPropertiesCtrl; // TODO still needed?
+   friend class CPMAVisibilityPropertiesCtrl; // TODO still needed?
+   friend class Q4MAXVisibilityPropertiesCtrl; // TODO still needed?
   public:
     ElementBase( const wxString& name, const wxString& desc = wxT(""), int flags = E_NONE, int has = 0, bool enabled = false, 
       const wxRect& rect = E_RECT_DEFAULT ) :
@@ -138,13 +141,15 @@ class ElementBase
     int             has() const { return m_has; }
     /// adds a value (bitmask) to what this element overwrite
     /// @arg bool add If false we actually remove it.
-    void            add_has( int has, int add = true ) { if( !add) removCPMA_E_HAS(has); else m_has |= has; }
-    void            removCPMA_E_HAS( int has ) { m_has &= ~has; }
+    void            add_has( int has, int add = true ) { if( !add) remove_has(has); else m_has |= has; }
+    void            remove_has( int has ) { m_has &= ~has; }
     bool            is_enabled() const { return (m_flags & E_ENABLEALWAYS ? true : m_enabled); }
     void            set_enabled(bool en = true) { m_enabled = en; }
     bool            is_selected() const;
     wxRect          rect() const { return m_rect; }
     void            set_rect( const wxRect& r ) { m_rect = r; }
+    void            set_pos( const Vec2& p ) { m_rect.x = p.x; m_rect.y = p.y; }
+    void            set_dim( const Vec2& d ) { m_rect.width = d.x; m_rect.height = d.y; }
 
     // get&set properties (with regard to `i'nheritance)
     /// this gives back the space the element occupies on the hud, shouldn't be confused with
@@ -152,6 +157,8 @@ class ElementBase
     /// example WeaponList it isn't
     virtual wxRect  iget_hudrect() const { return iget_rect(); }
     wxRect          iget_rect() const;
+    Vec2            iget_pos() const;
+    Vec2            iget_dim() const;
     bool            is_rendered() const;
     virtual bool    is_removable() const { return (flags() & E_NOTUNIQ) != 0; }
 

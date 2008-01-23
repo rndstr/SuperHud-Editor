@@ -60,7 +60,9 @@ void ElementBase::copy_from( const ElementBase * const el )
   wxLogDebug(wxT("COPY FROM %s TO %s"), el->name().c_str(), name().c_str()); 
   int prevhas = m_has;
   m_has = el->has();
-  add_has( E_HAS_RECT, (prevhas & E_HAS_RECT) != 0 ); 
+//  add_has( E_HAS_RECT, (prevhas & E_HAS_RECT) != 0 ); 
+  add_has( E_HAS_POS, (prevhas & E_HAS_POS) != 0 ); 
+  add_has( E_HAS_DIM, (prevhas & E_HAS_DIM) != 0 ); 
 
   //m_enabled = el->is_enabled();
   // we do not copy rectangle... would just confuse
@@ -101,6 +103,32 @@ wxRect ElementBase::iget_rect() const
   return r; 
 }
 
+Vec2 ElementBase::iget_pos() const
+{
+  Vec2 p;
+  p.x = m_rect.x;
+  p.y = m_rect.y;
+  if( !(m_has & E_HAS_POS) )
+  {
+    const ElementBase *parent = wxGetApp().hudfile()->get_parent( this, E_HAS_POS );
+    if( parent == 0 ) { p.x = E_RECT_DEFAULT.x; p.y = E_RECT_DEFAULT.y; }
+    else p = parent->iget_pos();
+  }
+  return p; 
+}
+Vec2 ElementBase::iget_dim() const
+{
+  Vec2 d;
+  d.x = m_rect.width;
+  d.y = m_rect.height;
+  if( !(m_has & E_HAS_DIM) )
+  {
+    const ElementBase *parent = wxGetApp().hudfile()->get_parent( this, E_HAS_DIM );
+    if( parent == 0 ) { d.x = E_RECT_DEFAULT.width; d.y = E_RECT_DEFAULT.height; }
+    else d = parent->iget_dim();
+  }
+  return d; 
+}
 
 bool ElementBase::is_rendered() const
 {

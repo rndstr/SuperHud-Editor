@@ -32,8 +32,8 @@ enum
   VART_BOOL,
   VART_COLOR,
   VART_STRING,
-  VART_POINT,
-  VART_RECT
+  VART_VEC2,
+  VART_VEC4
 };
 
 enum
@@ -45,7 +45,7 @@ enum
 };
 
 
-struct PointVal
+struct Vec2 
 {
   float x, y;
   bool from_string( const wxString& str )
@@ -57,7 +57,7 @@ struct PointVal
 };
 
 
-struct RectVal
+struct Vec4
 {
   float x, y, w, h;
   bool from_string( const wxString& str )
@@ -106,16 +106,16 @@ class Var
       return colorval.to_wxColour();
     }
 
-    PointVal pval() const
+    Vec2 v2val() const
     {
-      wxASSERT_MSG( m_type == VART_ANY || m_type == VART_POINT, m_name );
-      return m_specific.pointval;
+      wxASSERT_MSG( m_type == VART_ANY || m_type == VART_VEC2, m_name );
+      return m_specific.vec2val;
     }
 
-    RectVal rval() const
+    Vec4 v4val() const
     {
-      wxASSERT_MSG( m_type == VART_ANY || m_type == VART_RECT, m_name );
-      return m_specific.rectval;
+      wxASSERT_MSG( m_type == VART_ANY || m_type == VART_VEC4, m_name );
+      return m_specific.vec4val;
     }
 
 
@@ -150,13 +150,13 @@ class Var
       {
         return colorval.set(m_value);
       }
-      else if( m_type == VART_POINT )
+      else if( m_type == VART_VEC2 )
       {
-        return m_specific.pointval.from_string(m_value);
+        return m_specific.vec2val.from_string(m_value);
       }
-      else if( m_type == VART_RECT )
+      else if( m_type == VART_VEC4 )
       {
-        return m_specific.rectval.from_string(m_value);
+        return m_specific.vec4val.from_string(m_value);
       }
       return true;
     }
@@ -192,8 +192,8 @@ class Var
       double    doubleval;
       int       intval;
       bool      boolval;
-      PointVal  pointval;
-      RectVal   rectval;
+      Vec2      vec2val;
+      Vec4      vec4val;
     } m_specific;
     Color4    colorval;
 };
@@ -314,9 +314,9 @@ public:
   {
     return addvar( name, (def ? wxT("1") : wxT("0")), VART_BOOL, flags );
   }
-  var_type& addvarp( const wxString& name, int xdef, int ydef, int flags = VARF_NONE )
+  var_type& addvarv2( const wxString& name, int xdef, int ydef, int flags = VARF_NONE )
   {
-    return addvar( name, wxString::Format(wxT("%d %d"), xdef, ydef), VART_POINT, flags);
+    return addvar( name, wxString::Format(wxT("%d %d"), xdef, ydef), VART_VEC2, flags);
   }
 
   const variables_type& vars() const { return m_vars; }

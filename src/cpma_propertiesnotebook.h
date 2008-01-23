@@ -19,7 +19,7 @@
 #include "propertiesnotebookbase.h"
 
 
-class VisibilityPropertiesCtrl;
+class CPMAVisibilityPropertiesCtrl;
 class FontPropertiesCtrl;
 class ColorPropertiesCtrl;
 class MiscPropertiesCtrl;
@@ -33,7 +33,7 @@ class CPMAPropertiesNotebook : public PropertiesNotebookBase
     void update_from_element( const elements_type& els );
 
   private:
-    VisibilityPropertiesCtrl  *m_vis;
+    CPMAVisibilityPropertiesCtrl  *m_vis;
     FontPropertiesCtrl      *m_font;
     ColorPropertiesCtrl     *m_color;
     ImagePropertiesCtrl     *m_image;

@@ -5,12 +5,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-
+//
 // SuperHud Editor is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-
+//
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include "cpma_propertiesnotebook.h"
@@ -37,7 +37,7 @@ CPMAPropertiesNotebook::CPMAPropertiesNotebook( wxWindow *parent ) :
   wxColour icol = Prefs::get().var(wxT("props_inheritcolor")).wxcval();
   wxColour ibgcol = Prefs::get().var(wxT("props_inheritbgcolor")).wxcval();
 
-  m_vis = new VisibilityPropertiesCtrl(this);
+  m_vis = new CPMAVisibilityPropertiesCtrl(this);
   m_font = new FontPropertiesCtrl(this);
   m_color = new ColorPropertiesCtrl(this);
   m_image = new ImagePropertiesCtrl(this);

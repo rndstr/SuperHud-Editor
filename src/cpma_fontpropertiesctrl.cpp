@@ -150,7 +150,7 @@ void FontPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
     {
       if( el->textstyle() == CPMA_E_TEXTSTYLE_NONE )
       { // shadow is not set, so remove stuff
-        el->removCPMA_E_HAS(CPMA_E_HAS_TEXTSTYLE);
+        el->remove_has(CPMA_E_HAS_TEXTSTYLE);
       }
     }
     SetPropertyValue( wxT("style-none"), el->has() & CPMA_E_HAS_TEXTSTYLE && el->iget_textstyle() == CPMA_E_TEXTSTYLE_NONE );
@@ -158,16 +158,8 @@ void FontPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   }
   else if( name == wxT("style-shadow") )
   {
-    if( val.GetBool() )
-    {
-      el->add_has(CPMA_E_HAS_TEXTSTYLE);
-      el->set_textstyle(CPMA_E_TEXTSTYLE_SHADOW);
-    }
-    else
-    {
-      el->removCPMA_E_HAS(CPMA_E_HAS_TEXTSTYLE);
-      el->set_textstyle(CPMA_E_TEXTSTYLE_NONE);
-    }
+    el->add_has(CPMA_E_HAS_TEXTSTYLE, val.GetBool());
+    el->set_textstyle( (val.GetBool() ? CPMA_E_TEXTSTYLE_SHADOW : CPMA_E_TEXTSTYLE_NONE) );
     SetPropertyValue( wxT("style-shadow"), el->iget_textstyle() == CPMA_E_TEXTSTYLE_SHADOW );
     SetPropertyValue( wxT("style-none"), el->has() & CPMA_E_HAS_TEXTSTYLE && el->iget_textstyle() == CPMA_E_TEXTSTYLE_NONE );
   }

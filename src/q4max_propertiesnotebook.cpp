@@ -15,6 +15,7 @@
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include "q4max_propertiesnotebook.h"
 
+#include "q4max_visibilitypropertiesctrl.h"
 #include "prefs.h"
 
 #include "q4max_element.h"
@@ -27,24 +28,28 @@ Q4MAXPropertiesNotebook::Q4MAXPropertiesNotebook( wxWindow *parent ) :
 {
   wxPropertyGrid::SetBoolChoices(_("On"), _("Off"));
 
-  /*
   wxColour col = Prefs::get().var(wxT("props_color")).wxcval();
   wxColour bgcol = Prefs::get().var(wxT("props_bgcolor")).wxcval();
   wxColour icol = Prefs::get().var(wxT("props_inheritcolor")).wxcval();
   wxColour ibgcol = Prefs::get().var(wxT("props_inheritbgcolor")).wxcval();
 
-  m_vis = new VisibilityPropertiesCtrl(this);
+  m_vis = new Q4MAXVisibilityPropertiesCtrl(this);
+  /*
   m_font = new FontPropertiesCtrl(this);
   m_color = new ColorPropertiesCtrl(this);
   m_image = new ImagePropertiesCtrl(this);
   m_misc = new MiscPropertiesCtrl(this);
+  */
   m_vis->set_colors(icol, ibgcol, col, bgcol);
+  /*
   m_font->set_colors(icol, ibgcol, col, bgcol);
   m_color->set_colors(icol, ibgcol, col, bgcol);
   m_image->set_colors(icol, ibgcol, col, bgcol);
   m_misc->set_colors(icol, ibgcol, col, bgcol);
+  */
 
   AddPage( m_vis, _("Visibility") );
+  /*
   AddPage( m_font, _("Font") );
   AddPage( m_color, _("Color") );
   AddPage( m_image, _("Image") );
@@ -56,7 +61,6 @@ Q4MAXPropertiesNotebook::Q4MAXPropertiesNotebook( wxWindow *parent ) :
 
 void Q4MAXPropertiesNotebook::update_from_element( const elements_type& els )
 {
-  /*
   if( els.size() != 1 )
   { // no properties selection
     
@@ -65,16 +69,20 @@ void Q4MAXPropertiesNotebook::update_from_element( const elements_type& els )
     // m_curel _afterwards_*
 
     m_vis->CollapseAll();
+    /*
     m_font->CollapseAll();
     m_color->CollapseAll();
     m_image->CollapseAll();
     m_misc->CollapseAll();
+    */
 
     m_vis->ClearSelection();
+    /*
     m_font->ClearSelection();
     m_color->ClearSelection();
     m_image->ClearSelection();
     m_misc->ClearSelection();
+    */
 
 
     m_vis->GetToolBar()->ToggleTool( ID_BTN_ELEMENT_ENABLE, false );
@@ -87,26 +95,32 @@ void Q4MAXPropertiesNotebook::update_from_element( const elements_type& els )
     Enable();
 
     m_vis->ExpandAll();
+    /*
     m_font->ExpandAll();
     m_color->ExpandAll();
     m_image->ExpandAll();
     m_misc->ExpandAll();
+    */
 
     m_curel = els.front();
 
     m_vis->from_element(m_curel);
+    return;
+    /*
     m_font->from_element(m_curel);
     m_color->from_element(m_curel);
     m_image->from_element(m_curel);
     m_misc->from_element(m_curel);
+    */
 
     m_vis->ClearModifiedStatus();
+    /*
     m_font->ClearModifiedStatus();
     m_color->ClearModifiedStatus();
     m_image->ClearModifiedStatus();
     m_misc->ClearModifiedStatus();
+    */
   }
-  */
 }
 
 

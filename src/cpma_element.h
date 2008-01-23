@@ -52,8 +52,6 @@ enum
 /// whether that element has the property enabled (specified)
 /// aka the element overwrites that property
 typedef enum {
-  //E_HAS_NONE = 0,
-  //E_HAS_RECT = 1<<0,
   CPMA_E_HAS_TIME = 1<<2,
   CPMA_E_HAS_FONT = 1<<3,
   CPMA_E_HAS_FONTSIZE = 1<<4,

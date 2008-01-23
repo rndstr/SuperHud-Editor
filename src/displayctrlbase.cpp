@@ -310,7 +310,7 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
   // LeftDown selects one and LeftUp toggles even if there wasn't a selection before)
   static bool selected_on_ldown = false; 
   /// how far we moved the elements so far
-  static Vec2 moved(0,0);
+  static wxPoint moved(0,0);
 
   wxPoint clientpos = DisplayCtrlBase::panel_to_hud(ev.GetPosition());
   wxGetApp().mainframe()->statusbar()->SetStatusText(wxString::Format(wxT("(%i,%i)"), clientpos.x, clientpos.y), SB_MOUSEPOS);
@@ -381,7 +381,7 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
           return;
         m_drag_mode = DRAG_DRAGGING;
         // fix m_drag_start to point lefttop <-- ? ;)
-        if( ~m_drag_el->has() & E_HAS_RECT )
+        if( ~m_drag_el->has() & E_HAS_POS )
         {
           // if we drag it around then we modify the inherited value...
           // hence we copy the inherited rect and set it as overwriting.
@@ -389,7 +389,7 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
           for( it_elements it = els.begin(); it != els.end(); ++it )
           {
             (*it)->set_rect((*it)->iget_rect());
-            (*it)->add_has(E_HAS_RECT);
+            (*it)->add_has(E_HAS_POS);
           }
           wxGetApp().mainframe()->update_displayctrl();
           wxGetApp().mainframe()->update_propertiesctrl();
@@ -407,7 +407,7 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
         }
         // how much moved so far = clientpos - m_drag_start;
         elements_type& els = wxGetApp().elementsctrl()->selected_elements();
-        Vec2 move(clientpos - m_drag_start);
+        wxPoint move(clientpos - m_drag_start);
         for( it_elements it = els.begin(); it != els.end(); ++it )
         {
           // first move back to initial
@@ -418,14 +418,14 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
         // now check if we have some snapping (only if not Shift pressed)
         if( !ev.ShiftDown() )
         {
-          Vec2 snapels = snap_to_elements();
-          Vec2 snapgrid = snap_to_grid();
+          wxPoint snapels = snap_to_elements();
+          wxPoint snapgrid = snap_to_grid();
 
           // hmm, we pick the one that is not 0 and closer
-          Vec2 snap;
-          if( snapels == Vec2(0,0) )
+          wxPoint snap;
+          if( snapels == wxPoint(0,0) )
             snap = snapgrid;
-          else if( snapgrid == Vec2(0,0) )
+          else if( snapgrid == wxPoint(0,0) )
             snap = snapels;
           else
           { // pick closer
@@ -433,7 +433,7 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
             double lels = snapels.x*snapels.x + snapels.y*snapels.y;
             snap = (lgrid < lels ? snapgrid : snapels);
           }
-          if( snap != Vec2(0,0) )
+          if( snap != wxPoint(0,0) )
           {
             for( it_elements it = els.begin(); it != els.end(); ++it )
               (*it)->move(snap);
@@ -513,16 +513,16 @@ void DisplayCtrlBase::OnMouse( wxMouseEvent& ev )
       }
       m_drag_mode = DRAG_NONE;
       m_drag_el = 0;
-      moved = Vec2(0,0);
+      moved = wxPoint(0,0);
       wxGetApp().mainframe()->statusbar()->SetStatusText( _("Ready"), SB_MSG );
     }
   } // if ControlDown
 }
 
-Vec2 DisplayCtrlBase::snap_to_grid() const
+wxPoint DisplayCtrlBase::snap_to_grid() const
 {
   if( !Prefs::get().var(wxT("view_snapgrid")).bval() )
-    return Vec2(0,0);
+    return wxPoint(0,0);
 
   wxASSERT_MSG( m_drag_el != 0, wxT("need a valid element") );
 
@@ -531,7 +531,7 @@ Vec2 DisplayCtrlBase::snap_to_grid() const
   const int threshold = Prefs::get().var(wxT("view_snapthreshold")).ival();
 
   const wxRect elr = m_drag_el->iget_rect();
-  Vec2 p;
+  wxPoint p;
 
   if( (elr.x % gx) < threshold )
     p.x = (int)std::floor(elr.x/(float)gx)*gx - elr.x;
@@ -546,10 +546,10 @@ Vec2 DisplayCtrlBase::snap_to_grid() const
   return p;
 }
 
-Vec2 DisplayCtrlBase::snap_to_elements() const
+wxPoint DisplayCtrlBase::snap_to_elements() const
 {
   if( !Prefs::get().var(wxT("view_snapelements")).bval() )
-    return Vec2(0,0);
+    return wxPoint(0,0);
 
   wxASSERT_MSG( m_drag_el != 0, wxT("need a valid element") );
 
