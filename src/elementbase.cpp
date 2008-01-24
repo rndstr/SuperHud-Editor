@@ -42,12 +42,37 @@ bool ElementBase::parse_property( const wxString& cmd, wxString args )
 {
   if (cmd.CmpNoCase(wxT("rect")) == 0)
   {
+    long i;
     wxStringTokenizer targ( args, HF_PROPERTY_ARG_DELIM );
-    sscanf( targ.GetNextToken().mb_str(), "%i", &m_rect.x );
-    sscanf( targ.GetNextToken().mb_str(), "%i", &m_rect.y );
-    sscanf( targ.GetNextToken().mb_str(), "%i", &m_rect.width );
-    sscanf( targ.GetNextToken().mb_str(), "%i", &m_rect.height );
+    if( targ.GetNextToken().ToLong(&i) )
+      m_rect.x = (int)i;
+    if( targ.GetNextToken().ToLong(&i) )
+      m_rect.y = (int)i;
+    if( targ.GetNextToken().ToLong(&i) )
+      m_rect.width = (int)i;
+    if( targ.GetNextToken().ToLong(&i) )
+      m_rect.height = (int)i;
     m_has |= E_HAS_RECT;
+  }
+  else if (cmd.CmpNoCase(wxT("position")) == 0)
+  {
+    long i;
+    wxStringTokenizer targ( args, HF_PROPERTY_ARG_DELIM );
+    if( targ.GetNextToken().ToLong(&i) )
+      m_rect.x = (int)i;
+    if( targ.GetNextToken().ToLong(&i) )
+      m_rect.y = (int)i;
+    m_has |= E_HAS_POS;
+  }
+  else if (cmd.CmpNoCase(wxT("dimensions")) == 0)
+  {
+    long i;
+    wxStringTokenizer targ( args, HF_PROPERTY_ARG_DELIM );
+    if( targ.GetNextToken().ToLong(&i) )
+      m_rect.width = (int)i;
+    if( targ.GetNextToken().ToLong(&i) )
+      m_rect.height = (int)i;
+    m_has |= E_HAS_DIM;
   }
   else
     return false;

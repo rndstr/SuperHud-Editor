@@ -105,7 +105,7 @@ void Q4MAXPropertiesNotebook::update_from_element( const elements_type& els )
     m_curel = els.front();
 
     m_vis->from_element(m_curel);
-    return;
+    
     /*
     m_font->from_element(m_curel);
     m_color->from_element(m_curel);

@@ -56,7 +56,9 @@ typedef enum {
   Q4MAX_E_HAS_DIMENSIONS = 1<<9,
   Q4MAX_E_HAS_FONT = 1<<10,
   Q4MAX_E_HAS_HIGHWATERMARK = 1<<11,
-  Q4MAX_E_HAS_HORIZONTAL = 1<<12
+  Q4MAX_E_HAS_HORIZONTAL = 1<<12,
+  Q4MAX_E_HAS_TIME = 1<<13,
+  Q4MAX_E_HAS_VISIBLE = 1<<14
   /*
   Q4MAX_E_HAS_TIME = 1<<1,
   Q4MAX_E_HAS_FONT = 1<<2,
@@ -100,6 +102,8 @@ const int Q4MAX_E_DIMENSIONSY_DEFAULT = 0;
 const char Q4MAX_E_TEXTALIGN_DEFAULT = 'L';
 const int Q4MAX_E_HIGHWATERMARK_DEFAULT = 100;
 const int Q4MAX_E_HORIZONTAL_DEFAULT = 0;
+const int Q4MAX_E_TIME_DEFAULT = 0;
+const int Q4MAX_E_VISIBLE_DEFAULT = 7;
 /// @}
 
 
@@ -176,6 +180,9 @@ class Q4MAXElement : public ElementBase
     //virtual wxRect  iget_hudrect() const;
 
     Vec2        iget_v2val( const wxString& name ) const;
+
+    int         iget_ival( const wxString& name ) const;
+    bool        set_ival( const wxString& name, int val );
     /*
     int         iget_time() const;
     void        set_time( int time ) { m_props.time = time; }

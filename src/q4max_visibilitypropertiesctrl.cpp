@@ -27,11 +27,12 @@
 
 BEGIN_EVENT_TABLE(Q4MAXVisibilityPropertiesCtrl, Q4MAXPropertyGrid)
   EVT_PG_CHANGED(ID_NOTEBOOK_PROPERTIES, Q4MAXVisibilityPropertiesCtrl::OnItemChanged)
-  EVT_TOOL_RANGE(ID_BTN_ALIGN_LEFT, ID_BTN_ALIGN_BOTTOM,
-    Q4MAXVisibilityPropertiesCtrl::OnAlign)
-  EVT_TOOL_RANGE(ID_BTN_ELEMENT_ENABLE, ID_BTN_ELEMENT_DISABLE,
-    Q4MAXVisibilityPropertiesCtrl::OnElementVisibility)
+  EVT_BUTTON(ID_NOTEBOOK_PROPERTIES, Q4MAXVisibilityPropertiesCtrl::OnBtn)
+  EVT_TOOL_RANGE(ID_BTN_ALIGN_LEFT, ID_BTN_ALIGN_BOTTOM, Q4MAXVisibilityPropertiesCtrl::OnAlign)
+  EVT_TOOL_RANGE(ID_BTN_ELEMENT_ENABLE, ID_BTN_ELEMENT_DISABLE, Q4MAXVisibilityPropertiesCtrl::OnElementVisibility)
 END_EVENT_TABLE()
+
+#include "multibuttonmultichoiceeditor.h"
 
 Q4MAXVisibilityPropertiesCtrl::Q4MAXVisibilityPropertiesCtrl( wxWindow *parent ) :
   Q4MAXPropertyGrid( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
@@ -44,13 +45,22 @@ Q4MAXVisibilityPropertiesCtrl::Q4MAXVisibilityPropertiesCtrl( wxWindow *parent )
   AddPage(_("Visibility"));
 
   // a value of 0 (=disable) isn't the same as unspecified (=inherit)
-  Append( new wxIntProperty( _("Duration"), wxT("time"), 0) );
+  Append( new wxIntProperty( _("Duration [ms]"), wxT("time"), 0) );
   SetPropertyEditor(wxT("time"),wxPG_EDITOR(SpinCtrl));
   SetPropertyHelpString( wxT("time"), _("How long the element will be displayed for if it doesn't update again. Generally used for item pickups, frag messages, chat, etc.\n\nClear to disable.") );
 
+  // Register editor class - needs only to be called once
+wxPGRegisterEditorClass( MultiButtonMultiChoiceEditor );
+  wxPGChoices visible_choices;
+  visible_choices.Add(wxT("DUEL"), 1);
+  visible_choices.Add(wxT("TDM"), 2);
+  visible_choices.Add(wxT("CTF"), 4);
+  Append( new wxMultiChoiceProperty(_("Gametypes"), wxT("visible"), visible_choices) );
+  SetPropertyEditor(wxT("visible"),wxPG_EDITOR(MultiButtonMultiChoiceEditor));
+
 
   Append( new wxPropertyCategory( _("Position"), wxT("cat-pos")) );
-
+   
   Append( new wxBoolProperty( _("Use"), wxT("overwrite-pos"), false) );
   SetPropertyHelpString( wxT("overwrite-pos"), _("By default an element is drawn at position (0,0). Check this box to specify your own values.") );
 
@@ -65,10 +75,10 @@ Q4MAXVisibilityPropertiesCtrl::Q4MAXVisibilityPropertiesCtrl( wxWindow *parent )
   Append( new wxPropertyCategory( _("Dimensions"), wxT("cat-dim")) );
 
   Append( new wxBoolProperty( _("Use"), wxT("overwrite-dim"), false) );
-  Append( new wxIntProperty( _("Width"), wxT("width"), 64) );
+  Append( new wxIntProperty( _("Width"), wxT("width"), 0) );
   SetPropertyEditor(wxT("width"),wxPG_EDITOR(SpinCtrl));
 
-  Append( new wxIntProperty( _("Height"), wxT("height"), 32) );
+  Append( new wxIntProperty( _("Height"), wxT("height"), 0) );
   SetPropertyEditor(wxT("height"),wxPG_EDITOR(SpinCtrl));
 
   SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX,(long)1);
@@ -98,10 +108,20 @@ Q4MAXVisibilityPropertiesCtrl::Q4MAXVisibilityPropertiesCtrl( wxWindow *parent )
   tb->Realize();
 }
 
+
+
+
 void Q4MAXVisibilityPropertiesCtrl::ExpandAll( bool expand /*=true*/ )
 {
   Expand(wxT("cat-pos"), expand);
   Expand(wxT("cat-dim"), expand);
+}
+
+void Q4MAXVisibilityPropertiesCtrl::OnBtn( wxCommandEvent& ev )
+{
+  if( ev.GetId() == wxPG_SUBID2 )
+    wxLogError(wxT("grr"));
+
 }
 
 void Q4MAXVisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
@@ -122,9 +142,6 @@ void Q4MAXVisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
     Vec2 p = el->iget_pos();
     SetPropertyValue( wxT("X"), p.x );
     SetPropertyValue( wxT("Y"), p.y );
-
-    //SetPropertyValue( wxT("width"), r.GetWidth() );
-    //SetPropertyValue( wxT("height"), r.GetHeight() );
   }
   else if( name == wxT("X") || name == wxT("Y") ) //|| name == wxT("height") || name == wxT("width") )
   {
@@ -133,21 +150,42 @@ void Q4MAXVisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
       Vec2 p = el->iget_pos();
       el->m_rect.x = (int)p.x;
       el->m_rect.y = (int)p.y;
-      el->m_has |= E_HAS_POS;
+      el->add_has(E_HAS_POS);
+      SetPropertyValue( wxT("overwrite-pos"), true );
     }
     if( name == wxT("X") )
       el->m_rect.x = ev.GetPropertyValueAsInt();
     else if( name == wxT("Y") )
       el->m_rect.y = ev.GetPropertyValueAsInt();
   }
+  else if( name == wxT("overwrite-dim") )
+  {
+    el->add_has( E_HAS_DIM, val.GetBool() );
+    Vec2 p = el->iget_dim();
+    SetPropertyValue( wxT("width"), p.x );
+    SetPropertyValue( wxT("height"), p.y );
+  }
+  else if( name == wxT("width") || name == wxT("height") )
+  {
+    if( !(el->m_has & E_HAS_DIM) )
+    { // user was starting to edit while seeing the inherited values, copy them over
+      Vec2 p = el->iget_dim();
+      el->m_rect.width = (int)p.x;
+      el->m_rect.height = (int)p.y;
+      el->add_has(E_HAS_DIM);
+      SetPropertyValue( wxT("overwrite-dim"), true );
+    }
+    if( name == wxT("width") )
+      el->m_rect.width = ev.GetPropertyValueAsInt();
+    else if( name == wxT("Y") )
+      el->m_rect.height = ev.GetPropertyValueAsInt();
+  }
   else if( name == wxT("time") )
   {
-    /*
     el->add_has( Q4MAX_E_HAS_TIME, !ev.GetProperty()->IsValueUnspecified() );
     if( !ev.GetProperty()->IsValueUnspecified() )
-      el->set_time(val.GetInteger());
-    SetPropertyValue( wxT("time"), el->iget_time() );
-    */
+      el->set_ival(name, val.GetInteger());
+    SetPropertyValue( name, el->iget_ival(name) );
   }
   else
     return; // nothing changed
@@ -174,10 +212,11 @@ void Q4MAXVisibilityPropertiesCtrl::from_element( const ElementBase *el )
   Vec2 p = el->iget_pos();
   SetPropertyValue( wxT("X"), p.x );
   SetPropertyValue( wxT("Y"), p.y );
-//  SetPropertyValue( wxT("width"), r.GetWidth() );
-//  SetPropertyValue( wxT("height"), r.GetHeight() );
+  Vec2 d = el->iget_dim();
+  SetPropertyValue( wxT("width"), d.x );
+  SetPropertyValue( wxT("height"), d.y );
 
-//  SetPropertyValue( wxT("time"), cel->iget_time() );
+  SetPropertyValue( wxT("time"), cel->iget_ival(wxT("time")) );
 
   update_layout();
 }
@@ -194,10 +233,10 @@ void Q4MAXVisibilityPropertiesCtrl::update_layout()
 
   property_defines( wxT("X"), (el->has() & E_HAS_POS)!=0 );
   property_defines( wxT("Y"), (el->has() & E_HAS_POS)!=0 );
-//  property_defines( wxT("width"), (el->has() & E_HAS_RECT)!=0 );
-//  property_defines( wxT("height"), (el->has() & E_HAS_RECT)!=0 );
+  property_defines( wxT("width"), (el->has() & E_HAS_DIM)!=0 );
+  property_defines( wxT("height"), (el->has() & E_HAS_DIM)!=0 );
 
-//  property_defines(wxT("time"), (el->has() & CPMA_E_HAS_TIME) != 0 );
+  property_defines(wxT("time"), (el->has() & Q4MAX_E_HAS_TIME) != 0 );
 }
 
 void Q4MAXVisibilityPropertiesCtrl::OnElementVisibility( wxCommandEvent& ev )

@@ -648,6 +648,14 @@
 					RelativePath=".\src\q4max_propertygrid.h"
 					>
 				</File>
+				<File
+					RelativePath=".\src\q4max_visibilitypropertiesctrl.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\q4max_visibilitypropertiesctrl.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter

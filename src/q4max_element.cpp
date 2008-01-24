@@ -50,16 +50,18 @@ Q4MAXElement::Properties::Properties()
 
 bool Q4MAXElement::Properties::init()
 {
-  addvar(wxT("Color"), Q4MAX_E_COLOR_DEFAULT.to_string(), VART_COLOR).defines(Q4MAX_E_HAS_COLOR);
-  addvarb(wxT("Colored"), Q4MAX_E_COLORED_DEFAULT).defines(Q4MAX_E_HAS_COLORED);
-  addvarc(wxT("ColorBG"), Q4MAX_E_COLORBG_DEFAULT).defines(Q4MAX_E_HAS_COLORBG);
-  addvarc(wxT("ColorHighlight"), Q4MAX_E_COLORHIGHLIGHT_DEFAULT).defines(Q4MAX_E_HAS_COLORHIGHLIGHT);
-  addvar(wxT("ColorHigh"), Q4MAX_E_COLORHIGH_DEFAULT, VART_STRING).defines(Q4MAX_E_HAS_COLORHIGH);
-  addvar(wxT("ColorMed"), Q4MAX_E_COLORMED_DEFAULT, VART_STRING).defines(Q4MAX_E_HAS_COLORMED);
-  addvar(wxT("ColorLow"), Q4MAX_E_COLORLOW_DEFAULT, VART_STRING).defines(Q4MAX_E_HAS_COLORLOW);
-  addvari(wxT("Font"), Q4MAX_E_FONT_DEFAULT).defines(Q4MAX_E_HAS_FONT);
-  addvari(wxT("HighWatermark"), Q4MAX_E_HIGHWATERMARK_DEFAULT).defines(Q4MAX_E_HAS_HIGHWATERMARK);
-  addvari(wxT("Horizontal"), Q4MAX_E_HORIZONTAL_DEFAULT).defines(Q4MAX_E_HAS_HORIZONTAL);
+  addvar(wxT("color"), Q4MAX_E_COLOR_DEFAULT.to_string(), VART_COLOR).defines(Q4MAX_E_HAS_COLOR);
+  addvarb(wxT("colored"), Q4MAX_E_COLORED_DEFAULT).defines(Q4MAX_E_HAS_COLORED);
+  addvarc(wxT("colorbg"), Q4MAX_E_COLORBG_DEFAULT).defines(Q4MAX_E_HAS_COLORBG);
+  addvarc(wxT("colorhighlight"), Q4MAX_E_COLORHIGHLIGHT_DEFAULT).defines(Q4MAX_E_HAS_COLORHIGHLIGHT);
+  addvar(wxT("colorhigh"), Q4MAX_E_COLORHIGH_DEFAULT, VART_STRING).defines(Q4MAX_E_HAS_COLORHIGH);
+  addvar(wxT("colormed"), Q4MAX_E_COLORMED_DEFAULT, VART_STRING).defines(Q4MAX_E_HAS_COLORMED);
+  addvar(wxT("colorlow"), Q4MAX_E_COLORLOW_DEFAULT, VART_STRING).defines(Q4MAX_E_HAS_COLORLOW);
+  addvari(wxT("font"), Q4MAX_E_FONT_DEFAULT).defines(Q4MAX_E_HAS_FONT);
+  addvari(wxT("highwatermark"), Q4MAX_E_HIGHWATERMARK_DEFAULT).defines(Q4MAX_E_HAS_HIGHWATERMARK);
+  addvari(wxT("horizontal"), Q4MAX_E_HORIZONTAL_DEFAULT).defines(Q4MAX_E_HAS_HORIZONTAL);
+  addvari(wxT("time"), Q4MAX_E_TIME_DEFAULT).defines(Q4MAX_E_HAS_TIME);
+  addvari(wxT("visible"), Q4MAX_E_VISIBLE_DEFAULT).defines(Q4MAX_E_HAS_VISIBLE);
   /*
   */
   // Dimensions X Y
@@ -306,13 +308,27 @@ bool Q4MAXElement::parse_property( const wxString& cmd, wxString args )
 
 void Q4MAXElement::write_properties( wxTextOutputStream& stream ) const
 {
-  ElementBase::write_properties(stream);
+  // we do this ourselves...
+  //ElementBase::write_properties(stream);
 
   list<wxString> lines;
+  if( m_has & E_HAS_POS && m_has & E_HAS_DIM )
+    lines.push_back( wxString::Format(wxT("Rect \"%i %i %i %i\""), m_rect.x, m_rect.y, m_rect.width, m_rect.height) );
+  else if( m_has & E_HAS_POS )
+    lines.push_back( wxString::Format(wxT("Position \"%i %i\""), m_rect.x, m_rect.y ) );
+  else if( m_has & E_HAS_DIM )
+    lines.push_back( wxString::Format(wxT("Dimensions \"%i %i\""), m_rect.width, m_rect.height ) );
+
+
   for( Properties::cit_variables cit = m_props.vars().begin(); cit != m_props.vars().end(); ++cit )
   {
     if( m_has & cit->second.defines() )
-      lines.push_back(cit->second.name() + wxT(" \"") + cit->second.sval() + wxT("\""));
+    {
+      if( cit->second.sval().Find(' ') != wxNOT_FOUND )
+        lines.push_back(cit->second.name() + wxT(" \"") + cit->second.sval() + wxT("\""));
+      else // single param
+        lines.push_back(cit->second.name() + wxT(" ") + cit->second.sval() );
+    }
   }
   /*
   if( (m_has & E_HAS_FONT)  && !m_props.font.empty() )
@@ -379,7 +395,7 @@ void Q4MAXElement::write_properties( wxTextOutputStream& stream ) const
   if( m_flags & E_SHORT )
   {
     for( list<wxString>::const_iterator cit = lines.begin(); cit != lines.end(); ++cit )
-      stream << *cit << wxT("; ");
+      stream << *cit << wxT(" ");
   }
   else
   {
@@ -407,6 +423,29 @@ Vec2 Q4MAXElement::iget_v2val( const wxString& propname ) const
     else v2 = parent->iget_v2val(propname);
   }
   return v2; 
+}
+
+int Q4MAXElement::iget_ival( const wxString& name ) const
+{
+  const Properties::var_type& var = m_props.var(name);
+  int value = var.ival();
+  if( !(m_has & var.defines()) )
+  {
+    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, var.defines() ));
+    if( parent == 0 )
+    { // default
+      Properties::var_type tmp = var;
+      tmp.set_default();
+      value = tmp.ival();
+    }
+    else value = parent->iget_ival(name);
+  }
+  return value; 
+}
+
+bool Q4MAXElement::set_ival( const wxString& name, int val )
+{
+  return m_props.seti(name, val);
 }
 
 

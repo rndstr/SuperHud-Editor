@@ -44,7 +44,7 @@ CPMAVisibilityPropertiesCtrl::CPMAVisibilityPropertiesCtrl( wxWindow *parent ) :
   AddPage(_("Visibility"));
 
   // a value of 0 (=disable) isn't the same as unspecified (=inherit)
-  Append( new wxIntProperty( _("Duration"), wxT("time"), 0) );
+  Append( new wxIntProperty( _("Duration [ms]"), wxT("time"), 0) );
   SetPropertyEditor(wxT("time"),wxPG_EDITOR(SpinCtrl));
   SetPropertyHelpString( wxT("time"), _("How long the element will be displayed for if it doesn't update again. Generally used for item pickups, frag messages, chat, etc.\n\nClear to disable.") );
 
@@ -62,10 +62,10 @@ CPMAVisibilityPropertiesCtrl::CPMAVisibilityPropertiesCtrl( wxWindow *parent ) :
   SetPropertyHelpString( wxT("Y"), _("This sets where the element is drawn, how many pixels from top") );
   SetPropertyEditor(wxT("Y"),wxPG_EDITOR(SpinCtrl));
 
-  Append( new wxIntProperty( _("Width"), wxT("width"), 64) );
+  Append( new wxIntProperty( _("Width"), wxT("width"), 0) );
   SetPropertyEditor(wxT("width"),wxPG_EDITOR(SpinCtrl));
 
-  Append( new wxIntProperty( _("Height"), wxT("height"), 32) );
+  Append( new wxIntProperty( _("Height"), wxT("height"), 0) );
   SetPropertyEditor(wxT("height"),wxPG_EDITOR(SpinCtrl));
 
   SetPropertyAttributeAll(wxPG_BOOL_USE_CHECKBOX,(long)1);
@@ -126,7 +126,7 @@ void CPMAVisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
     if( !(el->m_has & E_HAS_RECT) )
     { // user was starting to edit while seeing the inherited values, copy them over
       el->m_rect = el->iget_rect();
-      //SetPropertyValue( wxT("overwrite-rect"), true );
+      SetPropertyValue( wxT("overwrite-rect"), true );
       el->m_has |= E_HAS_RECT;
     }
     if( name == wxT("X") )

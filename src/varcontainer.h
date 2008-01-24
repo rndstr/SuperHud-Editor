@@ -47,11 +47,14 @@ enum
 
 struct Vec2 
 {
-  float x, y;
+  int x, y;
   bool from_string( const wxString& str )
   {
-    if( 2 != sscanf(str.mb_str(), "%f %f", &x, &y) )
+    float fx, fy;
+    if( 2 != sscanf(str.mb_str(), "%f %f", &fx, &fy) )
       return false;
+    x = fx;
+    y = fy;
     return true;
   }
 };
@@ -59,11 +62,16 @@ struct Vec2
 
 struct Vec4
 {
-  float x, y, w, h;
+  int x, y, w, h;
   bool from_string( const wxString& str )
   {
-    if( 4 != sscanf(str.mb_str(), "%f %f %f %f", &x, &y, &w, &h) )
+    float fx, fy, fw, fh;
+    if( 4 != sscanf(str.mb_str(), "%f %f %f %f", &fx, &fy, &fw, &fh) )
       return false;
+    x = fx;
+    y = fy;
+    w = fw;
+    h = fh;
     return true;
   }
 };

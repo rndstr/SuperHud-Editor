@@ -36,6 +36,7 @@ class Q4MAXVisibilityPropertiesCtrl : public Q4MAXPropertyGrid
     void OnItemChanged( wxPropertyGridEvent& ev );
     void OnElementVisibility( wxCommandEvent& ev );
     void OnAlign( wxCommandEvent& ev );
+    void OnBtn( wxCommandEvent& ev );
  
 
 

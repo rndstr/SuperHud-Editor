@@ -64,6 +64,8 @@ FontPropertiesCtrl::FontPropertiesCtrl( wxWindow *parent ) :
   SetPropertyHelpString( wxT("style-none"), _("By default there is no `textstyle' set but if a parent item defines one you can reset the style here") );
   SetPropertyHelpString( wxT("style-shadow"), _("Dropshadowed text") );
 
+  
+
   Append( new wxPropertyCategory( _("Size"), wxT("cat-fontsize") ) );
 
   wxArrayString size_type;
