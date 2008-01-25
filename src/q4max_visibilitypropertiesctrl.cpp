@@ -34,10 +34,15 @@ END_EVENT_TABLE()
 
 #include "multibuttonmultichoiceeditor.h"
 
+//WX_PG_DECLARE_STRING_PROPERTY(wxTestStringProperty)
+//WX_PG_IMPLEMENT_STRING_PROPERTY(wxTestStringProperty,wxPG_NO_ESCAPE)
+
+
 Q4MAXVisibilityPropertiesCtrl::Q4MAXVisibilityPropertiesCtrl( wxWindow *parent ) :
   Q4MAXPropertyGrid( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
             wxDefaultSize, wxPG_BOLD_MODIFIED|wxPG_SPLITTER_AUTO_CENTER|wxPG_DESCRIPTION|wxPG_TOOLBAR|wxPGMAN_DEFAULT_STYLE )
 {
+wxPGRegisterEditorClass( ResetButtonEditor );
   // needed for `time' (duration) to give the user possibility to revert back to inherital value
   // TODO we could also add a [x] button that goes back to inherited!
   SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES); 
@@ -46,17 +51,17 @@ Q4MAXVisibilityPropertiesCtrl::Q4MAXVisibilityPropertiesCtrl( wxWindow *parent )
 
   // a value of 0 (=disable) isn't the same as unspecified (=inherit)
   Append( new wxIntProperty( _("Duration [ms]"), wxT("time"), 0) );
-  SetPropertyEditor(wxT("time"),wxPG_EDITOR(SpinCtrl));
+//  SetPropertyEditor(wxT("time"),wxPG_EDITOR(SpinCtrl));
+  SetPropertyEditor(wxT("time"),wxPG_EDITOR(ResetButtonEditor));
   SetPropertyHelpString( wxT("time"), _("How long the element will be displayed for if it doesn't update again. Generally used for item pickups, frag messages, chat, etc.\n\nClear to disable.") );
 
   // Register editor class - needs only to be called once
-wxPGRegisterEditorClass( MultiButtonMultiChoiceEditor );
   wxPGChoices visible_choices;
   visible_choices.Add(wxT("DUEL"), 1);
   visible_choices.Add(wxT("TDM"), 2);
   visible_choices.Add(wxT("CTF"), 4);
   Append( new wxMultiChoiceProperty(_("Gametypes"), wxT("visible"), visible_choices) );
-  SetPropertyEditor(wxT("visible"),wxPG_EDITOR(MultiButtonMultiChoiceEditor));
+  SetPropertyEditor(wxT("visible"),wxPG_EDITOR(ResetButtonEditor));
 
 
   Append( new wxPropertyCategory( _("Position"), wxT("cat-pos")) );
@@ -119,8 +124,18 @@ void Q4MAXVisibilityPropertiesCtrl::ExpandAll( bool expand /*=true*/ )
 
 void Q4MAXVisibilityPropertiesCtrl::OnBtn( wxCommandEvent& ev )
 {
+  // get selected property
+  wxString prop = GetSelectedProperty()->GetName();
+  wxLogDebug(wxT("PROP %d ") + prop, ev.GetId());
+  wxPGMultiButton* buttons = (wxPGMultiButton*) GetGrid()->GetEditorControlSecondary();
+  if( ev.GetId() == buttons->GetButtonId(0) )
+    wxLogDebug(wxT("0"));
+  if( ev.GetId() == buttons->GetButtonId(1) )
+    wxLogDebug(wxT("1"));
+//  if( ev.GetId() == buttons->GetButtonId(2) )
+//    wxLogDebug(wxT("2"));
   if( ev.GetId() == wxPG_SUBID2 )
-    wxLogError(wxT("grr"));
+    wxLogDebug(wxT("grr"));
 
 }
 

@@ -1,12 +1,12 @@
 #ifndef MULTIBUTTONMULTICHOICEEDITOR_H
 #define MULTIBUTTONMULTICHOICEEDITOR_H
 
- class wxMultiButtonMultiChoiceEditor : public wxPGTextCtrlEditor
+ class wxResetButtonEditor : public wxPGTextCtrlEditor
     {
-        WX_PG_DECLARE_EDITOR_CLASS(wxMultiButtonTextCtrlEditor)
+        WX_PG_DECLARE_EDITOR_CLASS(wxResetButtonEditor)
     public:
-        wxMultiButtonMultiChoiceEditor() {}
-        virtual ~wxMultiButtonMultiChoiceEditor() {}
+        wxResetButtonEditor() {}
+        virtual ~wxResetButtonEditor() {}
 
         wxPG_DECLARE_CREATECONTROLS
         virtual bool OnEvent( wxPropertyGrid* propGrid,
@@ -16,10 +16,10 @@
 
     };
 
-    WX_PG_IMPLEMENT_EDITOR_CLASS(MultiButtonMultiChoiceEditor, wxMultiButtonMultiChoiceEditor,
+    WX_PG_IMPLEMENT_EDITOR_CLASS(ResetButtonEditor, wxResetButtonEditor,
                                  wxPGTextCtrlEditor)
 
-    wxPGWindowList wxMultiButtonMultiChoiceEditor::CreateControls( wxPropertyGrid* propGrid,
+    wxPGWindowList wxResetButtonEditor::CreateControls( wxPropertyGrid* propGrid,
                                                                 wxPGProperty* property,
                                                                 const wxPoint& pos,
                                                                 const wxSize& sz ) const
@@ -43,7 +43,7 @@
         return wndList;
     }
 
-    bool wxMultiButtonMultiChoiceEditor::OnEvent( wxPropertyGrid* propGrid,
+    bool wxResetButtonEditor::OnEvent( wxPropertyGrid* propGrid,
                                                wxPGProperty* property,
                                                wxWindow* ctrl,
                                                wxEvent& event ) const
@@ -52,25 +52,26 @@
         {
             wxPGMultiButton* buttons = (wxPGMultiButton*) propGrid->GetEditorControlSecondary();
 
+            /*
             if ( event.GetId() == buttons->GetButtonId(0) )
             {
                 // Do something when first button is pressed
                 return true;
             }
+            */
+            /*
             if ( event.GetId() == buttons->GetButtonId(1) )
             {
               wxLogWarning(wxT("fu"));
+              property->
                 // Do something when first button is pressed
                 return true;
             }
-            if ( event.GetId() == buttons->GetButtonId(2) )
-            {
-                // Do something when second button is pressed
-                return true;
-            }
+            */
         }
         return wxPGTextCtrlEditor::OnEvent(propGrid, property, ctrl, event);
     }
 
 
 #endif // MULTIBUTTONMULTICHOICEEDITOR_H
+

@@ -53,8 +53,8 @@ struct Vec2
     float fx, fy;
     if( 2 != sscanf(str.mb_str(), "%f %f", &fx, &fy) )
       return false;
-    x = fx;
-    y = fy;
+    x = (int)fx;
+    y = (int)fy;
     return true;
   }
 };
@@ -68,10 +68,10 @@ struct Vec4
     float fx, fy, fw, fh;
     if( 4 != sscanf(str.mb_str(), "%f %f %f %f", &fx, &fy, &fw, &fh) )
       return false;
-    x = fx;
-    y = fy;
-    w = fw;
-    h = fh;
+    x = (int)fx;
+    y = (int)fy;
+    w = (int)fw;
+    h = (int)fh;
     return true;
   }
 };
