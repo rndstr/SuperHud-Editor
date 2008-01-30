@@ -32,7 +32,7 @@ BEGIN_EVENT_TABLE(Q4MAXVisibilityPropertiesCtrl, Q4MAXPropertyGrid)
   EVT_TOOL_RANGE(ID_BTN_ELEMENT_ENABLE, ID_BTN_ELEMENT_DISABLE, Q4MAXVisibilityPropertiesCtrl::OnElementVisibility)
 END_EVENT_TABLE()
 
-#include "multibuttonmultichoiceeditor.h"
+#include "resetbuttoneditor.h"
 
 //WX_PG_DECLARE_STRING_PROPERTY(wxTestStringProperty)
 //WX_PG_IMPLEMENT_STRING_PROPERTY(wxTestStringProperty,wxPG_NO_ESCAPE)
