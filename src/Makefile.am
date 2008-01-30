@@ -18,6 +18,10 @@ wxpropgrid = \
                          wxpropgrid-1.3/src/manager.cpp wxpropgrid-1.3/include/wx/propgrid/manager.h \
                          wxpropgrid-1.3/src/odcombo.cpp wxpropgrid-1.3/include/wx/propgrid/odcombo.h \
                          wxpropgrid-1.3/include/wx/propgrid/propdev.h
+
+if DISABLE_CPMA
+cpma = 
+else
 cpma = \
                          cpma_colorpropertiesctrl.cpp cpma_colorpropertiesctrl.h \
                          cpma_displayctrl.cpp cpma_displayctrl.h \
@@ -31,7 +35,12 @@ cpma = \
                          cpma_propertiesnotebook.cpp cpma_propertiesnotebook.h \
                          cpma_propertygridbase.h \
                          cpma_visibilitypropertiesctrl.cpp cpma_visibilitypropertiesctrl.h
+endif
 
+
+if DISABLE_Q4MAX
+q4max =
+else
 q4max = \
 				q4max_displayctrl.cpp q4max_displayctrl.h \
 				q4max_element.cpp q4max_element.h \
@@ -41,7 +50,7 @@ q4max = \
 				q4max_propertiesnotebook.cpp q4max_propertiesnotebook.h \
 				q4max_propertygrid.h \
         q4max_visibilitypropertiesctrl.cpp q4max_visibilitypropertiesctrl.h
-
+endif
 
 
 superhudeditor_SOURCES = \

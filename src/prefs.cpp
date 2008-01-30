@@ -19,6 +19,10 @@
 #include "factorybase.h"
 #include "propertiesnotebookbase.h"
 
+#ifdef ENABLE_Q4MAX
+  #include "q4max_element.h"
+#endif
+
 #include <wx/stdpaths.h>
 #include <wx/dir.h>
 #include <wx/fileconf.h>
@@ -132,7 +136,10 @@ bool Prefs::init()
 
   // -- temp, never archive
   addvar(wxT("view_suppresshelpergrid"), wxT("false"), VART_BOOL, VARF_NOARCHIVE); ///< preview mode
-  addvar(wxT("view_visible"), wxT("0"), VART_INT, VARF_NOARCHIVE); ///< (q4max only) which elements to display
+#ifdef ENABLE_Q4MAX
+  if( wxGetApp().is_q4max() )
+    addvari(wxT("view_visible"), Q4MAX_E_VIS_ALL, VARF_NOARCHIVE); ///< (q4max only) which elements to display
+#endif
 
 
   return !confexists;

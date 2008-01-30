@@ -236,7 +236,7 @@ public:
   }
   virtual void save()
   {
-    for( typename variables_type::iterator it = m_vars.begin(); it != m_vars.end(); ++it )
+    for( it_variables it = m_vars.begin(); it != m_vars.end(); ++it )
     {
       write_var(it->second);
     }
@@ -255,40 +255,40 @@ public:
 
   const var_type& var( const wxString& name ) const
   {
-    typename variables_type::const_iterator var = m_vars.find(name.Lower());
+    cit_variables var = m_vars.find(name.Lower());
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable: `") + name + wxT("'"));
     return var->second;
   }
 
   bool set( const wxString& name, const wxString& val )
   {
-    typename variables_type::iterator var = m_vars.find(name.Lower());
+    it_variables var = m_vars.find(name.Lower());
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
     return var->second.set(val);
   }
   bool setb( const wxString& name, bool bval )
   {
-    typename variables_type::iterator var = m_vars.find(name.Lower());
+    it_variables var = m_vars.find(name.Lower());
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
     return var->second.set( bval ? wxT("1") : wxT("0"));
   }
   bool seti( const wxString& name, int ival )
   {
-    typename variables_type::iterator var = m_vars.find(name.Lower());
+    it_variables var = m_vars.find(name.Lower());
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
     return var->second.set( wxString::Format(wxT("%i"), ival) );
   }
   bool setvar( const wxString& name, const wxVariant& variant )
   {
-    typename variables_type::iterator var = m_vars.find(name.Lower());
+    it_variables var = m_vars.find(name.Lower());
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
     return var->second.set( variant.MakeString() );
   }
   bool setwxc( const wxString& name, const wxColour& wxcol, int alpha = -1 )
   {
-    typename variables_type::iterator var = m_vars.find(name.Lower());
+    it_variables var = m_vars.find(name.Lower());
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
-    if( var->second.cval().set(wxcol) )
+    if( var->second.cval().set(wxcol) || alpha != -1 )
     { // ok looks like the color changed.. so let's update
       Color4 tmp;
       tmp.set(wxcol);
@@ -301,7 +301,7 @@ public:
 
   bool set_default( const wxString& name )
   {
-    typename variables_type::iterator var = m_vars.find(name.Lower());
+    it_variables var = m_vars.find(name.Lower());
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
     return var->second.set_default();
   }
@@ -331,7 +331,7 @@ public:
 
   bool exists( const wxString& name, int type = VART_ANY )
   {
-    typename variables_type::iterator var = m_vars.find(name.Lower());
+    it_variables var = m_vars.find(name.Lower());
     return (var != m_vars.end() && (VART_ANY == type || var->second.m_type == type));
   }
 
@@ -339,7 +339,7 @@ public:
   void debug()
   {
     wxLogDebug(wxT("VarContainer<>::debug - all vars registered"));
-    for( typename variables_type::iterator it = m_vars.begin(); it != m_vars.end(); ++it )
+    for( cit_variables it = m_vars.begin(); it != m_vars.end(); ++it )
     {
       wxLogDebug(wxT("[%s] %s = %s"), it->first.c_str(), it->second.name().c_str(), it->second.sval().c_str());
     }

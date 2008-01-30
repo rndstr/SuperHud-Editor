@@ -60,6 +60,7 @@ bool Q4MAXElement::Properties::init()
   addvari(wxT("font"), Q4MAX_E_FONT_DEFAULT).defines(Q4MAX_E_HAS_FONT);
   addvari(wxT("highwatermark"), Q4MAX_E_HIGHWATERMARK_DEFAULT).defines(Q4MAX_E_HAS_HIGHWATERMARK);
   addvari(wxT("horizontal"), Q4MAX_E_HORIZONTAL_DEFAULT).defines(Q4MAX_E_HAS_HORIZONTAL);
+  addvarv2(wxT("icondimensions"), 0, 0).defines(Q4MAX_E_HAS_ICONDIMENSIONS);
   addvari(wxT("time"), Q4MAX_E_TIME_DEFAULT).defines(Q4MAX_E_HAS_TIME);
   addvari(wxT("visible"), Q4MAX_E_VISIBLE_DEFAULT).defines(Q4MAX_E_HAS_VISIBLE);
   /*
@@ -313,11 +314,11 @@ void Q4MAXElement::write_properties( wxTextOutputStream& stream ) const
 
   list<wxString> lines;
   if( m_has & E_HAS_POS && m_has & E_HAS_DIM )
-    lines.push_back( wxString::Format(wxT("Rect \"%i %i %i %i\""), m_rect.x, m_rect.y, m_rect.width, m_rect.height) );
+    lines.push_back( wxString::Format(wxT("rect \"%i %i %i %i\""), m_rect.x, m_rect.y, m_rect.width, m_rect.height) );
   else if( m_has & E_HAS_POS )
-    lines.push_back( wxString::Format(wxT("Position \"%i %i\""), m_rect.x, m_rect.y ) );
+    lines.push_back( wxString::Format(wxT("position \"%i %i\""), m_rect.x, m_rect.y ) );
   else if( m_has & E_HAS_DIM )
-    lines.push_back( wxString::Format(wxT("Dimensions \"%i %i\""), m_rect.width, m_rect.height ) );
+    lines.push_back( wxString::Format(wxT("dimensions \"%i %i\""), m_rect.width, m_rect.height ) );
 
 
   for( Properties::cit_variables cit = m_props.vars().begin(); cit != m_props.vars().end(); ++cit )
@@ -330,67 +331,6 @@ void Q4MAXElement::write_properties( wxTextOutputStream& stream ) const
         lines.push_back(cit->second.name() + wxT(" ") + cit->second.sval() );
     }
   }
-  /*
-  if( (m_has & E_HAS_FONT)  && !m_props.font.empty() )
-    lines.push_back( wxT("font ") + m_props.font );
-  if( (m_has & E_HAS_TIME) && m_props.time >= 0 )
-    lines.push_back(wxString::Format( wxT("time %i"), m_props.time ));
-  if( (m_has & E_HAS_FONTSIZE) && m_props.fontsize_type == E_FST_POINT )
-    lines.push_back(wxString::Format( wxT("fontsize %i"),  m_props.fontsize_pt));
-  if( (m_has & E_HAS_FONTSIZE) && m_props.fontsize_type == E_FST_COORD )
-    lines.push_back(wxString::Format( wxT("fontsize %i %i"),  m_props.fontsize_x, m_props.fontsize_y ));
-  if( monospace() )
-    lines.push_back(wxT("monospace"));
-  if( (m_has & E_HAS_TEXTSTYLE) && m_props.textstyle >= 0 )
-    lines.push_back(wxString::Format( wxT("textstyle %i"), m_props.textstyle ));
-  if( (m_has & E_HAS_TEXTALIGN) && m_props.textalign != ' ' )
-    lines.push_back(wxString::Format( wxT("textalign %c"),  m_props.textalign));
-    */
-  /*
-  if( m_has & Q4MAX_E_HAS_COLOR )
-    lines.push_back(wxT("color ") + m_props.var(wxT("color")).sval());
-  if( m_has & Q4MAX_E_HAS_COLORED )
-    lines.push_back(wxT("colored ") + m_props.var(wxT("colored")).sval());
-    */
-  
-  /*
-  if( m_has & E_HAS_BGCOLOR )
-    lines.push_back(wxT("bgcolor ") + m_props.bgcolor.to_string());
-  if( fill() )
-    lines.push_back(wxT("fill"));
-  if( doublebar() )
-    lines.push_back(wxT("doublebar"));
-  if( draw3d() )
-    lines.push_back(wxT("draw3d"));
-  if( m_has & E_HAS_FADE )
-    lines.push_back(wxT("fade ") + m_props.fade.to_string());
-  if( usemodel() ) //m_has & E_HAS_MODEL )
-  {
-    if( m_has & E_HAS_MODEL )
-      lines.push_back(wxT("model \"") + m_props.model + wxT("\""));
-    if( m_has & E_HAS_SKIN )
-      lines.push_back(wxT("image \"") + m_props.skin + wxT("\""));
-    if( m_has & E_HAS_ANGLES )
-    {
-      wxString angles;
-      if( m_props.angle_pan == 0 )
-        angles = wxString::Format( wxT("angles %d %d %d"), m_props.angle_pitch, m_props.angle_yaw, m_props.angle_roll );
-      else
-        angles = wxString::Format( wxT("angles %d %d %d %d"), m_props.angle_pitch, m_props.angle_yaw, m_props.angle_roll, m_props.angle_pan );
-      lines.push_back( angles );
-    }
-    if( m_has & E_HAS_OFFSET )
-    {
-      wxString offset = wxT("offset ") + she::pretty_print_float(m_props.offset[E_OFFSET_X]) + wxT(" ") + 
-        she::pretty_print_float(m_props.offset[E_OFFSET_Y]) + wxT(" ") +
-        she::pretty_print_float(m_props.offset[E_OFFSET_Z]);
-      lines.push_back( offset );
-    }
-  }
-  else if( m_has & E_HAS_IMAGE )
-    lines.push_back(wxT("image \"") + m_props.image + wxT("\""));
-    */
-
 
   if( m_flags & E_SHORT )
   {
@@ -742,6 +682,13 @@ int Q4MAXElement::angle(int which) const
   return 0;
 }
 */
+
+bool Q4MAXElement::is_rendered() const
+{
+  if( !ElementBase::is_rendered() )
+    return false;
+  return (m_props.var(wxT("view_visible")).ival() & Prefs::get().var(wxT("view_visible")).ival());
+}
 
 void Q4MAXElement::render() const
 {

@@ -21,6 +21,24 @@ AC_MSG_CHECKING([whether debugging enabled])
 AC_MSG_RESULT($enable_debug)
 AM_CONDITIONAL([ENABLE_DEBUG], test x$enable_debug = xyes)
 
+AC_ARG_ENABLE([cpma],
+              [AS_HELP_STRING([--disable-cpma],
+                              [disable support for CPMA SuperHud (default NO)])],
+              [disable_cpma=$enableval],
+              [disable_cpma=yes])
+AC_MSG_CHECKING([whether CPMA SuperHud support will be available])
+AC_MSG_RESULT($disable_cpma)
+AM_CONDITIONAL([DISABLE_CPMA], test x$disable_cpma = xyes)
+
+AC_ARG_ENABLE([q4max],
+              [AS_HELP_STRING([--disable-q4max],
+                              [disable support for Q4MAX SuperHud (default NO)])],
+              [disable_q4max=$enableval],
+              [disable_q4max=yes])
+AC_MSG_CHECKING([whether Q4MAX SuperHud support will be available])
+AC_MSG_RESULT($disable_q4max)
+AM_CONDITIONAL([DISABLE_Q4MAX], test x$disable_q4max = xyes)
+
 
 dnl checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL

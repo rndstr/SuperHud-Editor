@@ -28,7 +28,7 @@
         wxPGMultiButton* buttons = new wxPGMultiButton( propGrid, sz );
 
         // Add two regular buttons
-//        buttons->Add( wxT("...") );
+        buttons->Add( wxT("...") );
         buttons->Add( wxT("X") );
 
         // Create the 'primary' editor control (textctrl in this case)
@@ -59,19 +59,16 @@
                 return true;
             }
             */
-            /*
             if ( event.GetId() == buttons->GetButtonId(1) )
             {
               wxLogWarning(wxT("fu"));
-              property->
+              propGrid->SetPropertyValue(wxT("visible"), wxT(""));
                 // Do something when first button is pressed
                 return true;
             }
-            */
         }
         return wxPGTextCtrlEditor::OnEvent(propGrid, property, ctrl, event);
     }
-
 
 #endif // MULTIBUTTONMULTICHOICEEDITOR_H
 

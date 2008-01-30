@@ -87,6 +87,10 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_MENU(ID_MENU_HELP_TIP, MainFrame::OnMenuHelpTip)
   
   EVT_TOOL(ID_TOOL_VIEW_SUPPRESSHELPERGRID, MainFrame::OnToolViewSuppress)
+#ifdef ENABLE_Q4MAX
+  EVT_TOOL(ID_TOOL_VIEW_VISIBLE, MainFrame::OnToolViewVisible)
+#endif
+  
   EVT_DOWNLOAD(MainFrame::OnDownload)
   EVT_UPDATE_UI_RANGE(ID_MENU_VIEW_CONFIGPREVIEW, ID_MENU_VIEW_TOOLBAR_FILE, MainFrame::OnUpdateViewPanes)
   EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrame::OnMRUFile)
@@ -216,6 +220,7 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   m_toolbar_view = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTB_FLAT | wxTB_NODIVIDER | wxTB_HORZ_TEXT);
   m_toolbar_view->SetToolBitmapSize(wxSize(16,16));
   m_toolbar_view->AddTool(ID_TOOL_VIEW_SUPPRESSHELPERGRID, _("Preview"),  wxArtProvider::GetBitmap(wxART_EXECUTABLE_FILE, wxART_TOOLBAR, wxSize(16,16)), _("Temporarily disables drawing of Helpers and Grid"), wxITEM_CHECK);
+#ifdef ENABLE_Q4MAX
   if( wxGetApp().is_q4max() )
   {
     m_toolbar_view->AddSeparator();
@@ -225,11 +230,10 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
     cs.Add(_("TDM"));
     cs.Add(_("CTF"));
     wxChoice *c = new wxChoice(m_toolbar_view, wxID_ANY, wxDefaultPosition, wxDefaultSize, cs);
-    m_toolbar_view->AddControl(new wxStaticText(m_toolbar_view, wxID_ANY, _("Visible:")));
+    m_toolbar_view->AddControl(new wxStaticText(m_toolbar_view, ID_TOOL_VIEW_VISIBLE, _("Visible:")));
     m_toolbar_view->AddControl(c);
-
-
   }
+#endif
   m_toolbar_view->Realize();
  
 
@@ -728,6 +732,31 @@ void MainFrame::OnToolViewSuppress( wxCommandEvent& ev )
   Prefs::get().setb(wxT("view_suppresshelpergrid"), ev.IsChecked());
   update_displayctrl();
 }
+
+#ifdef ENABLE_Q4MAX
+void MainFrame::OnToolViewVisible( wxCommandEvent& ev )
+{
+  int vis;
+  switch( ev.GetInt() )
+  {
+  case 1:
+    vis = Q4MAX_E_VIS_DUEL;
+    break;
+  case 2:
+    vis = Q4MAX_E_VIS_TDM;
+    break;
+  case 3:
+    vis = Q4MAX_E_VIS_CTF;
+    break;
+  case 0:
+  default:
+    vis = Q4MAX_E_VIS_ALL;
+    break;
+  }
+  Prefs::get().seti(wxT("view_visible"), vis);
+  update_displayctrl();
+}
+#endif
 
 void MainFrame::OnMRUFile( wxCommandEvent& ev )
 {

@@ -145,9 +145,6 @@ void PrefsDialog::OnOk( wxCommandEvent& ev )
   col << m_vhfs->GetValue();
   Prefs::get().setwxc(wxT("view_helper_fill_selected"), col, m_vhfsa->GetValue().GetInteger());
 
-  col << m_vhfs->GetValue();
-  Prefs::get().setwxc(wxT("view_helper_fill_selected"), col, m_vhfsa->GetValue().GetInteger());
-
   col << m_vhbs->GetValue();
   Prefs::get().setwxc(wxT("view_helper_border_selected"), col, m_vhbsa->GetValue().GetInteger());
 

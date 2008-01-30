@@ -42,7 +42,7 @@ Q4MAXVisibilityPropertiesCtrl::Q4MAXVisibilityPropertiesCtrl( wxWindow *parent )
   Q4MAXPropertyGrid( parent, ID_NOTEBOOK_PROPERTIES, wxDefaultPosition, // position
             wxDefaultSize, wxPG_BOLD_MODIFIED|wxPG_SPLITTER_AUTO_CENTER|wxPG_DESCRIPTION|wxPG_TOOLBAR|wxPGMAN_DEFAULT_STYLE )
 {
-wxPGRegisterEditorClass( ResetButtonEditor );
+  wxPGRegisterEditorClass( ResetButtonEditor );
   // needed for `time' (duration) to give the user possibility to revert back to inherital value
   // TODO we could also add a [x] button that goes back to inherited!
   SetExtraStyle(wxPG_EX_AUTO_UNSPECIFIED_VALUES); 
@@ -51,18 +51,24 @@ wxPGRegisterEditorClass( ResetButtonEditor );
 
   // a value of 0 (=disable) isn't the same as unspecified (=inherit)
   Append( new wxIntProperty( _("Duration [ms]"), wxT("time"), 0) );
-//  SetPropertyEditor(wxT("time"),wxPG_EDITOR(SpinCtrl));
-  SetPropertyEditor(wxT("time"),wxPG_EDITOR(ResetButtonEditor));
+  SetPropertyEditor(wxT("time"),wxPG_EDITOR(SpinCtrl));
+  //SetPropertyEditor(wxT("time"),wxPG_EDITOR(SCResetButtonEditor));
   SetPropertyHelpString( wxT("time"), _("How long the element will be displayed for if it doesn't update again. Generally used for item pickups, frag messages, chat, etc.\n\nClear to disable.") );
 
   // Register editor class - needs only to be called once
+  /*
   wxPGChoices visible_choices;
   visible_choices.Add(wxT("DUEL"), 1);
   visible_choices.Add(wxT("TDM"), 2);
   visible_choices.Add(wxT("CTF"), 4);
   Append( new wxMultiChoiceProperty(_("Gametypes"), wxT("visible"), visible_choices) );
   SetPropertyEditor(wxT("visible"),wxPG_EDITOR(ResetButtonEditor));
-
+  */
+  Append( new wxPropertyCategory( _("Gametypes"), wxT("cat-visible")) );
+  Append( new wxBoolProperty( _("Force hidden"), wxT("visible-forcehidden"), false) );
+  Append( new wxBoolProperty( _("DUEL"), wxT("visible-duel"), false) );
+  Append( new wxBoolProperty( _("TDM"), wxT("visible-tdm"), false) );
+  Append( new wxBoolProperty( _("CTF"), wxT("visible-ctf"), false) );
 
   Append( new wxPropertyCategory( _("Position"), wxT("cat-pos")) );
    
@@ -120,6 +126,7 @@ void Q4MAXVisibilityPropertiesCtrl::ExpandAll( bool expand /*=true*/ )
 {
   Expand(wxT("cat-pos"), expand);
   Expand(wxT("cat-dim"), expand);
+  Expand(wxT("cat-visible"), expand);
 }
 
 void Q4MAXVisibilityPropertiesCtrl::OnBtn( wxCommandEvent& ev )
@@ -202,6 +209,40 @@ void Q4MAXVisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
       el->set_ival(name, val.GetInteger());
     SetPropertyValue( name, el->iget_ival(name) );
   }
+  else if( name == wxT("visible-forcehidden")
+    || name == wxT("visible-duel") || name == wxT("visible-tdm") || name == wxT("visible-ctf") )
+  {
+    
+    bool fh = GetPropertyValueAsBool(wxT("visible-forcehidden"));
+    if( name == wxT("visible-forcehidden") )
+    {
+      el->add_has( Q4MAX_E_HAS_VISIBLE, val.GetBool() );
+      if( fh = val.GetBool() )
+      { // enabled it
+        el->set_ival(wxT("visible"), 0);
+      }
+      int v = el->iget_ival(wxT("visible"));
+      SetPropertyValue(wxT("visible-duel"), !fh && (v & Q4MAX_E_VIS_DUEL) != 0);
+      SetPropertyValue(wxT("visible-tdm"), !fh && (v & Q4MAX_E_VIS_TDM) != 0);
+      SetPropertyValue(wxT("visible-ctf"), !fh && (v & Q4MAX_E_VIS_CTF) != 0);
+    }
+    else
+    {
+      bool vd = GetPropertyValueAsBool(wxT("visible-duel"));
+      bool vt = GetPropertyValueAsBool(wxT("visible-tdm"));
+      bool vc = GetPropertyValueAsBool(wxT("visible-ctf"));
+      int v = 0;
+      if( vd || vt || vc )
+      {
+        el->add_has( Q4MAX_E_HAS_VISIBLE, true );
+        SetPropertyValue(wxT("visible-forcehidden"), false);
+        if( vd ) v |= Q4MAX_E_VIS_DUEL;
+        if( vt ) v |= Q4MAX_E_VIS_TDM;
+        if( vc ) v |= Q4MAX_E_VIS_CTF;
+      }
+      el->set_ival(wxT("visible"), v);
+    }
+  }
   else
     return; // nothing changed
 
@@ -245,6 +286,11 @@ void Q4MAXVisibilityPropertiesCtrl::update_layout()
     return;
   }
   ElementBase *el = p->curel();
+
+  property_defines( wxT("visible-forcehidden"), (el->has() & Q4MAX_E_HAS_VISIBLE) != 0 );
+  property_defines( wxT("visible-duel"), (el->has() & Q4MAX_E_HAS_VISIBLE) != 0 );
+  property_defines( wxT("visible-tdm"), (el->has() & Q4MAX_E_HAS_VISIBLE) != 0 );
+  property_defines( wxT("visible-ctf"), (el->has() & Q4MAX_E_HAS_VISIBLE) != 0 );
 
   property_defines( wxT("X"), (el->has() & E_HAS_POS)!=0 );
   property_defines( wxT("Y"), (el->has() & E_HAS_POS)!=0 );

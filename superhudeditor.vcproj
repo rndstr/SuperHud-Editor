@@ -466,6 +466,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\resetbuttoneditor.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\scrolledmessagedialog.cpp"
 				>
 			</File>

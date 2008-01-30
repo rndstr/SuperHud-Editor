@@ -57,8 +57,9 @@ typedef enum {
   Q4MAX_E_HAS_FONT = 1<<10,
   Q4MAX_E_HAS_HIGHWATERMARK = 1<<11,
   Q4MAX_E_HAS_HORIZONTAL = 1<<12,
-  Q4MAX_E_HAS_TIME = 1<<13,
-  Q4MAX_E_HAS_VISIBLE = 1<<14
+  Q4MAX_E_HAS_ICONDIMENSIONS = 1<<13,
+  Q4MAX_E_HAS_TIME = 1<<14,
+  Q4MAX_E_HAS_VISIBLE = 1<<15
   /*
   Q4MAX_E_HAS_TIME = 1<<1,
   Q4MAX_E_HAS_FONT = 1<<2,
@@ -85,6 +86,16 @@ typedef enum {
   */
 } eQ4MAXElementProperties;
 
+typedef enum
+{
+  Q4MAX_E_VIS_HIDDEN = 0,
+  Q4MAX_E_VIS_DUEL = 1,
+  Q4MAX_E_VIS_TDM = 2,
+  Q4MAX_E_VIS_CTF = 4,
+  Q4MAX_E_VIS_ALL = 7
+
+} eQ4MAXElementVisible;
+
 /// Defaults
 /// @{
 
@@ -103,7 +114,7 @@ const char Q4MAX_E_TEXTALIGN_DEFAULT = 'L';
 const int Q4MAX_E_HIGHWATERMARK_DEFAULT = 100;
 const int Q4MAX_E_HORIZONTAL_DEFAULT = 0;
 const int Q4MAX_E_TIME_DEFAULT = 0;
-const int Q4MAX_E_VISIBLE_DEFAULT = 7;
+const int Q4MAX_E_VISIBLE_DEFAULT = Q4MAX_E_VIS_ALL;
 /// @}
 
 
@@ -264,6 +275,7 @@ class Q4MAXElement : public ElementBase
     void        set_usemodel( bool um = true ) { m_props.usemodel = um; }
     */
 
+    bool            is_rendered() const;
 
     static wxString type2string( int type );
   protected:

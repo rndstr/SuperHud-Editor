@@ -134,6 +134,9 @@ class MainFrame : public wxFrame
     void OnMenuViewHelper( wxCommandEvent& );
     void OnUpdateViewPanes( wxUpdateUIEvent& );
     void OnToolViewSuppress( wxCommandEvent& );
+#ifdef ENABLE_Q4MAX
+    void OnToolViewVisible( wxCommandEvent& );
+#endif
 
 #if HAS_WEBUPDATER
     void OnMenuHelpUpdate( wxCommandEvent& );
