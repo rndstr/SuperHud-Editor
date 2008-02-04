@@ -257,6 +257,13 @@ void Q4MAXVisibilityPropertiesCtrl::from_element( const ElementBase *el )
 {
   const Q4MAXElement *cel = static_cast<const Q4MAXElement*>(el);
 
+
+  bool hasv = (el->has() & Q4MAX_E_HAS_VISIBLE) != 0;
+  int v = cel->iget_ival(wxT("visible"));
+  SetPropertyValue(wxT("visible-duel"), (v & Q4MAX_E_VIS_DUEL) != 0);
+  SetPropertyValue(wxT("visible-tdm"), (v & Q4MAX_E_VIS_TDM) != 0);
+  SetPropertyValue(wxT("visible-ctf"), (v & Q4MAX_E_VIS_CTF) != 0);
+
   SetPropertyValue( wxT("overwrite-pos"), el->has() & E_HAS_POS );
   SetPropertyValue( wxT("overwrite-dim"), el->has() & E_HAS_DIM );
 

@@ -640,9 +640,10 @@ bool HudFileBase::read_properties( ElementBase *hi, const wxString& props )
     }
     // scrap those doublequotes!
     she::wxTrim( args, HF_PROPERTY_ARGTRIM );
+    wxLogDebug(hi->name() + wxT(": ") + cmd + wxT("|") + args);
     if( !hi->parse_property( cmd, args ) )
     {
-      wxLogWarning( _("Invalid command `%s' found in element `%s'."), cmd.c_str(), hi->name().c_str() );
+      wxLogWarning( _("Invalid property `%s' found in element `%s'."), cmd.c_str(), hi->name().c_str() );
       //wxString e = wxString::Format( wxT("Invalid element command `%s' found in element `%s'."), cmd,  hi->get_name() );
       //throw hudfilereader_parse_error( e.c_str() );
     }

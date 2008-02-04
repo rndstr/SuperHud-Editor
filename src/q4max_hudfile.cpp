@@ -154,7 +154,7 @@ wxString extract_word( const wxString& s, size_t *start = 0 )
       quoting = true;
       continue;
     }
-    if( !quoting && (s[i] == '\n' || s[i] == '\t' || s[i] == ';') )
+    if( !quoting && (s[i] == '\n' || s[i] == '\t' || s[i] == ';' || s[i] == ' ') )
     {
       if( word.empty() )
         continue; // skip whitespace at start

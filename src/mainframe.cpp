@@ -88,7 +88,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   
   EVT_TOOL(ID_TOOL_VIEW_SUPPRESSHELPERGRID, MainFrame::OnToolViewSuppress)
 #ifdef ENABLE_Q4MAX
-  EVT_TOOL(ID_TOOL_VIEW_VISIBLE, MainFrame::OnToolViewVisible)
+  EVT_CHOICE(ID_TOOL_VIEW_VISIBLE, MainFrame::OnToolViewVisible)
 #endif
   
   EVT_DOWNLOAD(MainFrame::OnDownload)
@@ -229,9 +229,10 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
     cs.Add(_("DUEL"));
     cs.Add(_("TDM"));
     cs.Add(_("CTF"));
-    wxChoice *c = new wxChoice(m_toolbar_view, wxID_ANY, wxDefaultPosition, wxDefaultSize, cs);
-    m_toolbar_view->AddControl(new wxStaticText(m_toolbar_view, ID_TOOL_VIEW_VISIBLE, _("Visible:")));
+    wxChoice *c = new wxChoice(m_toolbar_view, ID_TOOL_VIEW_VISIBLE, wxDefaultPosition, wxDefaultSize, cs);
+    m_toolbar_view->AddControl(new wxStaticText(m_toolbar_view, wxID_ANY, _("Visible:")));
     m_toolbar_view->AddControl(c);
+    c->SetSelection(0);
   }
 #endif
   m_toolbar_view->Realize();

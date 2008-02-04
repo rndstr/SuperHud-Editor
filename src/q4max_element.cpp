@@ -117,12 +117,28 @@ bool Q4MAXElement::parse_property( const wxString& cmd, wxString args )
 
   //m_has = E_PROPERTIES_DEFAULT;
 
-  if( !m_props.exists(cmd) )
+  wxString c = cmd;
+  // conversion from older version?
+  // 0.81
+  //  chg: Superhud: teamcolor 1 / enemycolor 1 have now become color T/color E. Can also specify an alpha value (eg "T 0.9").
+  if( c.CmpNoCase(wxT("teamcolor")) == 0 )
+  {
+    c = wxT("color");
+    args = wxT("T");
+  }
+  else if( c.CmpNoCase(wxT("enemycolor")) == 0 )
+  {
+    c = wxT("color");
+    args = wxT("E");
+  }
+
+
+  if( !m_props.exists(c) )
     return false;
 
-  if( !m_props.set(cmd, args) )
-      wxLogWarning( _("Unknown `%s' argument: %s"), cmd.c_str(), args.c_str() );
-  m_has |= m_props.var(cmd).defines();
+  if( !m_props.set(c, args) )
+      wxLogWarning( _("Unknown `%s' argument: %s"), c.c_str(), args.c_str() );
+  m_has |= m_props.var(c).defines();
   /*
   if( cmd.CmpNoCase(wxT("color"))==0 )
   {
@@ -687,7 +703,8 @@ bool Q4MAXElement::is_rendered() const
 {
   if( !ElementBase::is_rendered() )
     return false;
-  return (m_props.var(wxT("view_visible")).ival() & Prefs::get().var(wxT("view_visible")).ival());
+  int vis = iget_ival(wxT("visible"));
+  return (vis & Prefs::get().var(wxT("view_visible")).ival())!=0;
 }
 
 void Q4MAXElement::render() const

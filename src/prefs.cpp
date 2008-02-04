@@ -137,8 +137,7 @@ bool Prefs::init()
   // -- temp, never archive
   addvar(wxT("view_suppresshelpergrid"), wxT("false"), VART_BOOL, VARF_NOARCHIVE); ///< preview mode
 #ifdef ENABLE_Q4MAX
-  if( wxGetApp().is_q4max() )
-    addvari(wxT("view_visible"), Q4MAX_E_VIS_ALL, VARF_NOARCHIVE); ///< (q4max only) which elements to display
+  addvari(wxT("view_visible"), Q4MAX_E_VIS_ALL, VARF_NOARCHIVE); ///< (q4max only) which elements to display
 #endif
 
 

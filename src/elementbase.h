@@ -159,7 +159,7 @@ class ElementBase
     wxRect          iget_rect() const;
     Vec2            iget_pos() const;
     Vec2            iget_dim() const;
-    bool            is_rendered() const;
+    virtual bool    is_rendered() const;
     virtual bool    is_removable() const { return (flags() & E_NOTUNIQ) != 0; }
 
     static wxString type2string( int type );

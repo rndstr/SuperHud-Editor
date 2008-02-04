@@ -15,6 +15,7 @@
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include "color4.h"
 #include "misc.h"
+#include "superhudeditor.h"
 
 wxString Color4::to_string() const
 {
@@ -27,10 +28,18 @@ wxString Color4::to_string() const
       she::pretty_print_float( a );
   
   case COLOR_T:
+    if( wxGetApp().is_q4max() )
+      return wxT("T ") + she::pretty_print_float(a);
     return wxT("T");
 
   case COLOR_E:
+    if( wxGetApp().is_q4max() )
+      return wxT("E ") + she::pretty_print_float(a);
     return wxT("E");
+  case COLOR_W:
+    if( wxGetApp().is_q4max() )
+      return wxT("W ") + she::pretty_print_float(a);
+    return wxT("W");
   }
   return wxT("<error>");
 }
@@ -62,7 +71,8 @@ bool Color4::from_string( const wxString& str )
   if( 4 != sscanf( str.mb_str(), "%f %f %f %f", &_r, &_g, &_b, &_a ) )
   {
     char special;
-    if( 1 != sscanf( str.mb_str(), "%c", &special ) )
+    _a = 1.f;
+    if( 0 == sscanf( str.mb_str(), "%c %f", &special, &_a ) )
       return false;
     else
     {
@@ -70,9 +80,11 @@ bool Color4::from_string( const wxString& str )
         type = COLOR_T;
       else if( toupper(special) == 'E' )
         type = COLOR_E;
+      else if( toupper(special) == 'W' )
+        type = COLOR_W;
       else
         return false;
-
+      a = _a;
       return true;
     }
   }

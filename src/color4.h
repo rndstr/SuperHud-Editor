@@ -30,8 +30,10 @@ typedef enum
   COLOR_NONE,
   COLOR_RGBA,
   COLOR_T,
-  COLOR_E
+  COLOR_E,
+  COLOR_W // q4max
 } eColorType;
+
 
 /// A color class including alpha channel (percentage!) and conversion function to wxColour.
 /// All color information (RGBA) is stored as float [0-1]
@@ -61,9 +63,10 @@ class Color4
 
     void set_type(int t) { type = t; }
     int get_type() const { return type; }
-    bool is_special() const { return (type == COLOR_T || type == COLOR_E); }
+    bool is_special() const { return (type == COLOR_T || type == COLOR_E || type == COLOR_W); }
     bool is_special_t() const { return (type == COLOR_T); }
     bool is_special_e() const { return (type == COLOR_E); }
+    bool is_special_w() const { return (type == COLOR_W); }
     bool is_rgba() const { return (type == COLOR_RGBA); }
 
     int a255() const
@@ -118,6 +121,9 @@ class Color4
         break;
       case COLOR_E:
         glColor4f( .2f, .2f, 1.f, a );
+        break;
+      case COLOR_W:
+        glColor4f( 1.f, 1.f, 1.f, a );
         break;
       case COLOR_RGBA:
       default:
