@@ -50,31 +50,52 @@ Q4MAXElement::Properties::Properties()
 
 bool Q4MAXElement::Properties::init()
 {
-  addvar(wxT("color"), Q4MAX_E_COLOR_DEFAULT.to_string(), VART_COLOR).defines(Q4MAX_E_HAS_COLOR);
-  addvarb(wxT("colored"), Q4MAX_E_COLORED_DEFAULT).defines(Q4MAX_E_HAS_COLORED);
-  addvarc(wxT("colorbg"), Q4MAX_E_COLORBG_DEFAULT).defines(Q4MAX_E_HAS_COLORBG);
-  addvarc(wxT("colorhighlight"), Q4MAX_E_COLORHIGHLIGHT_DEFAULT).defines(Q4MAX_E_HAS_COLORHIGHLIGHT);
-  addvar(wxT("colorhigh"), Q4MAX_E_COLORHIGH_DEFAULT, VART_STRING).defines(Q4MAX_E_HAS_COLORHIGH);
-  addvar(wxT("colormed"), Q4MAX_E_COLORMED_DEFAULT, VART_STRING).defines(Q4MAX_E_HAS_COLORMED);
-  addvar(wxT("colorlow"), Q4MAX_E_COLORLOW_DEFAULT, VART_STRING).defines(Q4MAX_E_HAS_COLORLOW);
-  addvari(wxT("font"), Q4MAX_E_FONT_DEFAULT).defines(Q4MAX_E_HAS_FONT);
-  addvari(wxT("highwatermark"), Q4MAX_E_HIGHWATERMARK_DEFAULT).defines(Q4MAX_E_HAS_HIGHWATERMARK);
-  addvari(wxT("horizontal"), Q4MAX_E_HORIZONTAL_DEFAULT).defines(Q4MAX_E_HAS_HORIZONTAL);
-  addvarv2(wxT("icondimensions"), 0, 0).defines(Q4MAX_E_HAS_ICONDIMENSIONS);
-  addvari(wxT("time"), Q4MAX_E_TIME_DEFAULT).defines(Q4MAX_E_HAS_TIME);
-  addvari(wxT("visible"), Q4MAX_E_VISIBLE_DEFAULT).defines(Q4MAX_E_HAS_VISIBLE);
+  addvar(wxT("color"), MAX_E_COLOR_DEFAULT.to_string(), VART_COLOR).defines(MAX_E_HAS_COLOR);
+  addvarb(wxT("colored"), MAX_E_COLORED_DEFAULT).defines(MAX_E_HAS_COLORED);
+  addvarc(wxT("colorbg"), MAX_E_COLORBG_DEFAULT).defines(MAX_E_HAS_COLORBG);
+  addvarc(wxT("colorhighlight"), MAX_E_COLORHIGHLIGHT_DEFAULT).defines(MAX_E_HAS_COLORHIGHLIGHT);
+  addvar(wxT("colorhigh"), MAX_E_COLORHIGH_DEFAULT, VART_STRING).defines(MAX_E_HAS_COLORHIGH);
+  addvar(wxT("colormed"), MAX_E_COLORMED_DEFAULT, VART_STRING).defines(MAX_E_HAS_COLORMED);
+  addvar(wxT("colorlow"), MAX_E_COLORLOW_DEFAULT, VART_STRING).defines(MAX_E_HAS_COLORLOW);
+  addvari(wxT("font"), MAX_E_FONT_DEFAULT).defines(MAX_E_HAS_FONT);
+  addvard(wxT("highwatermark"), MAX_E_HIGHWATERMARK_DEFAULT).defines(MAX_E_HAS_HIGHWATERMARK);
+  addvari(wxT("horizontal"), MAX_E_HORIZONTAL_DEFAULT).defines(MAX_E_HAS_HORIZONTAL);
+  addvarv2(wxT("icondimensions"), 0, 0).defines(MAX_E_HAS_ICONDIMENSIONS);
+
+  addvarv2(wxT("iconoffset"), 0, 0).defines(MAX_E_HAS_ICONOFFSET);
+  addvar(wxT("image")).defines(MAX_E_HAS_IMAGE);
+  addvarv2(wxT("itemspacer"), 0, 0).defines(MAX_E_HAS_ITEMSPACER);
+  addvar(wxT("listalign"), MAX_E_LISTALIGN_DEFAULT).defines(MAX_E_HAS_LISTALIGN); // L|C|R
+  addvarc(wxT("marinecolor"), MAX_E_MARINECOLOR_DEFAULT).defines(MAX_E_HAS_MARINECOLOR);
+  addvari(wxT("medwatermark"), MAX_E_MEDWATERMARK_DEFAULT).defines(MAX_E_HAS_MEDWATERMARK);
+  addvarb(wxT("monospaced"), MAX_E_MONOSPACED_DEFAULT).defines(MAX_E_HAS_MONOSPACED);
+  addvarc(wxT("stroggcolor"), MAX_E_STROGGCOLOR_DEFAULT).defines(MAX_E_HAS_STROGGCOLOR);
+  addvar(wxT("tabstops"), MAX_E_TABSTOPS_DEFAULT).defines(MAX_E_HAS_TABSTOPS);
+  addvar(wxT("text")).defines(MAX_E_HAS_TEXT);
+  addvar(wxT("textalign"), MAX_E_TEXTALIGN_DEFAULT).defines(MAX_E_HAS_TEXTALIGN);
+  addvarv2(wxT("textoffset"), 0, 0).defines(MAX_E_HAS_TEXTOFFSET);
+  addvard(wxT("textscale"), 1.0).defines(MAX_E_HAS_TEXTSCALE);
+  addvari(wxT("textstyle"), 0).defines(MAX_E_HAS_TEXTSTYLE);
+  addvari(wxT("time"), MAX_E_TIME_DEFAULT).defines(MAX_E_HAS_TIME);
+  addvar(wxT("visibleforfreefloats")).defines(MAX_E_HAS_VISIBLEFORFREEFLOAT);
+  addvari(wxT("visible"), MAX_E_VISIBLE_DEFAULT).defines(MAX_E_HAS_VISIBLE);
+  addvari(wxT("wrap"), MAX_E_WRAP_DEFAULT).defines(MAX_E_HAS_WRAP);
+
+
+  
+  
   /*
   */
   // Dimensions X Y
     /*
-  addvari( wxT("HighWatermark"), Q4MAX_E_HIGHWATERMARK_DEFAULT, Q4MAX_E_HAS_HIGHWATERMARK );
-  addvari( wxT(""), Q4MAX_E__DEFAULT, Q4MAX_E_HAS_);
-  addvari( wxT(""), Q4MAX_E__DEFAULT, Q4MAX_E_HAS_);
-  addvari( wxT(""), Q4MAX_E__DEFAULT, Q4MAX_E_HAS_);
-  addvari( wxT(""), Q4MAX_E__DEFAULT, Q4MAX_E_HAS_);
-  addvari( wxT(""), Q4MAX_E__DEFAULT, Q4MAX_E_HAS_);
-  addvari( wxT(""), Q4MAX_E__DEFAULT, Q4MAX_E_HAS_);
-  addvari( wxT(""), Q4MAX_E__DEFAULT, Q4MAX_E_HAS_);
+  addvari( wxT("HighWatermark"), MAX_E_HIGHWATERMARK_DEFAULT, MAX_E_HAS_HIGHWATERMARK );
+  addvari( wxT(""), MAX_E__DEFAULT, MAX_E_HAS_);
+  addvari( wxT(""), MAX_E__DEFAULT, MAX_E_HAS_);
+  addvari( wxT(""), MAX_E__DEFAULT, MAX_E_HAS_);
+  addvari( wxT(""), MAX_E__DEFAULT, MAX_E_HAS_);
+  addvari( wxT(""), MAX_E__DEFAULT, MAX_E_HAS_);
+  addvari( wxT(""), MAX_E__DEFAULT, MAX_E_HAS_);
+  addvari( wxT(""), MAX_E__DEFAULT, MAX_E_HAS_);
   */
   
 
@@ -145,12 +166,12 @@ bool Q4MAXElement::parse_property( const wxString& cmd, wxString args )
     Color4 col;
     if( !m_props.set(wxT("color"), args) )
       wxLogWarning( _("Unknown `%s' argument: %s"), cmd.c_str(), args.c_str() );
-    m_has |= Q4MAX_E_HAS_COLOR;
+    m_has |= MAX_E_HAS_COLOR;
   }
   if( cmd.CmpNoCase(wxT("colored"))==0 )
   {
     m_props.set(wxT("colored"), args);
-    m_has |= Q4MAX_E_HAS_COLORED;
+    m_has |= MAX_E_HAS_COLORED;
   }
   */
   

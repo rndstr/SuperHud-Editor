@@ -204,7 +204,7 @@ void Q4MAXVisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   }
   else if( name == wxT("time") )
   {
-    el->add_has( Q4MAX_E_HAS_TIME, !ev.GetProperty()->IsValueUnspecified() );
+    el->add_has( MAX_E_HAS_TIME, !ev.GetProperty()->IsValueUnspecified() );
     if( !ev.GetProperty()->IsValueUnspecified() )
       el->set_ival(name, val.GetInteger());
     SetPropertyValue( name, el->iget_ival(name) );
@@ -214,34 +214,41 @@ void Q4MAXVisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   {
     
     bool fh = GetPropertyValueAsBool(wxT("visible-forcehidden"));
+    bool vd = GetPropertyValueAsBool(wxT("visible-duel"));
+    bool vt = GetPropertyValueAsBool(wxT("visible-tdm"));
+    bool vc = GetPropertyValueAsBool(wxT("visible-ctf"));
+    int v = 0;
+
     if( name == wxT("visible-forcehidden") )
     {
-      el->add_has( Q4MAX_E_HAS_VISIBLE, val.GetBool() );
-      if( fh = val.GetBool() )
-      { // enabled it
-        el->set_ival(wxT("visible"), 0);
+      el->add_has( MAX_E_HAS_VISIBLE, fh );
+      if( !fh )
+      { // disabled
+        v = el->iget_ival(wxT("visible"));
       }
-      int v = el->iget_ival(wxT("visible"));
-      SetPropertyValue(wxT("visible-duel"), !fh && (v & Q4MAX_E_VIS_DUEL) != 0);
-      SetPropertyValue(wxT("visible-tdm"), !fh && (v & Q4MAX_E_VIS_TDM) != 0);
-      SetPropertyValue(wxT("visible-ctf"), !fh && (v & Q4MAX_E_VIS_CTF) != 0);
+      SetPropertyValue(wxT("visible-duel"), !fh && (v & MAX_E_VIS_DUEL) != 0);
+      SetPropertyValue(wxT("visible-tdm"), !fh && (v & MAX_E_VIS_TDM) != 0);
+      SetPropertyValue(wxT("visible-ctf"), !fh && (v & MAX_E_VIS_CTF) != 0);
     }
     else
     {
-      bool vd = GetPropertyValueAsBool(wxT("visible-duel"));
-      bool vt = GetPropertyValueAsBool(wxT("visible-tdm"));
-      bool vc = GetPropertyValueAsBool(wxT("visible-ctf"));
-      int v = 0;
+      el->add_has( MAX_E_HAS_VISIBLE, true );
       if( vd || vt || vc )
       {
-        el->add_has( Q4MAX_E_HAS_VISIBLE, true );
         SetPropertyValue(wxT("visible-forcehidden"), false);
-        if( vd ) v |= Q4MAX_E_VIS_DUEL;
-        if( vt ) v |= Q4MAX_E_VIS_TDM;
-        if( vc ) v |= Q4MAX_E_VIS_CTF;
+        if( vd ) v |= MAX_E_VIS_DUEL;
+        if( vt ) v |= MAX_E_VIS_TDM;
+        if( vc ) v |= MAX_E_VIS_CTF;
       }
-      el->set_ival(wxT("visible"), v);
+      else
+      { // all off
+        SetPropertyValue(wxT("visible-forcehidden"), true);
+        SetPropertyValue(wxT("visible-duel"), false );
+        SetPropertyValue(wxT("visible-tdm"), false );
+        SetPropertyValue(wxT("visible-ctf"), false );
+      }
     }
+    el->set_ival(wxT("visible"), v);
   }
   else
     return; // nothing changed
@@ -253,19 +260,20 @@ void Q4MAXVisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
   // propagate
   wxGetApp().mainframe()->OnPropertiesChanged();
 }
+
 void Q4MAXVisibilityPropertiesCtrl::from_element( const ElementBase *el )
 {
   const Q4MAXElement *cel = static_cast<const Q4MAXElement*>(el);
 
 
-  bool hasv = (el->has() & Q4MAX_E_HAS_VISIBLE) != 0;
+  bool hasv = (el->has() & MAX_E_HAS_VISIBLE) != 0;
   int v = cel->iget_ival(wxT("visible"));
-  SetPropertyValue(wxT("visible-duel"), (v & Q4MAX_E_VIS_DUEL) != 0);
-  SetPropertyValue(wxT("visible-tdm"), (v & Q4MAX_E_VIS_TDM) != 0);
-  SetPropertyValue(wxT("visible-ctf"), (v & Q4MAX_E_VIS_CTF) != 0);
+  SetPropertyValue(wxT("visible-duel"), (v & MAX_E_VIS_DUEL) != 0);
+  SetPropertyValue(wxT("visible-tdm"), (v & MAX_E_VIS_TDM) != 0);
+  SetPropertyValue(wxT("visible-ctf"), (v & MAX_E_VIS_CTF) != 0);
 
-  SetPropertyValue( wxT("overwrite-pos"), el->has() & E_HAS_POS );
-  SetPropertyValue( wxT("overwrite-dim"), el->has() & E_HAS_DIM );
+  SetPropertyValue( wxT("overwrite-pos"), (el->has() & E_HAS_POS) != 0 );
+  SetPropertyValue( wxT("overwrite-dim"), (el->has() & E_HAS_DIM) != 0 );
 
   wxToolBar *tb = GetToolBar();
   tb->ToggleTool( (el->is_enabled() ? ID_BTN_ELEMENT_ENABLE : ID_BTN_ELEMENT_DISABLE), true );
@@ -294,17 +302,17 @@ void Q4MAXVisibilityPropertiesCtrl::update_layout()
   }
   ElementBase *el = p->curel();
 
-  property_defines( wxT("visible-forcehidden"), (el->has() & Q4MAX_E_HAS_VISIBLE) != 0 );
-  property_defines( wxT("visible-duel"), (el->has() & Q4MAX_E_HAS_VISIBLE) != 0 );
-  property_defines( wxT("visible-tdm"), (el->has() & Q4MAX_E_HAS_VISIBLE) != 0 );
-  property_defines( wxT("visible-ctf"), (el->has() & Q4MAX_E_HAS_VISIBLE) != 0 );
+  property_defines( wxT("visible-forcehidden"), (el->has() & MAX_E_HAS_VISIBLE) != 0 );
+  property_defines( wxT("visible-duel"), (el->has() & MAX_E_HAS_VISIBLE) != 0 );
+  property_defines( wxT("visible-tdm"), (el->has() & MAX_E_HAS_VISIBLE) != 0 );
+  property_defines( wxT("visible-ctf"), (el->has() & MAX_E_HAS_VISIBLE) != 0 );
 
   property_defines( wxT("X"), (el->has() & E_HAS_POS)!=0 );
   property_defines( wxT("Y"), (el->has() & E_HAS_POS)!=0 );
   property_defines( wxT("width"), (el->has() & E_HAS_DIM)!=0 );
   property_defines( wxT("height"), (el->has() & E_HAS_DIM)!=0 );
 
-  property_defines(wxT("time"), (el->has() & Q4MAX_E_HAS_TIME) != 0 );
+  property_defines(wxT("time"), (el->has() & MAX_E_HAS_TIME) != 0 );
 }
 
 void Q4MAXVisibilityPropertiesCtrl::OnElementVisibility( wxCommandEvent& ev )

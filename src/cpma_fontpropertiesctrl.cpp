@@ -208,7 +208,7 @@ void FontPropertiesCtrl::from_element( const ElementBase *el )
   SetPropertyValue( wxT("font"), cel->iget_font() );
   SetPropertyValue( wxT("textalign"), textalign_element_to_ui(cel->iget_textalign()) );
   SetPropertyValue( wxT("monospace"), cel->iget_monospace() );
-  SetPropertyValue( wxT("style-none"), cel->has() & CPMA_E_HAS_TEXTSTYLE && cel->iget_textstyle() == CPMA_E_TEXTSTYLE_NONE );
+  SetPropertyValue( wxT("style-none"), (cel->has() & CPMA_E_HAS_TEXTSTYLE)!=0 && cel->iget_textstyle() == CPMA_E_TEXTSTYLE_NONE );
   SetPropertyValue( wxT("style-shadow"), cel->iget_textstyle() == CPMA_E_TEXTSTYLE_SHADOW );
   SetPropertyValue( wxT("fontsizetype"), fontsizetype_element_to_ui(cel->fontsizetype()) );
   

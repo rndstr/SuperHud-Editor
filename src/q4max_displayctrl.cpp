@@ -17,15 +17,7 @@
 
 #include "common.h"
 #include "pakmanager.h"
-#include "model.h"
-#include "hudfilebase.h"
-#include "prefs.h"
-#include "elementsctrlbase.h"
-#include "font.h"
-#include "texture.h"
-#include "model.h"
 
-#include <algorithm>
 
 Q4MAXDisplayCtrl::Q4MAXDisplayCtrl( wxWindow *parent ) :
   DisplayCtrlBase(parent)
@@ -68,10 +60,12 @@ void Q4MAXDisplayCtrl::init()
   */
 
   // load fonts
+  /*
   for( fonts_type::iterator it = m_fonts.begin(); it != m_fonts.end(); ++it )
     if( !it->second->load() )
       wxLogError( _("Cannot find font: ") + it->first + wxT("\n\n") + 
       _("Either the game directory is wrong or you have an outdated Q4MAX version installed,\nmake sure you got at least 1.44") );
+      */
 
   PakManager::get().debug();
 }

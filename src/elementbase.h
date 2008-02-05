@@ -92,7 +92,7 @@ class ElementBase
    friend class CPMAVisibilityPropertiesCtrl; // TODO still needed?
    friend class Q4MAXVisibilityPropertiesCtrl; // TODO still needed?
   public:
-    ElementBase( const wxString& name, const wxString& desc = wxT(""), int flags = E_NONE, int has = 0, bool enabled = false, 
+    ElementBase( const wxString& name, const wxString& desc = wxT(""), int flags = E_NONE, wxInt64 has = 0, bool enabled = false, 
       const wxRect& rect = E_RECT_DEFAULT ) :
       m_name(name), m_desc(desc), m_flags(flags), m_has(has), m_enabled(enabled), m_rect(rect)
     {}
@@ -138,11 +138,11 @@ class ElementBase
     const wxString& name() const { return m_name; }
     int             flags() const { return m_flags; }
     const wxString& desc() const { return m_desc; }
-    int             has() const { return m_has; }
+    wxInt64             has() const { return m_has; }
     /// adds a value (bitmask) to what this element overwrite
     /// @arg bool add If false we actually remove it.
-    void            add_has( int has, int add = true ) { if( !add) remove_has(has); else m_has |= has; }
-    void            remove_has( int has ) { m_has &= ~has; }
+    void            add_has( wxInt64 has, bool add = true ) { if( !add) remove_has(has); else m_has |= has; }
+    void            remove_has( wxInt64 has ) { m_has &= ~has; }
     bool            is_enabled() const { return (m_flags & E_ENABLEALWAYS ? true : m_enabled); }
     void            set_enabled(bool en = true) { m_enabled = en; }
     bool            is_selected() const;
@@ -167,7 +167,7 @@ class ElementBase
     wxString  m_name; ///< is not unique
     wxString  m_desc;
     int       m_flags;
-    int       m_has;
+    wxInt64       m_has;
 
     // props for all items
     bool     m_enabled;

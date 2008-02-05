@@ -2,6 +2,7 @@
 % if an argument to a property read from hudfile is invalid, be consistent: either ignore or use default (but always the same)
 ! backspace not working in pakfilebrowser on wxgtk (what about wxmsw?)
 + add preferences for `view_updatewhiledragging'
+! [q4max] position/dimension not read/updated correctly (ElementBase::iget_rect) -> does position inherit from previous rect? (if only dim is given)
 
 
 -- later maybe --

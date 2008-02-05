@@ -43,78 +43,85 @@ typedef enum
 
 /// whether that element has the property enabled (specified)
 /// aka the element overwrites that property
-typedef enum {
-  //E_HAS_NONE = 0,
-  //E_HAS_RECT = 1<<0,
-  Q4MAX_E_HAS_COLOR = 1<<2,
-  Q4MAX_E_HAS_COLORED = 1<<3,
-  Q4MAX_E_HAS_COLORBG = 1<<4,
-  Q4MAX_E_HAS_COLORHIGHLIGHT = 1<<5,
-  Q4MAX_E_HAS_COLORHIGH = 1<<6,
-  Q4MAX_E_HAS_COLORMED = 1<<7,
-  Q4MAX_E_HAS_COLORLOW = 1<<8,
-  Q4MAX_E_HAS_DIMENSIONS = 1<<9,
-  Q4MAX_E_HAS_FONT = 1<<10,
-  Q4MAX_E_HAS_HIGHWATERMARK = 1<<11,
-  Q4MAX_E_HAS_HORIZONTAL = 1<<12,
-  Q4MAX_E_HAS_ICONDIMENSIONS = 1<<13,
-  Q4MAX_E_HAS_TIME = 1<<14,
-  Q4MAX_E_HAS_VISIBLE = 1<<15
+/// NOTE transform this to wxInt64 constants if you add more... the functions handling
+/// those are supposed to already use wxInt64
+typedef enum
+{
   /*
-  Q4MAX_E_HAS_TIME = 1<<1,
-  Q4MAX_E_HAS_FONT = 1<<2,
-  Q4MAX_E_HAS_FONTSIZE = 1<<3,
-  Q4MAX_E_HAS_TEXTSTYLE = 1<<4,
-  Q4MAX_E_HAS_TEXTALIGN = 1<<5,
-
-  
-
-  Q4MAX_E_HAS_BGCOLOR = 1<<7,
-  Q4MAX_E_HAS_FADE = 1<<8,
-  Q4MAX_E_HAS_IMAGE = 1<<9,
-  Q4MAX_E_HAS_MODEL = 1<<10,
-  Q4MAX_E_HAS_SKIN = 1<<11,
-  Q4MAX_E_HAS_OFFSET = 1<<12,
-  Q4MAX_E_HAS_ANGLES = 1<<13,
-  // NOTE: for those now we don't have actually a overwrite checkbox.
-  // but we still include it here. Those are set if the attributes are true.
-  // So we can still search with Hud::get_inheriter
-  Q4MAX_E_HAS_MONOSPACE = 1<<14,
-  Q4MAX_E_HAS_FILL = 1<<15,
-  Q4MAX_E_HAS_DOUBLEBAR = 1<<16,
-  Q4MAX_E_HAS_DRAW3D = 1<<17
+  E_HAS_NONE = 0,
+  E_HAS_POS = 1<<0,
+  E_HAS_DIM = 1<<1,
+  E_HAS_RECT = E_HAS_POS | E_HAS_DIM
   */
+  MAX_E_HAS_COLOR = 1<<2,
+  MAX_E_HAS_COLORED = 1<<3,
+  MAX_E_HAS_COLORBG = 1<<4,
+  MAX_E_HAS_COLORHIGHLIGHT = 1<<5,
+  MAX_E_HAS_COLORHIGH = 1<<6,
+  MAX_E_HAS_COLORMED = 1<<7,
+  MAX_E_HAS_COLORLOW = 1<<8,
+  MAX_E_HAS_DIMENSIONS = 1<<9,
+  MAX_E_HAS_FONT = 1<<10,
+  MAX_E_HAS_HIGHWATERMARK = 1<<11,
+  MAX_E_HAS_HORIZONTAL = 1<<12,
+  MAX_E_HAS_ICONDIMENSIONS = 1<<13,
+  
+  MAX_E_HAS_ICONOFFSET = 1<<14,
+  MAX_E_HAS_IMAGE = 1<<15,
+  MAX_E_HAS_ITEMSPACER = 1<<16,
+  MAX_E_HAS_LISTALIGN = 1<<17,
+  MAX_E_HAS_MARINECOLOR = 1<<18,
+  MAX_E_HAS_MEDWATERMARK = 1<<19,
+  MAX_E_HAS_MONOSPACED = 1<<20,
+  MAX_E_HAS_STROGGCOLOR = 1<<21,
+  MAX_E_HAS_TABSTOPS = 1<<22,
+  MAX_E_HAS_TEXT = 1<<23,
+  MAX_E_HAS_TEXTALIGN = 1<<24,
+  MAX_E_HAS_TEXTOFFSET = 1<<25,
+  MAX_E_HAS_TEXTSCALE = 1<<26,
+  MAX_E_HAS_TEXTSTYLE = 1<<27,
+  MAX_E_HAS_TIME = 1<<28,
+  MAX_E_HAS_VISIBLE = 1<<29,
+  MAX_E_HAS_VISIBLEFORFREEFLOAT = 1<<30,
+  MAX_E_HAS_WRAP = 1<<31
 } eQ4MAXElementProperties;
 
 typedef enum
 {
-  Q4MAX_E_VIS_HIDDEN = 0,
-  Q4MAX_E_VIS_DUEL = 1,
-  Q4MAX_E_VIS_TDM = 2,
-  Q4MAX_E_VIS_CTF = 4,
-  Q4MAX_E_VIS_ALL = 7
+  MAX_E_VIS_HIDDEN = 0,
+  MAX_E_VIS_DUEL = 1,
+  MAX_E_VIS_TDM = 2,
+  MAX_E_VIS_CTF = 4,
+  MAX_E_VIS_ALL = 7
 
 } eQ4MAXElementVisible;
 
 /// Defaults
 /// @{
 
-const Color4 Q4MAX_E_COLORBG_DEFAULT = Color4( 1.f, 1.f, 1.f, 0 );
-const Color4 Q4MAX_E_COLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 100 );
-const bool Q4MAX_E_COLORED_DEFAULT = true;
-const Color4 Q4MAX_E_COLORHIGHLIGHT_DEFAULT;
-const wxString Q4MAX_E_COLORHIGH_DEFAULT = wxT("-1"); // use same as Color
-const wxString Q4MAX_E_COLORMED_DEFAULT = wxT("-1");
-const wxString Q4MAX_E_COLORLOW_DEFAULT = wxT("-1");
+const Color4 MAX_E_COLORBG_DEFAULT = Color4( 1.f, 1.f, 1.f, 0 );
+const Color4 MAX_E_COLOR_DEFAULT = Color4( 1.f, 1.f, 1.f, 100 );
+const bool MAX_E_COLORED_DEFAULT = true;
+const Color4 MAX_E_COLORHIGHLIGHT_DEFAULT;
+const wxString MAX_E_COLORHIGH_DEFAULT = wxT("-1"); // use same as Color
+const wxString MAX_E_COLORMED_DEFAULT = wxT("-1");
+const wxString MAX_E_COLORLOW_DEFAULT = wxT("-1");
 
-const int Q4MAX_E_FONT_DEFAULT = E_FT_CHAIN;
-const int Q4MAX_E_DIMENSIONSX_DEFAULT = 0;
-const int Q4MAX_E_DIMENSIONSY_DEFAULT = 0;
-const char Q4MAX_E_TEXTALIGN_DEFAULT = 'L';
-const int Q4MAX_E_HIGHWATERMARK_DEFAULT = 100;
-const int Q4MAX_E_HORIZONTAL_DEFAULT = 0;
-const int Q4MAX_E_TIME_DEFAULT = 0;
-const int Q4MAX_E_VISIBLE_DEFAULT = Q4MAX_E_VIS_ALL;
+const int MAX_E_FONT_DEFAULT = E_FT_CHAIN;
+const int MAX_E_DIMENSIONSX_DEFAULT = 0;
+const int MAX_E_DIMENSIONSY_DEFAULT = 0;
+const int MAX_E_HIGHWATERMARK_DEFAULT = 100;
+const int MAX_E_MEDWATERMARK_DEFAULT = 100;
+const int MAX_E_HORIZONTAL_DEFAULT = 0;
+const Color4 MAX_E_MARINECOLOR_DEFAULT = Color4(1.f, 1.f, 1.f, 1.f); // FIXME
+const Color4 MAX_E_STROGGCOLOR_DEFAULT = Color4(1.f, 1.f, 1.f, 1.f); // FIXME
+const bool MAX_E_MONOSPACED_DEFAULT = false;
+const wxString MAX_E_TABSTOPS_DEFAULT = wxT("30,90,112,120,145,160"); // FIXME
+const wxString MAX_E_LISTALIGN_DEFAULT = wxT("L");
+const wxString MAX_E_TEXTALIGN_DEFAULT = wxT("L");
+const int MAX_E_WRAP_DEFAULT = 600; // FIXME
+const int MAX_E_TIME_DEFAULT = 0;
+const int MAX_E_VISIBLE_DEFAULT = MAX_E_VIS_ALL;
 /// @}
 
 
@@ -129,11 +136,11 @@ class Q4MAXElement : public ElementBase
         Property( const wxString& name, const wxString& def, int type, int flags ) :
           Var(name, def, type, flags), m_defines(E_HAS_NONE) { }
         
-        Property& defines( int def ) { m_defines = def; return *this; }
-        int defines() const { return m_defines; }
+        Property& defines( wxInt64 def ) { m_defines = def; return *this; }
+        wxInt64 defines() const { return m_defines; }
 
       protected:
-        int m_defines; ///< according to Element::m_has what does this property specify
+        wxInt64 m_defines; ///< according to Element::m_has what does this property specify
     };
 
 
@@ -186,7 +193,7 @@ class Q4MAXElement : public ElementBase
 
     int         type() const { return m_type; }
 
-    bool        iget_has(int what) const;
+    bool        iget_has(wxInt64 what) const;
 
     //virtual wxRect  iget_hudrect() const;
 

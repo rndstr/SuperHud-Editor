@@ -310,6 +310,10 @@ public:
      it_variables it = m_vars.insert( m_vars.begin(), std::make_pair(name.Lower(), var_type(name, def, type, flags)) );
      return it->second;
   }
+  var_type& addvard( const wxString& name, double def, int flags = VARF_NONE )
+  {
+    return addvar( name, wxString::Format(wxT("%.3f"), def), VART_DOUBLE, flags);
+  }
   var_type& addvari( const wxString& name, int def, int flags = VARF_NONE )
   {
     return addvar( name, wxString::Format(wxT("%d"), def), VART_INT, flags);

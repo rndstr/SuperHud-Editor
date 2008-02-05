@@ -159,7 +159,7 @@ void CPMAVisibilityPropertiesCtrl::from_element( const ElementBase *el )
 {
   const CPMAElement *cel = static_cast<const CPMAElement*>(el);
 
-  SetPropertyValue( wxT("overwrite-rect"), el->has() & E_HAS_RECT );
+  SetPropertyValue( wxT("overwrite-rect"), (el->has() & E_HAS_RECT) != 0  );
 
   wxToolBar *tb = GetToolBar();
   tb->ToggleTool( (el->is_enabled() ? ID_BTN_ELEMENT_ENABLE : ID_BTN_ELEMENT_DISABLE), true );

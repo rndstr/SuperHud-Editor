@@ -72,7 +72,6 @@ typedef enum {
   CPMA_E_HAS_FILL = 1<<16,
   CPMA_E_HAS_DOUBLEBAR = 1<<17,
   CPMA_E_HAS_DRAW3D = 1<<18
-//  HIO_ALL = (1<<10)-1,
 } eCPMAElementProperties;
 
 
@@ -152,7 +151,7 @@ class CPMAElement : public ElementBase
     //CPMAElement();
     CPMAElement( const hsitem_s& def );
     CPMAElement( const wxString& name, const wxString& desc =wxT(""), int type =E_T_UNKNOWN, 
-      bool enable =false, int flags =E_NONE, int has =E_HAS_NONE, const wxString& text =wxT(""), 
+      bool enable =false, int flags =E_NONE, wxInt64 has =E_HAS_NONE, const wxString& text =wxT(""), 
       const wxString& icon =wxT(""), const wxRect& rect = E_RECT_DEFAULT);
     virtual ~CPMAElement();
 
@@ -172,7 +171,7 @@ class CPMAElement : public ElementBase
 
     int         type() const { return m_type; }
 
-    bool        iget_has(int what) const;
+    bool        iget_has(wxInt64 what) const;
 
     virtual wxRect  iget_hudrect() const;
 

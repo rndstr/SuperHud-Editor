@@ -741,17 +741,17 @@ void MainFrame::OnToolViewVisible( wxCommandEvent& ev )
   switch( ev.GetInt() )
   {
   case 1:
-    vis = Q4MAX_E_VIS_DUEL;
+    vis = MAX_E_VIS_DUEL;
     break;
   case 2:
-    vis = Q4MAX_E_VIS_TDM;
+    vis = MAX_E_VIS_TDM;
     break;
   case 3:
-    vis = Q4MAX_E_VIS_CTF;
+    vis = MAX_E_VIS_CTF;
     break;
   case 0:
   default:
-    vis = Q4MAX_E_VIS_ALL;
+    vis = MAX_E_VIS_ALL;
     break;
   }
   Prefs::get().seti(wxT("view_visible"), vis);
@@ -887,9 +887,7 @@ void MainFrame::OnElementSelectionChanged()
 
 void MainFrame::OnPropertiesChanged()
 {
-  // -- render view
-  m_displayctrl->Refresh();
-
+  update_displayctrl();
   update_configpreview();
 }
 

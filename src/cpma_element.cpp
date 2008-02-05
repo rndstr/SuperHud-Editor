@@ -29,7 +29,7 @@ using namespace std;
 
 CPMAElement::CPMAElement( const wxString& name, const wxString& desc /*=""*/, int type /*=E_T_UNKNOWN*/, 
   bool enable /*=false*/, int flags /*= E_NONE*/,
-  int has /*= E_HAS_NONE*/,
+  wxInt64 has /*= E_HAS_NONE*/,
   const wxString& text /*=""*/, 
   const wxString& icon /*=""*/, 
   const wxRect& rect /*= E_RECT_DEFAULT*/) :
@@ -492,7 +492,7 @@ Color4 CPMAElement::iget_fade() const
   return c;
 }
 
-bool CPMAElement::iget_has(int what) const
+bool CPMAElement::iget_has(wxInt64 what) const
 {
   bool has = (m_has & what) != 0;
   if( !has )
