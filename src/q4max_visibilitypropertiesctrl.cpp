@@ -249,6 +249,8 @@ void Q4MAXVisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
       }
     }
     el->set_ival(wxT("visible"), v);
+    // need to update greyed out for those that might ain't visible
+    wxGetApp().mainframe()->elementsctrl()->update_item(el);
   }
   else
     return; // nothing changed
@@ -268,6 +270,7 @@ void Q4MAXVisibilityPropertiesCtrl::from_element( const ElementBase *el )
 
   bool hasv = (el->has() & MAX_E_HAS_VISIBLE) != 0;
   int v = cel->iget_ival(wxT("visible"));
+  SetPropertyValue(wxT("visible-forcehidden"), (v == 0 && hasv));
   SetPropertyValue(wxT("visible-duel"), (v & MAX_E_VIS_DUEL) != 0);
   SetPropertyValue(wxT("visible-tdm"), (v & MAX_E_VIS_TDM) != 0);
   SetPropertyValue(wxT("visible-ctf"), (v & MAX_E_VIS_CTF) != 0);

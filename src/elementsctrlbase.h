@@ -38,6 +38,11 @@
 #include "hudfilebase.h"
 #include <list>
 
+const wxColour ELEMENTS_COLL_COLOR = wxColour(*wxWHITE);
+const wxColour ELEMENTS_COLL_BGCOLOR = wxColour(*wxBLACK);
+const wxColour ELEMENTS_HIDDEN_COLOR = wxColour(177, 177, 177);
+const wxColour ELEMENTS_COLOR = wxColour(*wxBLACK);
+
 typedef std::list<int>  indecies_type;
 typedef indecies_type::iterator it_indecies;
 typedef indecies_type::const_iterator cit_indecies;
@@ -65,8 +70,9 @@ class ElementsCtrlBase: public wxPanel
     elements_type&  selected_elements() { return m_selels; }
 
     /// Searches through the list for item with data pointing to the element pel
-    /// and updates it accordingly
+    /// and updates it accordingly to its state.
     bool          update_item( const ElementBase *pel );
+    void          update_items();
 
     void          select_item( const ElementBase* const pel, bool select = true );
     void          select_item( long idx, bool select =true );
@@ -115,7 +121,7 @@ class ElementsCtrlBase: public wxPanel
 
     /// @arg idx The item index in the list we want to update according to pel
     /// @arg pel If this is 0 then we fetch the data ourselves (GetItemData of the idx-th item in list)
-    bool          update_item( long idx, const ElementBase* const pel );
+    bool          update_item( long idx, const ElementBase* const pel = 0 );
 
 private:
     // begin wxGlade: ElementsCtrlBase::methods

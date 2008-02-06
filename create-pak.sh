@@ -10,12 +10,13 @@ fi
 
 echo "version is $VERSION"
 echo "7z a -tzip pak-$VERSION.pke -i@pak-$VERSION.include"
+echo -n "3 "
 sleep 1
-echo -n "."
+echo -n "2 "
 sleep 1
-echo -n "."
+echo -n "1 "
 sleep 1
-echo -n "."
+echo -n "0"
 echo
 cd data/
 rm -f pak-$VERSION.pke

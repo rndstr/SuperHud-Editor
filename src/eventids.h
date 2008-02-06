@@ -5,12 +5,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-
+//
 // SuperHud Editor is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-
+//
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef EVENTIDS_H
@@ -63,6 +63,11 @@ enum
   ID_MENU_HELP_TIP,
   ID_MENU_HELP_WIKI,
   ID_MENU_HELP_WEBSITE,
+
+#ifndef NDEBUG
+  ID_MENU_DEBUG_LISTREFRESH,
+  ID_MENU_DEBUG_RUELPS,
+#endif
 
 
   ID_NOTEBOOK_PROPERTIES,

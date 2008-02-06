@@ -275,6 +275,8 @@ void ElementsCtrlBase::append( ElementBase *el )
   m_list->SetItemData( idx, (long)(el) );
   if( el->flags() & E_NOTUNIQ )
     m_list->SetItemFont(idx, *wxITALIC_FONT);
+  else if( !el->is_rendered() )
+    m_list->SetItemTextColour( idx, ELEMENTS_HIDDEN_COLOR );
 }
 
 void ElementsCtrlBase::clear()
@@ -336,8 +338,8 @@ void ElementsCtrlBase::list_refresh( const elements_type& elements )
         li.SetMask(wxLIST_MASK_TEXT);
         li.SetId(realinsert-1+collcount);
         li.SetFont(*wxITALIC_FONT);
-        li.SetTextColour(wxColour(*wxWHITE));
-        li.SetBackgroundColour(wxColour(*wxBLACK));
+        li.SetTextColour(ELEMENTS_COLL_COLOR);
+        li.SetBackgroundColour(ELEMENTS_COLL_BGCOLOR);
         
         long idx = m_list->InsertItem(li);
         m_list->SetItem(idx, 0, wxEmptyString, E_LIST_IMG_COLLTITLE);
@@ -749,8 +751,13 @@ long ElementsCtrlBase::index_by_pointer( const ElementBase* const el ) const
   return idx;
 }
 
+void ElementsCtrlBase::update_items()
+{
+  for( int i=0; i < m_list->GetItemCount(); ++i )
+    update_item(i);
+}
 
-bool ElementsCtrlBase::update_item( long idx, const ElementBase *pel )
+bool ElementsCtrlBase::update_item( long idx, const ElementBase *pel /*=0*/ )
 {
   if( !pel )
   { // no element pointer supplied, fetch from list itemdata
@@ -764,6 +771,10 @@ bool ElementsCtrlBase::update_item( long idx, const ElementBase *pel )
   info.m_col = 1;
   info.m_itemId = idx;
   info.m_image = (pel->is_enabled() ? E_LIST_IMG_ENABLED : E_LIST_IMG_DISABLED);
+  if( 0 == (pel->flags() & E_NOTUNIQ) && !pel->is_rendered() )
+    m_list->SetItemTextColour( idx, ELEMENTS_HIDDEN_COLOR );
+  else
+    m_list->SetItemTextColour( idx, ELEMENTS_COLOR );
   m_list->SetItem( info );
   return true;
 }
@@ -795,20 +806,9 @@ void ElementsCtrlBase::select_item( long idx, bool select /*=true*/ )
 void ElementsCtrlBase::deselect_all()
 {
   // TODO just ignore deselect events during this operation otherwise with each deselect we enumerate all rest selection oO
-  //for( it_indecies cit = m_selidx.begin(); cit != m_selidx.end(); ++cit )
   for( int i=0; i < m_list->GetItemCount(); ++i )
     m_list->SetItemState(i, 0, wxLIST_STATE_SELECTED);
 }
-
-
-
-
-
-
-
-
-
-
 
 
 

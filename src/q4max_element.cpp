@@ -724,8 +724,8 @@ bool Q4MAXElement::is_rendered() const
 {
   if( !ElementBase::is_rendered() )
     return false;
-  int vis = iget_ival(wxT("visible"));
-  return (vis & Prefs::get().var(wxT("view_visible")).ival())!=0;
+
+  return (iget_ival(wxT("visible")) & Prefs::get().var(wxT("view_visible")).ival()) != 0;
 }
 
 void Q4MAXElement::render() const

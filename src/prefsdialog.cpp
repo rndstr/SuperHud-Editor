@@ -235,7 +235,7 @@ wxPanel* PrefsDialog::create_display(wxWindow *parent)
     label_1 = new wxStaticText(panel, wxID_ANY, wxT("Custom:"));
     m_view_aspectratio_custom = new wxTextCtrl(panel, wxID_ANY, wxEmptyString);
     label_2 = new wxStaticText(panel, wxID_ANY, wxT("width:height"));
-    label_7 = new wxStaticText(panel, wxID_ANY, wxT("NOTE: If you want to convert the current HUD to panel new ratio as well\nyou shouldn't change it here but convert the hud in Tools->Convert HUD..."));
+    label_7 = new wxStaticText(panel, wxID_ANY, wxT("NOTE: If you want to convert the current HUD to the new ratio as well\nyou shouldn't change it here but convert the hud in Tools->Convert HUD..."));
     label_4 = new wxStaticText(panel, wxID_ANY, wxT("Distance X:"));
     m_view_gridX = new wxSpinCtrl(panel, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100);
     label_5 = new wxStaticText(panel, wxID_ANY, wxT("Distance Y:"));

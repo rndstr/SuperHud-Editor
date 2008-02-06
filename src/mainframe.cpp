@@ -95,6 +95,10 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
   EVT_UPDATE_UI_RANGE(ID_MENU_VIEW_CONFIGPREVIEW, ID_MENU_VIEW_TOOLBAR_FILE, MainFrame::OnUpdateViewPanes)
   EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrame::OnMRUFile)
   EVT_MENU_RANGE(ID_MENU_HELP_WIKI, ID_MENU_HELP_WEBSITE, MainFrame::OnMenuHelpURL)
+#ifndef NDEBUG
+  EVT_MENU(ID_MENU_DEBUG_LISTREFRESH, MainFrame::OnMenuDebugListRefresh)
+  EVT_MENU(ID_MENU_DEBUG_RUELPS, MainFrame::OnMenuDebugRuelps)
+#endif
 END_EVENT_TABLE()
 
 
@@ -194,7 +198,16 @@ MainFrame::MainFrame(wxWindow* parent, wxWindowID id, const wxString& title,
   help_menu->Append( ID_MENU_HELP_WEBSITE, _("Visit &Website"), APP_URL );
   help_menu->Append( wxID_ABOUT, _("&About\tCtrl+A") );
   
-  menu_bar->Append( help_menu, _("Help") );
+  menu_bar->Append( help_menu, _("&Help") );
+
+#ifndef NDEBUG
+  wxMenu *debug_menu = new wxMenu;
+  debug_menu->Append( ID_MENU_DEBUG_LISTREFRESH, wxT("Refresh elementlist") );
+  debug_menu->AppendSeparator();
+  debug_menu->Append( ID_MENU_DEBUG_RUELPS, wxT("Ruelps") );
+
+  menu_bar->Append( debug_menu, wxT("Debug") );
+#endif
 
   SetMenuBar( menu_bar );
 
@@ -491,28 +504,18 @@ void MainFrame::OnMenuExit( wxCommandEvent& )
 #include "varcontainer.h"
 void MainFrame::OnMenuAbout( wxCommandEvent& )
 {
-  VarContainer<Var> v;
-  v.init();
-  
-  v.addvar( wxT("testint"), wxT("3"), VART_INT);
-  v.addvar( wxT("testcol"), wxT("0.4 0.5 0.6 0.8"), VART_COLOR);
-  v.load();
-  wxLogWarning(wxT("%s"), v.var(wxT("testcol")).sval().c_str());
-  v.cleanup();
-  /*
   wxAboutDialogInfo info;
   info.SetName(APP_NAME);
   info.SetVersion(APP_VERSION);
-  wxString desc = wxT("Head-Up Display Editor for Quake3 CPMA under GPL License.");
+  wxString desc = wxT("Head-Up Display Editor for\nQuake3 CPMA and Quake4 Q4MAX\nunder GPL License.");
   desc += wxT("\n\n");
   desc += wxVERSION_STRING;
   desc += wxT("\nBuildtime: ");
   desc += APP_BUILDTIME;
   info.SetDescription(desc);
-  info.SetCopyright(wxT("(C) 2006-2008 Roland Schilter / veal <rolansch@ethz.ch>"));
+  info.SetCopyright(wxT("(C) 2006-2008 Roland Schilter <rolansch@ethz.ch>"));
   info.SetWebSite(APP_URL, APP_URL);
   wxAboutBox(info);
-  */
 }
 
 void MainFrame::OnMenuNew( wxCommandEvent& )
@@ -756,6 +759,8 @@ void MainFrame::OnToolViewVisible( wxCommandEvent& ev )
   }
   Prefs::get().seti(wxT("view_visible"), vis);
   update_displayctrl();
+  // do not refresh but just update their attributes
+  m_elementsctrl->update_items();
 }
 #endif
 
@@ -768,6 +773,16 @@ void MainFrame::OnMRUFile( wxCommandEvent& ev )
     update_title();
     m_elementsctrl->OnSelectionChanged();
   }
+}
+
+void MainFrame::OnMenuDebugListRefresh( wxCommandEvent& )
+{
+  update_elementsctrl();
+}
+
+void MainFrame::OnMenuDebugRuelps( wxCommandEvent& )
+{
+  m_elementsctrl->update_items();
 }
 
 // call this in the event handler used to show the wxWebUpdateDlg

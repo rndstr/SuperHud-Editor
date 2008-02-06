@@ -143,6 +143,10 @@ class MainFrame : public wxFrame
 #endif
     void OnMenuHelpURL( wxCommandEvent& );
     void OnMRUFile( wxCommandEvent& );
+#ifndef NDEBUG
+    void OnMenuDebugListRefresh( wxCommandEvent& );
+    void OnMenuDebugRuelps( wxCommandEvent& );
+#endif
 
   private:
     wxAuiManager m_mgr;
