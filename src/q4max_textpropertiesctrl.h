@@ -13,18 +13,32 @@
 
 // You should have received a copy of the GNU General Public License
 // along with SuperHud Editor.  If not, see <http://www.gnu.org/licenses/>.
-#ifndef Q4MAXELEMENTSCTRL_H
-#define Q4MAXELEMENTSCTRL_H
+#ifndef Q4MAX_TEXTPROPERTIESCTRL_H
+#define Q4MAX_TEXTPROPERTIESCTRL_H
 
-#include "elementsctrlbase.h"
+#include "q4max_propertygrid.h"
 
+class ElementBase;
 
-class MAXElementsCtrl : public ElementsCtrlBase
+class Q4MAXTextPropertiesCtrl : public Q4MAXPropertyGrid
 {
   public:
-    MAXElementsCtrl( wxWindow *parent ) : ElementsCtrlBase(parent, wxID_ANY) {}
+    Q4MAXTextPropertiesCtrl( wxWindow *parent );
 
+    void from_element( const ElementBase *el );
+    /// @arg reset Whether to reset the items (delete&append)
+    void update_layout( bool reset = true );
+
+    void ExpandAll( bool expand = true );
+
+  private:
+    void OnItemChanged( wxPropertyGridEvent& ev );
+    void OnItemChanging( wxPropertyGridEvent& ev );
+    static wxString textalign_element_to_ui( const wxString& ta );
+    static wxString textalign_ui_to_element( const wxString& ta );
+
+
+    DECLARE_EVENT_TABLE()
 };
 
 #endif
-

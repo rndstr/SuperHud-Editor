@@ -653,6 +653,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\q4max_textpropertiesctrl.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\q4max_textpropertiesctrl.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\q4max_visibilitypropertiesctrl.cpp"
 					>
 				</File>

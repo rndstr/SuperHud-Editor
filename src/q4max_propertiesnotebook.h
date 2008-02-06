@@ -20,6 +20,7 @@
 
 
 class Q4MAXVisibilityPropertiesCtrl;
+class Q4MAXTextPropertiesCtrl;
 
 class Q4MAXPropertiesNotebook : public PropertiesNotebookBase
 {
@@ -29,7 +30,8 @@ class Q4MAXPropertiesNotebook : public PropertiesNotebookBase
     void update_from_element( const elements_type& els );
 
   private:
-    Q4MAXVisibilityPropertiesCtrl  *m_vis;
+    Q4MAXVisibilityPropertiesCtrl   *m_vis;
+    Q4MAXTextPropertiesCtrl         *m_text;
 
 };
 

@@ -29,7 +29,7 @@ class Q4MAXPropertyGrid : public PropertyGridBase
       wxWindowID id = wxID_ANY, 
 		  const wxPoint& pos = wxDefaultPosition, 
 		  const wxSize& size = wxDefaultSize, 
-		  long style = wxPGMAN_DEFAULT_STYLE, 
+		  long style = wxPG_BOLD_MODIFIED|wxPG_SPLITTER_AUTO_CENTER|wxPG_DESCRIPTION|wxPGMAN_DEFAULT_STYLE, 
 		  const wxChar* name = wxPropertyGridManagerNameStr
       ) : PropertyGridBase(parent, id, pos, size, style, name)
     {
@@ -39,7 +39,7 @@ class Q4MAXPropertyGrid : public PropertyGridBase
   protected:
     /// returns the currently selected element (as stored in CPMAPropertiesNotebook::update_from_element)
     /// @returns The current element or 0 if none selected
-    const Q4MAXElement* current_element() const
+    const MAXElement* current_element() const
     {
       PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesctrl();
       if( !p )
@@ -47,7 +47,7 @@ class Q4MAXPropertyGrid : public PropertyGridBase
         wxLogDebug(wxT("Q4MAXPropertyGrid::current_element - PropertiesNotebook is not yet available"));
         return 0;
       }
-      const Q4MAXElement* el = static_cast<const Q4MAXElement*>(p->curel());
+      const MAXElement* el = static_cast<const MAXElement*>(p->curel());
       if( !el ) 
       {
         wxLogDebug(wxT("Q4MAXPropertyGrid::current_element - there is no element selected"));
@@ -55,7 +55,7 @@ class Q4MAXPropertyGrid : public PropertyGridBase
       }
       return el;
     }
-    Q4MAXElement* current_element()
+    MAXElement* current_element()
     {
       PropertiesNotebookBase *p = wxGetApp().mainframe()->propertiesctrl();
       if( !p )
@@ -63,7 +63,7 @@ class Q4MAXPropertyGrid : public PropertyGridBase
         wxLogDebug(wxT("Q4MAXPropertyGrid::current_element - PropertiesNotebook is not yet available"));
         return 0;
       }
-      Q4MAXElement *el = static_cast<Q4MAXElement*>(p->curel());
+      MAXElement *el = static_cast<MAXElement*>(p->curel());
       if( !el ) 
       {
         wxLogDebug(wxT("Q4MAXPropertyGrid::current_element - there is no element selected"));

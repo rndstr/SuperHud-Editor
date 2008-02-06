@@ -39,7 +39,7 @@ typedef enum
 
   // use as binary or operator
   E_FT_OUTLINE = 0x4
-} eQ4MAXElementFont;
+} eMAXElementFont;
 
 /// whether that element has the property enabled (specified)
 /// aka the element overwrites that property
@@ -84,7 +84,7 @@ typedef enum
   MAX_E_HAS_VISIBLE = 1<<29,
   MAX_E_HAS_VISIBLEFORFREEFLOAT = 1<<30,
   MAX_E_HAS_WRAP = 1<<31
-} eQ4MAXElementProperties;
+} eMAXElementProperties;
 
 typedef enum
 {
@@ -94,7 +94,7 @@ typedef enum
   MAX_E_VIS_CTF = 4,
   MAX_E_VIS_ALL = 7
 
-} eQ4MAXElementVisible;
+} eMAXElementVisible;
 
 /// Defaults
 /// @{
@@ -127,7 +127,7 @@ const int MAX_E_VISIBLE_DEFAULT = MAX_E_VIS_ALL;
 
 class Texture;
 
-class Q4MAXElement : public ElementBase
+class MAXElement : public ElementBase
 {
   public:
     class Property : public Var
@@ -170,12 +170,12 @@ class Q4MAXElement : public ElementBase
     };
 
   public:
-    //Q4MAXElement();
-    Q4MAXElement( const hsitem_s& def );
-    Q4MAXElement( const wxString& name, const wxString& desc =wxT(""), int type =E_T_UNKNOWN, 
+    //MAXElement();
+    MAXElement( const hsitem_s& def );
+    MAXElement( const wxString& name, const wxString& desc =wxT(""), int type =E_T_UNKNOWN, 
       bool enable =false, int flags =E_NONE, int has =E_HAS_NONE, const wxString& text =wxT(""), 
       const wxString& icon =wxT(""), const wxRect& rect = E_RECT_DEFAULT);
-    virtual ~Q4MAXElement();
+    virtual ~MAXElement();
 
     
 
@@ -191,16 +191,30 @@ class Q4MAXElement : public ElementBase
 
     const Properties&  properties() const { return m_props; }
 
+    /// returns the property either of the current element - if it defines it - or else
+    /// the one of any parent.
+    /// FIXME there is the problem, if we don't find any parent and the current does not define it:
+    /// a fix would be to always revert to default values when a user removes the property from the element
+    /// (i.e. from m_has) but then quick toggles aren't possible. 
+    Properties::var_type& iget( const wxString& elementname, const wxString& propname );
+
     int         type() const { return m_type; }
 
     bool        iget_has(wxInt64 what) const;
 
     //virtual wxRect  iget_hudrect() const;
 
+
     Vec2        iget_v2val( const wxString& name ) const;
 
     int         iget_ival( const wxString& name ) const;
     bool        set_ival( const wxString& name, int val );
+
+    bool        iget_bval( const wxString& name ) const;
+    bool        set_bval( const wxString& name, bool val );
+
+    wxString    iget_val( const wxString& name ) const;
+    bool        set_val( const wxString& name, const wxString& val );
     /*
     int         iget_time() const;
     void        set_time( int time ) { m_props.time = time; }

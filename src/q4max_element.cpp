@@ -27,7 +27,7 @@
 #include <list>
 using namespace std;
 
-Q4MAXElement::Q4MAXElement( const wxString& name, const wxString& desc /*=""*/, int type /*=E_T_UNKNOWN*/, 
+MAXElement::MAXElement( const wxString& name, const wxString& desc /*=""*/, int type /*=E_T_UNKNOWN*/, 
   bool enable /*=false*/, int flags /*= E_NONE*/,
   int has /*= E_HAS_NONE*/,
   const wxString& text /*=""*/, 
@@ -42,13 +42,13 @@ Q4MAXElement::Q4MAXElement( const wxString& name, const wxString& desc /*=""*/, 
 {
 }
 
-Q4MAXElement::Properties::Properties()
+MAXElement::Properties::Properties()
 {
   init();
   load(); // set default values
 }
 
-bool Q4MAXElement::Properties::init()
+bool MAXElement::Properties::init()
 {
   addvar(wxT("color"), MAX_E_COLOR_DEFAULT.to_string(), VART_COLOR).defines(MAX_E_HAS_COLOR);
   addvarb(wxT("colored"), MAX_E_COLORED_DEFAULT).defines(MAX_E_HAS_COLORED);
@@ -102,7 +102,7 @@ bool Q4MAXElement::Properties::init()
   return true;
 }
 
-Q4MAXElement::Q4MAXElement( const hsitem_s& def ) :
+MAXElement::MAXElement( const hsitem_s& def ) :
     ElementBase(def.name, def.desc, def.flags, def.has, def.enable),
     m_type(def.type),
     m_props(),
@@ -115,12 +115,12 @@ Q4MAXElement::Q4MAXElement( const hsitem_s& def ) :
 
 
 
-Q4MAXElement::~Q4MAXElement()
+MAXElement::~MAXElement()
 {
   cleanup();
 }
 
-void Q4MAXElement::cleanup()
+void MAXElement::cleanup()
 {
   wxDELETE(m_ptex);
   for( std::vector<Texture*>::iterator it = m_weaponlist_tex.begin(); it != m_weaponlist_tex.end(); ++it )
@@ -130,7 +130,7 @@ void Q4MAXElement::cleanup()
 
 
 
-bool Q4MAXElement::parse_property( const wxString& cmd, wxString args )
+bool MAXElement::parse_property( const wxString& cmd, wxString args )
 { 
   // let parent check on the property
   if (ElementBase::parse_property( cmd, args ))
@@ -344,7 +344,7 @@ bool Q4MAXElement::parse_property( const wxString& cmd, wxString args )
 }
 
 
-void Q4MAXElement::write_properties( wxTextOutputStream& stream ) const
+void MAXElement::write_properties( wxTextOutputStream& stream ) const
 {
   // we do this ourselves...
   //ElementBase::write_properties(stream);
@@ -382,7 +382,21 @@ void Q4MAXElement::write_properties( wxTextOutputStream& stream ) const
 }
 
 
-Vec2 Q4MAXElement::iget_v2val( const wxString& propname ) const
+MAXElement::Properties::var_type& MAXElement::iget( const wxString& elementname, const wxString& propname )
+{
+  MAXElement::Properties::var_type& var = m_props.var(propname);
+  if( !(m_has & var.defines()) )
+  {
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, var.defines() ));
+    if( parent != 0 )
+      var = parent->var(propname); // FIXME
+    // else return current element's property where we should be getting the default value 
+  }
+  return var; 
+}
+
+
+Vec2 MAXElement::iget_v2val( const wxString& propname ) const
 {
   wxASSERT_MSG( propname.CmpNoCase(wxT("position")) != 0, wxT("use iget_pos() instead") );
   wxASSERT_MSG( propname.CmpNoCase(wxT("dimensions")) != 0, wxT("use iget_dim() instead") );
@@ -390,11 +404,11 @@ Vec2 Q4MAXElement::iget_v2val( const wxString& propname ) const
   Vec2 v2 = var.v2val();
   if( !(m_has & var.defines()) )
   {
-    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, var.defines() ));
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, var.defines() ));
     if( parent == 0 )
     { // default
       Properties::var_type tmp = var;
-      tmp.set_default();
+      tmp.reset_default();
       v2 = tmp.v2val();
     }
     else v2 = parent->iget_v2val(propname);
@@ -402,17 +416,17 @@ Vec2 Q4MAXElement::iget_v2val( const wxString& propname ) const
   return v2; 
 }
 
-int Q4MAXElement::iget_ival( const wxString& name ) const
+int MAXElement::iget_ival( const wxString& name ) const
 {
   const Properties::var_type& var = m_props.var(name);
   int value = var.ival();
   if( !(m_has & var.defines()) )
   {
-    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, var.defines() ));
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, var.defines() ));
     if( parent == 0 )
     { // default
       Properties::var_type tmp = var;
-      tmp.set_default();
+      tmp.reset_default();
       value = tmp.ival();
     }
     else value = parent->iget_ival(name);
@@ -420,182 +434,227 @@ int Q4MAXElement::iget_ival( const wxString& name ) const
   return value; 
 }
 
-bool Q4MAXElement::set_ival( const wxString& name, int val )
+bool MAXElement::set_ival( const wxString& name, int val )
 {
   return m_props.seti(name, val);
 }
 
+bool MAXElement::iget_bval( const wxString& name ) const
+{
+  const Properties::var_type& var = m_props.var(name);
+  bool value = var.bval();
+  if( (m_has & var.defines())==0 )
+  {
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, var.defines() ));
+    if( parent == 0 )
+    { // default
+      Properties::var_type tmp = var;
+      tmp.reset_default();
+      value = tmp.bval();
+    }
+    else value = parent->iget_bval(name);
+  }
+  return value; 
+}
+
+bool MAXElement::set_bval( const wxString& name, bool val )
+{
+  return m_props.setb(name, val);
+}
+
+wxString MAXElement::iget_val( const wxString& name ) const
+{
+  const Properties::var_type& var = m_props.var(name);
+  wxString value = var.sval();
+  if( !(m_has & var.defines()) )
+  {
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, var.defines() ));
+    if( parent == 0 )
+    { // default
+      Properties::var_type tmp = var;
+      tmp.reset_default();
+      value = tmp.sval();
+    }
+    else value = parent->iget_val(name);
+  }
+  return value; 
+}
+
+bool MAXElement::set_val( const wxString& name, const wxString& val )
+{
+  return m_props.set(name, val);
+}
 
 /*
-int Q4MAXElement::iget_time() const
+int MAXElement::iget_time() const
 {
   int t = m_props.time;
   if( !(m_has & E_HAS_TIME) )
   {
-    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TIME ));
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TIME ));
     if( parent == 0 ) t = E_TIME_DEFAULT;
     else t = parent->iget_time();
   }
   return t; 
 }
-wxString Q4MAXElement::iget_font() const
+wxString MAXElement::iget_font() const
 {
   wxString f = m_props.font;
   if( !(m_has & E_HAS_FONT) )
   {
-    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONT ));
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONT ));
     if( parent == 0 ) f = E_FONT_DEFAULT;
     else f = parent->iget_font();
   }
   return f; 
 }
-wxChar Q4MAXElement::iget_textalign() const
+wxChar MAXElement::iget_textalign() const
 {
   wxChar ta = m_props.textalign;
   if( !(m_has & E_HAS_TEXTALIGN) )
   {
-    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TEXTALIGN ));
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TEXTALIGN ));
     if( parent == 0 ) ta = E_TEXTALIGN_DEFAULT;
     else ta = parent->iget_textalign();
   }
   return ta; 
 }
-bool Q4MAXElement::iget_monospace() const
+bool MAXElement::iget_monospace() const
 {
   if( m_has & E_HAS_MONOSPACE )
     return true;
 
-  const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_MONOSPACE ));
+  const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_MONOSPACE ));
 
   return (parent != 0);
 }
-bool Q4MAXElement::iget_doublebar() const
+bool MAXElement::iget_doublebar() const
 {
   if( m_has & E_HAS_DOUBLEBAR )
     return true;
 
-  const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_DOUBLEBAR ));
+  const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_DOUBLEBAR ));
 
   return (parent != 0);
 }
-bool Q4MAXElement::iget_draw3d() const
+bool MAXElement::iget_draw3d() const
 {
   if( m_has & E_HAS_DRAW3D )
     return true;
 
-  const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_DRAW3D ));
+  const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_DRAW3D ));
 
   return (parent != 0);
 }
-int Q4MAXElement::iget_fontsizetype() const
+int MAXElement::iget_fontsizetype() const
 {
   int fst = m_props.fontsize_type;
   if( !(m_has & E_HAS_FONTSIZE) )
   {
-    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
     if( parent == 0 ) fst = E_FST_POINT;
     else fst = parent->iget_fontsizetype();
   }
   return fst; 
 }
-int Q4MAXElement::iget_fontsizept() const
+int MAXElement::iget_fontsizept() const
 {
   int s = m_props.fontsize_pt;
   if( !(m_has & E_HAS_FONTSIZE) )
   {
-    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
     if( parent == 0 ) s = E_FONTSIZE_DEFAULT_POINT;
     else s = parent->iget_fontsizept();
   }
   return s;
 }
-int Q4MAXElement::iget_fontsizex() const
+int MAXElement::iget_fontsizex() const
 {
   int s = m_props.fontsize_x;
   if( !(m_has & E_HAS_FONTSIZE) )
   {
-    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
     if( parent == 0 ) s = E_FONTSIZE_DEFAULT_COORDX;
     else s = parent->iget_fontsizex();
   }
   return s;
 }
-int Q4MAXElement::iget_fontsizey() const
+int MAXElement::iget_fontsizey() const
 {
   int s = m_props.fontsize_y;
   if( !(m_has & E_HAS_FONTSIZE) )
   {
-    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FONTSIZE ));
     if( parent == 0 ) s = E_FONTSIZE_DEFAULT_COORDY;
     else s = parent->iget_fontsizey();
   }
   return s;
 }
-int Q4MAXElement::iget_textstyle() const
+int MAXElement::iget_textstyle() const
 {
   int ts = m_props.textstyle;
   if( !(m_has & E_HAS_TEXTSTYLE) )
   {
-    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TEXTSTYLE ));
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_TEXTSTYLE ));
     if( parent == 0 ) ts = E_TEXTSTYLE_DEFAULT;
     else ts = parent->iget_textstyle();
   }
   return ts;
 }
-Color4 Q4MAXElement::iget_color() const
+Color4 MAXElement::iget_color() const
 {
   Color4 c = m_props.color;
   if( !(m_has & E_HAS_COLOR) )
   {
-    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_COLOR ));
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_COLOR ));
     if( parent == 0 ) c = E_COLOR_DEFAULT;
     else c = parent->iget_color();
   }
   return c;
 }
-Color4 Q4MAXElement::iget_bgcolor() const
+Color4 MAXElement::iget_bgcolor() const
 {
   Color4 c = m_props.bgcolor;
   if( !(m_has & E_HAS_BGCOLOR) )
   {
-    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_BGCOLOR ));
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_BGCOLOR ));
     if( parent == 0 ) c = E_BGCOLOR_DEFAULT;
     else c = parent->iget_bgcolor();
   }
   return c;
 }
-bool Q4MAXElement::iget_fill() const
+bool MAXElement::iget_fill() const
 {
   if( m_has & E_HAS_FILL )
     return true;
 
-  const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FILL ));
+  const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FILL ));
 
   return (parent != 0);
 }
-Color4 Q4MAXElement::iget_fade() const
+Color4 MAXElement::iget_fade() const
 {
   Color4 c = m_props.fade;
   if( !(m_has & E_HAS_FADE) )
   {
-    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FADE ));
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_FADE ));
     if( parent == 0 ) c = E_FADE_DEFAULT;
     else c = parent->iget_fade();
   }
   return c;
 }
 
-bool Q4MAXElement::iget_has(int what) const
+bool MAXElement::iget_has(int what) const
 {
   bool has = (m_has & what) != 0;
   if( !has )
   {
-    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, has ));
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, has ));
     has = (parent != 0);
   }
   return has;
 }
-wxRect Q4MAXElement::iget_hudrect() const
+wxRect MAXElement::iget_hudrect() const
 {
   const wxRect baser = ElementBase::iget_rect();
   if( E_T_WEAPONLIST != m_type )
@@ -634,68 +693,68 @@ wxRect Q4MAXElement::iget_hudrect() const
   return r;
 }
 
-wxString Q4MAXElement::iget_image() const
+wxString MAXElement::iget_image() const
 {
   wxString img = m_props.image;
   if( !(m_has & E_HAS_IMAGE) )
   {
-    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_IMAGE ));
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_IMAGE ));
     if( parent == 0 ) img = wxEmptyString;
     else img = parent->iget_image();
   }
   return img;
 }
-wxString Q4MAXElement::iget_model() const
+wxString MAXElement::iget_model() const
 {
   wxString m = m_props.model;
   if( !(m_has & E_HAS_MODEL) )
   {
-    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_MODEL ));
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_MODEL ));
     if( parent == 0 ) m = wxEmptyString;
     else m = parent->iget_model();
   }
   return m;
 }
-wxString Q4MAXElement::iget_skin() const
+wxString MAXElement::iget_skin() const
 {
   wxString s = m_props.skin;
   if( !(m_has & E_HAS_SKIN) )
   {
-    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_SKIN ));
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_SKIN ));
     if( parent == 0 ) s = wxEmptyString;
     else s = parent->iget_skin();
   }
   return s;
 }
-float Q4MAXElement::iget_offset(int which) const
+float MAXElement::iget_offset(int which) const
 {
   float d = m_props.offset[which];
   if( !(m_has & E_HAS_OFFSET) )
   {
-    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_OFFSET ));
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_OFFSET ));
     if( parent == 0 ) d = 0.f;
     else d = parent->iget_offset(which);
   }
   return d;
 }
-void Q4MAXElement::set_offset( int which, float val )
+void MAXElement::set_offset( int which, float val )
 {
   if( which < E_OFFSET_X || which > E_OFFSET_Z )
     return;
   m_props.offset[which] = val;
 }
-int Q4MAXElement::iget_angle(int which) const
+int MAXElement::iget_angle(int which) const
 {
   int d = angle(which);
   if( !(m_has & E_HAS_ANGLES) )
   {
-    const Q4MAXElement *parent = static_cast<const Q4MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_ANGLES ));
+    const MAXElement *parent = static_cast<const MAXElement*>(wxGetApp().hudfile()->get_parent( this, E_HAS_ANGLES ));
     if( parent == 0 ) d = 0;
     else d = parent->iget_angle(which);
   }
   return d;
 }
-void Q4MAXElement::set_angle( int which, int val )
+void MAXElement::set_angle( int which, int val )
 {
   switch(which)
   {
@@ -705,7 +764,7 @@ void Q4MAXElement::set_angle( int which, int val )
   case E_ANGLE_PAN: m_props.angle_pan = val; break;
   }
 }
-int Q4MAXElement::angle(int which) const
+int MAXElement::angle(int which) const
 {
   switch(which)
   {
@@ -720,7 +779,7 @@ int Q4MAXElement::angle(int which) const
 }
 */
 
-bool Q4MAXElement::is_rendered() const
+bool MAXElement::is_rendered() const
 {
   if( !ElementBase::is_rendered() )
     return false;
@@ -728,7 +787,7 @@ bool Q4MAXElement::is_rendered() const
   return (iget_ival(wxT("visible")) & Prefs::get().var(wxT("view_visible")).ival()) != 0;
 }
 
-void Q4MAXElement::render() const
+void MAXElement::render() const
 {
 //  wxLogDebug(wxT("RENDER ") + m_name);
   bool hasownbg = true;
@@ -989,7 +1048,7 @@ void Q4MAXElement::render() const
   */
 }
 
-void Q4MAXElement::postparse()
+void MAXElement::postparse()
 {
   /*
   if( usemodel() )
@@ -1022,7 +1081,7 @@ void Q4MAXElement::postparse()
 }
 
 
-void Q4MAXElement::prerender()
+void MAXElement::prerender()
 {
   /*
   switch(m_type)
@@ -1052,21 +1111,21 @@ void Q4MAXElement::prerender()
   */
 }
 
-void Q4MAXElement::copy_from( const ElementBase * const el )
+void MAXElement::copy_from( const ElementBase * const el )
 {
   ElementBase::copy_from(el);
 
-  const Q4MAXElement * const cel = static_cast<const Q4MAXElement * const>(el);
+  const MAXElement * const cel = static_cast<const MAXElement * const>(el);
   m_props = cel->properties();
 }
 
-void Q4MAXElement::reset()
+void MAXElement::reset()
 {
   ElementBase::reset();
   m_props = Properties();
 }
 
-void Q4MAXElement::convert( double from, double to, bool size, bool stretchposition, bool fontsize)
+void MAXElement::convert( double from, double to, bool size, bool stretchposition, bool fontsize)
 {
   ElementBase::convert( from, to, size, stretchposition, fontsize );
 

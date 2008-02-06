@@ -168,9 +168,17 @@ class Var
       }
       return true;
     }
-    bool set_default()
+    /// resets the variable back to default
+    bool reset_default()
     {
       return set(m_def);
+    }
+
+    /// changes the default value
+    /// @todo maybe we have to reset to default i fvariable is currently not set?
+    void set_default( const wxString& def )
+    {
+      m_def = def;
     }
 
     
@@ -244,7 +252,7 @@ public:
 
   virtual void read_var( var_type& var )
   {
-    var.set_default();
+    var.reset_default();
   }
 
   virtual void write_var( const var_type& var ) const
@@ -256,6 +264,12 @@ public:
   const var_type& var( const wxString& name ) const
   {
     cit_variables var = m_vars.find(name.Lower());
+    wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable: `") + name + wxT("'"));
+    return var->second;
+  }
+  var_type& var( const wxString& name )
+  {
+    it_variables var = m_vars.find(name.Lower());
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable: `") + name + wxT("'"));
     return var->second;
   }
@@ -299,11 +313,11 @@ public:
     return false;
   }
 
-  bool set_default( const wxString& name )
+  bool reset_default( const wxString& name )
   {
     it_variables var = m_vars.find(name.Lower());
     wxASSERT_MSG( var != m_vars.end(), wxT("Cannot find variable ") + name );
-    return var->second.set_default();
+    return var->second.reset_default();
   }
   var_type& addvar( const wxString& name, const wxString& def = wxT(""), int type = VART_ANY, int flags = VARF_NONE )
   {
