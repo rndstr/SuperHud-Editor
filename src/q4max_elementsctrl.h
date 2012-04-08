@@ -19,10 +19,10 @@
 #include "elementsctrlbase.h"
 
 
-class MAXElementsCtrl : public ElementsCtrlBase
+class Q4MAXElementsCtrl : public ElementsCtrlBase
 {
   public:
-    MAXElementsCtrl( wxWindow *parent ) : ElementsCtrlBase(parent, wxID_ANY) {}
+    Q4MAXElementsCtrl( wxWindow *parent ) : ElementsCtrlBase(parent, wxID_ANY) {}
 
 };
 

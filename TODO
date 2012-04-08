@@ -5,7 +5,6 @@
 ! [q4max] position/dimension not read/updated correctly (ElementBase::iget_rect) -> does position inherit from previous rect? (if only dim is given)
 ! prefs browse buttons don't do nothing
 ! prefs Reset dialogs ain't wokring
-+ check where we can replace choice ON/OFF with checkbox... or does it still infere with readonly things? (e.g. CPMA.Font->Style)
 
 
 -- later maybe --

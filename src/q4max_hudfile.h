@@ -36,8 +36,8 @@ class Q4MAXHudFile : public HudFileBase
 
   protected:
     bool          read_properties( ElementBase *hi, const wxString& props );
-    ElementBase*  create_element( const wxString& name ) const { return new MAXElement(name); }
-    ElementBase*  create_element( const hsitem_s& defit ) const { return new MAXElement(defit); }
+    ElementBase*  create_element( const wxString& name ) const { return new Q4MAXElement(name); }
+    ElementBase*  create_element( const hsitem_s& defit ) const { return new Q4MAXElement(defit); }
 };
 
 

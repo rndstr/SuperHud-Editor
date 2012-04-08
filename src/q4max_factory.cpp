@@ -24,7 +24,7 @@
 
 ElementsCtrlBase* Q4MAXFactory::create_elementsctrl(wxWindow *parent) const
 {
-  return new MAXElementsCtrl(parent);
+  return new Q4MAXElementsCtrl(parent);
 }
 
 PropertiesNotebookBase* Q4MAXFactory::create_propertiesnotebook(wxWindow *parent) const

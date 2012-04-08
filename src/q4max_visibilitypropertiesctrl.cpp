@@ -155,7 +155,7 @@ void Q4MAXVisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
     return;
   }
 
-  MAXElement *el = static_cast<MAXElement*>(p->curel());
+  Q4MAXElement *el = static_cast<Q4MAXElement*>(p->curel());
   wxString name = ev.GetPropertyName();
   wxVariant val = ev.GetPropertyValue();
   if( name == wxT("overwrite-pos") )
@@ -265,7 +265,7 @@ void Q4MAXVisibilityPropertiesCtrl::OnItemChanged( wxPropertyGridEvent& ev )
 
 void Q4MAXVisibilityPropertiesCtrl::from_element( const ElementBase *el )
 {
-  const MAXElement *cel = static_cast<const MAXElement*>(el);
+  const Q4MAXElement *cel = static_cast<const Q4MAXElement*>(el);
 
 
   bool hasv = (el->has() & MAX_E_HAS_VISIBLE) != 0;
@@ -337,7 +337,7 @@ void Q4MAXVisibilityPropertiesCtrl::OnElementVisibility( wxCommandEvent& ev )
 
 void Q4MAXVisibilityPropertiesCtrl::OnAlign( wxCommandEvent& ev )
 {
-  MAXElement *el = current_element();
+  Q4MAXElement *el = current_element();
   el->add_has( E_HAS_RECT );
   Vec2 p = el->iget_pos();
   Vec2 d = el->iget_dim();

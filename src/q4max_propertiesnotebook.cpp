@@ -16,7 +16,6 @@
 #include "q4max_propertiesnotebook.h"
 
 #include "q4max_visibilitypropertiesctrl.h"
-#include "q4max_textpropertiesctrl.h"
 #include "prefs.h"
 
 #include "q4max_element.h"
@@ -35,11 +34,8 @@ Q4MAXPropertiesNotebook::Q4MAXPropertiesNotebook( wxWindow *parent ) :
   wxColour ibgcol = Prefs::get().var(wxT("props_inheritbgcolor")).wxcval();
 
   m_vis = new Q4MAXVisibilityPropertiesCtrl(this);
-  m_text = new Q4MAXTextPropertiesCtrl(this);
   m_vis->set_colors(icol, ibgcol, col, bgcol);
-  m_text->set_colors(icol, ibgcol, col, bgcol);
   AddPage( m_vis, _("Visibility") );
-  AddPage( m_text, _("Text") );
 
   // some initial size so it isn't smashed without an existing perspective
   SetSize(300, -1);
@@ -55,11 +51,7 @@ void Q4MAXPropertiesNotebook::update_from_element( const elements_type& els )
     // m_curel _afterwards_*
 
     m_vis->CollapseAll();
-    m_text->CollapseAll();
-
     m_vis->ClearSelection();
-    m_text->ClearSelection();
-
     m_vis->GetToolBar()->ToggleTool( ID_BTN_ELEMENT_ENABLE, false );
     m_vis->GetToolBar()->ToggleTool( ID_BTN_ELEMENT_DISABLE, false );
     Disable();
@@ -70,15 +62,11 @@ void Q4MAXPropertiesNotebook::update_from_element( const elements_type& els )
     Enable();
 
     m_vis->ExpandAll();
-    m_text->ExpandAll();
 
     m_curel = els.front();
 
     m_vis->from_element(m_curel);
-    m_text->from_element(m_curel);
-
     m_vis->ClearModifiedStatus();
-    m_text->ClearModifiedStatus();
   }
 }
 

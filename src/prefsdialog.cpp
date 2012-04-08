@@ -551,7 +551,7 @@ void PrefsDialog::OnAdvancedDefault( wxCommandEvent& )
     wxString *ps = s;
     while( !ps->empty() )
     {
-      Prefs::get().reset_default(*ps);
+      Prefs::get().set_default(*ps);
       ++ps;
     }
 
