@@ -5,7 +5,7 @@
 *  wxDownloadFile class.
 *
 *  Authors: Priyank Bolia <soft@priyank.in> 
-*           Roland Schilter <rolansch@ethz.ch>
+*           Roland Schilter <roli@schilter.me>
 *
 *  Created: 24 December, 2005 
 *
