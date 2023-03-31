@@ -1,5 +1,3 @@
-http://plrf.org/superhudeditor
-
 # SuperHud Editor v0.3.0
 
 SuperHud Editor gives you a graphical interface to edit your HUD 
@@ -69,12 +67,12 @@ cross.
 ## SuperHud
 
 A (mostly) complete documentation about SuperHud files can be found
-at the [cpma wiki][2].
+at the [CPMA wiki][2].
 
 ## Bugs
 
 Known bugs can be found in the source distribution in file KNOWNBUGS
-Limitations of SuperHud itself can be read at the [promode wiki][3].
+Limitations of SuperHud itself can be read at the [CPMA wiki][3].
 
 
 ## Updating
@@ -87,7 +85,7 @@ default installation routine. A notifcation about new versions is displayed
 nevertheless.
 
 
-[1]: http://www.promode.org
-[2]: http://www.promode.org/wiki/index.php/Custom_HUDs
-[3]: http://www.promode.org/wiki/index.php/Custom_HUDs#Known_Issues
+[1]: https://playmorepromode.com/
+[2]: https://playmorepromode.com/guides/cpma-super-hud
+[3]: https://playmorepromode.com/guides/cpma-super-hud#known-issues
 
